@@ -131,39 +131,6 @@
    "unsigned": false
   },
   {
-   "name": "crypto.cipher_factory",
-   "kind": "function",
-   "signature": "56 57 48 83 EC 28 48 89 CE 83 FA 16",
-   "expected_rva": 79762000,
-   "offset": 0,
-   "rip": null,
-   "confidence": "medium",
-   "provenance": "RPF9 trace hand-off: 23-way jump table over algorithm ids",
-   "unsigned": false
-  },
-  {
-   "name": "crypto.key_lookup",
-   "kind": "function",
-   "signature": "83 C2 F0 83 FA 05 0F 87",
-   "expected_rva": 1654672,
-   "offset": 0,
-   "rip": null,
-   "confidence": "low",
-   "provenance": "RPF9 trace hand-off: (keyId, alg, mode) -> key record",
-   "unsigned": false
-  },
-  {
-   "name": "crypto.stream_init",
-   "kind": "function",
-   "signature": "41 56 56 57 55 53 48 83 EC 40 48 83 79 08 00 44",
-   "expected_rva": 6371456,
-   "offset": 0,
-   "rip": null,
-   "confidence": "medium",
-   "provenance": "RPF9 trace hand-off: creates cipher impl by alg id, fetches key by key id",
-   "unsigned": false
-  },
-  {
    "name": "ecs.archetype_table",
    "kind": "data",
    "signature": "48 8D 15 ? ? ? ? C4 E2 78 F7 C1 4C 69 C0 38 02 00 00 41 8B 44 10 14 85 C0 74 2E 4C 01 C2 44 0F B6 42 57",

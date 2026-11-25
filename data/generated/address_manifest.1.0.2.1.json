@@ -188,21 +188,6 @@
    "pattern": "48 8D 0D ? ? ? ? FF 15 ? ? ? ? 83 3B 00",
    "confidence": "high"
   },
-  "crypto.cipher_factory": {
-   "rva": "4c11250",
-   "pattern": "56 57 48 83 EC 28 48 89 CE 83 FA 16",
-   "confidence": "medium"
-  },
-  "crypto.key_lookup": {
-   "rva": "193f90",
-   "pattern": "83 C2 F0 83 FA 05 0F 87",
-   "confidence": "low"
-  },
-  "crypto.stream_init": {
-   "rva": "613880",
-   "pattern": "41 56 56 57 55 53 48 83 EC 40 48 83 79 08 00 44",
-   "confidence": "medium"
-  },
   "ecs.archetype_table": {
    "rva": "abbf3b0",
    "pattern": "48 8D 15 ? ? ? ? C4 E2 78 F7 C1 4C 69 C0 38 02 00 00 41 8B 44 10 14 85 C0 74 2E 4C 01 C2 44 0F B6 42 57",
@@ -36340,7 +36325,7 @@
   }
  },
  "counts": {
-  "anchors": 383,
+  "anchors": 380,
   "chains": 10,
   "natives": 6829,
   "failed": 0

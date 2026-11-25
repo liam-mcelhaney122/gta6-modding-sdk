@@ -4,11 +4,11 @@
 
 [API index](index.md)
 
-383 anchors for build 1.0.2.1: 373 resolve by a unique byte signature, 10 by an xref chain from a unique start, 0 are unsigned by design. RVAs are offsets from the image base 0x140000000 of the reference exe; resolve them in the live image with `g6::patterns::resolve_anchor` (`patterns.hpp`) or `python -m gta6mod anchors verify`, never by trusting the RVA.
+380 anchors for build 1.0.2.1: 370 resolve by a unique byte signature, 10 by an xref chain from a unique start, 0 are unsigned by design. RVAs are offsets from the image base 0x140000000 of the reference exe; resolve them in the live image with `g6::patterns::resolve_anchor` (`patterns.hpp`) or `python -m gta6mod anchors verify`, never by trusting the RVA.
 
 Data and vtable anchors match the instruction that references the target and then apply the RIP-relative recipe. Chain steps: `call_target`, `rip_target`, `add`, `deref`, `nth_call`, `expect` (semantics in `patterns.hpp`).
 
-Groups: [content](#content) (2) · [crt](#crt) (9) · [crypto](#crypto) (3) · [ecs](#ecs) (25) · [entity](#entity) (53) · [fs](#fs) (42) · [gfx](#gfx) (2) · [gpu](#gpu) (3) · [hash](#hash) (5) · [health](#health) (1) · [io](#io) (1) · [mem](#mem) (15) · [metadata](#metadata) (3) · [package](#package) (1) · [parser](#parser) (22) · [ped](#ped) (11) · [perschar](#perschar) (1) · [physics](#physics) (1) · [player](#player) (10) · [pool](#pool) (10) · [rds5](#rds5) (1) · [resource](#resource) (13) · [script](#script) (79) · [streaming](#streaming) (32) · [tls](#tls) (7) · [vehicle](#vehicle) (6) · [weapon](#weapon) (2) · [world](#world) (23)
+Groups: [content](#content) (2) · [crt](#crt) (9) · [ecs](#ecs) (25) · [entity](#entity) (53) · [fs](#fs) (42) · [gfx](#gfx) (2) · [gpu](#gpu) (3) · [hash](#hash) (5) · [health](#health) (1) · [io](#io) (1) · [mem](#mem) (15) · [metadata](#metadata) (3) · [package](#package) (1) · [parser](#parser) (22) · [ped](#ped) (11) · [perschar](#perschar) (1) · [physics](#physics) (1) · [player](#player) (10) · [pool](#pool) (10) · [rds5](#rds5) (1) · [resource](#resource) (13) · [script](#script) (79) · [streaming](#streaming) (32) · [tls](#tls) (7) · [vehicle](#vehicle) (6) · [weapon](#weapon) (2) · [world](#world) (23)
 
 ## content
 
@@ -30,14 +30,6 @@ Groups: [content](#content) (2) · [crt](#crt) (9) · [crypto](#crypto) (3) · [
 | `crt.init_thread_wait` | function | `0x55DD424` | **signature**: `40 53 48 83 EC 20 48 8B 05` | high | aka _Init_thread_wait; Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md) (mem-tls) |
 | `crt.tlregdtor` | function | `0x55DC7F4` | **signature**: `48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 18 41 56 48 83 EC 20 8B` | medium | aka __tlregdtor (register thread_local destructor; list head TLS+0x10); Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md) (mem-tls) |
 | `crt.tss_mutex` | data | `0x6E04E00` | **signature**: `48 8D 0D ? ? ? ? FF 15 ? ? ? ? 83 3B 00`; RIP disp at +3, insn length 7 | high | aka _Tss_mutex (CRITICAL_SECTION); Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md) (mem-tls) |
-
-## crypto
-
-| Anchor | Kind | RVA | Resolution | Confidence | Provenance |
-|---|---|---|---|---|---|
-| `crypto.cipher_factory` | function | `0x4C11250` | **signature**: `56 57 48 83 EC 28 48 89 CE 83 FA 16` | medium | RPF9 trace hand-off: 23-way jump table over algorithm ids (seed) |
-| `crypto.key_lookup` | function | `0x193F90` | **signature**: `83 C2 F0 83 FA 05 0F 87` | low | RPF9 trace hand-off: (keyId, alg, mode) -> key record (seed) |
-| `crypto.stream_init` | function | `0x613880` | **signature**: `41 56 56 57 55 53 48 83 EC 40 48 83 79 08 00 44` | medium | RPF9 trace hand-off: creates cipher impl by alg id, fetches key by key id (seed) |
 
 ## ecs
 

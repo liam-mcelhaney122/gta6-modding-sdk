@@ -50,30 +50,6 @@
    ]
   },
   {
-   "name": "crypto.stream_init",
-   "kind": "function",
-   "va": "0x140613880",
-   "signature": "41 56 56 57 55 53 48 83 EC 40 48 83 79 08 00 44",
-   "confidence": "medium",
-   "provenance": "RPF9 trace hand-off: creates cipher impl by alg id, fetches key by key id"
-  },
-  {
-   "name": "crypto.cipher_factory",
-   "kind": "function",
-   "va": "0x144c11250",
-   "signature": "56 57 48 83 EC 28 48 89 CE 83 FA 16",
-   "confidence": "medium",
-   "provenance": "RPF9 trace hand-off: 23-way jump table over algorithm ids"
-  },
-  {
-   "name": "crypto.key_lookup",
-   "kind": "function",
-   "va": "0x140193f90",
-   "signature": "83 C2 F0 83 FA 05 0F 87",
-   "confidence": "low",
-   "provenance": "RPF9 trace hand-off: (keyId, alg, mode) -> key record"
-  },
-  {
    "name": "rds5.open",
    "kind": "function",
    "va": "0x140f435f0",

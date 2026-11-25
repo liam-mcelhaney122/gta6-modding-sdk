@@ -5,8 +5,8 @@
 Generated from re-db: names, hashes, offsets, types, confidence and provenance only. Nothing here is game content. Regenerate with `python -I sdk/generators/gen_docs.py`.
 
 - [Native ABI and marshalling](abi.md)
-- [Types](types.md): 89 types, 898 fields
-- [Anchors](anchors.md): 383 anchors (373 signature, 10 chain, 0 unsigned)
+- [Types](types.md): 85 types, 867 fields
+- [Anchors](anchors.md): 380 anchors (370 signature, 10 chain, 0 unsigned)
 - [PSO / parser structures](pso.md): 19178 structures, 2572 enums
 
 ## Natives (6842)
@@ -77,12 +77,12 @@ Generated from re-db: names, hashes, offsets, types, confidence and provenance o
 | `sdk/data/seed/natives.seed.json` | `9f688b925bd6` |
 | `re-db/builds/1.0.2.1/natives/script-vm.handlers.tsv` | `a94384df633e` |
 | `re-db/builds/1.0.2.1/natives.json` | `471f7cf3cdac` |
-| `re-db/builds/1.0.2.1/types/parts/entity-types.json` | `94ead3741ded` |
-| `re-db/builds/1.0.2.1/types/parts/fs.json` | `2335aa7d98a4` |
-| `re-db/builds/1.0.2.1/types/parts/gameplay-fields.json` | `d51a9968c2c7` |
-| `re-db/builds/1.0.2.1/types/parts/mem-tls.json` | `fa2f2e1e6cda` |
-| `re-db/builds/1.0.2.1/types/parts/resource-parser.json` | `2e090176c89b` |
-| `re-db/builds/1.0.2.1/types/parts/script-vm.json` | `ed0f923d96ad` |
-| `re-db/builds/1.0.2.1/types/parts/streaming-pools.json` | `9a0cbfb57350` |
-| `re-db/builds/1.0.2.1/anchors.json` | `ebf33319a93d` |
+| `re-db/builds/1.0.2.1/types/parts/entity-types.json` | `1fc0447e3860` |
+| `re-db/builds/1.0.2.1/types/parts/fs.json` | `387af21d58cb` |
+| `re-db/builds/1.0.2.1/types/parts/gameplay-fields.json` | `1db926e02e2d` |
+| `re-db/builds/1.0.2.1/types/parts/mem-tls.json` | `bed4e5315cf7` |
+| `re-db/builds/1.0.2.1/types/parts/resource-parser.json` | `fd445d7d7191` |
+| `re-db/builds/1.0.2.1/types/parts/script-vm.json` | `d8512cf3a695` |
+| `re-db/builds/1.0.2.1/types/parts/streaming-pools.json` | `65b87d530758` |
+| `re-db/builds/1.0.2.1/anchors.json` | `84e6b56de106` |
 | `re-db/builds/1.0.2.1/psoschema.json` | `91355e7d8c08` |
