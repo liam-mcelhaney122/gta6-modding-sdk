@@ -1,0 +1,124 @@
+{
+  "_meta": {
+    "schema": "alloc8or nativedb natives.json, extended with a per-entry 'g6' block",
+    "game_build": "1.0.2.1",
+    "purpose": "Seed data so the bindings generator, Python and Luau layers can be built and tested before re-db/builds/<build>/natives.json exists. When re-db provides natives.json, the generator prefers it.",
+    "WARNING": "Every hash below is a GTA V (nativedb) hash. Whether GTA VI keeps these hashes is the Phase-4 hypothesis 'shared natives keep their 64-bit hash' (research/01). All entries are status=unverified; real backends refuse to call unverified natives unless explicitly allowed."
+  },
+  "SYSTEM": {
+    "0x4EDE34FBADD967A6": {
+      "name": "WAIT",
+      "params": [{ "type": "int", "name": "ms" }],
+      "return_type": "void",
+      "comment": "Yields the current script. In this SDK use script.wait()/runtime.wait(); the runtime maps it to its scheduler.",
+      "g6": { "status": "unverified", "source": "gta5-nativedb; same hash in RDR3 nativedb (research/01)", "handler_rva": null }
+    }
+  },
+  "MISC": {
+    "0xD24D37CC275948CC": {
+      "name": "GET_HASH_KEY",
+      "params": [{ "type": "const char*", "name": "string" }],
+      "return_type": "Hash",
+      "comment": "joaat(lowercase(string)). The SDK computes this locally (gta6mod.joaat) without a native call.",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    },
+    "0x9CD27B0045628463": {
+      "name": "GET_GAME_TIMER",
+      "params": [],
+      "return_type": "int",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    }
+  },
+  "PLAYER": {
+    "0xD80958FC74E988A6": {
+      "name": "PLAYER_PED_ID",
+      "params": [],
+      "return_type": "Ped",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    },
+    "0x4F8644AF03D0E0D6": {
+      "name": "PLAYER_ID",
+      "params": [],
+      "return_type": "Player",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    }
+  },
+  "ENTITY": {
+    "0x7239B21A38F536BA": {
+      "name": "DOES_ENTITY_EXIST",
+      "params": [{ "type": "Entity", "name": "entity" }],
+      "return_type": "BOOL",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    },
+    "0x3FEF770D40960D5A": {
+      "name": "GET_ENTITY_COORDS",
+      "params": [{ "type": "Entity", "name": "entity" }, { "type": "BOOL", "name": "alive" }],
+      "return_type": "Vector3",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    },
+    "0x06843DA7060A026B": {
+      "name": "SET_ENTITY_COORDS",
+      "params": [
+        { "type": "Entity", "name": "entity" },
+        { "type": "float", "name": "xPos" }, { "type": "float", "name": "yPos" }, { "type": "float", "name": "zPos" },
+        { "type": "BOOL", "name": "xAxis" }, { "type": "BOOL", "name": "yAxis" }, { "type": "BOOL", "name": "zAxis" },
+        { "type": "BOOL", "name": "clearArea" }
+      ],
+      "return_type": "void",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    },
+    "0xE83D4F9BA2A38914": {
+      "name": "GET_ENTITY_HEADING",
+      "params": [{ "type": "Entity", "name": "entity" }],
+      "return_type": "float",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    },
+    "0xEEF059FAD016D209": {
+      "name": "GET_ENTITY_HEALTH",
+      "params": [{ "type": "Entity", "name": "entity" }],
+      "return_type": "int",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    }
+  },
+  "STREAMING": {
+    "0x963D27A58DF860AC": {
+      "name": "REQUEST_MODEL",
+      "params": [{ "type": "Hash", "name": "model" }],
+      "return_type": "void",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    },
+    "0x98A4EB5D89A0C952": {
+      "name": "HAS_MODEL_LOADED",
+      "params": [{ "type": "Hash", "name": "model" }],
+      "return_type": "BOOL",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    },
+    "0xE532F5D78798DAAB": {
+      "name": "SET_MODEL_AS_NO_LONGER_NEEDED",
+      "params": [{ "type": "Hash", "name": "model" }],
+      "return_type": "void",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    }
+  },
+  "VEHICLE": {
+    "0xAF35D0D2583051B0": {
+      "name": "CREATE_VEHICLE",
+      "params": [
+        { "type": "Hash", "name": "modelHash" },
+        { "type": "float", "name": "x" }, { "type": "float", "name": "y" }, { "type": "float", "name": "z" },
+        { "type": "float", "name": "heading" },
+        { "type": "BOOL", "name": "isNetwork" }, { "type": "BOOL", "name": "bScriptHostVeh" }, { "type": "BOOL", "name": "p7" }
+      ],
+      "return_type": "Vehicle",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    }
+  },
+  "PAD": {
+    "0x580417101DDB492F": {
+      "name": "IS_CONTROL_JUST_PRESSED",
+      "params": [{ "type": "int", "name": "control" }, { "type": "int", "name": "action" }],
+      "return_type": "BOOL",
+      "g6": { "status": "unverified", "source": "gta5-nativedb", "handler_rva": null }
+    }
+  }
+}

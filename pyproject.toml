@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gta6mod"
+version = "0.1.0"
+description = "GTA VI modding SDK scaffold: offline format/RE tooling + scripting bindings (mock backend today)"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+re = ["capstone>=5"]       # precise signature masking in gta6mod.pattern
+yaml = ["pyyaml>=6"]       # reading re-db anchors.yaml
+
+[project.scripts]
+gta6mod = "gta6mod.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["python"]

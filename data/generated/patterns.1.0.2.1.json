@@ -1,0 +1,4695 @@
+{
+ "game_build": "1.0.2.1",
+ "exe_sha256": "e95020b2fa4a721db3df59fdecf75621730ac559d8835252f6c3b658d5a08993",
+ "source": "re-db/builds/1.0.2.1/anchors.json",
+ "patterns": [
+  {
+   "name": "content.chunk_manager",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 28 48 89 CF 48 89 D6 4C 8D 4C 24 24 BA 01 00 00 00 48 83 C7 50 49 89 F0 48",
+   "expected_rva": 43234416,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "research/03",
+   "unsigned": false
+  },
+  {
+   "name": "content.enumerate_packages",
+   "kind": "function",
+   "signature": "4C 8B 01 4C 8D 0D ? ? ? ? B9 01",
+   "expected_rva": 43219952,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "research/03: DLC / content-package enumeration (relevant to mods/ overlay)",
+   "unsigned": false
+  },
+  {
+   "name": "crt.dyn_tls_init",
+   "kind": "function",
+   "signature": "83 FA 02 75 60 48 89 5C 24 08 57 48",
+   "expected_rva": 90035444,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "crt.dyn_tls_on_demand_init",
+   "kind": "function",
+   "signature": "45 33 C0 33 C9 41 8D 50 02 E9",
+   "expected_rva": 90028436,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "crt.init_global_epoch",
+   "kind": "data",
+   "signature": "8B 05 ? ? ? ? 41 89 04 10 48 8D",
+   "expected_rva": 108929024,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "crt.init_thread_footer",
+   "kind": "function",
+   "signature": "40 53 48 83 EC 20 48 8B D9 48 8D 0D ? ? ? ? FF 15 ? ? ? ? 8B",
+   "expected_rva": 90028340,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "crt.init_thread_header",
+   "kind": "function",
+   "signature": "40 53 48 83 EC 20 48 8B D9 48 8D 0D ? ? ? ? FF 15 ? ? ? ? 83",
+   "expected_rva": 90028236,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "crt.init_thread_notify",
+   "kind": "function",
+   "signature": "48 83 EC 28 48 8B 05 ? ? ? ? 48 85 C0 74 12 48 8D",
+   "expected_rva": 90035336,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "crt.init_thread_wait",
+   "kind": "function",
+   "signature": "40 53 48 83 EC 20 48 8B 05",
+   "expected_rva": 90035236,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "crt.tlregdtor",
+   "kind": "function",
+   "signature": "48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 18 41 56 48 83 EC 20 8B",
+   "expected_rva": 90032116,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "crt.tss_mutex",
+   "kind": "data",
+   "signature": "48 8D 0D ? ? ? ? FF 15 ? ? ? ? 83 3B 00",
+   "expected_rva": 115363328,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "crypto.cipher_factory",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 28 48 89 CE 83 FA 16",
+   "expected_rva": 79762000,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "RPF9 trace hand-off: 23-way jump table over algorithm ids",
+   "unsigned": false
+  },
+  {
+   "name": "crypto.key_lookup",
+   "kind": "function",
+   "signature": "83 C2 F0 83 FA 05 0F 87",
+   "expected_rva": 1654672,
+   "offset": 0,
+   "rip": null,
+   "confidence": "low",
+   "provenance": "RPF9 trace hand-off: (keyId, alg, mode) -> key record",
+   "unsigned": false
+  },
+  {
+   "name": "crypto.stream_init",
+   "kind": "function",
+   "signature": "41 56 56 57 55 53 48 83 EC 40 48 83 79 08 00 44",
+   "expected_rva": 6371456,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "RPF9 trace hand-off: creates cipher impl by alg id, fetches key by key id",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.archetype_table",
+   "kind": "data",
+   "signature": "48 8D 15 ? ? ? ? C4 E2 78 F7 C1 4C 69 C0 38 02 00 00 41 8B 44 10 14 85 C0 74 2E 4C 01 C2 44 0F B6 42 57",
+   "expected_rva": 180089776,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.comp.damage_sel4d",
+   "kind": "function",
+   "signature": "B8 11 05 00 00 48 8D 15 ? ? ? ? C4 E2 78 F7 C1 4C 69 C0 38 02 00 00 41 8B 44 10 14 85 C0 74 2E 4C 01 C2 44 0F B6 42 4D",
+   "expected_rva": 81492864,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.comp.health_sel57",
+   "kind": "function",
+   "signature": "B8 11 05 00 00 48 8D 15 ? ? ? ? C4 E2 78 F7 C1 4C 69 C0 38 02 00 00 41 8B 44 10 14 85 C0 74 2E 4C 01 C2 44 0F B6 42 57",
+   "expected_rva": 82303616,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.comp.physinst_sel61",
+   "kind": "function",
+   "signature": "B8 11 05 00 00 48 8D 15 ? ? ? ? C4 E2 78 F7 C1 4C 69 C0 38 02 00 00 41 8B 44 10 14 85 C0 74 41 4C 01 C2 44 0F B6 42 61",
+   "expected_rva": 81942928,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.comp.proofs_sel4f",
+   "kind": "function",
+   "signature": "B8 11 05 00 00 48 8D 15 ? ? ? ? C4 E2 78 F7 C1 4C 69 C0 38 02 00 00 41 8B 44 10 14 85 C0 74 2E 4C 01 C2 44 0F B6 42 4F",
+   "expected_rva": 86995360,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.comp.seats_sel77",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 82524032,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 89 F1 49 89 C4 E8 ? ? ? ? 48 85 C0 74",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "B8 11 05 00 00 48"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.columns",
+   "kind": "data",
+   "signature": "48 8B 05 ? ? ? ? 48 83 B8 C0 03 00 00 00 0F 84",
+   "expected_rva": 180088552,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.comp_02",
+   "kind": "function",
+   "signature": "89 C8 25 00 00 3E 00 3D 00 00 06 00 75 34 81 E1 FF FF 01 00 0F AF 0D ? ? ? ? 48 8B 05 ? ? ? ? 83 C1 02",
+   "expected_rva": 82842624,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.comp_0f",
+   "kind": "function",
+   "signature": "89 C8 25 00 00 3E 00 3D 00 00 06 00 75 3A 81 E1 FF FF 01 00 0F AF 0D ? ? ? ? 48 8B 05 ? ? ? ? 83 C1 0F",
+   "expected_rva": 82687920,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.comp_12",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 82153808,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 83 B8 48 01",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "89 C8 25 00 00 3E"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.comp_1a",
+   "kind": "function",
+   "signature": "89 C8 25 00 00 3E 00 3D 00 00 06 00 75 3A 81 E1 FF FF 01 00 0F AF 0D ? ? ? ? 48 8B 05 ? ? ? ? 83 C1 1A",
+   "expected_rva": 83751936,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.comp_20",
+   "kind": "function",
+   "signature": "89 C8 25 00 00 3E 00 3D 00 00 06 00 75 3A 81 E1 FF FF 01 00 0F AF 0D ? ? ? ? 48 8B 05 ? ? ? ? 83 C1 20",
+   "expected_rva": 82683936,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.comp_30",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 81935360,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 89 F9 49 89 C6 E8 ? ? ? ? 4C 89",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "89 C8 25 00 00 3E"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.comp_32",
+   "kind": "function",
+   "signature": "89 C8 25 00 00 3E 00 3D 00 00 06 00 75 3A 81 E1 FF FF 01 00 0F AF 0D ? ? ? ? 48 8B 05 ? ? ? ? 83 C1 32",
+   "expected_rva": 82197776,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.comp_40",
+   "kind": "function",
+   "signature": "89 C8 25 00 00 3E 00 3D 00 00 06 00 75 3A 81 E1 FF FF 01 00 0F AF 0D ? ? ? ? 48 8B 05 ? ? ? ? 83 C1 40",
+   "expected_rva": 82797184,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.comp_law_4a",
+   "kind": "function",
+   "signature": "89 C8 25 00 00 3E 00 3D 00 00 06 00 75 3A 81 E1 FF FF 01 00 0F AF 0D ? ? ? ? 48 8B 05 ? ? ? ? 83 C1 4A",
+   "expected_rva": 83266432,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.comp_weapon_26",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 5100688,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 48 85 C0 74 5B 48 8B 48 18",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "89 C8 25 00 00 3E"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.index_table",
+   "kind": "data",
+   "signature": "48 8B 05 ? ? ? ? 83 C1 4A 0F B7 04 48 48 3D FF FF 00 00 74",
+   "expected_rva": 180088536,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.ped.row_stride",
+   "kind": "data",
+   "signature": "0F AF 0D ? ? ? ? 48 8B 05 ? ? ? ? 83 C1 4A 0F B7 04 48 48 3D FF FF 00 00 74",
+   "expected_rva": 180088524,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.vehicle.columns",
+   "kind": "data",
+   "signature": "48 8B 05 ? ? ? ? 48 83 B8 70 01 00 00 00 0F 84",
+   "expected_rva": 180084736,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.vehicle.comp_01",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 81492496,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 89 E9 BA 0F 02 00 00",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "89 C8 25 00 00 3E"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.vehicle.comp_0d",
+   "kind": "function",
+   "signature": "89 C8 25 00 00 3E 00 3D 00 00 04 00 75 3A 81 E1 FF FF 01 00 0F AF 0D ? ? ? ? 48 8B 05 ? ? ? ? 83 C1 0D",
+   "expected_rva": 81486656,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.vehicle.comp_16",
+   "kind": "function",
+   "signature": "89 C8 25 00 00 3E 00 3D 00 00 04 00 75 3A 81 E1 FF FF 01 00 0F AF 0D ? ? ? ? 48 8B 05 ? ? ? ? 83 C1 16",
+   "expected_rva": 82611264,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.vehicle.index_table",
+   "kind": "data",
+   "signature": "48 8B 05 ? ? ? ? 48 89 F1 BA D0",
+   "expected_rva": 180084720,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.vehicle.row_stride",
+   "kind": "data",
+   "signature": "0F AF 3D ? ? ? ? 48 8B 05 ? ? ? ? 48 89 F1 BA D0",
+   "expected_rva": 180084708,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "entity.by_handle_map",
+   "kind": "function",
+   "signature": "56 57 55 53 48 85 C9 74 4B 44 8B 15",
+   "expected_rva": 784400,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.centity.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 14 96 38 B1 74 14 81 FA",
+   "expected_rva": 41166640,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.centity.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 C7 86 B0 00 00 00 00 00 00 00 8B",
+   "expected_rva": 103704816,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.centity.vtable1",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 48 B8 00 00 00 00 FF FF FF FF 48",
+   "expected_rva": 103706352,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cobject.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA B6 50 EC 9C 74 24 81 FA",
+   "expected_rva": 46101520,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cobject.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 8D 8E ? ? ? ? 31 D2 48 89 06 E8",
+   "expected_rva": 104063360,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cped.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 59 16 82 94 74 24 81 FA",
+   "expected_rva": 42132224,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cped.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 CC CC CC CC CC CC CC CC 56 57 53",
+   "expected_rva": 103772528,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cphysical.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 14 96 38 B1 74 1C 81 FA F1",
+   "expected_rva": 41219920,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cphysical.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? C5 F8 57 C0 48 89 06 66 C7 86 FA",
+   "expected_rva": 103703824,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_3910dfe8.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 14 96 38 B1 74 24 81 FA E8",
+   "expected_rva": 40239488,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_3910dfe8.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? C5 F8 57 C0 48 89 F1 31 D2 45",
+   "expected_rva": 102785472,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_42e01ba3.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 14 96 38 B1 74 1C 81 FA A3",
+   "expected_rva": 41164912,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_42e01ba3.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 F1 31 D2 45 31 C0 45",
+   "expected_rva": 103694304,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_5fe8ed09.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 14 96 38 B1 74 1C 81 FA 09",
+   "expected_rva": 53888096,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_5fe8ed09.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 F9 48 89 F2 48 89 07 C7 87 E8",
+   "expected_rva": 104832784,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_6461d6d0.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 14 96 38 B1 74 1C 81 FA D0",
+   "expected_rva": 56404192,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_6461d6d0.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? C5 F8 57 C0 C4 E2 79 18 15 59",
+   "expected_rva": 105315152,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_794d80f0.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 14 96 38 B1 74 1C 81 FA F0",
+   "expected_rva": 56402976,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_794d80f0.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? C4 E2 79 18 05 D1",
+   "expected_rva": 105315920,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_a279b40d.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 0D B4 79 A2 74 1C 81 FA",
+   "expected_rva": 53831504,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_a279b40d.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 89 F9 48 89 06",
+   "expected_rva": 104831440,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_d66f8e78.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 14 96 38 B1 74 1C 81 FA 78",
+   "expected_rva": 41288352,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_d66f8e78.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? C5 F8 57 C0 48 C7 86 10",
+   "expected_rva": 103707856,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_e56f1d67.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 14 96 38 B1 74 24 81 FA 67",
+   "expected_rva": 40228800,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_e56f1d67.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? C5 F8 57 C0 C5 FB 10 15",
+   "expected_rva": 102784704,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_f34de615.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 14 96 38 B1 74 1C 81 FA 15",
+   "expected_rva": 41228368,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cunk_f34de615.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 0D ? ? ? ? ? ? 57 C0 48 89 86 10",
+   "expected_rva": 103705584,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cvehicle.is_class_id",
+   "kind": "function",
+   "signature": "B0 01 81 FA 14 96 38 B1 74 24 81 FA A9",
+   "expected_rva": 38659376,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; vtable slot 1",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cvehicle.vtable0",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 C6 86 FA",
+   "expected_rva": 102725200,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cvehicle.vtable1",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 56 48 83 EC 20 41 89",
+   "expected_rva": 105974464,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cvehicle.vtable2",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 56 48 83 EC 60 C5",
+   "expected_rva": 105975632,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cvehicle.vtable3",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 56 48 83 EC 20 48 89 CE E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 56 48 83 EC 20 41",
+   "expected_rva": 105976880,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cvehicle.vtable4",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 56 48 83 EC 20 48 89 CE E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 56 48 83 EC 20 48 89 CE E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 56 48 83 EC 20 41",
+   "expected_rva": 105978064,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cvehicle.vtable5",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 41 56 56 57 55 53 48 83 EC 20",
+   "expected_rva": 105980368,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cvehicle.vtable6",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 56 57 53 48 83 EC 20 F0",
+   "expected_rva": 105981536,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cvehicle.vtable7",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 48 83 EC 28 48 89",
+   "expected_rva": 105982720,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.class.cvehicle.vtable8",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 48 89 F0 48 83 C4 20 5E C3 41 57 41 56 41 54 56 57 55",
+   "expected_rva": 105983904,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; slot 0 dtor, slot 1 IsClassId, slot 2 GetClassId",
+   "unsigned": false
+  },
+  {
+   "name": "entity.ctor.ped",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 41 89 D0 BA 03 00 00",
+   "expected_rva": 33221072,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 entity-types worker",
+   "unsigned": false
+  },
+  {
+   "name": "entity.ctor.physical",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 48 89 CE E8 ? ? ? ? 48 8D 05 ? ? ? ? C5 F8 57 C0 48 89 06 66 C7 86 FA 00 00 00 00 00 C5 F8 29 86 E0 00 00 00 48 C7 86 F0 00 00 00 00 00 00 00 81 4E 34 00 00 01 40 48 B8",
+   "expected_rva": 85236672,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 entity-types worker",
+   "unsigned": false
+  },
+  {
+   "name": "entity.ctor.vehicle",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 48 8D 05 ? ? ? ? 48 89 CE 48 89 01 48 89 F2 48 8B 0D",
+   "expected_rva": 15359200,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 entity-types worker",
+   "unsigned": false
+  },
+  {
+   "name": "entity.health.get_pair",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 0F B6 41 30 4C 89",
+   "expected_rva": 2860256,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "entity.physics_inst.get",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 0F B6 41 30 48 89 CE 24",
+   "expected_rva": 81942768,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "entity.proofs.set_bit",
+   "kind": "function",
+   "signature": "44 8B 51 10 41 0F B6 C0 41 B9 01 00",
+   "expected_rva": 4053344,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "entity.protected_flag.test",
+   "kind": "function",
+   "signature": "48 83 EC 28 F6 81 B0 00 00 00 01 75",
+   "expected_rva": 82788416,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "entity.resolve.dynamicentity",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 E8 ? ? ? ? 48 85 C0 74 1E 48 89 C6 48 8B 00 BA DB",
+   "expected_rva": 12916352,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; typed handle resolver",
+   "unsigned": false
+  },
+  {
+   "name": "entity.resolve.entity",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 E8 ? ? ? ? 48 85 C0 74 1E 48 89 C6 48 8B 00 BA 14 96 38 B1 48 89 F1 FF 50 08 84 C0 74 09 48 89 F0 48 83 C4 20 5E C3 31 F6 EB F3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 56 57 48",
+   "expected_rva": 3473776,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; typed handle resolver",
+   "unsigned": false
+  },
+  {
+   "name": "entity.resolve.object",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 E8 ? ? ? ? 48 85 C0 74 1E 48 89 C6 48 8B 00 BA B6",
+   "expected_rva": 20167632,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; typed handle resolver",
+   "unsigned": false
+  },
+  {
+   "name": "entity.resolve.ped",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 E8 ? ? ? ? 48 85 C0 74 1E 48 89 C6 48 8B 00 BA 59",
+   "expected_rva": 86434624,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; typed handle resolver",
+   "unsigned": false
+  },
+  {
+   "name": "entity.resolve.physical",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 E8 ? ? ? ? 48 85 C0 74 1E 48 89 C6 48 8B 00 BA F1",
+   "expected_rva": 8103472,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; typed handle resolver",
+   "unsigned": false
+  },
+  {
+   "name": "entity.resolve.unk_830b8272",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 E8 ? ? ? ? 48 85 C0 74 1E 48 89 C6 48 8B 00 BA 72",
+   "expected_rva": 4478544,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; typed handle resolver",
+   "unsigned": false
+  },
+  {
+   "name": "entity.resolve.vehicle",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 E8 ? ? ? ? 48 85 C0 74 1E 48 89 C6 48 8B 00 BA A9",
+   "expected_rva": 13848656,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker; typed handle resolver",
+   "unsigned": false
+  },
+  {
+   "name": "entity.resolve_locked",
+   "kind": "function",
+   "signature": "41 57 41 56 41 54 56 57 53 48 83 EC 38 48 83 39",
+   "expected_rva": 4420304,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker",
+   "unsigned": false
+  },
+  {
+   "name": "fs.collection.registry",
+   "kind": "data",
+   "signature": "48 8B 0D ? ? ? ? E8 ? ? ? ? 66 89 46 0C",
+   "expected_rva": 160254768,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.base.ctor",
+   "kind": "function",
+   "signature": "48 89 C8 48 8D 15 ? ? ? ? 48 89 10 C3 CC CC 56 57 53 48 81 EC 40",
+   "expected_rva": 23460480,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.base.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 15 ? ? ? ? 48 89 10 C3 CC CC 56 57 53 48 81 EC 40",
+   "expected_rva": 103795360,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.count.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 3D ? ? ? ? 48 89 3D ? ? ? ? 48 89 0D ? ? ? ? 48 89 0D",
+   "expected_rva": 103800832,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.dstorage.read_bulk",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 31 F6 48 83 FA",
+   "expected_rva": 13490480,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.dstorage.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 8D 0D ? ? ? ? 48 8D 15 ? ? ? ? 48 89 05 ? ? ? ? E8",
+   "expected_rva": 103794000,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.get_device",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 30 89 D3 48 89 CE E8 ? ? ? ? 8A",
+   "expected_rva": 9864336,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.growbuffer.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 8B 0D ? ? ? ? 48 89 05 ? ? ? ? 48 8D 05 ? ? ? ? 48 89 05 ? ? ? ? 48 89 05",
+   "expected_rva": 103801488,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.local.instance",
+   "kind": "data",
+   "signature": "48 89 05 ? ? ? ? E8 ? ? ? ? B8 7F 00 00 00 48 89 05 ? ? ? ? 48 89 35 ? ? ? ? 89 3D ? ? ? ? 89 1D ? ? ? ? 48 89",
+   "expected_rva": 126836400,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.local.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 8D 0D ? ? ? ? C5 F8 11 35 ? ? ? ? 48 89 05 ? ? ? ? E8",
+   "expected_rva": 103799520,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.memory.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 8D 0D ? ? ? ? 48 89 05 ? ? ? ? B8 7F 00 00 00 48 89 05 ? ? ? ? 48 89",
+   "expected_rva": 103800176,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.packfile.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? C5 F8 57 C0 4C 8D 7E 20",
+   "expected_rva": 103797888,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.rawstreamer.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 4C 8D 05 ? ? ? ? 48 8D 4E",
+   "expected_rva": 103927248,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.relative.init",
+   "kind": "function",
+   "signature": "41 56 56 57 53 48 81 EC 38 01 00 00 4C 89 CF 44",
+   "expected_rva": 42775056,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.relative.mount_as",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 44 8A 81 14 01",
+   "expected_rva": 33235472,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.device.relative.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 48 C7 46 08 00 00 00 00 48 89 F0 48 83 C4 20 5E C3 CC CC CC CC CC CC CC CC 48 89 C8 48 8D 15 ? ? ? ? 48 89 10 C3 CC CC 56 57 53",
+   "expected_rva": 103794704,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.dlc.dlclist_reader",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC 98 04 00 00 C5 F8 29 B4 24 80 04 00 00 C5",
+   "expected_rva": 31560528,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.dlc.enumerate_packages",
+   "kind": "function",
+   "signature": "4C 8B 01 4C 8D 0D ? ? ? ? B9 01",
+   "expected_rva": 43219952,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.dstorage.factory",
+   "kind": "data",
+   "signature": "48 8B 0D ? ? ? ? 4C 8D 05 ? ? ? ? 48 8D 54 24 30 4C 8D 4C 24 28 48 8B 01 FF 50 20",
+   "expected_rva": 126836344,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.hash.joaat_normalised",
+   "kind": "function",
+   "signature": "48 83 EC 28 E8 ? ? ? ? 8D 04 C0 89 C1 C1 E9 0B 31 C1 89 C8 C1 E0 0F 01 C8 48 83 C4 28 C3 CC 48",
+   "expected_rva": 83632592,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.hash.module_name_hash",
+   "kind": "function",
+   "signature": "89 C8 48 8B 0D ? ? ? ? 48 6B C0 58 48 8B 44 01 28 48 8D 0D ? ? ? ? 48 39 C8 75 08 48 89 D1 E9 ? ? ? ? 48 8D 0D ? ? ? ? 48 39 C8 75 08 48 89 D1 E9 ? ? ? ? 48 89 D1 48 FF E0 41",
+   "expected_rva": 83257344,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.hash.murmur3_h1_normalised",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 28 48 85 C9 0F 84 ? ? ? ? 48 89 CE 49",
+   "expected_rva": 83258848,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.hash.murmur3_h1_raw",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 53 48 83 EC 20 48 85 C9 0F 84 ? ? ? ? 48 89 CE 49",
+   "expected_rva": 83259936,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.local.get_attributes",
+   "kind": "function",
+   "signature": "56 48 81 EC 20 02 00 00 48 8D 74 24 20 48 89 F1 E8 ? ? ? ? 48 89 F1 FF 15 ? ? ? ? 90",
+   "expected_rva": 91478000,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.local.get_file_size_by_name",
+   "kind": "function",
+   "signature": "56 57 53 48 81 EC 50 02 00 00 48 8D",
+   "expected_rva": 42763568,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.local.get_file_time_by_name",
+   "kind": "function",
+   "signature": "56 57 48 81 EC 58 02 00 00 48 8D 7C",
+   "expected_rva": 42763648,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.local.open",
+   "kind": "function",
+   "signature": "41 56 56 57 55 53 48 81 EC 40 02 00 00 8B",
+   "expected_rva": 28934208,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.local.open_bulk",
+   "kind": "function",
+   "signature": "56 57 48 81 EC 48 02 00 00 48 8D 7C",
+   "expected_rva": 42762784,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.local.read",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 53 48 83 EC 30 4C 8B 3D ? ? ? ? 44",
+   "expected_rva": 3228384,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.local.read_bulk",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 58 8B AC 24 C0 00 00 00 4C",
+   "expected_rva": 3228160,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.local.sync_read",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 38 48 83 79 20 00 45",
+   "expected_rva": 3227584,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.mount.default_device",
+   "kind": "data",
+   "signature": "48 8B 05 ? ? ? ? C3 31 C0 C3 CC CC CC CC CC CC CC CC 48",
+   "expected_rva": 110338672,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.mount.lock",
+   "kind": "data",
+   "signature": "48 8D 0D ? ? ? ? 41 89 D4 E8 ? ? ? ? 4C",
+   "expected_rva": 126836432,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.mount.lookup",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 28 48 89 CE 48 8D 0D ? ? ? ? 41",
+   "expected_rva": 42766016,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.mount.mount_global",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 28 48 89 D6 48 8D",
+   "expected_rva": 19682928,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.mount.table",
+   "kind": "data",
+   "signature": "4C 8B 35 ? ? ? ? 44 88 64 24 27",
+   "expected_rva": 126836424,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.mount.unmount",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 53 48 83 EC 20 48 8D 15",
+   "expected_rva": 42775632,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.packfile.cell_file_type",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 87056080,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 39 F0 75 6A 44 89 FD 89 E8",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "48 83 C1 28 E9"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "(packfile, cell) -> u8 streaming file type id of the entry (0x59 #script, 0x0b #mt, 0x0e #datb, 0x60 #asd, 0 rpf); add rcx,0x28; jmp 0x14056ed70. Executed on every row of script.rpf and story000_script.rpf",
+   "unsigned": false
+  },
+  {
+   "name": "fs.packfile.source.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 54 24 28",
+   "expected_rva": 103798928,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.rds5.enqueue_chunks",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC 98 00 00 00 4C 8B B4 24 00 01 00 00 48",
+   "expected_rva": 83875104,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.rds5.open",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 53 48 83 EC 40 48 89 CB B9 48",
+   "expected_rva": 16004592,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "fs.rds5.request_count",
+   "kind": "function",
+   "signature": "48 8B 4C 24 28 49 8B 50 20 48 85 D2",
+   "expected_rva": 85795936,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 fs worker, static disassembly (tools/phase2/fs_vt.py, fs_slots.py); findings/phase2/11_fs.md",
+   "unsigned": false
+  },
+  {
+   "name": "gfx.barrier_builder",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 28 44 8B B1 A0 B1 01 00 48 89 D7 48 89 CE 48 8D 99 80",
+   "expected_rva": 38368,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "research/03",
+   "unsigned": false
+  },
+  {
+   "name": "gfx.pso_stream_builder",
+   "kind": "function",
+   "signature": "41 57 41 56 41 54 56 57 53 48 83 EC 48 48 89 D7 4C",
+   "expected_rva": 8843408,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "research/03",
+   "unsigned": false
+  },
+  {
+   "name": "gpu.barrier.buffer_build",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 28 44 8B B1 A0 B1 01 00 48 89 D7 48 89 CE 48 8D 99 80",
+   "expected_rva": 38368,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "third-party (research/03 VIctory RVA), verified by code; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "gpu.pso_stream.build",
+   "kind": "function",
+   "signature": "41 57 41 56 41 54 56 57 53 48 83 EC 48 48 89 D7 4C",
+   "expected_rva": 8843408,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "third-party (research/03 VIctory RVA), verified by code; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "gpu.texture_stream.map_pages",
+   "kind": "function",
+   "signature": "55 41 57 41 56 41 55 41 54 56 57 53 48 83 EC 68 48 8D 6C 24 60 8B",
+   "expected_rva": 15910000,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "third-party (research/03 VIctory RVA), verified by code; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "hash.cityhash32",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 38 48 83 FA",
+   "expected_rva": 12989328,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "coordinator: emulation equals reference CityHash32 on 73 random inputs, lengths 0-69,100,257,1000 (tools/emu/test_cityhash.py). Replaces Phase-1 label MurmurHash3_x64_128.",
+   "unsigned": false
+  },
+  {
+   "name": "hash.data",
+   "kind": "function",
+   "signature": "48 83 FA 04 72 26 48 C1 EA 02 31 C0",
+   "expected_rva": 83009632,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "coordinator: joaat over u32 words (len>>2) with seed in r8d plus finaliser; 36 callers",
+   "unsigned": false
+  },
+  {
+   "name": "hash.data_partial",
+   "kind": "function",
+   "signature": "44 89 C0 48 85 D2 74 2B 45 31 C0 0F",
+   "expected_rva": 81598752,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "coordinator: joaat loop over signed bytes, seed in r8d, no finaliser; callers finalise inline (e.g. 0x141df4230, 0x1416e5f50); 32 callers",
+   "unsigned": false
+  },
+  {
+   "name": "hash.string",
+   "kind": "function",
+   "signature": "48 83 EC 28 E8 ? ? ? ? 8D 04 C0 89 C1 C1 E9 0B 31 C1 89 C8 C1 E0 0F 01 C8 48 83 C4 28 C3 CC 41",
+   "expected_rva": 35778944,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "coordinator 2026-11-24: calls hash.string_partial then joaat finaliser (h*9, ^>>11, +<<15); Unicorn emulation matches reference joaat on 6 vectors incl. 'adder'=0xB779A091",
+   "unsigned": false
+  },
+  {
+   "name": "hash.string_partial",
+   "kind": "function",
+   "signature": "56 53 31 C0 48 85 C9 0F 84 ? ? ? ? 44",
+   "expected_rva": 35778752,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "coordinator: one-at-a-time loop, skips leading '\"', lowercases A-Z (or 0x20), maps 0x5c->0x2f, stops at NUL/terminator/closing quote; emulated via hash.string",
+   "unsigned": false
+  },
+  {
+   "name": "health.data.recompute",
+   "kind": "function",
+   "signature": "41 56 56 57 53 48 83 EC 68 C5 78 29 44 24 50 C5 F8 29 7C 24 40 C5 F8 29 74 24 30 4C 8B 71",
+   "expected_rva": 9290912,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "io.sync_read",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 38 48 83 79 20 00 45",
+   "expected_rva": 3227584,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "research/03 (VIctory fork, GPL-3.0): address only, verified to land on code in 1.0.2.1",
+   "unsigned": false
+  },
+  {
+   "name": "mem.alloc",
+   "kind": "function",
+   "signature": "E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC 41 56 56 57 53 48 83 EC 28 48 8B 01",
+   "expected_rva": 81379680,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.alloc.impl",
+   "kind": "function",
+   "signature": "41 56 56 57 53 48 83 EC 28 48 89 D6 8B 05 ? ? ? ? ? ? ? ? ? ? ? ? ? 48",
+   "expected_rva": 14864,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.alloc16",
+   "kind": "function",
+   "signature": "BA 10 00 00 00 E9 ? ? ? ? CC CC CC CC CC CC E9",
+   "expected_rva": 83456304,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.alloc_swapped",
+   "kind": "function",
+   "signature": "48 89 C8 48 89 D1 48 89 C2 E9 ? ? ? ? CC CC E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC E9",
+   "expected_rva": 81379648,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.allocate",
+   "kind": "function",
+   "signature": "E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC 41 56 56 57 53 48 83 EC 28 48 8B 01",
+   "expected_rva": 81379680,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "findings/00 \u00a72.6: called from thousands of sites as new(size, align)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.allocate_simple",
+   "kind": "function",
+   "signature": "BA 10 00 00 00 E9 ? ? ? ? CC CC CC CC CC CC E9",
+   "expected_rva": 83456304,
+   "offset": 0,
+   "rip": null,
+   "confidence": "low",
+   "provenance": "findings/00 \u00a72.6: allocation helper taking size only",
+   "unsigned": false
+  },
+  {
+   "name": "mem.allocator.allocate_checked",
+   "kind": "function",
+   "signature": "41 56 56 57 53 48 83 EC 28 4C 89 C6 48 89 D7 48 89 CB E8 ? ? ? ? 48 85 C0 0F",
+   "expected_rva": 83542976,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.allocator.free_vcall",
+   "kind": "function",
+   "signature": "48 85 D2 74 0A 48 8B 01 48 8B 40 10",
+   "expected_rva": 603168,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.allocator.heap_vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 D9 48 89 FA 49 89 F0 48 89 03 C6",
+   "expected_rva": 102268896,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.allocator.heaps",
+   "kind": "data",
+   "signature": "48 8B 05 ? ? ? ? 48 8D 0D ? ? ? ? 48 89 0D ? ? ? ? 48 89 05 ? ? ? ? 48 83 C4 58",
+   "expected_rva": 179127736,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.allocator.master",
+   "kind": "data",
+   "signature": "48 8B 0D ? ? ? ? 48 8B 04 C2 80 B8 08 00 00 00 00 75 0B 49",
+   "expected_rva": 179127728,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.allocator.out_of_memory",
+   "kind": "function",
+   "signature": "41 56 56 57 53 48 83 EC 28 4C 8D 35 ? ? ? ? 48 89 CB 4C 89 C6 48 89 D7 4C 89 F1 E8 ? ? ? ? 48 8B 03",
+   "expected_rva": 35755552,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.free",
+   "kind": "function",
+   "signature": "E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC 48 89 C8 48 89 D1 48 89 C2 E9 ? ? ? ? CC CC E9",
+   "expected_rva": 81379632,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.free.impl",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 30 48 85 C9 0F 84 ? ? ? ? 8B 05",
+   "expected_rva": 15024,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "mem.init_heaps",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 58 80 3D ? ? ? ? 00 0F",
+   "expected_rva": 31575904,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "metadata.ext.ctor",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 48 89 CE E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 89 06 C7 86 90 00 00 00 FF FF FF 0F",
+   "expected_rva": 26360368,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Constructor of the 0xa8-byte MetaDataStore-backed extension (base ctor 0x141923a70, vtable 0x1461886f0): installs vtable 0x146192730 and sets the strIndex at +0x90 to 0xfffffff. Only caller is the vtable's own factory slot +0x78 (0x141923a00)",
+   "unsigned": false
+  },
+  {
+   "name": "metadata.ext.request",
+   "kind": "function",
+   "signature": "41 56 56 57 55 53 48 83 EC 30 44 89 C6 48 85 D2 74 7B 8A 42 2D A8 01 75 74 44 8B 42 10 4C 8B 15 ? ? ? ? 48 89 D3 31 D2 44 89 C0 F7 35",
+   "expected_rva": 35884112,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Slot +0x8 of the MetaDataStore-backed extension vtable 0x146192730: Init(owner, mode, flag). Looks up the MetaDataStore hash map directly (nodes 0x14abcc538, heads 0x14abcc548, count 0x14abcc550 = streaming.metadata.store +0x80/+0x90/+0x98) with key = u32 at owner+0x10 and stores the streaming index at this+0x90 (0x144fefc40, flags 0x28); otherwise falls back to the base Init 0x14221e310, which loads the owner's file by the string at owner+0x18 through the parser (0x14221db20 -> 0x14221dc00 -> 0x141d700e0 on 0x14abcd240). Slot +0x10 0x140a04100 checks the request and calls the PSIN consumer 0x140a04310",
+   "unsigned": false
+  },
+  {
+   "name": "metadata.ext.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 89 06 C7 86 90 00 00 00 FF FF FF 0F 48 C7 86 98 00 00 00 00 00 00 00",
+   "expected_rva": 102311728,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "Vtable of the MetaDataStore-backed extension: +0x8 metadata.ext.request 0x142238c50, +0x10 0x140a04100 (calls the PSIN consumer 0x140a04310), +0x78 factory 0x141923a00. Replaces the 0x146191540 owner guess in findings/phase3/10 (that address is data, not a vtable)",
+   "unsigned": false
+  },
+  {
+   "name": "package.chunks.uninstall_if_ready",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 28 48 89 CF 48 89 D6 4C 8D 4C 24 24 BA 01 00 00 00 48 83 C7 50 49 89 F0 48",
+   "expected_rva": 43234416,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "third-party (research/03 VIctory RVA), verified by code; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "parser.formats.register",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 53 48 81 EC 80 01 00 00 ? ? ? ? ? ? ? ? ? 48 89",
+   "expected_rva": 94887488,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): registers parser stream formats xml/json/rbf/pso: {detect(u32 magic), reader, writer, ext}",
+   "unsigned": false
+  },
+  {
+   "name": "parser.load_object_file",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC 38 01 00 00 4C 89 CF 4D",
+   "expected_rva": 23206624,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): reads 4-byte magic; 'RSC8' -> unsupported; 'PSIN' -> PSO path 0x1409df9d0; else XML/RBF 0x1409e00c0",
+   "unsigned": false
+  },
+  {
+   "name": "parser.load_object_memory",
+   "kind": "function",
+   "signature": "41 56 56 57 53 48 81 EC 38 01 00 00 41",
+   "expected_rva": 10352928,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): if *buf=='PSIN' -> PSO loader else memory stream -> XML/RBF",
+   "unsigned": false
+  },
+  {
+   "name": "parser.manager.instance",
+   "kind": "data",
+   "signature": "48 8B 0D ? ? ? ? 8B 56 68 E8 ? ? ? ? 48 89 F0 48 83 C4 20 5B 5F 5E C3 CC CC CC CC CC CC CC CC 56",
+   "expected_rva": 180146752,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): pointer; structure map at +0x48 (u32 capacity, u32 count at +0x4c, entries +0x50 {u32 hash, parStructure*})",
+   "unsigned": false
+  },
+  {
+   "name": "parser.manager.map_find",
+   "kind": "function",
+   "signature": "31 C0 45 85 C0 0F 84 ? ? ? ? 85 C9 0F 84 ? ? ? ? 44 89 C0 FF C9 C1 E8 10 44 31 C0 69 C0 6B CA EB 85 41 89 C1 41 C1 E9 0D 41 31 C1 45 69 C9 35 AE B2 C2 44 89 C8 C1 E8 10 44 31 C8 21 C8 49 89 C1 49 C1 E1 04 46 8B 0C 0A 45 85 C9 41 0F 95 C2 74",
+   "expected_rva": 82403184,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): lookup (capacity, entries, hash) -> value; same fmix32 probe",
+   "unsigned": false
+  },
+  {
+   "name": "parser.manager.register_structure",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 55 53 48 83 EC 28 89 D0 89 D6 48 8D 79",
+   "expected_rva": 13141456,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): open-addressing insert keyed by name hash (murmur3 fmix32); grows at 75% load",
+   "unsigned": false
+  },
+  {
+   "name": "parser.member.create",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 0F B6 41 1C 48 83 F8",
+   "expected_rva": 14609984,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): switch on desc+0x1c type via class table 0x1466de9d0 (41 types, 11 member classes)",
+   "unsigned": false
+  },
+  {
+   "name": "parser.member.type_table",
+   "kind": "data",
+   "signature": "48 8D 15 ? ? ? ? 48 89 CE 0F B6",
+   "expected_rva": 107866576,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): 41 x {u8 size,u8 align,u8 class}",
+   "unsigned": false
+  },
+  {
+   "name": "parser.pso.build_lrsc_schema",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 28 48 89 CE B9 60 00 00 00 E8 ? ? ? ? 48 89 C7 48 85 C0 74 08 48 89 F9 E8 ? ? ? ? 48",
+   "expected_rva": 34261904,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): LRSC path: copies LRSC header into 0x60-byte object; links LSCH (0x20/struct), LENM (0x18/enum), PSIN blocks (0x10/block), LSNS, LGID",
+   "unsigned": false
+  },
+  {
+   "name": "parser.pso.file_create",
+   "kind": "function",
+   "signature": "41 57 41 56 41 54 56 57 55 53 48 83 EC 40 4C 8B BC 24 A8",
+   "expected_rva": 10353712,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): allocates 0xf0-byte psoFile, calls section parser, looks root struct up in parManager map",
+   "unsigned": false
+  },
+  {
+   "name": "parser.pso.is_magic",
+   "kind": "function",
+   "signature": "81 F9 50 53 49 4E 0F 94 C0 C3 CC CC",
+   "expected_rva": 67524976,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): cmp ecx,'PSIN'(LE 0x4e495350); sete al",
+   "unsigned": false
+  },
+  {
+   "name": "parser.pso.load_object",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 58 48 C7 02 00",
+   "expected_rva": 10353104,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): creates psoFile (0x1409dfc30) and loads root object (0x1409dfd80)",
+   "unsigned": false
+  },
+  {
+   "name": "parser.pso.parse_sections",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 68 4C 8B AC 24 D8",
+   "expected_rva": 67626752,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): big-endian {ident,size} sections: PSIN PMAP PSCH STRF STNS STFN CHKS GUID LSCH LRSC LENM LSNS LGID (PSIG/STRE/STDN skipped); 'pppp' pad ends",
+   "unsigned": false
+  },
+  {
+   "name": "parser.pso.write_lsch",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 48 4C 89 C3 44",
+   "expected_rva": 67646480,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): PSO writer: fills 'p', writes PSIN blocks (ptrs -> 0xaaaa..), then 'LSCH' section",
+   "unsigned": false
+  },
+  {
+   "name": "parser.rbf.is_magic",
+   "kind": "function",
+   "signature": "81 F9 52 42 46 30 0F 94 C0 C3 CC CC",
+   "expected_rva": 20292240,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): leaf (no .pdata entry): cmp ecx,'RBF0'(0x30464252); sete al; registered as rbf detect fn",
+   "unsigned": false
+  },
+  {
+   "name": "parser.rbf.write_header",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 28 80 79 28 00 75 55",
+   "expected_rva": 67525136,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): writes 'RBF0', u16 0xfffb, u16 1",
+   "unsigned": false
+  },
+  {
+   "name": "parser.structure.build_from_static",
+   "kind": "function",
+   "signature": "41 56 56 57 55 53 48 83 EC 20 8B 42 10",
+   "expected_rva": 13141760,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): reads SD (+0x10 name, +8 blob, +0x18 flags, +0x1a offsets), creates members",
+   "unsigned": false
+  },
+  {
+   "name": "parser.structure.create_from_static",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 48 89 CB B9 80",
+   "expected_rva": 13141168,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): allocs 0x80 parStructure, builds from SD, caches in SD+0, registers; 19,178 callers = one per reflected struct",
+   "unsigned": false
+  },
+  {
+   "name": "parser.structure.ctor",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 48 89 C8 48 8D 0D ? ? ? ? C5 F8 57 C0 48 89 08 31 C9 48",
+   "expected_rva": 13141280,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): vtbl 0x14659e650",
+   "unsigned": false
+  },
+  {
+   "name": "parser.structure.set_base",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 48 89 CE E8 ? ? ? ? 48 89 F0 48 83 C4 20 5E C3 CC CC CC CC CC CC CC CC CC CC 48 89 51",
+   "expected_rva": 4359392,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): parStructure +8 = base, +0x6c = 0; called by 11,955 register fns",
+   "unsigned": false
+  },
+  {
+   "name": "parser.structure.set_delegates",
+   "kind": "function",
+   "signature": "48 89 51 30 80 49 78 10 48 89 C8 4C",
+   "expected_rva": 3844336,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): parStructure +0x30/+0x38/+0x48 delegates, flag 0x10 at +0x78; 17,866 calls from register fns",
+   "unsigned": false
+  },
+  {
+   "name": "parser.structure.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 0D ? ? ? ? C5 F8 57 C0 48 89 08 31 C9 48 C7 40 58",
+   "expected_rva": 106554960,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): set in parser.structure.ctor",
+   "unsigned": false
+  },
+  {
+   "name": "ped.action_mode.set",
+   "kind": "function",
+   "signature": "41 57 41 56 41 54 56 57 55 53 48 83 EC 40 C5 F8 29 74 24 30 44 89",
+   "expected_rva": 4428112,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ped.armour.apply_hit",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 70 C5 78 29 4C 24 60 C5 78 29 44 24 50 C5 F8 29 7C 24 40 C5 F8 29 74 24 30 48 89 CE 48 8B",
+   "expected_rva": 95512144,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ped.armour.zone_value",
+   "kind": "function",
+   "signature": "41 56 56 57 53 48 81 EC B8 00 00 00 48 89 CF 8B 89",
+   "expected_rva": 29202112,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ped.config_flag.get",
+   "kind": "function",
+   "signature": "56 48 83 EC 30 48 8B 01 48 8B 49 08 48 89 44 24 20 48 89 4C 24 28 48 85 C0 74 56",
+   "expected_rva": 34887952,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ped.config_flag.set",
+   "kind": "function",
+   "signature": "56 57 55 53 48 83 EC 28 8B A9 9C 00 00 00 48 89 CF 44 89 C3 89",
+   "expected_rva": 19297136,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ped.events.set_blocking_non_temporary",
+   "kind": "function",
+   "signature": "8B 41 10 0F B6 D2 C1 E2 04 83 E0 EF",
+   "expected_rva": 5110400,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ped.perschar.get",
+   "kind": "function",
+   "signature": "48 83 EC 28 E8 ? ? ? ? 48 85 C0 74 0C 8B 48 48",
+   "expected_rva": 16949152,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ped.perschar.release",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 8B 51 48 48 89 CE 48",
+   "expected_rva": 13489296,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ped.personality.set",
+   "kind": "function",
+   "signature": "41 89 D0 0F B7 91 5C 01 00 00 66 44",
+   "expected_rva": 13106224,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ped.personality.table",
+   "kind": "data",
+   "signature": "48 8B 05 ? ? ? ? 0F B7 CB 48 8B 1C",
+   "expected_rva": 151624096,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ped.task.give_script_task",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 78 C5 F8 29 7C 24 60 C5 F8 29 74 24 50 C5 FA 10 B4 24 E0",
+   "expected_rva": 27653760,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "perschar.pool",
+   "kind": "data",
+   "signature": "48 8B 0D ? ? ? ? 89 D0 25 FF FF 01 00 4C 8B 41 28 45 8B 04 80 44 31 C2 81 FA FF FF 01 00 77 37",
+   "expected_rva": 178178288,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "physics.apply_gravity_force",
+   "kind": "function",
+   "signature": "48 8B 41 08 80 78 18 00 78 32 48 8B",
+   "expected_rva": 87172992,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "player.info.get",
+   "kind": "function",
+   "signature": "84 C9 75 08 48 8B 05 FD 6A 6A 0A C3",
+   "expected_rva": 4916016,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker",
+   "unsigned": false
+  },
+  {
+   "name": "player.ped.local",
+   "kind": "data",
+   "signature": "48 8B 05 ? ? ? ? C3 31 C0 C3 CC 56 57 48 83 EC 28",
+   "expected_rva": 179662392,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker",
+   "unsigned": false
+  },
+  {
+   "name": "player.ped_handle",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 89 D3 E8 ? ? ? ? 8B",
+   "expected_rva": 2534896,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 entity-types worker",
+   "unsigned": false
+  },
+  {
+   "name": "player.record.by_ped",
+   "kind": "function",
+   "signature": "41 56 56 57 55 53 48 8B 15 ? ? ? ? 8B",
+   "expected_rva": 85773040,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "player.records",
+   "kind": "data",
+   "signature": "48 03 35 ? ? ? ? 48 89 CF 44 89",
+   "expected_rva": 177518504,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "player.request.add",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 68 C5 F9 7F 74 24 50 BE",
+   "expected_rva": 27474736,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "player.request.remove",
+   "kind": "function",
+   "signature": "41 56 56 57 53 48 83 EC 28 44 89 C6 89 D7 48 89 CB E8 ? ? ? ? 4C 8D 74 24 20",
+   "expected_rva": 18289216,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "player.wanted.max_level",
+   "kind": "data",
+   "signature": "89 0D ? ? ? ? 83 F9 06 7C 13 8B",
+   "expected_rva": 167904972,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "player.wanted.request_level",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC D8 01 00 00 48 89 CE 85",
+   "expected_rva": 37123200,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "player.wanted.set_level",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 48 89 CE 8B 89 28 5F",
+   "expected_rva": 10163264,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "pool.buildings",
+   "kind": "data",
+   "signature": "",
+   "expected_rva": 178178360,
+   "chain": {
+    "from_signature": "48 8B 05 ? ? ? ? 41 B8 5C E1 11 54 41 B9 01 00 00 00 48 8B 48 08 8B 50 10 E8 ? ? ? ? 31 C9 B2 05 89 C6 E8 ? ? ? ? 48 8D 4C 24 20 48 89 C2 E8 ? ? ? ? B9 38 00 00 00 E8 ? ? ? ? 48 89 C7 48 85 C0 74 18 48 89 F9 89 F2 41 B8 E0 00 00 00 48 C7 47 20 00 00 00 00 E8 ? ? ? ? 48 8B 4C 24 20 48 89 3D",
+    "steps": [
+     {
+      "op": "rip_target",
+      "at": 102,
+      "disp_at": 3,
+      "insn_len": 7
+     }
+    ]
+   },
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "pool.config.get_size",
+   "kind": "function",
+   "signature": "85 D2 74 2A 41 89 D2 44 89 C0 31 D2",
+   "expected_rva": 84733760,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "pool.config.instance",
+   "kind": "data",
+   "signature": "48 8B 05 ? ? ? ? 41 B8 17 21 A1 8D 41 B9 01 00 00 00 48 8B 48 08 8B 50 10 E8 ? ? ? ? 89 C7",
+   "expected_rva": 180088560,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "pool.ctor_idx17",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 55 53 48 81 EC A8 00 00 00 C5 78 29 AC 24 90 00 00 00 C5 78 29 A4 24 80 00 00 00 C5 79 7F 5C 24 70 C5 79 7F 54 24 60 C5 79 7F 4C 24 50 C5 78 29 44 24 40 C5 F9 7F 7C 24 30 C5 F9 7F 74 24 20 44 89 C5 89 D7 8B 05 ? ? ? ? 44 89 C3 48 89 CE 0F AF EA ? ? ? ? ? ? ? ? ? 48 8B 04 C2 80 B8 08 00 00 00 00 0F 84 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 00 3B A8 50 14 00 00 72",
+   "expected_rva": 23903744,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "pool.ctor_idx24",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 55 53 48 81 EC A8 00 00 00 C5 78 29 AC 24 90 00 00 00 C5 78 29 A4 24 80 00 00 00 C5 79 7F 5C 24 70 C5 79 7F 54 24 60 C5 79 7F 4C 24 50 C5 78 29 44 24 40 C5 F9 7F 7C 24 30 C5 F9 7F 74 24 20 44 89 C5 89 D7 8B 05 ? ? ? ? 44 89 C3 48 89 CE 0F AF EA ? ? ? ? ? ? ? ? ? 48 8B 04 C2 80 B8 08 00 00 00 00 0F 84 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 00 3B A8 50 14 00 00 0F 83 ? ? ? ? 31 C9 B2 05 41 89 EE E8 ? ? ? ? 41 B8 40 00 00 00 48 89 C1 4C 89 F2 E8 ? ? ? ? 48 C7 46 18 00 00 00 00 41 89 FE 31 C9 B2 05 48 89 06 89 5E 08 89 7E 0C 48 C7 46 20 00 00 00 00 4A 8D 1C B5 00 00 00 00 E8 ? ? ? ? 41 B8 04 00 00 00 48 89 C1 48 89 DA E8 ? ? ? ? 48 89 46 28 C7 46 30 FF FF",
+   "expected_rva": 25779856,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "pool.objects",
+   "kind": "data",
+   "signature": "48 89 3D ? ? ? ? E8 ? ? ? ? 90 48 83 C4 28 5F 5E C3 56 57 48 83 EC 28 48 8B 05 ? ? ? ? 41 B8 CF 8D",
+   "expected_rva": 180085480,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "pool.peds",
+   "kind": "data",
+   "signature": "48 89 35 ? ? ? ? 48 83 C4 20 5B 5F 5E C3 CC CC CC CC CC CC CC CC",
+   "expected_rva": 180054296,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "pool.script_guid",
+   "kind": "data",
+   "signature": "48 89 35 ? ? ? ? E8 ? ? ? ? 90 48 83 C4 30 5E C3 CC CC CC CC 56 48 83 EC 20 C7",
+   "expected_rva": 160400544,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "pool.store_slots.init",
+   "kind": "function",
+   "signature": "41 56 56 57 55 53 48 83 EC 20 44 89 C5 89 D7 8B",
+   "expected_rva": 89394928,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "pool.vehicles",
+   "kind": "data",
+   "signature": "48 89 3D ? ? ? ? 48 83 C4 28 5F 5E C3 CC 48 83 EC 28 E8",
+   "expected_rva": 180086984,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "rds5.open",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 53 48 83 EC 40 48 89 CB B9 48",
+   "expected_rva": 16004592,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "findings/00 \u00a72.7: CreateFile NO_BUFFERING, checks 'RDS5', reads N\u00d7u64 table",
+   "unsigned": false
+  },
+  {
+   "name": "resource.ctor",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 48 89 11 44 89 49",
+   "expected_rva": 84899360,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): stores map,+8 flags,+0x18 name, pushes onto TLS ctx+0x1448 (sm_Current) linked via +0x10",
+   "unsigned": false
+  },
+  {
+   "name": "resource.dtor",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 8B 05 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 04 C2 80 B8 08 00 00 00 00 74 19 ? ? ? ? ? ? ? ? ? 48 8B 00 48 89 88 48 14",
+   "expected_rva": 84899184,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): restores TLS ctx+0x1448",
+   "unsigned": false
+  },
+  {
+   "name": "resource.fixup.get_delta",
+   "kind": "function",
+   "signature": "0F B6 01 44 0F B6 41 01 41 89 C1 45",
+   "expected_rva": 81421008,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): loops map chunks (count=map[0]+map[1]); returns dest-src for chunk containing ptr; int3 if none",
+   "unsigned": false
+  },
+  {
+   "name": "resource.fixup.pointer",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 28 48 8B 3A 48 85 FF 74 11 48 89 D6 48 89 FA E8 ? ? ? ? 48 01 F8 48 89 06 48 83 C4 28 5F 5E C3 CC CC CC CC CC CC CC CC CC CC 0F",
+   "expected_rva": 81420960,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): if *p: *p += get_delta(map,*p); 105 callers",
+   "unsigned": false
+  },
+  {
+   "name": "resource.map.build_for_streaming",
+   "kind": "function",
+   "signature": "41 56 56 57 55 53 48 83 EC 30 89 D7 8B 19",
+   "expected_rva": 82822944,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): per-streaming-index resource map setup; base 0x50000000/0x60000000",
+   "unsigned": false
+  },
+  {
+   "name": "resource.map.count_chunks",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 8B 01 48 89 D6 A9 00",
+   "expected_rva": 82823440,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): virt count=(f&0x7fff0000!=0)+(f&0xfff0!=0); phys likewise; then fills chunks",
+   "unsigned": false
+  },
+  {
+   "name": "resource.map.fill_chunks",
+   "kind": "function",
+   "signature": "44 8B 09 41 F7 C1 00 00 FF 7F 75 7D",
+   "expected_rva": 82823840,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): chunks {src,dest,size} 0x18 at map+0x10; src bases 0x50000000 (virtual) / 0x60000000 (physical)",
+   "unsigned": false
+  },
+  {
+   "name": "resource.map.from_flags",
+   "kind": "function",
+   "signature": "48 83 EC 28 48 8D 44 24 20 48 89 08 48 89 C1 E8 ? ? ? ? 90 48 83 C4 28 C3 CC CC CC CC CC CC 81",
+   "expected_rva": 82823360,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): wrapper: builds datResourceMap from u64 (virt,phys) flags",
+   "unsigned": false
+  },
+  {
+   "name": "resource.pgbase.placement_ctor",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 48 89 C8 48 8D 15",
+   "expected_rva": 81421104,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): sets vtbl 0x146209118, fixes +8 page map from current datResource, packs chunk dest|(size&0xfff0)<<44",
+   "unsigned": false
+  },
+  {
+   "name": "resource.pgbase.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 15 ? ? ? ? 48 89 10 8B 0D ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 0C CA 80 B9 08 00 00 00 00 0F 84 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 11 48 8B 8A 48 14 00 00 48 85 C9 74",
+   "expected_rva": 102797592,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): written by resource.pgbase.placement_ctor",
+   "unsigned": false
+  },
+  {
+   "name": "resource.rsc8.load_viseme_example",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 53 48 81 EC C0 00 00 00 48 89 CB 48",
+   "expected_rva": 44677536,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): consumer: checks 'RSC8' and version 0x41, decodes flags, allocates chunks, datResource('Viseme animation data')",
+   "unsigned": false
+  },
+  {
+   "name": "resource.rsc8.read_header",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 55 53 48 83 EC 38 48 8B 01 4C 89 C6 48 89 D7",
+   "expected_rva": 42756704,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): reads 16-byte header via device vtbl+0x60 (size 0x10); xor ecx,'RSC8'; returns version byte hdr+4; stores size at out+0x10",
+   "unsigned": false
+  },
+  {
+   "name": "resource.rsc8.write_header",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 28 48 8D 7C 24 20 4C 89 C6 41",
+   "expected_rva": 42790240,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 resource-parser (findings/phase2/12_resource_parser.md): writes 'RSC8', u32 0x1F00|ver (ver=(virt&0xF)<<4|(phys&0xF)), u64 virt/phys flags",
+   "unsigned": false
+  },
+  {
+   "name": "script.builtin.bind_method",
+   "kind": "function",
+   "signature": "56 57 55 53 48 83 EC 28 89 D3 48 89 CF 48",
+   "expected_rva": 22751584,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "static analysis + Unicorn emulation of 0x143decaf0, tools/phase5/natives_builtin.py, findings/phase5/26_builtin_path.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.builtin.class_lookup",
+   "kind": "function",
+   "signature": "4D 85 C9 74 07 49 C7 01 00 00 00 00 44",
+   "expected_rva": 19429856,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "static analysis + Unicorn emulation of 0x143decaf0, tools/phase5/natives_builtin.py, findings/phase5/26_builtin_path.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.builtin.dispatch",
+   "kind": "function",
+   "signature": "41 56 56 57 55 53 48 83 EC 40 8B AC 24 90 00 00 00 4C 89 CB 4D",
+   "expected_rva": 64889424,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "static analysis + Unicorn emulation of 0x143decaf0, tools/phase5/natives_builtin.py, findings/phase5/26_builtin_path.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.builtin.dyn_count",
+   "kind": "data",
+   "signature": "8B 3D ? ? ? ? 48 85 FF 74 39 48 8B 0D",
+   "expected_rva": 160188484,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "confidence": "high",
+   "provenance": "static analysis + Unicorn emulation of 0x143decaf0, tools/phase5/natives_builtin.py, findings/phase5/26_builtin_path.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.builtin.dyn_records",
+   "kind": "data",
+   "signature": "48 8B 0D ? ? ? ? 31 C0 89 FA 4C",
+   "expected_rva": 160188488,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "static analysis + Unicorn emulation of 0x143decaf0, tools/phase5/natives_builtin.py, findings/phase5/26_builtin_path.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.builtin.fn_tables",
+   "kind": "data",
+   "signature": "48 8D 0D ? ? ? ? 81 E7 F0 FF 03",
+   "expected_rva": 160186848,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "static analysis + Unicorn emulation of 0x143decaf0, tools/phase5/natives_builtin.py, findings/phase5/26_builtin_path.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.builtin.method_entry_init",
+   "kind": "function",
+   "signature": "56 89 11 8B 74 24 48 48 8B 44 24 40",
+   "expected_rva": 19518720,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "static analysis + Unicorn emulation of 0x143decaf0, tools/phase5/natives_builtin.py, findings/phase5/26_builtin_path.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.builtin.registrar",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 48 89 D5 48 89 CE 48",
+   "expected_rva": 23450800,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "static analysis + Unicorn emulation of 0x143decaf0, tools/phase5/natives_builtin.py, findings/phase5/26_builtin_path.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.builtin.type_ctor",
+   "kind": "function",
+   "signature": "41 57 41 56 41 54 56 57 55 53 44 0F B7 9C",
+   "expected_rva": 64955344,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "static analysis + Unicorn emulation of 0x143decaf0, tools/phase5/natives_builtin.py, findings/phase5/26_builtin_path.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.builtin.type_init",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC F8 03 00 00 C5 F8 29 B4 24 E0 03 00 00 48",
+   "expected_rva": 64932592,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "static analysis + Unicorn emulation of 0x143decaf0, tools/phase5/natives_builtin.py, findings/phase5/26_builtin_path.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.builtin.type_registry",
+   "kind": "data",
+   "signature": "4C 8D 05 ? ? ? ? C4 E2 78 F7 CF",
+   "expected_rva": 180108464,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "static analysis + Unicorn emulation of 0x143decaf0, tools/phase5/natives_builtin.py, findings/phase5/26_builtin_path.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.cmd.handler_table",
+   "kind": "data",
+   "signature": "48 8D 0D ? ? ? ? 81 E7 F0 FF 03",
+   "expected_rva": 160186848,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "Command-id handler slots (bucket = (id>>12)&0x3fff0 bytes, entry ptr +8, handler at entry+8*index); filled at run time (registrar 0x14165d4b0 per coordinator)",
+   "unsigned": false
+  },
+  {
+   "name": "script.cmd.meta_table",
+   "kind": "data",
+   "signature": "4C 8D 05 ? ? ? ? 49 8B 44 00 28",
+   "expected_rva": 180108464,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "Command-id metadata: buckets of 0x88 bytes, +0x28 -> entries of 0x20 bytes (retc +0x14, argc +0x15)",
+   "unsigned": false
+  },
+  {
+   "name": "script.exec.ctor",
+   "kind": "function",
+   "signature": "41 56 56 57 53 48 83 EC 38 8B 84 24 98",
+   "expected_rva": 29458624,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.exec.run",
+   "kind": "function",
+   "signature": "41 57 41 56 41 54 56 57 55 53 48 83 EC 30 48 8B 41 08 48 89 CE ? ? ? ? ? ? ? ? ? 4C",
+   "expected_rva": 64888592,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.exec.vtable",
+   "kind": "vtable",
+   "signature": "4C 8D 1D ? ? ? ? C5 F8 57 C0 45",
+   "expected_rva": 106233120,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.guid.create_for_entity",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 55 53 48 83 EC 28 4C 89 C7 89 D3 49",
+   "expected_rva": 13875968,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.guid.free",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 89 D7 48 89 CE E8 ? ? ? ? 85 FF 0F 84 ? ? ? ? 48 8B 0D ? ? ? ? 48 89 F0 31 D2 41 B9 00 00 00 7F 48 2B 01 44 8B 41 08 49 F7 F0 4C 8B 51 28 48 89 C2 41 89 D0 47 23 0C 82 48 8B 41 20 49 BA 00 00 00 00 01 00 00 00 41 09 D1 81 E2 FF FF FF 00 41 81 C1 00 00 00 01 81 CA 00 00 00 01 41 F7 C1 00 00 00 7F 41 0F 45 D1 F0 FF 49 10 49 B9 00 00 00 00 FF FF FF FF 41 89 D0 81 E2 FF FF FF 00 41 81 E0 00 00 00 7F 48 8B 59 28 49 89 C3 89 C7 81 E7 FF FF FF 00 4D 21 CB 49 09 D3 44 09 C7 4D 01 D3 89 3C 93 F0 4C 0F B1 59 20 75 DA 48 83 79 18 00 75 0B 48 89 F0 48 83 C4 20 5B 5F 5E C3 48 89 F2 E8 ? ? ? ? EB EB CC CC CC CC CC CC CC CC CC CC CC CC CC CC 56 48 83 EC 20 48 8D 05 ? ? ? ? 48 89 CE 48 89 01 E8 ? ? ? ? 48 83",
+   "expected_rva": 4024896,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.guid.resolve",
+   "kind": "function",
+   "signature": "8D 41 01 83 F8 02 72 3D 48 8B 15",
+   "expected_rva": 9160048,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.guid.to_handle",
+   "kind": "function",
+   "signature": "4C 8B 0D ? ? ? ? 48 89 C8 31 D2 49 2B 01 45 8B 41 08 49 F7 F0 49 8B 49 28 41 B8 00 00 00",
+   "expected_rva": 10884112,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.handle.to_entity",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 E8 ? ? ? ? 48 85 C0 74 1E 48 89 C6 48 8B 00 BA 14 96 38 B1 48 89 F1 FF 50 08 84 C0 74 09 48 89 F0 48 83 C4 20 5E C3 31 F6 EB F3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 56 57 53",
+   "expected_rva": 2534832,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.handle.to_object",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 E8 ? ? ? ? 48 85 C0 74 1B 4C 8B 00 48 89 C1 BA B6",
+   "expected_rva": 43934032,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.handle.to_ped",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 E8 ? ? ? ? 48 85 C0 74 1B 4C 8B 00 48 89 C1 BA 59",
+   "expected_rva": 65734704,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.handle.to_vehicle",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 E8 ? ? ? ? 48 85 C0 74 1B 4C 8B 00 48 89 C1 BA A9",
+   "expected_rva": 43912368,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.native.abi.entity_arg16",
+   "kind": "code",
+   "signature": "56 57 48 83 EC 38 83 79 10 00 48 89 CE 78 3B 48 8D 3D ? ? ? ? 48 89 F9 E8 ? ? ? ? 48 8B 06 48 8D 4C 24 20 C5 F8 10 00 C5 F8 29 01 E8 ? ? ? ? 48 8B 4E 08 48 98 48 89 01 48 89 F9 48 83 C4 38 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 9D",
+   "expected_rva": 62953440,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "static analysis, findings/phase5/21_natives.md (GET_ENTITY_ALPHA handler, hash 0x1BB501624FAF2BEA)",
+   "unsigned": false
+  },
+  {
+   "name": "script.native.base",
+   "kind": "data",
+   "signature": "4C 03 3D ? ? ? ? 48 8B 54 24 50",
+   "expected_rva": 160176144,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.native.handler.set_entity_coords",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 68 83 79 10 00 48 89 CF 78 73",
+   "expected_rva": 62994272,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.native.impl.get_entity_coords",
+   "kind": "function",
+   "signature": "56 53 48 83 EC 38 48 89 CE 48 8B 02 48 8B 4A 08 44",
+   "expected_rva": 3473664,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "static analysis: sole non-lock callee of handler 0x143c09d00 (hash 0xA86D5F069399F44D), findings/phase5/21_natives.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.native.impl.get_entity_health",
+   "kind": "function",
+   "signature": "56 48 83 EC 40 48 8B 01 48 8B 49 08 48 89 44 24 28 48 89 4C 24 30 48 85 C0 74 57",
+   "expected_rva": 98218384,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "static analysis: sole non-lock callee of handler 0x143c09f50 (hash 0x82368787EA73C0F7), findings/phase5/21_natives.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.native.impl.set_entity_coords",
+   "kind": "function",
+   "signature": "48 83 EC 68 C5 F8 28 0A 48 8D 54 24 50 C5 FA 10 84 24 A0",
+   "expected_rva": 96666208,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "static analysis: sole non-lock callee of handler 0x143c13760 (hash 0x06843DA7060A026B), findings/phase5/21_natives.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.native.lock",
+   "kind": "data",
+   "signature": "48 8D 3D ? ? ? ? 48 89 F9 E8 ? ? ? ? 48 8B 06 48 8D 4C 24 20 C5 F8 10 00 83 78 18 00 8B 50 10 41 0F 95 C0 C5 F8 29 01 E8 ? ? ? ? 48 89 F9 48 83 C4 38 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 C8",
+   "expected_rva": 179127520,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.native.lock_fn",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 55 53 48 83 EC 28 8B 69 1C 48",
+   "expected_rva": 19264,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "static analysis, tools/phase5/natives_arity.py; called by 6,802 of the 6,813 native handlers",
+   "unsigned": false
+  },
+  {
+   "name": "script.program.entry_check",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 83 3A 00 74 04 B0 01",
+   "expected_rva": 64928720,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Called by scrThread::Reset before the program is accepted: looks up the launch descriptor among [+0xc8] entries at +0x100 and compares its size field (+8)",
+   "unsigned": false
+  },
+  {
+   "name": "script.program.link_manager_ptr",
+   "kind": "data",
+   "signature": "48 8B 0D ? ? ? ? 4C 8D 05 ? ? ? ? 48 8B 01 48 8B 40 18 4C 39 C0",
+   "expected_rva": 113451648,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "global pointer to the ScriptStore link manager; read by program_by_hash 0x1452ffc52, thread reset 0x141c183d3 and post_load 0x143e094b1",
+   "unsigned": false
+  },
+  {
+   "name": "script.program.native_key_decode",
+   "kind": "instruction",
+   "signature": "C4 E3 7B F0 40 24 0C 8B 6B 10 39 E8",
+   "expected_rva": 29459321,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "scrThread::Reset: base = 0x141d109b0 - (ror32(prog+0x24,12) ^ prog+0x10); for program 0xb407af85 this evaluates to 0x140000000 (image base), so native operands are handler RVAs",
+   "unsigned": false
+  },
+  {
+   "name": "script.program.place",
+   "kind": "function",
+   "signature": "41 56 56 57 53 48 83 EC 28 48 89 D7 48 89 CE E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 8D 56 30",
+   "expected_rva": 65049024,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "scrProgram placement constructor: vtable 0x14654fd08, datResource fix-ups of +0x30/+0x40..+0x90/+0x98..+0xb0/+0xe8/+0xf0/+0x100/+0x148/+0x170, 0x88-byte records at +0x30 (count +0x2c), clears bit 6 of +0x110",
+   "unsigned": false
+  },
+  {
+   "name": "script.program.post_load",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 30 66 83 79 18 6F",
+   "expected_rva": 65049712,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Post-load: requires u16 [+0x18] == 0x6f (int3 otherwise); link table +0x148 record 0 = self, records 1.. resolved by hash; per-record init 0x1455c6b50; runtime buffer of [+0x128] bytes -> +0x158",
+   "unsigned": false
+  },
+  {
+   "name": "script.program.record_init",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 48 8B 41 20 83",
+   "expected_rva": 89942864,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Initialises one 0x88-byte program record: negative +0x20 index (bit 30 clear) selects a record of the engine table 0x14abc3cb0 (stride 0x88)",
+   "unsigned": false
+  },
+  {
+   "name": "script.program.startup_lookup",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 30 48 89 CE E8 ? ? ? ? 48 8D 7C 24 24",
+   "expected_rva": 45837584,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Fetches scrProgram 0xb407af85 (script.rpf/0/0, the only RSC8 program in script.rpf) via script.store.program_by_hash 0x1452ffc50",
+   "unsigned": false
+  },
+  {
+   "name": "script.program.startup_request",
+   "kind": "function",
+   "signature": "48 83 EC 38 48 8B 05 ? ? ? ? 48 89 CA 4C",
+   "expected_rva": 95324544,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Issues ScriptStore (0x149dd7bc8) request {kind 3, hash 0xb407af85} through module vtable +0x10",
+   "unsigned": false
+  },
+  {
+   "name": "script.program.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 8D 56 30 48",
+   "expected_rva": 106233096,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "scrProgram (pgBase-derived) vtable written by the placement constructor",
+   "unsigned": false
+  },
+  {
+   "name": "script.store",
+   "kind": "data",
+   "signature": "48 8D 0D ? ? ? ? 48 8D 15 ? ? ? ? 41 B8 59",
+   "expected_rva": 165510088,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.store.add_slot",
+   "kind": "function",
+   "signature": "41 56 56 57 53 48 83 EC 28 48 8B 41 58 48 89 D6 44 89 C7 48 8D 51 38 49 B9 00 00 00 00 FF FF FF FF 49 89 C0 41 83 F8 FE 0F 84 9D 00 00 00",
+   "expected_rva": 43598336,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "ScriptStore vtable 0x146309050 slot +0xe0 (also in the asset-store vtable 0x14630aae0): AddSlot(out, u32 hash, u64 key64) allocates a pool entry from store+0x38 (lock-free free list at +0x58), writes out = (moduleIndex&0x3f)<<22 | slot and inserts (hash, slot) into the hash map at store+0x80 through streaming.store.map_insert",
+   "unsigned": false
+  },
+  {
+   "name": "script.store.find_slot",
+   "kind": "function",
+   "signature": "45 8B 48 08 4C 8B 81 90 00 00 00 49 89 D2 31 D2 44 89 C8 F7 B1 98 00 00 00 45 8B 04 90 B8 FF FF 3F 00 41 83 F8 FF 74 21",
+   "expected_rva": 30658832,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "ScriptStore vtable +0x10 (final vtable 0x146309050 and intermediate 0x14630aae0): FindSlot(out, name) keyed by the u32 name hash at name+8; chained hash map buckets [store+0x90] (u32 heads), count [store+0x98], 12-byte nodes {u32 hash, u32 slot, u32 next} at [store+0x80]; returns (moduleIndex&0x3f)<<22 | slot, 0x3fffff if absent",
+   "unsigned": false
+  },
+  {
+   "name": "script.store.init",
+   "kind": "function",
+   "signature": "48 83 EC 28 E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 8D 0D ? ? ? ? 48 8D 15 ? ? ? ? C5",
+   "expected_rva": 43587824,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "calls ScriptStore module registration 0x145cd9ba0 (type 0x59, resource version 0x31), then installs the final ScriptStore vtable 0x146309050, constructs the link manager at 0x149dd7c78 (store+0xb0, vtable 0x146309160) and publishes it in 0x146c32280",
+   "unsigned": false
+  },
+  {
+   "name": "script.store.link_manager",
+   "kind": "data",
+   "signature": "48 8D 0D ? ? ? ? 48 8D 15 ? ? ? ? C5 F8 57 C0 48 89 05 ? ? ? ? 48 89 15",
+   "expected_rva": 165510264,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "program link manager embedded in ScriptStore at +0xb0",
+   "unsigned": false
+  },
+  {
+   "name": "script.store.link_manager_vtable",
+   "kind": "vtable",
+   "signature": "48 8D 15 ? ? ? ? C5 F8 57 C0 48 89 05 ? ? ? ? 48 89 15",
+   "expected_rva": 103846240,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "link manager vtable; slot +0x18 = script.store.program_lookup 0x1452ffc80",
+   "unsigned": false
+  },
+  {
+   "name": "script.store.program_by_hash",
+   "kind": "function",
+   "signature": "89 CA 48 8B 0D ? ? ? ? 4C 8D 05 ? ? ? ? 48",
+   "expected_rva": 87030864,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.store.program_lookup",
+   "kind": "function",
+   "signature": "48 83 EC 28 85 D2 74 71 41 89 D0 89",
+   "expected_rva": 87030912,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "link-manager vtable 0x146309160 slot +0x18: u32 name hash -> scrProgram*; reads the ScriptStore hash map at manager-0x30/-0x20/-0x18 (= store+0x80/+0x90/+0x98, manager = store+0xb0) and returns *slot entry. Reached from script.store.program_by_hash 0x1452ffc50 (thread reset, startup 0xb407af85) and scrProgram post_load link resolution 0x143e094bf",
+   "unsigned": false
+  },
+  {
+   "name": "script.store.slot_by_hash",
+   "kind": "function",
+   "signature": "4C 8B 89 90 00 00 00 41 89 D0 89 D0",
+   "expected_rva": 28077424,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "(ScriptStore, u32 hash) -> slot entry via the same hash map, tail-jumps to 0x144da24a0; called with 0x149dd7bc8 by 0x141ac6b80",
+   "unsigned": false
+  },
+  {
+   "name": "script.store.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 48 8D 0D ? ? ? ? 48 8D 15 ? ? ? ? C5 F8 57 C0 48 89 05 ? ? ? ? 48 89 15",
+   "expected_rva": 103845968,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "final ScriptStore vtable (slot +0x10 = script.store.find_slot); matches the live module table vtable_static",
+   "unsigned": false
+  },
+  {
+   "name": "script.thread.by_id",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 85 C9 75 08 31 C0 48 83 C4 20 5E C3 89 CE 48",
+   "expected_rva": 83238704,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.thread.current_id",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 83238656,
+   "chain": {
+    "from_signature": "56 57 53 48 83 EC 30 48 8D 7C 24 2C 48 89 CE 48 89 F9 E8 ? ? ? ? 8B 0F 31 DB 85 C9 74 3F E8 ? ? ? ? 48 85 C0 74 35 8A 80 44 03 00 00 3C 07 74 2B 8B 7C 24 2C 89 F9 E8",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 18
+     },
+     {
+      "op": "expect",
+      "at": 9,
+      "signature": "48 8B 00 48 8B 90 78 14 00 00"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.thread.game_vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 89 F2 4C 89 F1",
+   "expected_rva": 106295264,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.thread.id_counter",
+   "kind": "data",
+   "signature": "F0 0F C1 05 ? ? ? ? 89 86 48 03",
+   "expected_rva": 113680796,
+   "offset": 0,
+   "rip": {
+    "disp_at": 4,
+    "insn_len": 8
+   },
+   "confidence": "medium",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.thread.map",
+   "kind": "data",
+   "signature": "44 8B 05 ? ? ? ? 45 85 C0 0F 84 ? ? ? ? 89 F0 41",
+   "expected_rva": 160176192,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.thread.reset",
+   "kind": "function",
+   "signature": "56 57 55 53 48 83 EC 28 C7 81 4C 03",
+   "expected_rva": 29459264,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.thread.start",
+   "kind": "function",
+   "signature": "56 57 48 81 EC D8 00 00 00 48 89 D7",
+   "expected_rva": 29458176,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.thread.update",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 53 48 81 EC 50 04",
+   "expected_rva": 64884736,
+   "offset": 0,
+   "rip": null,
+   "confidence": "low",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.thread.vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 31 D2 48 89 CE 48 89 01 E8 ? ? ? ? 48 89 F1 31 D2 E8 ? ? ? ? 48 8B",
+   "expected_rva": 106232992,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.cmd_invoke",
+   "kind": "function",
+   "signature": "41 56 56 57 55 53 48 83 EC 40 8B AC 24 90 00 00 00 4C 89 CB 4D",
+   "expected_rva": 64889424,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Second native path (command id): id lo byte = index, hi byte = bucket; metadata 0x14abc3cb0 (argc +0x15, retc +0x14), handler slot in 0x1498c41e0 (run-time filled); bit 30 = dynamic id via 0x1455c6b00",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.dispatch",
+   "kind": "code",
+   "signature": "0F B7 06 4C 89 FE 69 C0 15 33 00 00",
+   "expected_rva": 64890475,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Threaded dispatch tail: movzx eax,[rsi]; imul 0x3315; jmp [r12+rbx*8] (opcode table 0x146553900)",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.frame_push",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 48 89 CB 48 8B 49 48",
+   "expected_rva": 64889744,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Frame push (ctx, program, code offset): ctx+0x48 += 0x38; frame {pc=[prog+0xe8]+offset, prog, sp, locals}; called by every CALL handler",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.interpreter",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC D8 04 00 00 C5 F9 7F",
+   "expected_rva": 64890192,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.interpreter_thunk",
+   "kind": "function",
+   "signature": "E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC 41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC D8 04",
+   "expected_rva": 64890176,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.op_call",
+   "kind": "code",
+   "signature": "44 0F B6 74 24 30 4C 8B 44 24 50 48",
+   "expected_rva": 64904196,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Opcodes 135/136/137/399 (CALL family; the handler selects the operand form from the dispatch index in rbx): lengths 8/6/5/9; 136 (u32 code offset, length 6) is the common CALL; pushes the frame via 0x143de2390",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.op_call_linked",
+   "kind": "code",
+   "signature": "8B 05 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 54 24 50 49 89 F6 0F B6 7C 24 30 8B",
+   "expected_rva": 64903159,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Opcode 133: u8 link index into program+0x148 (stride 0x18), u32 code offset; length 7",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.op_cmd",
+   "kind": "code",
+   "signature": "0F B7 44 24 30 4C 8D 8C 24 C0 00 00",
+   "expected_rva": 64908806,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Opcode 138: u16 command id -> 0x143de2250 (second native path); length 4",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.op_cmd_alt",
+   "kind": "code",
+   "signature": "0F B7 44 24 30 4D 8B 7D 00 41 BC 10",
+   "expected_rva": 64915296,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Opcode 367: u16 command id form that also reaches 0x143de2250; length 4",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.op_enter",
+   "kind": "code",
+   "signature": "0F B6 7C 24 30 48 8B 4D 48 31 D2 49",
+   "expected_rva": 64903465,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Opcode 131 (ENTER): u8 operand, high nibble = argument slots, low nibble = extra local slots; length 3",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.op_jump",
+   "kind": "code",
+   "signature": "48 63 44 24 30 4C 8D 7C 06 02 48 8D",
+   "expected_rva": 64909302,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Opcode 156 (J): target = operand start + s32; 23 jump opcodes share this rule (s8 or s32)",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.op_leave",
+   "kind": "code",
+   "signature": "48 8B 45 48 48 8B 48 10 E9",
+   "expected_rva": 64903984,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Opcode 144 (LEAVE): pops the 0x38-byte frame and resumes at the saved pc; 145/146 are variants (146 copies a u8 count of return slots)",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.op_native",
+   "kind": "code",
+   "signature": "44 0F B6 74 24 34 0F B6 5C 24 35 44",
+   "expected_rva": 64910353,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.op_push_data",
+   "kind": "code",
+   "signature": "48 8B 4C 24 50 8B 44 24 30 48 8D 15",
+   "expected_rva": 64911015,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Opcode 52: pushes [prog+0xf0] + u32 operand (data-block reference); length 6",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.op_string",
+   "kind": "code",
+   "signature": "48 8B 44 24 50 49 8B 4D 00 44 8B 41",
+   "expected_rva": 64916607,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Opcode 380: string-table op: {u32 offset, u32 length} = [prog+0x98][index], text at [prog+0xf0]+offset, passed to 0x14132b830; length 2",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.op_switch",
+   "kind": "code",
+   "signature": "49 8B 45 00 48 8D 48 F8 49 89 4D 00 B9 08",
+   "expected_rva": 64903383,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Opcode 158 (SWITCH): pops index; if < u32 count, s32 delta from [prog+0xf0 + u32 table offset + 4*index], else falls through (length 10)",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.opcode_scramble",
+   "kind": "instruction",
+   "signature": "69 C7 15 33 00 00 48 89 8C 24 90 00",
+   "expected_rva": 64890369,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "First dispatch: index = (u16 opcode word * 0x3315) & 0xffff, valid while < 530",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.opcode_table",
+   "kind": "data",
+   "signature": "4C 8D 25 ? ? ? ? 48 8B 00 48 89",
+   "expected_rva": 106248448,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "script.vm.operand_xor_key",
+   "kind": "data",
+   "signature": "C5 F9 EF 05 ? ? ? ? C4 E2 79 30 C0 C5 F9 D5 C6 C4 E2 79 00 05 ? ? ? ? C5 F9 D6 40",
+   "expected_rva": 102207200,
+   "offset": 0,
+   "rip": {
+    "disp_at": 4,
+    "insn_len": 8
+   },
+   "confidence": "high",
+   "provenance": "static analysis, findings/phase2/13_script_vm.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.animscriptdata.lookup_script01",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 55 53 48 83 EC 28 48 8B 0D ? ? ? ? B8",
+   "expected_rva": 16578224,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Looks up name hash 0xb713fce6 (script.rpf/0/1) in the AnimScriptDataStore map 0x147bdd668; second site 0x145ae89c0",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.animscriptdata.store",
+   "kind": "data",
+   "signature": "48 8D 0D ? ? ? ? 48 8D 15 ? ? ? ? 41 B8 60",
+   "expected_rva": 129881576,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "Streaming module named \"AnimScriptDataStore\" (0x145cefec0 init); its hash map at +0x80 (0x147bdd668) is queried for 0xb713fce6, the TOC name of script.rpf/0/1",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.engine.create",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 53 48 83 EC 20 48 83 3D",
+   "expected_rva": 30864368,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.engine.get",
+   "kind": "function",
+   "signature": "48 8B 05 ? ? ? ? C3 CC CC CC CC CC CC CC CC 41 81",
+   "expected_rva": 81391008,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.engine.get_info",
+   "kind": "function",
+   "signature": "56 81 E2 FF FF FF 0F 81 FA FF FF FF",
+   "expected_rva": 82113776,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.engine.instance",
+   "kind": "data",
+   "signature": "48 8B 05 ? ? ? ? C3 CC CC CC CC CC CC CC CC 41 81",
+   "expected_rva": 124039744,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.engine.request_object",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 38 0F B7 9C",
+   "expected_rva": 1272192,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.filetype.ext_lookup",
+   "kind": "function",
+   "signature": "48 83 EC 28 31 C0 81 F9 FF 00 00 00",
+   "expected_rva": 82558000,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.filetype.ext_lookup_game",
+   "kind": "function",
+   "signature": "83 C1 C0 83 F9 33 77 1B 48 63 C2 48",
+   "expected_rva": 82558192,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "game file-type table for ids 0x40..0x73: (typeId, platform row) -> extension string from 0x14618d9e0 (stride 0x1a0 per row); registered callback of 0x144ebbc60. Executed: 0x59 -> zscript/iscript/#script, 0x60 -> #asd",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.filetype.ext_table_hi",
+   "kind": "data",
+   "signature": "48 8D 15 ? ? ? ? 89 C9 48 69 C0 A0",
+   "expected_rva": 102291936,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.filetype.ext_table_lo",
+   "kind": "data",
+   "signature": "48 8D 15 ? ? ? ? 48 63 CE 48 69",
+   "expected_rva": 103796016,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.index.from_module",
+   "kind": "function",
+   "signature": "41 81 E0 FF FF 3F 00 41 81 F8 FF FF 3F 00 74 0E",
+   "expected_rva": 81391024,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.info.clear_flags",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 38 89 D6 48 89 CF 48 8D 4C 24 2C 31 D2 E8 ? ? ? ? E8 ? ? ? ? 8B 17 48 89 C1 E8 ? ? ? ? 48 85 C0 75",
+   "expected_rva": 83256928,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.info.set_flags",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 38 89 D6 48 89 CF 48 8D 4C 24 2C 31 D2 E8 ? ? ? ? E8 ? ? ? ? 8B 17 48 89 C1 E8 ? ? ? ? 48 85 C0 74",
+   "expected_rva": 755520,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.metadata.store",
+   "kind": "data",
+   "signature": "48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B 00 48 8B 88",
+   "expected_rva": 180143288,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "Streaming module named \"MetaDataStore\" (registered at 0x145c0b5a6 with the string 0x1467822fd)",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.module.base_vtable",
+   "kind": "vtable",
+   "signature": "48 8D 05 ? ? ? ? 44 89 C7 48 89 CE 48 89 01 C7 41 08 00 00 00 00 44",
+   "expected_rva": 106495568,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.module.ctor",
+   "kind": "function",
+   "signature": "41 56 56 57 55 53 48 83 EC 20 8B 6C 24 78",
+   "expected_rva": 27041968,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.module_mgr.add_module",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 0F B7 15 ? ? ? ? 48 85 D2 74 16",
+   "expected_rva": 27010096,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.module_mgr.module_from_strindex",
+   "kind": "function",
+   "signature": "48 83 EC 28 E8 ? ? ? ? 48 8B 00 48 83 C4 28 C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 83 EC 28 E8 ? ? ? ? 48 8B",
+   "expected_rva": 81404976,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.module_mgr.modules",
+   "kind": "data",
+   "signature": "48 8B 05 ? ? ? ? 4C 8B 44 D0 F8",
+   "expected_rva": 180146704,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.module_mgr.modules_by_type",
+   "kind": "data",
+   "signature": "48 8D 15 ? ? ? ? 48 89 0C C2 8B",
+   "expected_rva": 124037648,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.object.is_loaded",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 28 8B 31 E8",
+   "expected_rva": 81404768,
+   "offset": 0,
+   "rip": null,
+   "confidence": "low",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.object.remove",
+   "kind": "function",
+   "signature": "E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC 56 48 83 EC 20 89 CE E8 ? ? ? ? 48 89 C1",
+   "expected_rva": 83256800,
+   "offset": 0,
+   "rip": null,
+   "confidence": "low",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.packfile.register_images",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC 28 04 00 00 C5 F8 29 B4 24 10 04 00 00 48 89 D6 48 89 CD E8 ? ? ? ? C6 80 89 69 01 00 00",
+   "expected_rva": 31385280,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Packfile mount batch: Murmur3-hashes each archive path (0x144f66800, module 0xd), opens it (archive-decoder function 0x140fc21c0), registers the archive itself (0x141deeaea), then for every mounted archive loops entry 0..count-1 (device vt+0x290) and calls streaming.register_file with (vt+0x3d0)<<16 | entry (0x141def353 / 0x141def3ce); when the archive has field 0x90456c0fbc4d5746 it also passes that u64 to 0x14155fff0. This is where the ScriptStore map is filled at mount",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.register_file",
+   "kind": "function",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 48 49 89 CE 48 8B 0D ? ? ? ? 89 D6 E8 ? ? ? ? 48 89 C7 48 8B 00 89 F2 48 89 F9 FF 90 C0 02 00 00",
+   "expected_rva": 39379488,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "RegisterFile(out strIndex, fileIndex = packIdx<<16 | entry): device vt+0x2c0 (packfile 0x145305ed0) gives the file type, 0x1455aec90 maps it to the streaming module (table 0x14764aa10); the key is device vt+0x2b0 (0x145305ee0, TOC field 0xb7076b6245d35fb5, u32 joaat of the stem) or vt+0x2b8 (0x145520ac0, field 0x73bcb72dce74f11f, u64) chosen by module vt+0xc8 (ScriptStore 0x140004810 returns 0, so the u32 key); module vt+0x10 FindSlot, and if absent vt+0xe0 AddSlot(out, name32, name64). No string is read",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.register_file_by_path",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 48 89 CE 48 89 D7 48 89 D1 B2 01 E8 ? ? ? ? 48 85 C0 74 64 48 89 C3 48 8B 00 48 89 D9 FF 90 D0 01 00 00",
+   "expected_rva": 39380080,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Path variant of streaming.register_file: GetDevice(path) (0x140968480), device vt+0x2a8(path) entry index, vt+0x3d0 pack index, then tail-jumps to 0x14258e220. Used for loose data files (callers 0x1421bd4d0, 0x141d532e0)",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.request",
+   "kind": "function",
+   "signature": "E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC 56 57 53 48 83 EC 30 44 89 C6 89",
+   "expected_rva": 4499168,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.store.get_slot",
+   "kind": "function",
+   "signature": "81 E2 FF FF 3F 00 41 B8 FF FF FF FF 48 8B 41 60 81 FA FF FF 3F 00 44 0F 45 C2 44 89 C2 45 89 C1 44 0F AF 41 40 C1 EA 03 41 83 E1 07 0F B6 14 10 31 C0 4C 03 41 38 44 0F A3 CA 49 0F 42 C0 C3 CC 56 57",
+   "expected_rva": 242992,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.store.map_insert",
+   "kind": "function",
+   "signature": "44 8B 51 1C 41 89 D1 41 83 FA FF 74 ? 44 89 C8 31 D2 45 89 D2 F7 71 18 48 8B 01 4F 8D 14 52 46 8B 5C 90 08 46 89 0C 90",
+   "expected_rva": 89827104,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Asset-store hash map insert(map, u32 hash, u32 slot): pops node index from the free head map+0x1c, node {hash, slot, next = heads[hash % map+0x18]} in 12-byte nodes at map+0, heads at map+0x10, then heads[bucket] = node, free = old next, ++map+0x20. The only writer of these nodes; called by the AddSlot instantiations 0x142994200 (ScriptStore), 0x1406da2f0, 0x14198d210, 0x1418061d0, 0x1423c6f20",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.store.script",
+   "kind": "data",
+   "signature": "48 8D 0D ? ? ? ? 48 8D 15 ? ? ? ? 41 B8 59",
+   "expected_rva": 165510088,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.store.txd",
+   "kind": "data",
+   "signature": "48 89 05 ? ? ? ? C7 05 ? ? ? ? 00 00 00 00 C7 05 ? ? ? ? 01 00 00 00 E8 ? ? ? ? 31 C0 48 B9 03",
+   "expected_rva": 179580552,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.texture_page_mapper",
+   "kind": "function",
+   "signature": "55 41 57 41 56 41 55 41 54 56 57 53 48 83 EC 68 48 8D 6C 24 60 8B",
+   "expected_rva": 15910000,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "research/03",
+   "unsigned": false
+  },
+  {
+   "name": "tls.alloc_current.read",
+   "kind": "code",
+   "signature": "",
+   "expected_rva": 14912,
+   "chain": {
+    "from_anchor": "mem.alloc.impl",
+    "steps": [
+     {
+      "op": "add",
+      "value": 48
+     },
+     {
+      "op": "expect",
+      "at": 9,
+      "signature": "48 8B 00 48 8B 88 A8 13 00 00 48 85 C9"
+     }
+    ],
+    "from_spec": {
+     "name": "mem.alloc.impl",
+     "signature": "41 56 56 57 53 48 83 EC 28 48 89 D6 8B 05 ? ? ? ? ? ? ? ? ? ? ? ? ? 48",
+     "kind": "function",
+     "offset": 0,
+     "rip": null
+    }
+   },
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "tls.context_index",
+   "kind": "data",
+   "signature": "8B 05 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 04 C1 80 B8 08 00 00 00 00 75 05 E8 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 08 48 8B 81 48 14 00 00 48 85 C0 75 04 C6 46 08",
+   "expected_rva": 115378988,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "confidence": "high",
+   "provenance": "PE TLS directory AddressOfIndex == 0x146e08b2c (REA ev_e6b8e63a\u2026)",
+   "unsigned": false
+  },
+  {
+   "name": "tls.datresource.ctor",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 48 89 11 44 89 49",
+   "expected_rva": 84899360,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "tls.datresource_current.set",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 8B 05 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 04 C2 80 B8 08 00 00 00 00 74 19 ? ? ? ? ? ? ? ? ? 48 8B 00 48 89 88 48 14",
+   "expected_rva": 84899184,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "tls.index",
+   "kind": "data",
+   "signature": "8B 05 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 CF 48 8B 04 C2 80 B8 08 00 00 00 00 75 05 E8 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 00 48 8B 88 A8",
+   "expected_rva": 115378988,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "tls.ptr_12a8.get",
+   "kind": "function",
+   "signature": "48 83 EC 28 8B 05 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 04 C1 80 B8 08 00 00 00 00 74 18 ? ? ? ? ? ? ? ? ? 48 8B 00 48 8B",
+   "expected_rva": 87630944,
+   "offset": 0,
+   "rip": null,
+   "confidence": "low",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "tls.thread_id_cached",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 69137040,
+   "chain": {
+    "from_signature": "56 57 48 83 EC 28 48 8D 0D ? ? ? ? 48 89 D7 E8 ? ? ? ? 83 3D ? ? ? ? 00 BE FE FF FF FF 7E 3E 48 83 3D ? ? ? ? 00 74 34 E8 ? ? ? ? 48 8B 0D ? ? ? ? 48 3B 41 60 75 22 8B 35",
+    "steps": [
+     {
+      "op": "nth_call",
+      "n": 1,
+      "max_len": 64
+     },
+     {
+      "op": "expect",
+      "at": 17,
+      "signature": "80 B8 40 14 00 00 01"
+     },
+     {
+      "op": "expect",
+      "at": 38,
+      "signature": "48 8B 80 38 14 00 00"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "Phase 2 mem-tls static analysis (findings/phase2/10_mem_tls.md)",
+   "unsigned": false
+  },
+  {
+   "name": "vehicle.damage.by_part",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 30 48 8B 01 48 8B 49 08 48 89 44 24 20 48 89 4C 24 28 48 85 C0 74 24",
+   "expected_rva": 24329616,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "vehicle.damage.part_value",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 55 53 48 81 EC 88 02 00 00 C5 F8 29 B4 24 70 02 00 00 4C",
+   "expected_rva": 83346704,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "vehicle.delete.queue",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 48 89 CE 8B 89 9C 00 00 00 E8 ? ? ? ? 48 85 C0 74 12 F0",
+   "expected_rva": 10397664,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "vehicle.seat.driver",
+   "kind": "function",
+   "signature": "0F B6 01 48 83 F8 0F 77 5D 8B 54 81",
+   "expected_rva": 82524144,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "vehicle.seat.ped_at",
+   "kind": "function",
+   "signature": "83 FA 0F 77 5F 89 D0 8B 54 81 44 48",
+   "expected_rva": 81486736,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "vehicle.top_speed_modifier.set",
+   "kind": "function",
+   "signature": "C5 FA 10 81 60 04 00 00 C5 F8 2E C1",
+   "expected_rva": 64301360,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "weapon.ammo.get_by_type",
+   "kind": "function",
+   "signature": "56 57 48 81 EC F8 00 00 00 89 D6 8B",
+   "expected_rva": 13719648,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "weapon.ammo.set_by_type",
+   "kind": "function",
+   "signature": "41 56 56 57 55 53 48 83 EC 40 8B AC 24 90 00 00 00 48 89 D3 44",
+   "expected_rva": 31344928,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.clock",
+   "kind": "data",
+   "signature": "48 8D 3D ? ? ? ? C5 FC 11 06 C7",
+   "expected_rva": 179686848,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.clock.set_date",
+   "kind": "function",
+   "signature": "56 57 55 53 48 83 EC 28 48 89 CE 44 89 C3",
+   "expected_rva": 85642560,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.clock.set_time",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 50 C5 FC 10 05",
+   "expected_rva": 28023584,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.physics.gravity",
+   "kind": "data",
+   "signature": "C5 F8 28 05 ? ? ? ? 48 8D 0D ? ? ? ? 48 8D 54",
+   "expected_rva": 115167888,
+   "offset": 0,
+   "rip": {
+    "disp_at": 4,
+    "insn_len": 8
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.time_scale.effective",
+   "kind": "data",
+   "signature": "C7 05 ? ? ? ? 00 00 80 3F 48 89 CE",
+   "expected_rva": 115301248,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 10
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.time_scale.script",
+   "kind": "data",
+   "signature": "C5 FA 11 05 ? ? ? ? 83 3D ? ? ? ? 00 C5 FA 10 35",
+   "expected_rva": 115181812,
+   "offset": 0,
+   "rip": {
+    "disp_at": 4,
+    "insn_len": 8
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.timecycle.modifier_index",
+   "kind": "data",
+   "signature": "89 05 ? ? ? ? C7 05 ? ? ? ? FF FF FF FF B9",
+   "expected_rva": 179616516,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.timecycle.modifier_strength",
+   "kind": "data",
+   "signature": "C5 FA 10 0D ? ? ? ? C5 F2 5E C0 C5 FA 11 0D",
+   "expected_rva": 179616520,
+   "offset": 0,
+   "rip": {
+    "disp_at": 4,
+    "insn_len": 8
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.timecycle.set_modifier",
+   "kind": "function",
+   "signature": "48 83 EC 28 89 CA 48 8D 0D ? ? ? ? E8 ? ? ? ? 89",
+   "expected_rva": 63059584,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.timecycle.transition_index",
+   "kind": "data",
+   "signature": "C7 05 ? ? ? ? FF FF FF FF B9 03",
+   "expected_rva": 179616524,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 10
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.frozen",
+   "kind": "data",
+   "signature": "44 88 0D ? ? ? ? 8B 05 ? ? ? ? 39 C8 76",
+   "expected_rva": 179593680,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.next_index",
+   "kind": "data",
+   "signature": "89 05 ? ? ? ? 84 DB 74 2E 89 F9",
+   "expected_rva": 179593620,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.overtime_ms",
+   "kind": "data",
+   "signature": "C5 FA 11 05 ? ? ? ? C5 FA 11 05 ? ? ? ? C6",
+   "expected_rva": 179593652,
+   "offset": 0,
+   "rip": {
+    "disp_at": 4,
+    "insn_len": 8
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.overtime_target",
+   "kind": "data",
+   "signature": "89 0D ? ? ? ? C5 FA 11 05 ? ? ? ? C5 FA",
+   "expected_rva": 179593648,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.persist_index",
+   "kind": "data",
+   "signature": "89 3D ? ? ? ? E8 ? ? ? ? 40 80 E6 01 40",
+   "expected_rva": 179593676,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.prev_index",
+   "kind": "data",
+   "signature": "89 3D ? ? ? ? 89 F9 31 D2 48 83",
+   "expected_rva": 179593616,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.set_curr_state",
+   "kind": "function",
+   "signature": "89 0D ? ? ? ? 89 15 ? ? ? ? C5 FA 11 15",
+   "expected_rva": 37162416,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.set_now",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 28 39 0D ? ? ? ? 76 4F",
+   "expected_rva": 37166688,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.set_overtime",
+   "kind": "function",
+   "signature": "83 F9 FF 74 08 39 0D ? ? ? ? 76",
+   "expected_rva": 37162672,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.set_type",
+   "kind": "function",
+   "signature": "56 57 55 53 48 83 EC 28 89 CD B1 01",
+   "expected_rva": 65622256,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.transition",
+   "kind": "data",
+   "signature": "C5 FA 11 15 ? ? ? ? 8B 05 ? ? ? ? C4 E1",
+   "expected_rva": 179593624,
+   "offset": 0,
+   "rip": {
+    "disp_at": 4,
+    "insn_len": 8
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.type_count",
+   "kind": "data",
+   "signature": "3B 05 ? ? ? ? 73 44 C5 FA 10 4C",
+   "expected_rva": 179592832,
+   "offset": 0,
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "world.weather.types",
+   "kind": "data",
+   "signature": "4C 8B 0D ? ? ? ? 45 31 C0 41 39 09 74 0D",
+   "expected_rva": 179592888,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  }
+ ]
+}

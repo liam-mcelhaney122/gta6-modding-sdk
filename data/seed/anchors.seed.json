@@ -1,0 +1,133 @@
+{
+ "_meta": {
+  "game_build": "1.0.2.1",
+  "exe_sha256": "e95020b2fa4a721db3df59fdecf75621730ac559d8835252f6c3b658d5a08993",
+  "purpose": "Seed anchors until re-db/builds/<build>/anchors.yaml exists. 'signature' fields are filled by `gta6mod anchors sign` from the user's own exe and checked by `gta6mod anchors verify`.",
+  "naming": "Names describe the ROLE we observed. Names with a rage:: prefix are inferred by analogy with GTA V/RDR2 and say so in 'confidence'.",
+  "resolve": "kind=function|code: the anchor is the match address (+offset). kind=data|vtable: the match is an instruction with a RIP-relative operand; 'rip' = {disp_at, insn_len} gives the target."
+ },
+ "anchors": [
+  {
+   "name": "mem.allocate",
+   "aka": "rage::sysMemAllocator::Allocate(size, align)?",
+   "kind": "function",
+   "va": "0x144d9c160",
+   "signature": "E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC 41 56 56 57 53 48 83 EC 28 48 8B 01",
+   "confidence": "medium",
+   "provenance": "findings/00 §2.6: called from thousands of sites as new(size, align)"
+  },
+  {
+   "name": "mem.free",
+   "aka": "rage::sysMemAllocator::Free(ptr, size)?",
+   "kind": "function",
+   "va": "0x144d9c130",
+   "signature": "E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC 48 89 C8 48 89 D1 48 89 C2 E9 ? ? ? ? CC CC E9",
+   "confidence": "medium",
+   "provenance": "findings/00 §2.6: paired with mem.allocate in ctors/dtors"
+  },
+  {
+   "name": "mem.allocate_simple",
+   "kind": "function",
+   "va": "0x144f97130",
+   "signature": "BA 10 00 00 00 E9 ? ? ? ? CC CC CC CC CC CC E9",
+   "confidence": "low",
+   "provenance": "findings/00 §2.6: allocation helper taking size only"
+  },
+  {
+   "name": "tls.context_index",
+   "kind": "data",
+   "va": "0x146e08b2c",
+   "ref_va": "0x140fc2273",
+   "rip": {
+    "disp_at": 2,
+    "insn_len": 6
+   },
+   "signature": "8B 05 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 04 C1 80 B8 08 00 00 00 00 75 05 E8 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 08 48 8B 81 48 14 00 00 48 85 C0 75 04 C6 46 08",
+   "confidence": "high",
+   "provenance": "PE TLS directory AddressOfIndex == 0x146e08b2c (REA ev_e6b8e63a…)",
+   "evidence": [
+    "gs:[0x58] loads wildcarded for HLE hosts (findings/live/30)"
+   ]
+  },
+  {
+   "name": "crypto.stream_init",
+   "kind": "function",
+   "va": "0x140613880",
+   "signature": "41 56 56 57 55 53 48 83 EC 40 48 83 79 08 00 44",
+   "confidence": "medium",
+   "provenance": "RPF9 trace hand-off: creates cipher impl by alg id, fetches key by key id"
+  },
+  {
+   "name": "crypto.cipher_factory",
+   "kind": "function",
+   "va": "0x144c11250",
+   "signature": "56 57 48 83 EC 28 48 89 CE 83 FA 16",
+   "confidence": "medium",
+   "provenance": "RPF9 trace hand-off: 23-way jump table over algorithm ids"
+  },
+  {
+   "name": "crypto.key_lookup",
+   "kind": "function",
+   "va": "0x140193f90",
+   "signature": "83 C2 F0 83 FA 05 0F 87",
+   "confidence": "low",
+   "provenance": "RPF9 trace hand-off: (keyId, alg, mode) -> key record"
+  },
+  {
+   "name": "rds5.open",
+   "kind": "function",
+   "va": "0x140f435f0",
+   "signature": "41 57 41 56 41 55 41 54 56 57 53 48 83 EC 40 48 89 CB B9 48",
+   "confidence": "high",
+   "provenance": "findings/00 §2.7: CreateFile NO_BUFFERING, checks 'RDS5', reads N×u64 table"
+  },
+  {
+   "name": "io.sync_read",
+   "kind": "function",
+   "va": "0x140313fc0",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 38 48 83 79 20 00 45",
+   "confidence": "medium",
+   "provenance": "research/03 (VIctory fork, GPL-3.0): address only, verified to land on code in 1.0.2.1"
+  },
+  {
+   "name": "content.chunk_manager",
+   "kind": "function",
+   "va": "0x14293b470",
+   "signature": "56 57 48 83 EC 28 48 89 CF 48 89 D6 4C 8D 4C 24 24 BA 01 00 00 00 48 83 C7 50 49 89 F0 48",
+   "confidence": "medium",
+   "provenance": "research/03"
+  },
+  {
+   "name": "content.enumerate_packages",
+   "kind": "function",
+   "va": "0x142937bf0",
+   "signature": "4C 8B 01 4C 8D 0D ? ? ? ? B9 01",
+   "confidence": "medium",
+   "provenance": "research/03: DLC / content-package enumeration (relevant to mods/ overlay)"
+  },
+  {
+   "name": "streaming.texture_page_mapper",
+   "kind": "function",
+   "va": "0x140f2c470",
+   "signature": "55 41 57 41 56 41 55 41 54 56 57 53 48 83 EC 68 48 8D 6C 24 60 8B",
+   "confidence": "medium",
+   "provenance": "research/03"
+  },
+  {
+   "name": "gfx.pso_stream_builder",
+   "kind": "function",
+   "va": "0x14086f090",
+   "signature": "41 57 41 56 41 54 56 57 53 48 83 EC 48 48 89 D7 4C",
+   "confidence": "medium",
+   "provenance": "research/03"
+  },
+  {
+   "name": "gfx.barrier_builder",
+   "kind": "function",
+   "va": "0x1400095e0",
+   "signature": "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 28 44 8B B1 A0 B1 01 00 48 89 D7 48 89 CE 48 8D 99 80",
+   "confidence": "medium",
+   "provenance": "research/03"
+  }
+ ]
+}

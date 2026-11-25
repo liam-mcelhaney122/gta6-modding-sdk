@@ -1,0 +1,52 @@
+# Build outputs
+build/
+build-cmake/
+_deps/
+**/build/
+**/obj/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# Binaries and debug files
+*.exe
+*.dll
+*.lib
+*.pdb
+*.obj
+*.exp
+*.ilk
+*.so
+*.dylib
+*.a
+
+# Logs, caches, local data
+*.log
+*.err
+*.tmp
+*.sqlite
+*.sqlite-*
+gta6mod_runtime.log*
+address_manifest.json
+
+# Game files never belong here
+*.rpf
+*.ysc
+*.bin
+
+# Agent and editor configuration
+CLAUDE*.md
+CLAUDE*.MD
+**/CLAUDE*.md
+.claude/
+AGENTS.md
+**/AGENTS.md
+.vs/
+.vscode/
+.DS_Store
+Thumbs.db

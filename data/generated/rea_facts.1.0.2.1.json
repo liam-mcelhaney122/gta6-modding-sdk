@@ -1,0 +1,45 @@
+{
+ "generated_by": "tools: REA 6.10.1 target-free PE tools (see evidence_ids)",
+ "evidence_ids": {
+  "load_config": "ev_e6b8e63a70de587455a758144c01ef2ca1374e4df484a2116ecbae3c753d11d4",
+  "imports": "ev_220cd353e80a2404e5f2018e40a565f686b33efa39951b7f829597b8b991f998",
+  "exports": "ev_64b5d61712335d1fff349304615dacfd7b848de6671542b4f76bc242008635ca",
+  "hardening": "ev_7723239fa5bf7ff022d06b3b26e7d26ed5e1f53591b0a9f03c3dc19ee97168cf"
+ },
+ "exe_sha256": "e95020b2fa4a721db3df59fdecf75621730ac559d8835252f6c3b658d5a08993",
+ "tls": {
+  "directory_rva": 108469712,
+  "index_va": "0x146e08b2c",
+  "callbacks": [
+   "0x1455dd4f4",
+   "0x1455e2ebc"
+  ]
+ },
+ "load_config": {
+  "security_cookie": "0x1467e2038",
+  "guard_flags_raw": 0,
+  "guard_cf_check": "0x14678f650"
+ },
+ "imports": {
+  "dll_count": 68,
+  "function_count": 587,
+  "imphash_md5": "eb03ed12c66f4960e523f3c2c37b3970"
+ },
+ "exports": [
+  {
+   "name": "__XMemAllocationHooks__",
+   "address": "0x146844380"
+  }
+ ],
+ "hardening": {
+  "dynamic_base": "enabled",
+  "high_entropy_va": "enabled",
+  "nx_compat": "enabled",
+  "force_integrity": "disabled",
+  "no_seh": "disabled",
+  "guard_cf": "disabled",
+  "cfg_instrumented": "disabled",
+  "authenticode_present": "disabled",
+  "debug_record_present": "enabled"
+ }
+}

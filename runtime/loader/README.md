@@ -1,0 +1,391 @@
+# gta6mod_runtime (in-process runtime, GTA VI 1.0.2.1)
+
+`gta6mod_runtime.dll` implements the `gta6mod.h` host ABI inside the process that runs
+`game_scarlett_master.exe` under ztrx/VIctory. It follows `docs/runtime_design.md`, with the
+deviations listed under "Design changes". **Nothing here has run in-game.** The verified
+results are offline only: the build, the self-test, and readonly runs against the exe *file*
+mapped into memory.
+
+Single-player only. NETWORK natives are always refused. Every other native, and the mods/
+overlay, is refused while the single-player guard is closed (see "Single-player guard").
+
+## Files
+
+```
+gen_manifest_table.py        manifest JSON (+ original exe) -> src/manifest_1_0_2_1.inc
+src/manifest_1_0_2_1.inc     GENERATED: identity pins, anchor RVAs, 6,829 native hash->handler RVAs
+src/build_consts.hpp         every other build-dependent offset, each with its provenance
+src/runtime.cpp              init sequence, Run detour, TLS publish, guard, host API, plugins, exports
+src/identity.*               module discovery, header/export fingerprint, imphash, file SHA-256 (BCrypt)
+src/pattern_scan.*           one-pass multi-pattern scanner (the same semantics as patterns.hpp find+deref)
+src/x64_decode.*             x64 length decoder (refuses anything it does not fully decode)
+src/hook.*                   relocating trampoline builder + inline hook (suspend, check RIPs, patch, roll back)
+src/natives.*                static handler self-id check, SEH-guarded invoker
+src/scheduler.*              fiber-per-script scheduler, script_wait
+src/guard.*                  single-player guard: address classifier, gate, GetExtendedTcpTable worker
+src/game_clock.*             game_time_ms: clock block from the GET_GAME_TIMER handler, validator/mixer
+src/vfs.*                    mods/ overlay: ABI checks, mount-table dump, Relative device + MountAs on the script thread
+tools/disasm_fn.py           read-only capstone listing of exe VAs (the evidence for the two items above)
+src/log.*                    gta6mod_runtime.log next to the DLL (previous run kept as .log.prev)
+src/g6rt_test_api.h          offline test surface (g6rt_get_test_api export)
+tests/loader_selftest.cpp    offline test exe
+gta6mod_runtime.ini          default config (copied to build\ on the first build)
+build.cmd / build.ps1        clang-cl build, x64, C++20, /W4 /WX, static CRT
+```
+
+## Build
+
+```bat
+sdk\runtime\loader\build.cmd test
+```
+```powershell
+.\sdk\runtime\loader\build.ps1 -Test -Dump "<DUMP>"
+```
+
+The build uses `C:\Program Files\LLVM\bin\clang-cl.exe` (or `clang-cl` on PATH), linked with
+lld-link. clang-cl finds the MSVC 14.52 BuildTools and Windows SDK 10.0.28000 on its own, so
+no vcvars is needed. The flags are `/std:c++20 /O2 /W4 /WX /EHsc /MT`. No warning is suppressed.
+The output in `build\` has these imports only: `KERNEL32.dll`, `bcrypt.dll` and `IPHLPAPI.DLL`.
+
+Self-test (round 3, offline): **308 passed** without `G6_DUMP`, **319 passed** with it. The
+non-dump part includes the guard tests: v4/v6 address classes, the trip decision, the gate latch,
+and a live `GetExtendedTcpTable` pass on the test process (must succeed with 0 own rows). The
+dump run checks identity, all 469 anchors, 6,829 handlers, the three clock handlers decoded from the
+file bytes (block RVA `0xabbef40`), and the vfs ABI checks (sizeof(Relative) 0x118, ctor RVA
+`0x165fa50`).
+
+CMake: `-DG6_WITH_RUNTIME_LOADER=ON` adds `gta6mod_runtime` and `g6_loader_selftest`
+(`sdk/CMakeLists.txt`). There is no cmake on this machine, so that target has not been
+configured. The verified path is `build.cmd`. The target lists `game_clock.cpp`, `vfs.cpp` and
+`guard.cpp` and links `bcrypt` and `iphlpapi`, the same as `build.cmd` (not configured here).
+
+After the manifest changes, regenerate the table:
+`python -I sdk/runtime/loader/gen_manifest_table.py --manifest sdk/data/generated/address_manifest.1.0.2.1.json --exe <dump>\game_scarlett_master.exe`
+The script refuses an exe whose SHA-256 is not the manifest's. It also checks its imphash
+re-implementation against pefile and against the manifest.
+
+## Architecture (init thread, started from DllMain; nothing heavy runs under the loader lock)
+
+1. **Find the title image.** The runtime looks for a module that exports
+   `__XMemAllocationHooks__`: loader list first, then allocation bases in memory.
+   `GetModuleHandle(nullptr)` is the host, so it is never used. The runtime waits up to
+   `wait_for_game_ms` for the image to appear.
+2. **Identity** (see the next section). An unknown build gets `G6_E_UNSUPPORTED_BUILD`, and
+   nothing else runs.
+3. **Anchors.**
+   - Every signed anchor in `patterns.hpp` is resolved over the executable sections with one
+     matching pass. The pass uses a 2-byte-key index with the rarest-pair key, and takes
+     about 160 ms for 95 MB.
+   - Anchors with an empty signature but a `chains[]` entry are resolved through the
+     generated `g6::patterns::resolve_anchor` (7 on 1.0.2.1).
+   - Every result is compared with the manifest RVA. A mismatch is a warning, and the pattern
+     or chain wins.
+   - Required anchors (exactly one match, otherwise refuse):
+     - `script.exec.run`;
+     - `script.exec.vtable`, whose slot 17 must equal Run;
+     - `script.native.handler.set_entity_coords`, which must equal the manifest handler RVA
+       and pass the self-id check;
+     - `script.native.lock_fn`.
+   - Those four are re-resolved through `resolve_anchor` and must agree with the scanner.
+     The self-test checks every 25th signed anchor the same way.
+   - `strict_patterns=1` refuses on any non-exact anchor. The default is off, because under
+     the HLE host a few signatures that pin a `gs:[0x58]` load cannot match (see the
+     unverified list).
+4. **Natives (static, read-only).** For each of the 6,829 manifest handlers, the runtime:
+   - walks the prologue with the length decoder to `cmp dword [rcx+0x10],0` and the `js` after it;
+   - follows the `js` and reads the `movabs` id;
+   - requires `id == rotl64(~hash, 32)`.
+
+   This read-only check replaces the call-based probe. Failures are logged and the native
+   stays unusable (`G6_E_UNVERIFIED_NATIVE`).
+5. **TLS publish site.** The bytes at Run+0x125 are classified as one of:
+   - the console-faithful `mov rax, gs:[0x58]`;
+   - a host `call <thunk>; nop4`;
+   - unknown, which disables ticks.
+
+   The tail `mov r14,[rax]; mov r12,[r14+0x1478]; mov [r14+0x1478],rsi` must match exactly.
+6. **mode=readonly stops here.**
+7. **Hook** (`mode=observe|full`): an inline detour on `scrExecContext::Run`.
+   - Near mode: a 5-byte `jmp rel32` to a relay within ±2 GiB, written as one atomic qword.
+     It relocates 6 bytes on 1.0.2.1 (`push r15; push r14; push r12`).
+   - Fallback: a 14-byte absolute jump, which relocates exactly the 14 prologue bytes.
+   - Neither mode reaches the host's `call` at +0x15. Undecodable bytes, loop/jrcxz,
+     internal branches and out-of-reach rip-relative operands are refused.
+   - Patching suspends all other threads, retries while any RIP is inside the patch, saves
+     the original bytes, and checks them again before writing. The hook is published only
+     after every step succeeded. Init failure and `g6rt_runtime_shutdown` share `teardown()`,
+     which restores the bytes.
+   - The runtime DLL is pinned and the trampoline is never freed, because a thread may still
+     be returning through them.
+   - The detour forwards all six Run arguments, calls the original first, then:
+     - every hooked mode: logs each new script thread (id, name hash at `thread+0x2b8`, state at
+       `+0x344`), each distinct name hash the first time it is seen and each new state per name
+       hash; samples the game clock every 50 ms; dumps the mount table once (first Run call);
+     - full: if `[script] bind` selects this thread and `state==1`, it sets the TLS active-context
+       slot to this ctx, evaluates the guard, mounts queued overlays (single-player only), runs
+       the fiber scheduler, and restores the slot. Faults turn the hook into a pass-through.
+8. **Plugins** (`mode=full`): every `plugins\*.dll` next to the runtime that exports
+   `g6_plugin_query`/`g6_plugin_load` with API major 0. Natives are callable only from a
+   script fiber during a tick. Any other thread gets `G6_E_NOT_ON_SCRIPT_THREAD` (no queue).
+   `vfs_add_overlay` is gated, see "mods/ overlay".
+
+## Game clock (`game_time_ms`)
+
+There is no anchor for the timer block in `patterns.hpp`, so the runtime resolves it from the
+manifest handler RVAs of three natives, after their self-id check, by decoding the handler
+bodies with the x64 decoder (`game_clock.cpp`). The handler is walked to its first direct call;
+the callee must be exactly `load; ret`.
+
+| native (hash) | handler | value path [observed, 1.0.2.1] |
+|---|---|---|
+| GET_GAME_TIMER `4F67E8ECA7D3F667` | `0x143e85810` | `call 0x1405f2ef0` = `8B 05` `mov eax,[0x14abbef40]`; `ret`; then `cdqe` |
+| GET_FRAME_COUNT `77DFA958FCF100C1` | `0x143e85700` | `call 0x143eb1ef0` = `mov eax,[0x14abbef44]`; `ret` |
+| GET_FRAME_TIME `5E72022914CE3C38` | `0x143e85740` | `call 0x140738420` = `C5 FA 10 05` `vmovss xmm0,[0x14abbef4c]`; `ret` |
+
+All three must point into one block (+0, +4, +0xc). The block must lie in a writable,
+non-executable section (`.data`, 0xC0000040) and, live, in RW/WC committed pages. A
+rip-relative xref sweep finds exactly two writers: an init at `0x142226130` and an updater at
+`0x1422260b0`..`0x142226125`. The updater adds the step in ms to +0 and a constant to +4 with one
+`vpaddd`, and keeps the previous +0 at +8. So +0 is a u32 millisecond counter that wraps.
+
+At run time the samples go through `clock::Mixer`:
+- The game timer is used only after 30 consecutive plausible samples spanning at least 1 s,
+  5 of which advanced. A plausible sample is a wrap-safe u32 delta below 2^31 and at most
+  4 × the wall delta + 1000 ms.
+- Until then, and after more than 8 anomalies, the output follows the system timer (QPC,
+  capped at 1 s per update).
+- A backward or implausible step adds no time, so the output never goes backwards.
+- With the game timer, `wait(ms)` pauses when the game timer pauses.
+
+`[clock] source=system` disables the game timer.
+
+## mods/ overlay (`vfs_add_overlay`, design §5 hook-free path)
+
+**Off by default** (`[vfs] mode=off` returns `G6_E_NOT_IMPLEMENTED`). With `mode=overlay`,
+`vfs_add_overlay(root, priority)`:
+1. validates `root` as a host directory;
+2. maps it to the game's path namespace with `[vfs] path_map`;
+3. queues it and returns `G6_OK`, which means accepted, not mounted yet.
+
+On a later script tick, and only while the single-player guard is open, the runtime does,
+for each `[vfs] mount_points` entry that already exists in the mount table:
+1. constructs a `fiDeviceRelative` in a 0x200-byte slot inside the runtime DLL (never freed);
+2. calls `Init(dev, game_root, readOnly=1, parent=null)`;
+3. checks `parent->GetAttributes(root) != -1`;
+4. calls `MountAs(dev, mount_point)`;
+5. reads the table back.
+
+Lower priorities are mounted first, so the highest priority is newest and wins.
+
+ABI facts, all [observed] in 1.0.2.1 and re-checked by `vfs::derive` on every start:
+
+| fact | evidence (VA) | runtime check |
+|---|---|---|
+| Relative ctor = base ctor + vtable `0x1462fc810` + `[+8]=0` | `0x14165fa50`, base `0x14165fa80` | bytes at vtable-anchor site − 0xd, call target = `fs.device.base.ctor` |
+| `Init(this, root, bool r8b, parent r9)`: `[+0x114]`=readOnly, `[+8]`=parent or `GetDevice(fullpath, readOnly)`, root copied to `+0x10` (0x100), one trailing `/` stripped | `0x1428cb210` | instruction-exact stores in the body |
+| `MountAs(this, mp) -> bool` = `MountGlobal(mp, this, [+0x114])`, then `[+0x110]=strlen(mp)-1` | `0x141fb2210` | `mov r8b,[rcx+0x114]`, first call = `fs.mount.mount_global`, `[+0x110]` store |
+| `MountGlobal(mp, dev, bool)`: mp must end in `/` or `\`, ≤ 0xfd chars; takes lock `0x1478f5ed0`; appends to the first entry whose prefix matches, else creates one | `0x1412c5670` | references `fs.mount.table` and table−4 (count) |
+| `sizeof(fiDeviceRelative)` = 0x118 | deleting dtor `0x1457f6c00`: `mov edx,0x118` before `operator delete` | read from vtable slot 0 |
+| lookup walks `devices[count-1..0]` calling slot `+0x168` until `!= -1` | `0x1428c8ec0` (`0x1428c8f81..f9e`) | none (behaviour, verify live) |
+| `Unmount(mp)` removes the whole entry and frees the array, not the devices | `0x1428cb450` | none |
+| the game's own sequence: ctor, `GetDevice(path,1)`, `Init(dev,dir,1,parent)`, `MountAs`, …, `Unmount` | dlclist reader `0x141e19633..0x141e196aa` | none |
+
+**Gated, missing fact:** which string the game's file device (Local, under the ztrx HLE) uses
+for a host folder. While `[vfs] path_map` is empty, every request logs
+`vfs_add_overlay refused: missing fact: the game-side name of the host folder ...` and returns
+`G6_E_NOT_IMPLEMENTED`. If the mapping is wrong, step 3 refuses with
+`the game's device reports root '...' as missing`.
+
+While the guard is closed (default: `offline_attested=0`), a configured overlay logs
+`vfs overlay deferred: single-player guard closed (see the guard lines)` and is not mounted.
+
+## Identity check (why it is not `sha256(image)`)
+
+A full-image SHA cannot work on the live image, for three reasons:
+- the OS relocated the image;
+- VIctory maps a *patched copy* (`victory-image-<blake3>.dll`, research/03 §2.1), with the DLL
+  bit set, the entry point zeroed, the checksum cleared, the import directory redirected and
+  the TLS callbacks zeroed;
+- the host rewrites ~53k `gs:[0x58]` loads in `.text`.
+
+The runtime therefore checks fields that none of those steps change:
+
+| check | required | source |
+|---|---|---|
+| Machine, TimeDateStamp `1794606036`, SizeOfImage `0xb06d000`, the 10-section table (name, RVA, VirtualSize, SizeOfRawData) | yes | manifest + exe header |
+| export set = exactly `__XMemAllocationHooks__` @ RVA `0x6844380` | yes | manifest (REA) |
+| pefile-compatible imphash of the **original** import descriptors at RVA `0x6791ab4` (the host only repoints the directory) = `eb03ed12…` | one of these (`identity=normal`) | manifest pin; RVA from the exe header |
+| SHA-256 of the module's backing file, or of `[runtime] exe_path`, = `e95020b2…a08993` | one of these; the file SHA is required with `identity=strict` | manifest |
+
+The header, export and imphash checks pass on the exe file mapped at its RVAs. The
+host-patched fields are logged for information only.
+
+**[assumption]** VIctory does not overwrite the original import descriptors in place. If the
+log says `imphash … MISMATCH`, set `exe_path` to the original exe, and the file SHA-256
+corroborates instead.
+
+## Configuration keys added in round 2 (`gta6mod_runtime.ini`)
+
+| key | values (default first) | effect |
+|---|---|---|
+| `[script] bind` | *(empty)*, `first`, `hash`, `observe` | Empty means `hash` if `host_script_hash` is set, else `first`. `hash` without a hash falls back to `observe`. `observe` never ticks plugin scripts. |
+| `[clock] source` | `auto`, `system` | `auto` uses the game timer once validated. `system` uses QPC only. |
+| `[vfs] mode` | `off`, `overlay` | The overlay also needs `[runtime] mode=full` and an open guard. |
+| `[guard] offline_attested` | `0`, `1` | Operator attestation that the host blocks the game's network. `0` keeps the guard closed. |
+| `[guard] scan_interval_ms` | `5000` (1000..10000) | Interval of the own-process TCP check. A clean scan older than 20 s closes the guard. |
+| `[vfs] path_map` | *(empty)* | `<host prefix>\|<game prefix>`. **Unknown until verified live**: empty means refuse. |
+| `[vfs] mount_points` | `platform:/,common:/` | Only existing entries are overlaid, at most 4. |
+| `[vfs] root` | *(empty)* | Host folder the runtime queues itself at start. |
+
+Expected refusal lines, each naming its cause:
+- `vfs_add_overlay: [vfs] mode=off (the default); nothing is mounted`
+- `vfs_add_overlay refused: missing fact: the game-side name of the host folder '…'. [vfs] path_map … is empty`
+- `vfs_add_overlay refused: engine ABI not established on this build: <which check>`
+- `vfs overlay deferred: single-player guard closed (see the guard lines)`
+- `refused native <NAME>: [guard] offline_attested is not 1` (or `… a connection to a remote host was seen …`, `no successful connection scan yet`, `last clean connection scan is stale`)
+- `guard: CLOSED for this session: N connection(s) to a non-loopback, non-link-local remote, first <addr:port> <STATE> (<class>) …`
+- `guard: GetExtendedTcpTable failed (error N); guard closed until a scan succeeds`
+- `vfs overlay on 'platform:/' refused: the game's device reports root '…' as missing (GetAttributes == -1): path_map is wrong for this host`
+- `game clock: not resolved (<reason>); game_time_ms uses the system timer`
+- `game clock: … ; game_time_ms falls back to the system timer for this session`
+
+## First live run (read-only)
+
+1. Run `build.cmd`. Copy `build\gta6mod_runtime.dll` and `build\gta6mod_runtime.ini` to one
+   folder that the host process can write to. Leave `mode=readonly`.
+2. Load the DLL into the ztrx host process through whatever DLL-loading mechanism ztrx
+   offers. The runtime does not inject itself, and this README does not know ztrx's
+   mechanism. Load it after the title image is mapped, or within `wait_for_game_ms` (120 s)
+   of it.
+3. Read `gta6mod_runtime.log`. The lines you should see:
+   ```
+   game module at 00007FF… size 0xb06d000 (loader list) path '…victory-image-….dll'
+   identity: headers match, exports match
+   identity: host-patched fields (informational): Characteristics 0x2022 …   (DLL bit, entry 0: expected)
+   identity: imphash of original import descriptors (RVA 0x6791ab4): match (eb03ed12…)
+   identity: SHA-256 of mapped module file: … (differs) - expected under VIctory, which maps a patched copy
+   identity: build 1.0.2.1 accepted (headers + imphash)
+   patterns: 442 anchors in … ms: 431 exact by signature, 8 via xref chain (0 chain failures), 0 missing, …   (file-image counts; live may differ)
+   required anchors ok: script.exec.run at … (vtable slot 17 agrees), …, resolve_anchor agrees on all four
+   natives: 6829 of 6829 handlers verified statically …
+   TLS site Run+0x125: E8 xx xx xx xx 0F 1F 40 00          (or 90 90 90 90 after E8: note what you see)
+   TLS access: host thunk 00007FF… …
+   guard: offline_attested=0; initial connection scan: ok, N own TCP row(s), 0 to a remote
+   guard: [guard] offline_attested is not 1: every plugin native call and overlay mount is refused (G6_E_ONLINE_SESSION)
+   guard: first connection scan clean (N own TCP row(s), none to a remote); interval 5000 ms
+   mode=readonly: Run hook NOT installed, plugins NOT loaded.
+   init finished: 0 (ok)
+   ```
+   These are the counts from the simulated-HLE offline run. Live counts may differ; any
+   `NOT FOUND`/`AMBIGUOUS` line names the anchor.
+   Round-2 lines in the same run:
+   ```
+   game clock: GET_GAME_TIMER rva 0x3e85810 -> core 0x5f2ef0; GET_FRAME_COUNT rva 0x3e85700 -> core 0x3eb1ef0;
+               GET_FRAME_TIME rva 0x3e85740 -> core 0x738420; block rva 0xabbef40 in .data (writable, not executable); current value … ms
+   vfs: engine ABI checks passed (Relative ctor …, Init …, MountAs …, MountGlobal …, sizeof(Relative) 0x118); [vfs] mode=off
+   mount table (init): N entries, capacity …        (N may be 0 this early)
+   script binding: bind=first host_script_hash=0x00000000
+   ```
+4. Next run: set `mode=observe` (and `[script] bind=observe` to be explicit). Get the game to
+   a state where scripts run; the menu has none (finding 30). Look for these lines:
+   - `Run hook installed`;
+   - `script thread first seen: id=… name_hash=0x… state=…`;
+   - `script name hash first seen: 0x… state=…` and `script name hash 0x…: new state …`;
+   - one `mount table (first Run call): …` block, with one `mount[i] 'prefix' read_only=… devices=…:`
+     line per entry, naming each device's kind and the root of any Relative device;
+   - `game clock: validated (30 consecutive plausible samples, …)`;
+   - the 10-second `Run calls so far: …; game_time_ms=… (game timer; game timer reads …)` summary.
+
+   That answers design §9 question 1 and gives the hash for `bind=hash`.
+5. Only then use `mode=full`, with a test plugin in `plugins\`. With `offline_attested=0`
+   its native calls return `G6_E_ONLINE_SESSION`. That is the intended default. Set
+   `offline_attested=1` only after checking the host's firewall rule (see "Single-player
+   guard"); the first tick after a clean scan logs `guard -> OPEN (…)`.
+
+## Design changes from `docs/runtime_design.md`
+
+- **§3 identity probe: not done by calling.** All 6,813 wrappers, after writing their id for
+  `argCount<0`, *jump back into the normal body*. For example, SET_ENTITY_COORDS
+  `0x143c137f2 jmp 0x143c1376f`, and GET_ENTITY_ALPHA writes `[ret]` at `0x143c09819`, so
+  `ret=nullptr` would fault. A probe call with argCount=-1 therefore executes the native. The
+  runtime reads the same id statically from the code instead.
+- **§3 "5-byte prologue `83 79 10 00 78`":** the cmp is at +4 to +41 after push/sub/vmovaps,
+  and a `mov` usually sits between it and the `js` (rel8 in 6,573 handlers, rel32 in 240). The
+  check is therefore decoded, not a fixed 5-byte compare.
+- **§4 TLS:** the work runs after the original Run returns, so the TLS slot is published by
+  the runtime itself.
+- **§6 step 1:** replaced by the identity check above.
+- **§6 step 2:** exact-one is required for the four runtime anchors, not for all.
+- **§5 timing:** design §2 says "install the overlay at load". The engine path code
+  (`FullPath`, the TLS asset-manager slot at TLS+0x7f0/+0x7f8, and the game allocator inside
+  MountGlobal) is per-thread, so the mount calls run on the game's script thread inside the
+  tick instead, after the game's own mounts. They also wait for the single-player guard.
+- **§5 mount points:** a separate Relative device per mount point, because
+  `[+0x110]` = strlen(mount point) − 1 is per device. Only existing entries are overlaid.
+
+## Single-player guard
+
+Build 1.0.2.1 has **no** session-state natives. The 16 NETWORK handlers that exist are
+constant single-player stubs (finding 26), so no native can tell online from offline. The
+guard (design §7) therefore has two inputs, and **both must pass** before any plugin native call
+runs or the overlay is mounted:
+
+1. **Attestation:** `[guard] offline_attested=1`. You state that the host blocks the game's
+   network access (the ztrx firewall rule). Default `0` keeps the guard closed.
+2. **Own-process TCP check** (`guard.cpp`). It is read-only and touches no game code.
+   - A worker thread calls `GetExtendedTcpTable` (`TCP_TABLE_OWNER_PID_ALL`, IPv4 and IPv6) every
+     `scan_interval_ms` and keeps only rows owned by this process. That is the host process
+     that maps the game.
+   - Any row in `ESTABLISHED` or `SYN_SENT` whose remote is not loopback (`127/8`, `::1`) or
+     link-local (`169.254/16`, `fe80::/10`) **trips the guard for the rest of the session**.
+     LAN and other private remotes trip it too. IPv4-mapped IPv6 addresses are classified as IPv4.
+   - A failed or stale scan (no clean scan for 20 s) closes the guard until the next clean scan.
+
+A closed guard keeps round-1 behaviour: every plugin native returns `G6_E_ONLINE_SESSION`.
+NETWORK-namespace natives are refused regardless. There is no online mode, and no `allow_online`
+key or field exists in the runtime or `gta6mod.h`. The old `[guard] session_natives` key and
+`kSessionNatives` are removed.
+
+**Verify live:**
+- First check, with `offline_attested=0`, that the log shows `initial connection scan: ok` and
+  `0 to a remote`.
+- Check the host's firewall rule: the game's outbound traffic must be blocked. Note the guard
+  only sees this process's TCP sockets. A blocked connect may show briefly as `SYN_SENT` and
+  then trip the guard, which is intended.
+- Only then set `offline_attested=1`.
+- Watch for `guard: CLOSED for this session` during play. If it appears, the network is not
+  blocked: do not reopen the guard by editing the ini mid-session.
+- Unknown: whether the ztrx host itself opens TCP sockets in this process (for example a
+  debugger or telemetry connection). If one shows up as a remote, the guard trips. Report the
+  logged remote rather than whitelisting it.
+
+## Unverified / unknown (live)
+
+- Whether the host's TLS thunk returns `&TlsArray[index]` in `rax` as research/03 describes.
+  The runtime calls it as `void** (*)()` on the script thread.
+- Whether the import descriptors survive the host's patching (imphash path).
+- That Run is the per-slice entry for every script thread, and how often it runs per frame.
+  The binding policy is `[script] bind=first|hash|observe`.
+- Fibers on the game thread: FLS is per fiber, and the game CRT's per-thread data on a new
+  fiber has not been observed. The thread is converted to a fiber and back each tick.
+- Natives: running natives on our tick has not been tried. Faults are caught and the native
+  is disabled, but the native mutex may stay held.
+- Game clock: that block +0 advances in game ms while playing, stops on pause, and stays
+  monotonic across loads. The mixer tolerates resets, but whether a load resets it is
+  unobserved. Compare `game timer reads` in two 10-second summaries with the wall time.
+- Signatures that pin a `gs:[0x58]` load stop matching under the host. In the simulated
+  rewrite, that is an archive-decoder helper (not required by the runtime).
+- mods/ overlay. Verify these live, in this order:
+  1. In an observe-mode dump, find how the game names host files. Look for Relative roots
+     in the `mount table` lines, or check which drive/path ztrx maps the install folder to
+     (its config or log, or Process Monitor on `victory.exe` showing the CreateFile paths
+     while the game reads `common:/data/...`).
+  2. Set `path_map=<host prefix>|<game prefix>`.
+  3. Check that `platform:/` and `common:/` exist in the dump with ≥ 1 device.
+  4. With the guard open (`offline_attested=1`, clean scans), run `mode=full` with `[vfs] mode=overlay` and
+     `root=<folder with one known loose file>`. Expect `vfs overlay mounted on 'platform:/':
+     root '…' (parent …, attributes 0x…), devices 9 -> 10, newest = ours`.
+  5. Confirm the game actually reads the shadow file. Open question: does a later
+     `Unmount("platform:/")` (DLC reload, session change) drop the overlay? Does streaming
+     bypass the layered lookup? And are RPF9 archive entries shadowed
+     at all? They are expected **not** to be: only loose paths go through the lookup.

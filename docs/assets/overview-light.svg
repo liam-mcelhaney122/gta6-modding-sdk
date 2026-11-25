@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600" role="img" aria-labelledby="title desc">
+<title id="title">gta6-modding-sdk overview</title>
+<desc id="desc">A private research pipeline produces the generated data in this repository; the data feeds the C, C++, Python and Luau bindings and the runtime DLL. Tiles list counts for build 1.0.2.1.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker></defs>
+<rect x="0" y="0" width="1200" height="600" rx="16" fill="#fcfcfb"/>
+<text x="40" y="52" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#0b0b0b" text-anchor="start">gta6-modding-sdk</text>
+<text x="40" y="78" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="400" fill="#52514e" text-anchor="start">Modding SDK for GTA VI 1.0.2.1  ·  single-player  ·  offline  ·  verified against your own exe, not yet run in-game</text>
+<rect x="40" y="104" width="250" height="120" rx="10" fill="#efeeea" stroke="#d9d8d3" stroke-width="1.5" stroke-dasharray="6 5"/>
+<circle cx="64" cy="130" r="11" fill="#6f6d68"/>
+<text x="64" y="134.5" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#fcfcfb" text-anchor="middle">1</text>
+<text x="84" y="135" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="650" fill="#0b0b0b" text-anchor="start">Private research</text>
+<text x="56" y="166" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#6f6d68" text-anchor="start">not published: static analysis</text>
+<text x="56" y="185" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#6f6d68" text-anchor="start">of your own exe, evidence</text>
+<text x="56" y="204" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#6f6d68" text-anchor="start">database, generators</text>
+<line x1="295" y1="164.0" x2="325" y2="164.0" stroke="#2a78d6" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="330" y="104" width="250" height="120" rx="10" fill="#ffffff" stroke="#2a78d6" stroke-width="2"/>
+<circle cx="354" cy="130" r="11" fill="#2a78d6"/>
+<text x="354" y="134.5" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<text x="374" y="135" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="650" fill="#0b0b0b" text-anchor="start">Generated data</text>
+<text x="346" y="166" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#52514e" text-anchor="start">patterns, address manifest</text>
+<text x="346" y="185" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#52514e" text-anchor="start">types, natives index</text>
+<text x="346" y="204" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#52514e" text-anchor="start">PSO schema, API docs</text>
+<line x1="585" y1="164.0" x2="615" y2="164.0" stroke="#2a78d6" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="620" y="104" width="250" height="120" rx="10" fill="#ffffff" stroke="#2a78d6" stroke-width="2"/>
+<circle cx="644" cy="130" r="11" fill="#2a78d6"/>
+<text x="644" y="134.5" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+<text x="664" y="135" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="650" fill="#0b0b0b" text-anchor="start">Bindings</text>
+<text x="636" y="166" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#52514e" text-anchor="start">C ABI (gta6mod.h), C++</text>
+<text x="636" y="185" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#52514e" text-anchor="start">Python package gta6mod</text>
+<text x="636" y="204" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#52514e" text-anchor="start">Luau host and plugin</text>
+<line x1="875" y1="164.0" x2="905" y2="164.0" stroke="#2a78d6" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="910" y="104" width="250" height="120" rx="10" fill="#ffffff" stroke="#2a78d6" stroke-width="2"/>
+<circle cx="934" cy="130" r="11" fill="#2a78d6"/>
+<text x="934" y="134.5" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+<text x="954" y="135" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="650" fill="#0b0b0b" text-anchor="start">Runtime DLL</text>
+<text x="926" y="166" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#52514e" text-anchor="start">in-process loader + guard</text>
+<text x="926" y="185" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#52514e" text-anchor="start">built, self-tested offline</text>
+<text x="926" y="204" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#52514e" text-anchor="start">not yet run in-game</text>
+<path d="M330 238 v8 H1160 v-8" fill="none" stroke="#2a78d6" stroke-width="1.5"/>
+<text x="745.0" y="264" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#2a78d6" text-anchor="middle">this repository</text>
+<rect x="40" y="282" width="1120" height="104" rx="10" fill="#f4f3f0" stroke="#d9d8d3" stroke-width="1.5"/>
+<text x="60" y="310" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="650" fill="#0b0b0b" text-anchor="start">What you get</text>
+<text x="166" y="310" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#6f6d68" text-anchor="start">no game files, keys or assets; bring your own legally obtained dump</text>
+<rect x="60" y="322" width="254" height="50" rx="8" fill="#ffffff" stroke="#d9d8d3" stroke-width="1"/>
+<text x="74" y="343" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="start">C ABI + C++ headers</text>
+<text x="74" y="362" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#52514e" text-anchor="start">include/gta6mod</text>
+<rect x="328" y="322" width="254" height="50" rx="8" fill="#ffffff" stroke="#d9d8d3" stroke-width="1"/>
+<text x="342" y="343" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="start">Python package</text>
+<text x="342" y="362" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#52514e" text-anchor="start">python/gta6mod, mock backend</text>
+<rect x="596" y="322" width="254" height="50" rx="8" fill="#ffffff" stroke="#d9d8d3" stroke-width="1"/>
+<text x="610" y="343" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="start">Luau host</text>
+<text x="610" y="362" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#52514e" text-anchor="start">luau/, offline runner</text>
+<rect x="864" y="322" width="254" height="50" rx="8" fill="#ffffff" stroke="#d9d8d3" stroke-width="1"/>
+<text x="878" y="343" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="start">API reference</text>
+<text x="878" y="362" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#52514e" text-anchor="start">docs/api, per-namespace pages</text>
+<rect x="40" y="412" width="175" height="132" rx="10" fill="#ffffff" stroke="#d9d8d3" stroke-width="1.5"/>
+<rect x="40" y="430" width="4" height="40" rx="2" fill="#2a78d6"/>
+<text x="58" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#0b0b0b" text-anchor="start">6,829</text>
+<text x="58" y="494" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="start">native handlers</text>
+<text x="58" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#52514e" text-anchor="start">1,886 named so far</text>
+<rect x="229" y="412" width="175" height="132" rx="10" fill="#ffffff" stroke="#d9d8d3" stroke-width="1.5"/>
+<rect x="229" y="430" width="4" height="40" rx="2" fill="#2a78d6"/>
+<text x="247" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#0b0b0b" text-anchor="start">383</text>
+<text x="247" y="494" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="start">engine anchors</text>
+<text x="247" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#52514e" text-anchor="start">373 signed, 10 xref chains</text>
+<rect x="418" y="412" width="175" height="132" rx="10" fill="#ffffff" stroke="#d9d8d3" stroke-width="1.5"/>
+<rect x="418" y="430" width="4" height="40" rx="2" fill="#2a78d6"/>
+<text x="436" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#0b0b0b" text-anchor="start">898</text>
+<text x="436" y="494" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="start">struct fields</text>
+<text x="436" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#52514e" text-anchor="start">across 89 engine types</text>
+<rect x="607" y="412" width="175" height="132" rx="10" fill="#ffffff" stroke="#d9d8d3" stroke-width="1.5"/>
+<rect x="607" y="430" width="4" height="40" rx="2" fill="#2a78d6"/>
+<text x="625" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#0b0b0b" text-anchor="start">19,178</text>
+<text x="625" y="494" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="start">PSO structures</text>
+<text x="625" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#52514e" text-anchor="start">2,572 enums, JSON Schema</text>
+<rect x="796" y="412" width="175" height="132" rx="10" fill="#ffffff" stroke="#d9d8d3" stroke-width="1.5"/>
+<rect x="796" y="430" width="4" height="40" rx="2" fill="#2a78d6"/>
+<text x="814" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#0b0b0b" text-anchor="start">319/319</text>
+<text x="814" y="494" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="start">runtime self-tests</text>
+<text x="814" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#52514e" text-anchor="start">passed offline, against the exe</text>
+<rect x="985" y="412" width="175" height="132" rx="10" fill="#ffffff" stroke="#d9d8d3" stroke-width="1.5"/>
+<rect x="985" y="430" width="4" height="40" rx="2" fill="#2a78d6"/>
+<text x="1003" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#0b0b0b" text-anchor="start">56</text>
+<text x="1003" y="494" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="start">namespace pages</text>
+<text x="1003" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#52514e" text-anchor="start">native API, in docs/api</text>
+<text x="40" y="578" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#6f6d68" text-anchor="start">Counts are computed from the generated data in this repository at export time. The runtime has been built and self-tested offline only.</text>
+</svg>
