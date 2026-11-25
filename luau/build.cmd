@@ -84,9 +84,25 @@ if "%TEST%"=="0" exit /b 0
 echo --- example: spawn_car (5000 ms, control 51 pressed at 1008 ms)
 "%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%examples\spawn_car\init.luau" 5000 --press 51@1008
 if errorlevel 1 (echo FAILED: spawn_car example & exit /b 1)
+echo --- script-layer examples (sdk\docs\script_layer.md)
+"%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%examples\god_mode\init.luau" 4000 --damage 50@496 --press 47@1008 --damage 50@2000 --press 47@3008 --damage 30@3504 --expect-clean --expect-log "god mode ON" --expect-log "god mode OFF"
+if errorlevel 1 (echo FAILED: god_mode example & exit /b 1)
+"%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%examples\never_wanted\init.luau" 4000 --press 74@496 --wanted 3@1504 --press 74@3008 --expect-clean --expect-log "never wanted ON (max wanted level was 5)" --expect-log "cleared wanted level 3" --expect-log "never wanted OFF (max wanted level restored to 5)"
+if errorlevel 1 (echo FAILED: never_wanted example & exit /b 1)
+"%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%examples\waypoint_teleport\init.luau" 3000 --press 73@496 --waypoint 250,-400,0@1008 --press 73@1504 --expect-clean --expect-log "no waypoint set" --expect-log "teleported to 250.0 -400.0 13.0"
+if errorlevel 1 (echo FAILED: waypoint_teleport example & exit /b 1)
+"%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%examples\vehicle_spawner\init.luau" 3000 --press 52@496 --damage 150@2000 --expect-clean --expect-log "spawned adder and seated the player" --expect-log "repaired vehicle (850 -> 1000)"
+if errorlevel 1 (echo FAILED: vehicle_spawner example & exit /b 1)
+"%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%examples\time_control\init.luau" 2000 --press 20@496 --press 20@1008 --press 29@1504 --expect-clean --expect-log "time scale 0.50" --expect-log "time scale 0.20" --expect-log "clock 13:00"
+if errorlevel 1 (echo FAILED: time_control example & exit /b 1)
 echo --- tests
 for %%T in ("%HERE%tests\*.luau") do (
   "%OUT%\g6_luau_runner.exe" "%HERE%lib" "%%~fT" 3000 --press 51@480 --expect-clean --expect-log "PASS %%~nT"
+  if errorlevel 1 (echo FAILED: %%~nxT & exit /b 1)
+)
+echo --- tests that log errors on purpose (no --expect-clean)
+for %%T in ("%HERE%tests\expect_errors\*.luau") do (
+  "%OUT%\g6_luau_runner.exe" "%HERE%lib" "%%~fT" 500 --expect-log "PASS %%~nT"
   if errorlevel 1 (echo FAILED: %%~nxT & exit /b 1)
 )
 echo --- plugin: g6_luau.dll through g6_plugin_query/load/unload

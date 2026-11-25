@@ -57,6 +57,11 @@ typedef struct g6rt_test_api {
     int (*guard_gate_run)(const int* ops, const uint64_t* t, size_t n, int* out);
     /* one GetExtendedTcpTable pass (v4 + v6) filtered to the calling process; returns 1 if both tables were read */
     int (*guard_scan_self)(uint32_t* own_rows, uint32_t* tripping, unsigned long* error);
+    /* late-load patch safety (pure): 1 if rip is in [lo, lo+n); bytes no thread may execute while patching */
+    int (*hook_rip_in_range)(uint64_t rip, uint64_t lo, size_t n);
+    size_t (*hook_guarded_len)(size_t patch_len, size_t stolen);
+    /* last enable/disable freeze: other threads suspended, attempts, last blocking thread and its RIP */
+    int (*hook_freeze_info)(void* h, uint32_t* threads, uint32_t* attempts, uint32_t* blocking_tid, uint64_t* blocking_rip);
 } g6rt_test_api;
 
 typedef const g6rt_test_api* (G6_CALL *g6rt_get_test_api_fn)(void);

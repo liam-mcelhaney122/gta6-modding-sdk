@@ -4,11 +4,24 @@
 
 [API index](index.md)
 
-380 anchors for build 1.0.2.1: 370 resolve by a unique byte signature, 10 by an xref chain from a unique start, 0 are unsigned by design. RVAs are offsets from the image base 0x140000000 of the reference exe; resolve them in the live image with `g6::patterns::resolve_anchor` (`patterns.hpp`) or `python -m gta6mod anchors verify`, never by trusting the RVA.
+399 anchors for build 1.0.2.1: 384 resolve by a unique byte signature, 15 by an xref chain from a unique start, 0 are unsigned by design. RVAs are offsets from the image base 0x140000000 of the reference exe; resolve them in the live image with `g6::patterns::resolve_anchor` (`patterns.hpp`) or `python -m gta6mod anchors verify`, never by trusting the RVA.
 
 Data and vtable anchors match the instruction that references the target and then apply the RIP-relative recipe. Chain steps: `call_target`, `rip_target`, `add`, `deref`, `nth_call`, `expect` (semantics in `patterns.hpp`).
 
-Groups: [content](#content) (2) · [crt](#crt) (9) · [ecs](#ecs) (25) · [entity](#entity) (53) · [fs](#fs) (42) · [gfx](#gfx) (2) · [gpu](#gpu) (3) · [hash](#hash) (5) · [health](#health) (1) · [io](#io) (1) · [mem](#mem) (15) · [metadata](#metadata) (3) · [package](#package) (1) · [parser](#parser) (22) · [ped](#ped) (11) · [perschar](#perschar) (1) · [physics](#physics) (1) · [player](#player) (10) · [pool](#pool) (10) · [rds5](#rds5) (1) · [resource](#resource) (13) · [script](#script) (79) · [streaming](#streaming) (32) · [tls](#tls) (7) · [vehicle](#vehicle) (6) · [weapon](#weapon) (2) · [world](#world) (23)
+Groups: [camera](#camera) (8) · [content](#content) (2) · [crt](#crt) (9) · [ecs](#ecs) (25) · [entity](#entity) (53) · [fs](#fs) (42) · [gfx](#gfx) (9) · [gpu](#gpu) (3) · [hash](#hash) (5) · [health](#health) (1) · [io](#io) (1) · [mem](#mem) (15) · [metadata](#metadata) (3) · [package](#package) (1) · [parser](#parser) (22) · [ped](#ped) (11) · [perschar](#perschar) (1) · [physics](#physics) (1) · [player](#player) (10) · [pool](#pool) (10) · [rds5](#rds5) (1) · [resource](#resource) (13) · [script](#script) (79) · [streaming](#streaming) (36) · [tls](#tls) (7) · [vehicle](#vehicle) (6) · [weapon](#weapon) (2) · [world](#world) (23)
+
+## camera
+
+| Anchor | Kind | RVA | Resolution | Confidence | Provenance |
+|---|---|---|---|---|---|
+| `camera.final.frame` | data | `0xA02CF40` | **signature**: `C5 FC 10 1D ? ? ? ? C5 E9 69 CA`; RIP disp at +4, insn length 8 | medium | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `camera.final.get_front` | function | `0x51FCCF0` | **chain**: from anchor `gfx.viewport.project_normalized`; steps: call_target, expect | medium | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `camera.final.get_matrix` | function | `0x520BD90` | **signature**: `C5 F9 6F 15 ? ? ? ? C5 FC 10 05` | high | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `camera.final.get_position` | function | `0x4F2B0E0` | **signature**: `C5 F9 6F 05 ? ? ? ? C5 F9 69 C8 C5 F1 72 E1 10 C5 F8 5B C9 C5 F1 C6 C9 03 C4 E2 79 98 0D ? ? ? ? C5 F8 29 09` | high | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `camera.gameplay.director` | data | `0x99FECE8` | **chain**: from signature `E8 ? ? ? ? C5 F8 28 03 48 8B 46 08 48 89 F9 C5 F8 11 00 48 83 C4 30 5B 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 DF DF AC A6 91 A6 67 F4`; steps: call_target, expect, call_target, expect, rip_target | medium | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `camera.gameplay.get_director` | function | `0x5073C10` | **chain**: from signature `E8 ? ? ? ? C5 F8 28 03 48 8B 46 08 48 89 F9 C5 F8 11 00 48 83 C4 30 5B 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 DF DF AC A6 91 A6 67 F4`; steps: call_target, expect, call_target, expect | high | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `camera.matrix_to_euler` | function | `0x1B4F1D0` | **signature**: `48 81 EC 98 00 00 00 C5 78 29 B4 24 80 00 00 00 C5 78 29 6C 24 70 C5 78 29 64 24 60 C5 78 29 5C 24 50 C5 78 29 54 24 40 C5 78 29 4C 24 30 C5 78 29 44 24 20 C5 F8 29 7C 24 10 C5 F8 29 34 24 41 83` | medium | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `camera.world_to_screen` | function | `0x29E3070` | **chain**: from signature `E8 ? ? ? ? 48 8B 4E 08 0F B6 C0 48 89 01 48 89 F9 48 83 C4 38 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 50 28 AF 34 39 F1 74 33`; steps: call_target, expect, call_target, expect | high | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
 
 ## content
 
@@ -172,6 +185,13 @@ Groups: [content](#content) (2) · [crt](#crt) (9) · [ecs](#ecs) (25) · [entit
 |---|---|---|---|---|---|
 | `gfx.barrier_builder` | function | `0x95E0` | **signature**: `41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 28 44 8B B1 A0 B1 01 00 48 89 D7 48 89 CE 48 8D 99 80` | medium | research/03 (seed) |
 | `gfx.pso_stream_builder` | function | `0x86F090` | **signature**: `41 57 41 56 41 54 56 57 53 48 83 EC 48 48 89 D7 4C` | medium | research/03 (seed) |
+| `gfx.screen.resolution` | data | `0x99FECF8` | **signature**: `C4 E3 79 22 05 ? ? ? ? 01 C5 F8 5B C0 C5 F0 5E C0 C4`; RIP disp at +5, insn length 10 | medium | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `gfx.viewport.array` | data | `0xA94BBB0` | **signature**: `48 8D 0D ? ? ? ? 48 69 C0 30 07 00 00 48 01 C1 E8 ? ? ? ? 85`; RIP disp at +3, insn length 7 | medium | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `gfx.viewport.composite_matrix` | function | `0x4F1D350` | **signature**: `48 83 EC 68 C5 78 29 5C 24 50 C5 78 29 54 24 40 C5 78 29 4C 24 30 C5 78 29 44 24 20 C5 F8 29 7C 24 10 C5 F8 29 34 24 C5 F8 28 A9` | high | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `gfx.viewport.game` | data | `0xA94D9F0` | **signature**: `48 8B 0D ? ? ? ? 48 89 D7 48 85 C9 74 66`; RIP disp at +3, insn length 7 | medium | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `gfx.viewport.project_normalized` | function | `0x51FCC50` | **signature**: `41 57 41 56 56 57 53 48 81 EC 90 07 00 00 48 89` | medium | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `gfx.viewport.sphere_visible` | function | `0x52D3170` | **signature**: `48 83 EC 48 C5 78 29 4C 24 30 C5 78 29 44 24 20 C5 F8 29 7C 24 10 C5 F8 29 34 24 C4 E2 79 18 E2` | medium | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `gfx.viewport.transform_point` | function | `0x4F1D2E0` | **signature**: `56 57 48 83 EC 68 48 89 D7 48 8D 54 24 20` | high | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
 
 ## gpu
 
@@ -449,6 +469,10 @@ Groups: [content](#content) (2) · [crt](#crt) (9) · [ecs](#ecs) (25) · [entit
 | `streaming.info.clear_flags` | function | `0x4F66660` | **signature**: `56 57 48 83 EC 38 89 D6 48 89 CF 48 8D 4C 24 2C 31 D2 E8 ? ? ? ? E8 ? ? ? ? 8B 17 48 89 C1 E8 ? ? ? ? 48 85 C0 75` | medium | phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md (streaming-pools) |
 | `streaming.info.set_flags` | function | `0xB8740` | **signature**: `56 57 48 83 EC 38 89 D6 48 89 CF 48 8D 4C 24 2C 31 D2 E8 ? ? ? ? E8 ? ? ? ? 8B 17 48 89 C1 E8 ? ? ? ? 48 85 C0 74` | medium | phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md (streaming-pools) |
 | `streaming.metadata.store` | data | `0xABCC4B8` | **signature**: `48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B 00 48 8B 88`; RIP disp at +3, insn length 7 | high | Streaming module named "MetaDataStore" (registered at 0x145c0b5a6 with the string 0x1467822fd) (formats-pso) |
+| `streaming.model.has_loaded` | function | `0x1B95E00` | **signature**: `56 57 53 48 83 EC 40 BB FF FF 3F 00` | high | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `streaming.model.is_valid` | function | `0x166AE10` | **signature**: `56 57 48 83 EC 28 48 8D 7C 24 20 45` | high | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `streaming.model.release` | function | `0x4482280` | **signature**: `41 57 41 56 41 54 56 57 55 53 48 83 EC 40 48 85 C9 0F 84 ? ? ? ? 48 8D` | high | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
+| `streaming.model.request` | function | `0x19477F0` | **chain**: from signature `E8 ? ? ? ? 48 89 F9 48 83 C4 28 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 C5 01 D7 05 CF 03 B9 9D`; steps: call_target, expect | high | catalogue worker; tools/phase5/catalogue.py; findings/phase5/29 (catalogue) |
 | `streaming.module.base_vtable` | vtable | `0x658FE50` | **signature**: `48 8D 05 ? ? ? ? 44 89 C7 48 89 CE 48 89 01 C7 41 08 00 00 00 00 44`; RIP disp at +3, insn length 7 | high | aka rage::strStreamingModule vftable; phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md (streaming-pools) |
 | `streaming.module.ctor` | function | `0x19CA0B0` | **signature**: `41 56 56 57 55 53 48 83 EC 20 8B 6C 24 78` | high | aka rage::strStreamingModule::strStreamingModule(name, typeId, ...); phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md (streaming-pools) |
 | `streaming.module_mgr.add_module` | function | `0x19C2430` | **signature**: `56 48 83 EC 20 0F B7 15 ? ? ? ? 48 85 D2 74 16` | high | aka rage::strStreamingModuleMgr::AddModule; phase2 streaming-pools worker, static disassembly; findings/phase2/14_streaming_pools.md (streaming-pools) |

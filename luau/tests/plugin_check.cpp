@@ -22,6 +22,7 @@ int                g_registered = 0;
 void G6_CALL n_player_ped(g6_native_call* c, void*) { c->ret[0] = 0x100; }
 void G6_CALL n_coords(g6_native_call* c, void*) { g6_set_vec3_packed(c->ret, g6_vec3{ 1.f, 2.f, 3.f }); }
 void G6_CALL n_just_pressed(g6_native_call* c, void*) { c->ret[0] = 0; }
+void G6_CALL n_false(g6_native_call* c, void*) { c->ret[0] = 0; }
 
 void G6_CALL counting_log(g6_log_level lvl, const char* who, const char* msg) {
     if (lvl >= G6_LOG_ERROR) ++g_errors;
@@ -53,6 +54,9 @@ int main(int argc, char** argv) {
     g6_mock_register_native(0xD80958FC74E988A6ull, n_player_ped, nullptr);
     g6_mock_register_native(0x3FEF770D40960D5Aull, n_coords, nullptr);
     g6_mock_register_native(0x580417101DDB492Full, n_just_pressed, nullptr);
+    // script-layer examples (luau/examples/*): observed PLAYER_PED_ID and IS_PED_IN_ANY_VEHICLE (vehicle_spawner's repair loop)
+    g6_mock_register_native(0x096275889B8E0EE0ull, n_player_ped, nullptr);
+    g6_mock_register_native(0x997ABD671D25CA0Bull, n_false, nullptr);
 
     _putenv_s("G6_LUAU_LIB", argv[2]);
     _putenv_s("G6_LUAU_MODS", argv[3]);

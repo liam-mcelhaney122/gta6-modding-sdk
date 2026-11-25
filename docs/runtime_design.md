@@ -102,11 +102,21 @@ from the code and requires it to equal `~rotl64(hash, 32)`. On the file, all 6,8
 **Threading.** Natives run on the game's script thread, inside the hook (§4). Calls from a foreign
 thread are queued and complete when the hook next runs; until then the API returns
 `G6_E_NOT_ON_SCRIPT_THREAD`. `scrNativeCallContext` has **no vector scratch and no dataCount**
-field in GTA VI, so `Vector3` returns are three plain float slots (see
-`sdk/docs/native-signatures.md`) and callers never get a GTA V–style vector fixup.
+field in GTA VI, so callers never get a GTA V–style vector fixup.
+
+**Vectors** **[observed, corrected 2026-11-25]:** an earlier version of this section said `Vector3` returns
+are three plain float slots. They are not. A `Vector3` return is one packed 16-byte `{x, y, z, w}` in
+`ret[0..1]`, and a `Vector3` *parameter* is usually the same packed block in two argument slots
+(`SET_ENTITY_COORDS` `0x143c13760` loads `[args+0x10]` with one `vmovups`). This is decided per native
+from the handler's argument loads, because one native (`TASK_GOTO_ENTITY_OFFSET`) reads three float slots.
+`Vector3*` out-params get one 16-byte `vmovaps` store, so their buffers must be 16-byte aligned. The
+signature string carries all of this (`w`, `fff`, `V`; `sdk/docs/native-signatures.md`,
+`findings/phase5/23_handle_abi.md`). The runtime itself passes slots through unchanged and does not encode
+the vector layout.
 
 **Limits.** `argCount` is an `s32`: 32 slots max in the C ABI. `retCount` is advisory; the C ABI
-keeps 4 return slots, which covers `Vector3` plus one scalar.
+keeps 4 return slots, which covers a packed `Vector3` (2 slots) or an entity handle (2 slots) plus
+two scalars.
 
 ---
 

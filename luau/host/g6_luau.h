@@ -10,7 +10,12 @@
  *                    call(handle, ...) -> results (per signature string)
  *                    joaat(string) -> number
  *   "@gta6/natives"  generated typed wrappers (sdk/luau/lib/natives.luau)
- *   "@gta6/script"   register(name, fn), wait(ms), log(level, msg), now() -> ms
+ *   "@gta6/script"   register(name, fn), wait(ms), log(level, msg [, source]), now() -> ms
+ *                    (source replaces the running script's name as the log source)
+ *                    cancel(name) -> boolean: the live script `name` is never resumed again.
+ *                    Cancelling the running script ends it at its next wait (or return).
+ *   "@gta6/<lib>"    any other [a-z_]+ name: <lib_dir>/<lib>.luau, e.g. "@gta6/names"
+ *                    (generated clean names) and "@gta6/game" (helper layer)
  *   "./x"            module x.luau next to the requiring mod's init.luau
  *
  * Each script runs in its own sandboxed Luau thread (coroutine); wait()

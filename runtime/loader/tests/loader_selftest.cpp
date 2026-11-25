@@ -325,6 +325,167 @@ static void test_live_hooks() {
     std::printf("live hooks: done\n");
 }
 
+// ------------------------------------------------------------------ late-load patch safety
+// The runtime can be injected while the title's threads run. enable()/disable() suspend every other
+// thread and refuse while one is inside the bytes being replaced. Checked here with a thread parked
+// (never started, RIP set by SetThreadContext) inside / outside the range, one moved out during the
+// retries, and a worker calling the function in a loop while the hook is toggled.
+typedef uint64_t (*F4)(uint64_t);
+static F4 o4;
+static uint64_t d4(uint64_t x) { return o4(x) + 1000; }
+static DWORD WINAPI park_fn(void*) { return 0; }  // never runs
+
+static bool set_rip(HANDLE t, uint64_t rip) {
+    CONTEXT c{};
+    c.ContextFlags = CONTEXT_CONTROL;
+    if (!GetThreadContext(t, &c)) return false;
+    c.Rip = rip;
+    return SetThreadContext(t, &c) != 0;
+}
+// Moves the parked thread out of the range once the hook has started its second freeze round,
+// i.e. after at least one round saw the thread inside.
+struct Mover { HANDLE t; uint64_t rip; void* hook; volatile LONG moved; };
+static DWORD WINAPI mover_fn(void* p) {
+    auto* m = static_cast<Mover*>(p);
+    for (int i = 0; i < 60000; ++i) {
+        uint32_t attempts = 0;
+        T->hook_freeze_info(m->hook, nullptr, &attempts, nullptr, nullptr);
+        if (attempts >= 2) break;
+        Sleep(1);
+    }
+    if (set_rip(m->t, m->rip)) InterlockedExchange(&m->moved, 1);
+    return 0;
+}
+struct Hammer { F4 f; volatile LONG stop; LONG64 calls, hooked, bad; };
+static DWORD WINAPI hammer_fn(void* p) {
+    auto* h = static_cast<Hammer*>(p);
+    for (uint64_t x = 0; !h->stop && x < (1ull << 40); ++x) {
+        const uint64_t r = h->f(x);
+        ++h->calls;
+        if (r == x + 1003) ++h->hooked;
+        else if (r != x + 3) ++h->bad;
+    }
+    return 0;
+}
+
+static void test_late_load() {
+    // pure range check
+    CHECK(T->hook_rip_in_range(0x1000, 0x1000, 6) == 1, "rip == lo is inside");
+    CHECK(T->hook_rip_in_range(0x1005, 0x1000, 6) == 1, "rip == lo+n-1 is inside");
+    CHECK(T->hook_rip_in_range(0x1006, 0x1000, 6) == 0, "rip == lo+n is outside");
+    CHECK(T->hook_rip_in_range(0x0FFF, 0x1000, 6) == 0, "rip == lo-1 is outside");
+    CHECK(T->hook_rip_in_range(0x1000, 0x1000, 0) == 0, "empty range contains nothing");
+    CHECK(T->hook_rip_in_range(~0ull, ~0ull - 3, 14) == 1, "range ending past 2^64: last address inside");
+    CHECK(T->hook_rip_in_range(5, ~0ull - 3, 14) == 0, "range ending past 2^64 does not wrap to low addresses");
+    CHECK(T->hook_rip_in_range(0, 0, 1) == 1 && T->hook_rip_in_range(1, 0, 1) == 0, "range at address 0");
+    CHECK(T->hook_guarded_len(5, 6) == 6, "rel32 on Run: guard the 6 relocated bytes");
+    CHECK(T->hook_guarded_len(14, 14) == 14 && T->hook_guarded_len(5, 5) == 5 && T->hook_guarded_len(14, 16) == 16,
+          "guarded length = max(patch, relocated)");
+
+    uint8_t* P = static_cast<uint8_t*>(VirtualAlloc(nullptr, 0x1000, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE));
+    CHECK(P != nullptr, "VirtualAlloc");
+    if (!P) return;
+    std::memset(P, 0xCC, 0x1000);
+    const uint8_t f4[] = { 0x48, 0x8D, 0x41, 0x01, 0x48, 0x83, 0xC0, 0x02, 0xC3 };  // lea rax,[rcx+1]; add rax,2; ret
+    std::memcpy(P, f4, sizeof f4);
+    DWORD old;
+    VirtualProtect(P, 0x1000, PAGE_EXECUTE_READ, &old);
+    FlushInstructionCache(GetCurrentProcess(), P, 0x1000);
+    const F4 f4p = reinterpret_cast<F4>(P);
+    const uint64_t base = reinterpret_cast<uint64_t>(P);
+    CHECK(f4p(1) == 4, "f4 baseline");
+
+    char err[256] = {};
+    void* orig = nullptr;
+    void* h = T->hook_create(P, reinterpret_cast<void*>(&d4), 1, &orig, err, sizeof err);
+    CHECK(h != nullptr, "f4 create: %s", err);
+    DWORD ptid = 0;
+    HANDLE parked = CreateThread(nullptr, 0, park_fn, nullptr, CREATE_SUSPENDED, &ptid);
+    CHECK(parked != nullptr, "parked thread");
+    if (!h || !parked) {
+        if (parked) { TerminateThread(parked, 0); CloseHandle(parked); }
+        VirtualFree(P, 0, MEM_RELEASE);
+        return;
+    }
+    o4 = reinterpret_cast<F4>(orig);
+    int kind; size_t stolen, plen;
+    T->hook_info(h, &kind, &stolen, &plen);
+    CHECK(kind == 0 && plen == 5 && stolen == 8 && T->hook_guarded_len(plen, stolen) == 8, "f4 rel32: patch %zu stolen %zu", plen, stolen);
+    uint8_t before[16];
+    std::memcpy(before, P, 16);
+    uint32_t threads = 0, attempts = 0, btid = 0;
+    uint64_t brip = 0;
+
+    // 1. a thread at an instruction boundary inside the patch (+4): refused, nothing written
+    CHECK(set_rip(parked, base + 4), "SetThreadContext +4");
+    const ULONGLONG t0 = GetTickCount64();
+    CHECK(T->hook_enable(h, err, sizeof err) == 0, "enable must refuse while a thread is at +4");
+    const ULONGLONG dt = GetTickCount64() - t0;
+    CHECK(std::strstr(err, "inside the patch range") != nullptr && std::strstr(err, "nothing written") != nullptr, "refusal text: %s", err);
+    T->hook_freeze_info(h, &threads, &attempts, &btid, &brip);
+    CHECK(btid == ptid && brip == base + 4 && attempts >= 2, "blocking tid %u (want %lu) rip %llx attempts %u", btid, ptid,
+          static_cast<unsigned long long>(brip), attempts);
+    CHECK(dt <= 10000 + 2000, "refusal is time-bounded: %llu ms", static_cast<unsigned long long>(dt));
+    CHECK(std::memcmp(before, P, 16) == 0 && f4p(1) == 4, "bytes untouched after the refusal");
+    std::printf("late load: refusal after %u attempts in %llu ms: %s\n", attempts, static_cast<unsigned long long>(dt), err);
+
+    // 2. the same thread just past the guarded range (+8): enabled on the first attempt
+    CHECK(set_rip(parked, base + 8), "SetThreadContext +8");
+    CHECK(T->hook_enable(h, err, sizeof err) == 1, "enable with a thread at +8: %s", err);
+    T->hook_freeze_info(h, &threads, &attempts, &btid, &brip);
+    CHECK(attempts == 1 && threads >= 1 && btid == 0, "first-attempt freeze: threads %u attempts %u", threads, attempts);
+    CHECK(f4p(1) == 1004, "f4 hooked");
+    CHECK(T->hook_disable(h, err, sizeof err) == 1 && f4p(1) == 4 && std::memcmp(before, P, 16) == 0, "f4 restored: %s", err);
+
+    // 3. a thread inside the range that leaves during the retries: enabled after more than one attempt
+    CHECK(set_rip(parked, base + 4), "SetThreadContext +4 (again)");
+    Mover mv{ parked, base + 8, h, 0 };
+    HANDLE mt = CreateThread(nullptr, 0, mover_fn, &mv, 0, nullptr);
+    CHECK(mt != nullptr, "mover thread");
+    CHECK(T->hook_enable(h, err, sizeof err) == 1, "enable after the thread left: %s", err);
+    T->hook_freeze_info(h, &threads, &attempts, &btid, &brip);
+    if (mt) { WaitForSingleObject(mt, 60000); CloseHandle(mt); }
+    CHECK(mv.moved == 1 && attempts >= 2 && attempts < 200, "retried then enabled: attempts %u (moved %ld)", attempts, mv.moved);
+    CHECK(f4p(2) == 1005, "f4 hooked after retries");
+    CHECK(T->hook_disable(h, err, sizeof err) == 1 && f4p(2) == 5, "f4 restored after retries: %s", err);
+    TerminateThread(parked, 0);
+    WaitForSingleObject(parked, 5000);
+    CloseHandle(parked);
+
+    // 4. a thread executing the function in a loop while the hook is toggled 20 times
+    Hammer hm{ f4p, 0, 0, 0, 0 };
+    HANDLE ht = CreateThread(nullptr, 0, hammer_fn, &hm, 0, nullptr);
+    CHECK(ht != nullptr, "hammer thread");
+    int toggles = 0, retried = 0;
+    uint32_t max_attempts = 0;
+    for (int i = 0; ht && i < 20; ++i) {
+        const int on = T->hook_enable(h, err, sizeof err);
+        T->hook_freeze_info(h, &threads, &attempts, &btid, &brip);
+        if (attempts > 1) ++retried;
+        if (attempts > max_attempts) max_attempts = attempts;
+        Sleep(1);
+        const int off = on ? T->hook_disable(h, err, sizeof err) : 0;
+        T->hook_freeze_info(h, &threads, &attempts, &btid, &brip);
+        if (attempts > 1) ++retried;
+        if (attempts > max_attempts) max_attempts = attempts;
+        if (on && off) ++toggles;
+        else break;
+    }
+    if (ht) {
+        InterlockedExchange(&hm.stop, 1);
+        WaitForSingleObject(ht, 10000);
+        CloseHandle(ht);
+    }
+    CHECK(toggles == 20, "20 enable/disable cycles under load: %d (%s)", toggles, err);
+    CHECK(hm.bad == 0 && hm.calls > 0, "worker: %lld calls, %lld through the detour, %lld wrong results", hm.calls, hm.hooked, hm.bad);
+    CHECK(std::memcmp(before, P, 16) == 0, "bytes restored after the toggles");
+    std::printf("late load: worker made %lld calls (%lld hooked) during 20 toggles; %d writes needed a retry (max %u attempts)\n",
+                hm.calls, hm.hooked, retried, max_attempts);
+    T->hook_destroy(h);
+    VirtualFree(P, 0, MEM_RELEASE);
+    std::printf("late load: done\n");
+}
+
 // ------------------------------------------------------------------ handler self-id (synthetic)
 static void test_selfid() {
     uint8_t h[256];
@@ -710,6 +871,7 @@ int main(int argc, char** argv) {
     test_scanner();
     test_builder();
     test_live_hooks();
+    test_late_load();
     test_selfid();
     test_sched();
     test_clock_decode();

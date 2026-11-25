@@ -41,6 +41,7 @@ struct Script {
     uint64_t    wake_at = 0;
     bool        started = false;
     bool        done = false;
+    bool        cancelled = false;  // cancelled while running: finished by g6_luau_tick after it yields
 };
 
 } // namespace
@@ -130,7 +131,7 @@ static int l_native_call(lua_State* L) {
     g6_native_call c{};
     c.size = sizeof c;
     int64_t       int_outs[8] = {};
-    g6_vec3_slots vec_outs[4] = {};
+    g6_vec3_packed vec_outs[4] = {};  // 16-byte aligned: the game stores Vector3* outs with vmovaps
     g6_entity     ent_outs[4] = {};
     char          out_codes[12] = {};
     void*         out_ptrs[12] = {};
@@ -154,7 +155,14 @@ static int l_native_call(lua_State* L) {
         case 'f': c.args[c.argc++] = g6_arg_float((float)luaL_checknumber(L, arg++)); break;
         case 'b': c.args[c.argc++] = g6_arg_bool(lua_toboolean(L, arg++)); break;
         case 's': c.args[c.argc++] = lua_isnil(L, arg) ? (++arg, 0) : g6_arg_ptr(luaL_checkstring(L, arg++)); break;
-        case 'v': {
+        case 'w': {  /* packed 16-byte Vector3 {x,y,z,w}: two slots */
+            const float* v = luaL_checkvector(L, arg++);
+            const g6_vec3 p{ v[0], v[1], v[2] };
+            c.args[c.argc++] = g6_arg_vec3_lo(p);
+            c.args[c.argc++] = g6_arg_vec3_hi(p);
+            break;
+        }
+        case 'v': {  /* legacy three float slots */
             const float* v = luaL_checkvector(L, arg++);
             c.args[c.argc++] = g6_arg_float(v[0]);
             c.args[c.argc++] = g6_arg_float(v[1]);
@@ -218,7 +226,7 @@ static int l_native_call(lua_State* L) {
         case 'I': lua_pushnumber(L, (double)(int32_t)*(int64_t*)out_ptrs[i]); break;
         case 'F': lua_pushnumber(L, g6_ret_float((uint64_t)*(int64_t*)out_ptrs[i])); break;
         case 'B': lua_pushboolean(L, (int)(*(int64_t*)out_ptrs[i] & 0xFF)); break;
-        case 'V': { auto* v = (g6_vec3_slots*)out_ptrs[i]; lua_pushvector(L, v->x, v->y, v->z); break; }
+        case 'V': { auto* v = (g6_vec3_packed*)out_ptrs[i]; lua_pushvector(L, v->x, v->y, v->z); break; }
         case 'E': { auto* e = (g6_entity*)out_ptrs[i]; push_entity(L, e->lo, e->hi); break; }
         }
         ++nret;
@@ -252,8 +260,30 @@ static int l_script_log(lua_State* L) {
     if (!std::strcmp(lvl, "debug")) level = G6_LOG_DEBUG;
     else if (!std::strcmp(lvl, "warn")) level = G6_LOG_WARN;
     else if (!std::strcmp(lvl, "error")) level = G6_LOG_ERROR;
-    host_log(h, level, h->current_script.empty() ? std::string("luau") : h->current_script, msg);
+    // Optional third argument: the log source (e.g. a mod name); default is the running script's name.
+    const char* source = luaL_optstring(L, 3, nullptr);
+    if (source && *source) host_log(h, level, source, msg);
+    else host_log(h, level, h->current_script.empty() ? std::string("luau") : h->current_script, msg);
     return 0;
+}
+
+static int l_script_cancel(lua_State* L) {
+    g6_luau_host* h = host_of(L);
+    const char* name = luaL_checkstring(L, 1);
+    for (auto& s : h->scripts) {
+        if (s.done || s.name != name) continue;
+        if (s.thread == L || h->current_script == s.name) {
+            s.cancelled = true;  // its thread is executing: g6_luau_tick retires it when the resume returns
+        } else {
+            s.done = true;
+            lua_unref(h->L, s.thread_ref);
+            s.thread = nullptr;
+        }
+        lua_pushboolean(L, 1);
+        return 1;
+    }
+    lua_pushboolean(L, 0);
+    return 1;
 }
 
 static int l_script_register(lua_State* L) {
@@ -289,6 +319,14 @@ static void push_lib(lua_State* L, const luaL_Reg* fns) {
     lua_setreadonly(L, -1, true);
 }
 
+// "@gta6/<name>" with name in [a-z_]+ is a library module: <lib_dir>/<name>.luau (e.g. names, game).
+static bool is_lib_module(const std::string& name) {
+    if (name.rfind("@gta6/", 0) != 0 || name.size() == 6) return false;
+    for (size_t i = 6; i < name.size(); ++i)
+        if (!((name[i] >= 'a' && name[i] <= 'z') || name[i] == '_')) return false;
+    return true;
+}
+
 static int l_require(lua_State* L) {
     g6_luau_host* h = host_of(L);
     std::string name = luaL_checkstring(L, 1);
@@ -300,11 +338,12 @@ static int l_require(lua_State* L) {
         static const luaL_Reg fns[] = {{"resolve", l_native_resolve}, {"call", l_native_call}, {"joaat", l_native_joaat}, {nullptr, nullptr}};
         push_lib(L, fns);
     } else if (name == "@gta6/script") {
-        static const luaL_Reg fns[] = {{"register", l_script_register}, {"wait", l_script_wait}, {"now", l_script_now}, {"log", l_script_log}, {nullptr, nullptr}};
+        static const luaL_Reg fns[] = {{"register", l_script_register}, {"wait", l_script_wait}, {"now", l_script_now}, {"log", l_script_log}, {"cancel", l_script_cancel}, {nullptr, nullptr}};
         push_lib(L, fns);
     } else {
         std::string path;
         if (name == "@gta6/natives") path = (fs::path(h->lib_dir) / "natives.luau").string();
+        else if (is_lib_module(name)) path = (fs::path(h->lib_dir) / (name.substr(6) + ".luau")).string();
         else if (name.rfind("./", 0) == 0) path = (fs::path(h->current_mod_dir) / (name.substr(2) + ".luau")).string();
         else luaL_error(L, "require: unknown module '%s'", name.c_str());
 
@@ -377,12 +416,12 @@ extern "C" void g6_luau_tick(g6_luau_host* h) {
         h->current_script.clear();
         Script& cur = h->scripts[i];  // re-fetch: a resumed script may register scripts (vector growth)
         cur.started = true;
-        if (st == LUA_YIELD) {
+        if (st == LUA_YIELD && !cur.cancelled) {
             double ms = lua_gettop(T) > 0 ? lua_tonumber(T, -1) : 0.0;
             lua_settop(T, 0);
             cur.wake_at = now + (uint64_t)ms;
         } else {
-            if (st != LUA_OK) {
+            if (st != LUA_OK && st != LUA_YIELD) {  // a yield here means it was cancelled while running
                 std::string err = lua_tostring(T, -1) ? lua_tostring(T, -1) : "error";
                 host_log(h, G6_LOG_ERROR, cur.name, err + "\n" + lua_debugtrace(T));
             }

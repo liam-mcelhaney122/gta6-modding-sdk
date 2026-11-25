@@ -30,7 +30,11 @@ src/log.*                    gta6mod_runtime.log next to the DLL (previous run k
 src/g6rt_test_api.h          offline test surface (g6rt_get_test_api export)
 tests/loader_selftest.cpp    offline test exe
 gta6mod_runtime.ini          default config (copied to build\ on the first build)
-build.cmd / build.ps1        clang-cl build, x64, C++20, /W4 /WX, static CRT
+build.cmd / build.ps1        clang-cl build, x64, C++20, /W4 /WX, static CRT (also calls build_inject.cmd)
+tools/inject/g6inject.cpp    g6inject.exe: waits for the DexNom title process, LoadLibraryW's one DLL into it
+tools/inject/inject_core.hpp g6inject argument parsing, name matching, exit codes (pure, tested offline)
+build_inject.cmd             builds g6inject.exe and the injector test binaries into build\ and build\inject_test\
+tests/inject/*.cpp           injector test: stand-in target, image-named dummy DLL, marker DLL, driver
 ```
 
 ## Build
@@ -38,6 +42,9 @@ build.cmd / build.ps1        clang-cl build, x64, C++20, /W4 /WX, static CRT
 ```bat
 sdk\runtime\loader\build.cmd test
 ```
+`build.cmd` builds the runtime, the self-test and `g6inject.exe`; `test` runs the self-test and then
+the injector test, and the script exits non-zero if either fails. (Before 2026-11-25 `build.cmd test`
+returned the errorlevel from before the self-test ran, so a failing self-test still exited 0.)
 ```powershell
 .\sdk\runtime\loader\build.ps1 -Test -Dump "<DUMP>"
 ```
@@ -47,7 +54,8 @@ lld-link. clang-cl finds the MSVC 14.52 BuildTools and Windows SDK 10.0.28000 on
 no vcvars is needed. The flags are `/std:c++20 /O2 /W4 /WX /EHsc /MT`. No warning is suppressed.
 The output in `build\` has these imports only: `KERNEL32.dll`, `bcrypt.dll` and `IPHLPAPI.DLL`.
 
-Self-test (round 3, offline): **308 passed** without `G6_DUMP`, **319 passed** with it. The
+Self-test (late-load round, offline): **344 passed** without `G6_DUMP`, **355 passed** with it
+(round 3 was 308 / 319; the 36 new checks are the late-load patch-safety tests below). The
 non-dump part includes the guard tests: v4/v6 address classes, the trip decision, the gate latch,
 and a live `GetExtendedTcpTable` pass on the test process (must succeed with 0 own rows). The
 dump run checks identity, all 469 anchors, 6,829 handlers, the three clock handlers decoded from the
@@ -115,6 +123,25 @@ re-implementation against pefile and against the manifest.
      the original bytes, and checks them again before writing. The hook is published only
      after every step succeeded. Init failure and `g6rt_runtime_shutdown` share `teardown()`,
      which restores the bytes.
+   - **Late load** (the runtime is injected after the title's threads run; see "Loading under
+     DexNom"). `hook.cpp` `write_patch` takes a Toolhelp32 thread snapshot, suspends every other
+     thread of the process, and reads each one's RIP. The guarded range is
+     `[Run, Run + max(patch length, relocated bytes))`, 6 bytes for the rel32 patch on 1.0.2.1
+     (pure check `hook::rip_in_range` / `hook::guarded_len`). A thread inside it, or a live
+     thread that cannot be opened, suspended or read (position unknown), makes the round unsafe:
+     all threads are resumed, the runtime sleeps 1 ms and tries again. After 200 rounds or
+     10 s, whichever comes first, nothing is written and the log says
+     `Run hook NOT installed: thread <tid> was inside the patch range <addr>+0x6 (RIP <addr>) in
+     all <n> attempts (<ms> ms); nothing written`, followed by `teardown: hook enable failed`.
+     On success: `Run hook installed at <addr> (<n> other thread(s) suspended during the write,
+     <n> attempt(s) in <ms> ms, guarded range 6 bytes)`. The write itself is unchanged: one
+     atomic qword for the 5-byte patch, then `FlushInstructionCache`, then resume.
+   - One round walks the system-wide snapshot, which takes ~250 ms with ~6,000 threads on the dev
+     machine; the game's threads are suspended only after the walk, for the suspend/check/write.
+   - Residual race (not closed): a thread created after the snapshot is not suspended. It would
+     have to be between two of Run's first instructions at the instant of the 8-byte atomic
+     write to fault. The snapshot is not repeated while threads are suspended because the
+     snapshot call may allocate, and a suspended thread may hold the heap lock.
    - The runtime DLL is pinned and the trampoline is never freed, because a thread may still
      be returning through them.
    - The detour forwards all six Run arguments, calls the original first, then:
@@ -253,10 +280,9 @@ Expected refusal lines, each naming its cause:
 
 1. Run `build.cmd`. Copy `build\gta6mod_runtime.dll` and `build\gta6mod_runtime.ini` to one
    folder that the host process can write to. Leave `mode=readonly`.
-2. Load the DLL into the ztrx host process through whatever DLL-loading mechanism ztrx
-   offers. The runtime does not inject itself, and this README does not know ztrx's
-   mechanism. Load it after the title image is mapped, or within `wait_for_game_ms` (120 s)
-   of it.
+2. Load the DLL into the host's title process with `g6inject.exe` (next section). The host
+   (DexNom/VIctory) has no plugin or preload mechanism. The injector waits until the title
+   image is mapped, so the runtime finds it on its first look.
 3. Read `gta6mod_runtime.log`. The lines you should see:
    ```
    game module at 00007FF… size 0xb06d000 (loader list) path '…victory-image-….dll'
@@ -302,6 +328,87 @@ Expected refusal lines, each naming its cause:
    `offline_attested=1` only after checking the host's firewall rule (see "Single-player
    guard"); the first tick after a clean scan logs `guard -> OPEN (…)`.
 
+## Loading under DexNom (`g6inject.exe`)
+
+DexNom/VIctory @ `2e01ab4` (read from source, not run): `victory-play.exe` starts a child
+`victory.exe run <exe> --execute`, and the title runs in that child. The child maps a patched copy
+of the exe with `LoadLibraryExW` as `victory-image-<16 hex of blake3>.dll`
+(`crates/victory-loader/src/prepare.rs`), binds its imports, attaches the title DLLs, then runs
+title code. The host has no plugin or preload mechanism, so `g6inject.exe` loads the runtime from
+outside. Nothing in DexNom is changed.
+
+```bat
+rem 1. build\ holds gta6mod_runtime.dll, gta6mod_runtime.ini (mode=readonly) and g6inject.exe
+rem 2. start the game with victory-play.exe as usual, then (any time before or after it boots):
+sdk\runtime\loader\build\g6inject.exe --dll "C:\full\path\to\build\gta6mod_runtime.dll"
+```
+
+| option | default | meaning |
+|---|---|---|
+| `--dll <path>` | required | absolute path of an x64 DLL; checked (PE, x64, DLL bit) before waiting |
+| `--process <name>` | `victory.exe` | process file name to wait for |
+| `--pid <n>` | any | inject into this process only; its name must still equal `--process` |
+| `--timeout-ms <n>` | `300000` | how long to wait for a matching process (0..86400000) |
+| `--image-prefix <p>` | `victory-image-` | a process matches once it has a module `<p>*.dll` |
+
+What it does, each step logged to stdout (errors to stderr, with `ERROR:`):
+1. Polls every 250 ms for processes named `--process`. Each one is opened for query only and must
+   be x64 (`IsWow64Process2`). A process matches once its module list contains `<prefix>*.dll`.
+   A `victory.exe` without the image (for example DexNom's optional audio-capture child, which
+   is also `victory.exe`) is listed but never chosen.
+2. Two or more matching processes without `--pid`: refuses (exit 4) and lists each pid with its
+   image module and path.
+3. Opens the target with `PROCESS_CREATE_THREAD | QUERY_INFORMATION | VM_OPERATION | VM_WRITE |
+   VM_READ | SYNCHRONIZE`, takes a module snapshot, and **refuses if a module with the DLL's file
+   name is already loaded** (exit 7). A second runtime would hook Run twice.
+4. `LoadLibraryW` in the target = the target's `kernel32.dll` base + the RVA of `LoadLibraryW` in
+   the injector's own kernel32 (logged; normally the same address).
+5. `VirtualAllocEx` + `WriteProcessMemory` of the path, `CreateRemoteThread(LoadLibraryW, path)`,
+   then waits up to 60 s for that thread or for the process to exit.
+6. Frees the path buffer (left allocated, and logged, if the thread did not finish), then takes a
+   new module snapshot. Success means the DLL is in the module list: `confirmed: <path> loaded in
+   pid <n> at 0x… size 0x…`. The thread exit code is the low 32 bits of the HMODULE and is only
+   logged as a hint.
+
+Exit codes (`tools/inject/inject_core.hpp`):
+
+| code | name | when |
+|---|---|---|
+| 0 | ok | loaded and confirmed by a module snapshot |
+| 1 | usage | bad/missing arguments; `--pid` names a process with another name |
+| 2 | dll-file | `--dll` missing, unreadable, not a PE file, or not a DLL |
+| 3 | timeout | no process with the image module within `--timeout-ms` (the message says whether no process had the name, or none had the module) |
+| 4 | ambiguous | several matching processes and no `--pid` |
+| 5 | access-denied | the target could not be opened or inspected (run elevated if the game runs elevated) |
+| 6 | arch-mismatch | the target process or `--dll` is not x64 |
+| 7 | already-loaded | a module with the DLL's file name is already in the target |
+| 8 | process-exited | the target exited while waited for or during the load; `--pid` not running |
+| 9 | inject-failed | allocation, write or remote thread failed, or the DLL is absent afterwards |
+| 10 | internal | local failure (process snapshot, exception) |
+
+**Late load.** The runtime is now loaded after the title's threads are running. What that changes:
+- `DllMain` stays minimal (checked, `runtime.cpp` `DllMain`): `DisableThreadLibraryCalls`,
+  `GetModuleFileNameW`, `GetEnvironmentVariableW`, `GetModuleHandleExW(PIN)`, `CreateThread`.
+  The init thread starts after the loader lock is released, so the remote `LoadLibraryW` returns
+  at once (tested: the injector test injects the real runtime into a stand-in process).
+- `mode=readonly` writes no code. The only code write in the runtime is
+  `InlineHook::write_patch` (`hook.cpp`), reached only through `g_run_hook.enable` in `run_init`
+  step 6; `run_init` returns `G6_OK` before step 6 when `mode == readonly`
+  (`mode=readonly: Run hook NOT installed, plugins NOT loaded.`). No other source file calls
+  `VirtualProtect` or writes into the game image. Readonly does read live game memory (anchors,
+  handlers, the clock block, the mount table) without taking the game's locks, so the mount-table
+  dump can see a table the game is changing at that moment.
+- `mode=observe|full`: the Run patch is protected as described under "Architecture" step 7.
+
+**Verify live (unknown until the first session):**
+- that `victory.exe` lets a same-user process open it with the rights in step 3 (no DACL change
+  or protection; DexNom's source sets none that we found);
+- that `CreateRemoteThread` into the host works while the title runs (DexNom's HLE replaces
+  `LoadLibraryExW` only for the title's own imports; the injector calls the real kernel32);
+- that `VirtualProtect(PAGE_EXECUTE_READWRITE)` on the host-mapped image succeeds (no
+  arbitrary-code-guard policy on `victory.exe`);
+- how many threads the title process has, and how long the freeze takes (logged on install).
+
 ## Design changes from `docs/runtime_design.md`
 
 - **§3 identity probe: not done by calling.** All 6,813 wrappers, after writing their id for
@@ -314,6 +421,8 @@ Expected refusal lines, each naming its cause:
   check is therefore decoded, not a fixed 5-byte compare.
 - **§4 TLS:** the work runs after the original Run returns, so the TLS slot is published by
   the runtime itself.
+- **§2 loader model:** the host has no loading path for our DLL; `g6inject.exe` loads it from
+  outside after the title image is mapped (late load, see "Loading under DexNom").
 - **§6 step 1:** replaced by the identity check above.
 - **§6 step 2:** exact-one is required for the four runtime anchors, not for all.
 - **§5 timing:** design §2 says "install the overlay at load". The engine path code

@@ -98,6 +98,13 @@ def scheduler() -> Scheduler:
     return _default
 
 
+def reset() -> Scheduler:
+    """Replace the default scheduler with an empty one (tests, reloading mods offline)."""
+    global _default
+    _default = Scheduler()
+    return _default
+
+
 def run_for(ms: int, frame_ms: int = 16, sched: Scheduler | None = None) -> None:
     """Offline driver: tick the scheduler for ``ms`` of mock game time."""
     sched = sched or _default

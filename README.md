@@ -10,7 +10,7 @@ A single-player modding SDK for **GTA VI build 1.0.2.1** (Xbox Series dump): a s
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/overview-dark.svg">
-  <img alt="Pipeline: a private research pipeline produces the generated data in this repository, which feeds the C ABI, C++, Python and Luau bindings and the runtime DLL. Tiles: 6,829 native handlers, 380 engine anchors, 867 struct fields, 19,178 PSO structures, 319/319 runtime self-tests passed offline, 56 native namespace pages." src="docs/assets/overview-light.svg">
+  <img alt="Pipeline: a private research pipeline produces the generated data in this repository, which feeds the C ABI, C++, Python and Luau bindings and the runtime DLL. Tiles: 6,829 native handlers, 399 engine anchors, 867 struct fields, 19,178 PSO structures, 355/355 runtime self-tests passed offline, 56 native namespace pages." src="docs/assets/overview-light.svg">
 </picture>
 
 > [!IMPORTANT]
@@ -22,12 +22,12 @@ A single-player modding SDK for **GTA VI build 1.0.2.1** (Xbox Series dump): a s
 |---|---|
 | C ABI (`include/gta6mod/gta6mod.h`) | Stable host function table and plugin entry points, size-versioned; implemented by the mock runtime |
 | Natives | **6,829 handlers** with typed wrappers in C, C++, Python and Luau; 1,886 carry a name, the rest are exposed by hash (`N.RAW.N_<hash>`); 13 seed-only entries are marked `unverified` and refused by real backends unless you opt in |
-| Engine anchors (`include/gta6mod/patterns.hpp`) | **380 anchors**: 370 byte signatures unique in the 1.0.2.1 exe, 10 resolved through xref chains |
+| Engine anchors (`include/gta6mod/patterns.hpp`) | **399 anchors**: 384 byte signatures unique in the 1.0.2.1 exe, 15 resolved through xref chains |
 | Types (`classes.hpp`, `offsets.hpp`) | 85 engine types, 867 fields, with `static_assert` offsets |
 | PSO schema (`data/generated/pso/`) | 19,178 structures, 77,044 members and 2,572 enums as JSON Schema (draft 2020-12), plus an XSD for the 67 structures with a known name |
 | Python package (`python/gta6mod`) | Mock backend and a ctypes backend over the C ABI; PE reader, signature scanner, pattern resolver and RPF9/RDS5 header readers that work on your own dump |
 | Luau host (`luau/`) | Plugin DLL, embedding API and an offline runner; the example mod runs against the mock world |
-| Runtime DLL (`runtime/loader`) | Builds with clang-cl (`/W4 /WX`); self-test **319/319** offline against the exe file; **not yet run in-game** |
+| Runtime DLL (`runtime/loader`) | Builds with clang-cl (`/W4 /WX`); self-test **355/355** offline against the exe file; **not yet run in-game** |
 | API reference (`docs/api`) | One page per native namespace, plus types, anchors, the native ABI and the PSO type table |
 
 ## Architecture

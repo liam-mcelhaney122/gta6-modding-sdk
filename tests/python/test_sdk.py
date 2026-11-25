@@ -8,6 +8,7 @@ Optional inputs (tests skip when absent):
 """
 import ctypes
 import importlib
+import json
 import os
 import runpy
 import sys
@@ -29,6 +30,8 @@ from gta6mod import natives as N  # noqa: E402
 
 DUMP = os.environ.get("G6_DUMP")
 MOCK_DLL = os.path.join(SDK, "build", "gta6mod_mock.dll")
+HAVE_GEN = os.path.isfile(os.path.join(SDK, "generators", "gen_bindings.py"))
+VECTOR_EVIDENCE = os.path.join(SDK, "..", "re-db", "builds", "1.0.2.1", "natives", "script-vm.vector_params.json")
 
 
 class TestJoaat(unittest.TestCase):
@@ -52,11 +55,28 @@ class TestMarshal(unittest.TestCase):
         p = marshal.pack("vIV>v", [Vector3(1, 2, 3)])
         self.assertEqual(len(p.slots), 5)
         ctypes.c_int64.from_address(p.slots[3]).value = -7
-        out_vec = marshal.Vec3Slots.from_address(p.slots[4])
+        self.assertEqual(p.slots[4] % 16, 0, "Vector3* out-param must be 16-byte aligned (vmovaps)")
+        out_vec = marshal.Vec3Packed.from_address(p.slots[4])
         out_vec.x, out_vec.y, out_vec.z = 4.0, 5.0, 6.0
         ret = [marshal.float_slot(9), marshal.float_slot(8), marshal.float_slot(7), 0]
         r, i_out, v_out = marshal.unpack("vIV>v", ret, p)
         self.assertEqual((r, i_out, v_out), (Vector3(9, 8, 7), -7, Vector3(4, 5, 6)))
+
+    def test_packed_vector_param_is_two_slots(self):
+        """'w': x | y<<32 in the first slot, z in the low half of the second (the 16 bytes the game loads)."""
+        p = marshal.pack("ewb>n", [0x100, Vector3(1.5, -2.0, 30.25), True])
+        f = marshal.float_slot
+        self.assertEqual(p.slots, [0x100, 0, f(1.5) | (f(-2.0) << 32), f(30.25), 1])
+        self.assertEqual(marshal.slots_vec3(p.slots, 2), Vector3(1.5, -2.0, 30.25))
+        self.assertEqual(marshal.pack("w>n", [(1.0, 2.0, 3.0)]).slots, marshal.vec3_packed_slots(Vector3(1, 2, 3)))
+
+    def test_vec3_outparams_stay_aligned(self):
+        for _ in range(64):  # different heap addresses; every buffer must be aligned
+            p = marshal.pack("VV>n", [])
+            self.assertEqual([a % 16 for a in p.slots], [0, 0])
+        from gta6mod.runtime.mock import write_vec3_out
+        with self.assertRaises(ValueError):
+            write_vec3_out(p.slots[0] + 4, Vector3(1, 2, 3))
 
     def test_entity_handle_is_two_slots(self):
         h = (0xDEADBEEF << 64) | 0x1122334455667788
@@ -115,8 +135,29 @@ class TestMockWorld(unittest.TestCase):
     def test_natives_on_mock(self):
         ped = N.PLAYER.PLAYER_PED_ID()
         self.assertTrue(N.ENTITY.DOES_ENTITY_EXIST(ped))
-        N.ENTITY.SET_ENTITY_COORDS(ped, 1.0, 2.0, 3.0, False, False, False, False)
+        N.ENTITY.SET_ENTITY_COORDS(ped, Vector3(1.0, 2.0, 3.0), False, False, False, False)
         self.assertEqual(N.ENTITY.GET_ENTITY_COORDS(ped, True), Vector3(1.0, 2.0, 3.0))
+
+    def test_set_entity_coords_round_trip_and_slots(self):
+        """SET_ENTITY_COORDS 0x143c13760 reads e,e,V,V,b,b,b,b,f (findings/phase5/23, correction 2026-11-25)."""
+        ped = N.PLAYER.PLAYER_PED_ID()
+        target = Vector3(-1234.5, 678.25, 42.125)
+        N.ENTITY.SET_ENTITY_COORDS(ped, target, True, False, True, False, 2.5)
+        h, slots = self.rt.backend.calls[-1]
+        self.assertEqual(h, 0x06843DA7060A026B)
+        self.assertEqual(len(slots), 9)
+        self.assertEqual(marshal.slots_entity(slots[0], slots[1]), ped)
+        self.assertEqual(marshal.slots_vec3(slots, 2), target)
+        self.assertEqual(slots[4:8], [1, 0, 1, 0])
+        self.assertEqual(marshal.slot_float(slots[8]), 2.5)
+        self.assertEqual(N.ENTITY.GET_ENTITY_COORDS(ped, True), target)
+        self.assertEqual(N.ENTITY.GET_ENTITY_COORDS_F44D(ped, True, False), target)  # observed GTA VI hash
+
+    def test_vec3_outparam_on_mock(self):
+        N.STREAMING.REQUEST_COLLISION_AT_COORD(Vector3(3.0, 4.0, 0.0))
+        self.rt.backend.step(100)
+        found, gz, normal = N.MISC.GET_GROUND_Z_AND_NORMAL_FOR_3D_COORD(Vector3(3.0, 4.0, 100.0))
+        self.assertEqual((found, gz, normal), (True, 12.0, Vector3(0.0, 0.0, 1.0)))
 
     def test_scheduler_wait_and_errors(self):
         seen = []
@@ -163,6 +204,24 @@ class TestCAbiBackend(unittest.TestCase):
 
         b.mock_register_native(0x3FEF770D40960D5A, fake_coords)
         self.assertEqual(N.ENTITY.GET_ENTITY_COORDS(0x100, True), Vector3(10.0, 20.0, 30.0))
+
+        # Packed Vector3 parameter through the C ABI: SET writes what GET returns.
+        seen = {}
+
+        def fake_set(call):
+            seen["argc"] = call.argc
+            seen["pos"] = marshal.slots_vec3(list(call.args), 2)
+            seen["tail"] = [call.args[i] for i in range(4, 8)] + [marshal.slot_float(call.args[8])]
+
+        def fake_get(call):
+            call.ret[0], call.ret[1] = marshal.vec3_packed_slots(seen["pos"])
+
+        b.mock_register_native(0x06843DA7060A026B, fake_set)
+        b.mock_register_native(0x3FEF770D40960D5A, fake_get)
+        N.ENTITY.SET_ENTITY_COORDS(0x100, Vector3(-5.5, 6.25, 7.125), False, True, False, True, 1.5)
+        self.assertEqual(seen["argc"], 9)
+        self.assertEqual(seen["tail"], [0, 1, 0, 1, 1.5])
+        self.assertEqual(N.ENTITY.GET_ENTITY_COORDS(0x100, True), Vector3(-5.5, 6.25, 7.125))
         ticks = []
         b.register_tick("py_tick", lambda: ticks.append(1))
         before = b.now_ms()
@@ -200,6 +259,60 @@ class TestGenerator(unittest.TestCase):
         coords = sig_of[0xA86D5F069399F44D]                          # GET_ENTITY_COORDS (GTA VI hash)
         self.assertTrue(coords.startswith("e") and coords.endswith(">w"), coords)
 
+    @unittest.skipUnless(HAVE_GEN, "sdk/generators is not part of this checkout")
+    def test_set_entity_coords_signature(self):
+        sig_of = {h: sig for h, (_ns, _n, sig, _st) in N.BY_HASH.items()}
+        self.assertEqual(sig_of[0x06843DA7060A026B], "ewbbbbf>n")
+        gen = importlib.import_module("gen_bindings")
+        self.assertEqual(gen.slot_layout("ewbbbbf>n"), list("eewwbbbbf"))  # e,e,V,V,b,b,b,b,f
+        self.assertEqual(gen.slot_layout("eVfE>w"), list("eeVfE"))
+
+    @unittest.skipUnless(HAVE_GEN and os.path.isfile(VECTOR_EVIDENCE), "needs sdk/generators and re-db evidence (private tree)")
+    def test_every_packed_vector_gets_the_packed_code(self):
+        """Every float triple the handler evidence marks packed is one 'w' param at that slot; the rest stay."""
+        with open(VECTOR_EVIDENCE, encoding="utf-8") as fh:
+            evidence = json.load(fh)["natives"]
+        with open(os.path.join(SDK, "data", "generated", "natives.index.json"), encoding="utf-8") as fh:
+            index = {int(n["hash"], 16): n for n in json.load(fh)["natives"]}
+        gen = importlib.import_module("gen_bindings")
+        packed = 0
+        for h, ev in evidence.items():
+            n = index[int(h, 16)]
+            layout = gen.slot_layout(n["sig"])
+            forms = {g["form"] for g in ev["groups"]}
+            for g in ev["groups"]:
+                if g["form"] == "packed":
+                    packed += 1
+                    fused = [p for p in n["params"] if p.get("fused") == g["names"]]
+                    self.assertEqual(len(fused), 1, (n["name"], g))
+                    self.assertEqual(fused[0]["code"], "w", n["name"])
+                    self.assertEqual(layout[g["slot"]:g["slot"] + 2], ["w", "w"], (n["name"], g["slot"], n["sig"]))
+                else:  # measured 3-float or unsettled: nativedb's float slots are kept
+                    self.assertTrue(all(p.get("fused") != g["names"] for p in n["params"]), n["name"])
+            want = "unconfirmed" if forms - {"packed", "3float"} else ("packed" if "packed" in forms else "3float")
+            self.assertEqual(n["vector_layout"], want, n["name"])
+        self.assertEqual(packed, 254)
+        self.assertEqual(sum(1 for n in index.values() if "w" in n["sig"].split(">")[0]), 204)
+        self.assertEqual(index[0xE39B4FF4FDEBDE27]["sig"], "eeifffi>n")  # TASK_GOTO_ENTITY_OFFSET: 3 float slots
+
+    def test_vector_evidence_matches_handler(self):
+        """The evidence file reproduces from the exe (SET_ENTITY_COORDS)."""
+        if not (DUMP and os.path.exists(os.path.join(DUMP, "game_scarlett_master.exe"))):
+            self.skipTest("set G6_DUMP")
+        sys.path.insert(0, os.path.join(SDK, "..", "tools", "phase5"))
+        try:
+            na = importlib.import_module("natives_arity")
+        finally:
+            sys.path.pop(0)
+        img = na.pe.Image(os.path.join(DUMP, "game_scarlett_master.exe"))
+        md = na.Cs(na.CS_ARCH_X86, na.CS_MODE_64)
+        md.detail = True
+        b, e = img.va_func(0x143C13760)
+        raw = []
+        na.analyse(img, md, 0x143C13760, e - b, raw_reads=raw)
+        self.assertEqual(sorted(set(raw)), [(0, 16, "xmm16"), (16, 16, "xmm16"), (32, 4, "gpr"), (40, 4, "gpr"),
+                                            (48, 4, "gpr"), (56, 4, "gpr"), (64, 4, "float")])
+
     def test_bindings_agree_across_languages(self):
         with open(os.path.join(SDK, "luau", "lib", "natives.luau"), encoding="utf-8") as fh:
             luau = fh.read()
@@ -210,7 +323,7 @@ class TestGenerator(unittest.TestCase):
             self.assertIn(f'0x{h:016X}ull, "{_ns}", "{name}", "{sig}"', c_hdr)
 
 
-CHAIN_ANCHORS = ["ecs.comp.seats_sel77", "ecs.ped.comp_12", "ecs.ped.comp_30", "ecs.ped.comp_weapon_26", "ecs.vehicle.comp_01", "fs.packfile.cell_file_type", "pool.buildings",
+CHAIN_ANCHORS = ["camera.final.get_front", "camera.gameplay.director", "camera.gameplay.get_director", "camera.world_to_screen", "streaming.model.request", "ecs.comp.seats_sel77", "ecs.ped.comp_12", "ecs.ped.comp_30", "ecs.ped.comp_weapon_26", "ecs.vehicle.comp_01", "fs.packfile.cell_file_type", "pool.buildings",
                  "script.thread.current_id", "tls.alloc_current.read", "tls.thread_id_cached"]
 RUNTIME_CHAIN_ANCHORS = ["pool.buildings", "script.thread.current_id", "tls.alloc_current.read",
                          "tls.thread_id_cached"]

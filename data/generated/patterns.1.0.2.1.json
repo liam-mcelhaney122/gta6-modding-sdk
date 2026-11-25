@@ -4,6 +4,185 @@
  "source": "re-db/builds/1.0.2.1/anchors.json",
  "patterns": [
   {
+   "name": "camera.final.frame",
+   "kind": "data",
+   "signature": "C5 FC 10 1D ? ? ? ? C5 E9 69 CA",
+   "expected_rva": 167956288,
+   "offset": 0,
+   "rip": {
+    "disp_at": 4,
+    "insn_len": 8
+   },
+   "confidence": "medium",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "camera.final.get_front",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 85970160,
+   "chain": {
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 80
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "C5 F8 28 05"
+     }
+    ],
+    "from_anchor": "gfx.viewport.project_normalized",
+    "from_spec": {
+     "name": "gfx.viewport.project_normalized",
+     "signature": "41 57 41 56 56 57 53 48 81 EC 90 07 00 00 48 89",
+     "kind": "function",
+     "offset": 0,
+     "rip": null
+    }
+   },
+   "confidence": "medium",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "camera.final.get_matrix",
+   "kind": "function",
+   "signature": "C5 F9 6F 15 ? ? ? ? C5 FC 10 05",
+   "expected_rva": 86031760,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "camera.final.get_position",
+   "kind": "function",
+   "signature": "C5 F9 6F 05 ? ? ? ? C5 F9 69 C8 C5 F1 72 E1 10 C5 F8 5B C9 C5 F1 C6 C9 03 C4 E2 79 98 0D ? ? ? ? C5 F8 29 09",
+   "expected_rva": 83013856,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "camera.gameplay.director",
+   "kind": "data",
+   "signature": "",
+   "expected_rva": 161475816,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? C5 F8 28 03 48 8B 46 08 48 89 F9 C5 F8 11 00 48 83 C4 30 5B 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 DF DF AC A6 91 A6 67 F4",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "56 48 83 EC 20 48 89 CE E8"
+     },
+     {
+      "op": "call_target",
+      "at": 8
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "48 8B 05"
+     },
+     {
+      "op": "rip_target",
+      "at": 0,
+      "disp_at": 3,
+      "insn_len": 7
+     }
+    ]
+   },
+   "confidence": "medium",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "camera.gameplay.get_director",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 84360208,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? C5 F8 28 03 48 8B 46 08 48 89 F9 C5 F8 11 00 48 83 C4 30 5B 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 DF DF AC A6 91 A6 67 F4",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "56 48 83 EC 20 48 89 CE E8"
+     },
+     {
+      "op": "call_target",
+      "at": 8
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "48 8B 05"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "camera.matrix_to_euler",
+   "kind": "function",
+   "signature": "48 81 EC 98 00 00 00 C5 78 29 B4 24 80 00 00 00 C5 78 29 6C 24 70 C5 78 29 64 24 60 C5 78 29 5C 24 50 C5 78 29 54 24 40 C5 78 29 4C 24 30 C5 78 29 44 24 20 C5 F8 29 7C 24 10 C5 F8 29 34 24 41 83",
+   "expected_rva": 28635600,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "camera.world_to_screen",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 43921520,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 48 8B 4E 08 0F B6 C0 48 89 01 48 89 F9 48 83 C4 38 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 50 28 AF 34 39 F1 74 33",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "48 83 EC 38 C5 F8 28 01 48 8D 4C 24 20 C5 F8 29 01 E8"
+     },
+     {
+      "op": "call_target",
+      "at": 17
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "41 56 56 57 53 48 83 EC 58 48 89 D7"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
    "name": "content.chunk_manager",
    "kind": "function",
    "signature": "56 57 48 83 EC 28 48 89 CF 48 89 D6 4C 8D 4C 24 24 BA 01 00 00 00 48 83 C7 50 49 89 F0 48",
@@ -1680,6 +1859,92 @@
    "rip": null,
    "confidence": "medium",
    "provenance": "research/03",
+   "unsigned": false
+  },
+  {
+   "name": "gfx.screen.resolution",
+   "kind": "data",
+   "signature": "C4 E3 79 22 05 ? ? ? ? 01 C5 F8 5B C0 C5 F0 5E C0 C4",
+   "expected_rva": 161475832,
+   "offset": 0,
+   "rip": {
+    "disp_at": 5,
+    "insn_len": 10
+   },
+   "confidence": "medium",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "gfx.viewport.array",
+   "kind": "data",
+   "signature": "48 8D 0D ? ? ? ? 48 69 C0 30 07 00 00 48 01 C1 E8 ? ? ? ? 85",
+   "expected_rva": 177519536,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "gfx.viewport.composite_matrix",
+   "kind": "function",
+   "signature": "48 83 EC 68 C5 78 29 5C 24 50 C5 78 29 54 24 40 C5 78 29 4C 24 30 C5 78 29 44 24 20 C5 F8 29 7C 24 10 C5 F8 29 34 24 C5 F8 28 A9",
+   "expected_rva": 82957136,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "gfx.viewport.game",
+   "kind": "data",
+   "signature": "48 8B 0D ? ? ? ? 48 89 D7 48 85 C9 74 66",
+   "expected_rva": 177527280,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "gfx.viewport.project_normalized",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 53 48 81 EC 90 07 00 00 48 89",
+   "expected_rva": 85970000,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "gfx.viewport.sphere_visible",
+   "kind": "function",
+   "signature": "48 83 EC 48 C5 78 29 4C 24 30 C5 78 29 44 24 20 C5 F8 29 7C 24 10 C5 F8 29 34 24 C4 E2 79 18 E2",
+   "expected_rva": 86847856,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "gfx.viewport.transform_point",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 68 48 89 D7 48 8D 54 24 20",
+   "expected_rva": 82957024,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
    "unsigned": false
   },
   {
@@ -3945,6 +4210,62 @@
    },
    "confidence": "high",
    "provenance": "Streaming module named \"MetaDataStore\" (registered at 0x145c0b5a6 with the string 0x1467822fd)",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.model.has_loaded",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 40 BB FF FF 3F 00",
+   "expected_rva": 28925440,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.model.is_valid",
+   "kind": "function",
+   "signature": "56 57 48 83 EC 28 48 8D 7C 24 20 45",
+   "expected_rva": 23506448,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.model.release",
+   "kind": "function",
+   "signature": "41 57 41 56 41 54 56 57 55 53 48 83 EC 40 48 85 C9 0F 84 ? ? ? ? 48 8D",
+   "expected_rva": 71836288,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
+   "unsigned": false
+  },
+  {
+   "name": "streaming.model.request",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 26507248,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 48 89 F9 48 83 C4 28 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 C5 01 D7 05 CF 03 B9 9D",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "31 D2 E9 09 00 00 00"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "catalogue worker; tools/phase5/catalogue.py; findings/phase5/29",
    "unsigned": false
   },
   {

@@ -991,12 +991,16 @@ g6_status run_init() {
                 g_run_hook.kind() == hook::PatchKind::rel32_via_relay ? "5-byte rel32" : "14-byte abs", g_run_hook.stolen(),
                 sb[0], sb[1], sb[2], sb[3], sb[4], g_run_hook.original());
         g_hook_active.store(true, std::memory_order_release);
+        // The runtime may be injected after the title's threads are running: enable() suspends every
+        // other thread and refuses while any RIP is inside the bytes it replaces (hook.cpp write_patch).
         if (!g_run_hook.enable(err, sizeof err)) {
-            G6LOG_E("Run hook enable failed: %s", err);
+            G6LOG_E("Run hook NOT installed: %s", err);
             teardown("hook enable failed");
             return G6_E_INTERNAL;
         }
-        G6LOG_I("Run hook installed at %p", g_run);
+        const hook::FreezeStats& fs = g_run_hook.last_freeze();
+        G6LOG_I("Run hook installed at %p (%u other thread(s) suspended during the write, %u attempt(s) in %u ms, guarded range %zu bytes)",
+                g_run, fs.threads, fs.attempts, fs.elapsed_ms, hook::guarded_len(g_run_hook.patch_len(), g_run_hook.stolen()));
     }
     if (g_cfg.mode == Mode::observe) {
         G6LOG_I("mode=observe: hook logs script threads only; plugins NOT loaded");
@@ -1082,6 +1086,16 @@ int t_hook_info(void* h, int* kind, std::size_t* stolen, std::size_t* patch_len)
     if (kind) *kind = static_cast<int>(p->kind());
     if (stolen) *stolen = p->stolen();
     if (patch_len) *patch_len = p->patch_len();
+    return 1;
+}
+int t_rip_in_range(std::uint64_t rip, std::uint64_t lo, std::size_t n) { return hook::rip_in_range(rip, lo, n) ? 1 : 0; }
+std::size_t t_guarded_len(std::size_t patch_len, std::size_t stolen) { return hook::guarded_len(patch_len, stolen); }
+int t_hook_freeze_info(void* h, std::uint32_t* threads, std::uint32_t* attempts, std::uint32_t* blocking_tid, std::uint64_t* blocking_rip) {
+    const hook::FreezeStats& f = static_cast<hook::InlineHook*>(h)->last_freeze();
+    if (threads) *threads = f.threads;
+    if (attempts) *attempts = f.attempts;
+    if (blocking_tid) *blocking_tid = f.blocking_tid;
+    if (blocking_rip) *blocking_rip = f.blocking_rip;
     return 1;
 }
 int t_verify_selfid(const std::uint8_t* fn, const std::uint8_t* lo, const std::uint8_t* hi, std::uint64_t hash, std::uint64_t* id) {
@@ -1239,6 +1253,7 @@ const g6rt_test_api g_test_api = {
     t_hook_info, t_verify_selfid, t_check_image, t_resolve_anchors, t_verify_handlers, t_sched_tick,
     t_clock_find_load, t_clock_mix, t_resolve_engine, t_vfs_map_path, t_vfs_mount_fake,
     t_guard_classify, t_guard_trips, t_guard_gate_run, t_guard_scan_self,
+    t_rip_in_range, t_guarded_len, t_hook_freeze_info,
 };
 
 } // namespace

@@ -111,12 +111,35 @@ if(G6_WITH_LUAU)
   add_test(NAME luau_spawn_car
            COMMAND g6_luau_runner "${_g6_luau_lib}" "${CMAKE_CURRENT_SOURCE_DIR}/luau/examples/spawn_car/init.luau"
                    5000 --press 51@1008)
+  # script-layer examples: scenario flags and expected log lines from sdk/docs/script_layer.md
+  add_test(NAME luau_example_god_mode
+           COMMAND g6_luau_runner "${_g6_luau_lib}" "${CMAKE_CURRENT_SOURCE_DIR}/luau/examples/god_mode/init.luau"
+                   4000 --damage 50@496 --press 47@1008 --damage 50@2000 --press 47@3008 --damage 30@3504 --expect-clean --expect-log "god mode ON" --expect-log "god mode OFF")
+  add_test(NAME luau_example_never_wanted
+           COMMAND g6_luau_runner "${_g6_luau_lib}" "${CMAKE_CURRENT_SOURCE_DIR}/luau/examples/never_wanted/init.luau"
+                   4000 --press 74@496 --wanted 3@1504 --press 74@3008 --expect-clean --expect-log "never wanted ON (max wanted level was 5)" --expect-log "cleared wanted level 3" --expect-log "never wanted OFF (max wanted level restored to 5)")
+  add_test(NAME luau_example_waypoint_teleport
+           COMMAND g6_luau_runner "${_g6_luau_lib}" "${CMAKE_CURRENT_SOURCE_DIR}/luau/examples/waypoint_teleport/init.luau"
+                   3000 --press 73@496 --waypoint 250,-400,0@1008 --press 73@1504 --expect-clean --expect-log "no waypoint set" --expect-log "teleported to 250.0 -400.0 13.0")
+  add_test(NAME luau_example_vehicle_spawner
+           COMMAND g6_luau_runner "${_g6_luau_lib}" "${CMAKE_CURRENT_SOURCE_DIR}/luau/examples/vehicle_spawner/init.luau"
+                   3000 --press 52@496 --damage 150@2000 --expect-clean --expect-log "spawned adder and seated the player" --expect-log "repaired vehicle (850 -> 1000)")
+  add_test(NAME luau_example_time_control
+           COMMAND g6_luau_runner "${_g6_luau_lib}" "${CMAKE_CURRENT_SOURCE_DIR}/luau/examples/time_control/init.luau"
+                   2000 --press 20@496 --press 20@1008 --press 29@1504 --expect-clean --expect-log "time scale 0.50" --expect-log "time scale 0.20" --expect-log "clock 13:00")
   file(GLOB _g6_luau_tests CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/luau/tests/*.luau")
   foreach(_test ${_g6_luau_tests})
     get_filename_component(_name "${_test}" NAME_WE)
     add_test(NAME luau_${_name}
              COMMAND g6_luau_runner "${_g6_luau_lib}" "${_test}" 3000 --press 51@480 --expect-clean
                      --expect-log "PASS ${_name}")
+  endforeach()
+  # Tests that log an error on purpose: no --expect-clean.
+  file(GLOB _g6_luau_err_tests CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/luau/tests/expect_errors/*.luau")
+  foreach(_test ${_g6_luau_err_tests})
+    get_filename_component(_name "${_test}" NAME_WE)
+    add_test(NAME luau_${_name}
+             COMMAND g6_luau_runner "${_g6_luau_lib}" "${_test}" 500 --expect-log "PASS ${_name}")
   endforeach()
   add_test(NAME luau_plugin_check
            COMMAND g6_luau_plugin_check $<TARGET_FILE:g6_luau_plugin> "${_g6_luau_lib}"
