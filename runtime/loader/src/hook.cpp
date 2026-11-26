@@ -43,49 +43,81 @@ struct Emitter {
     }
 };
 
-// Suspends every other thread of the process; reports whether any is executing in [lo, lo+n).
+// Suspends every other thread of the process (one Toolhelp32 snapshot) and checks each one's RIP
+// against [lo, lo+n). A thread that still exists but cannot be opened, suspended or inspected counts
+// as unsafe: its position is unknown. Threads created after the snapshot are not seen (see README).
 class ThreadFreezer {
 public:
+    enum class Result { safe, unsafe, error };
     ~ThreadFreezer() { thaw(); }
-    bool freeze(const std::uint8_t* lo, std::size_t n, bool& inside) noexcept {
-        inside = false;
+    Result freeze(const std::uint8_t* lo, std::size_t n, FreezeStats& st) noexcept {
+        st.threads = 0;
+        st.blocking_tid = 0;
+        st.blocking_rip = 0;
+        st.blocking_error = 0;
         std::vector<DWORD> tids;
         try {
             HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
-            if (snap == INVALID_HANDLE_VALUE) return false;
+            if (snap == INVALID_HANDLE_VALUE) { st.blocking_error = GetLastError(); return Result::error; }
             THREADENTRY32 te{};
             te.dwSize = sizeof te;
             const DWORD pid = GetCurrentProcessId(), self = GetCurrentThreadId();
             if (Thread32First(snap, &te)) {
+                std::size_t guard = 0;
                 do {
                     if (te.th32OwnerProcessID == pid && te.th32ThreadID != self) tids.push_back(te.th32ThreadID);
                     te.dwSize = sizeof te;
-                } while (Thread32Next(snap, &te));
+                } while (++guard < 1000000 && Thread32Next(snap, &te));
             }
             CloseHandle(snap);
             handles_.clear();
             handles_.reserve(tids.size());  // no allocation while threads are suspended
         } catch (...) {
-            return false;
+            return Result::error;
         }
-        const std::uintptr_t a = reinterpret_cast<std::uintptr_t>(lo);
+        const std::uint64_t a = reinterpret_cast<std::uintptr_t>(lo);
         for (DWORD tid : tids) {
             HANDLE h = OpenThread(THREAD_SUSPEND_RESUME | THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION, FALSE, tid);
-            if (!h) continue;  // exited meanwhile
-            if (SuspendThread(h) == static_cast<DWORD>(-1)) { CloseHandle(h); continue; }
+            if (!h) {
+                const DWORD e = GetLastError();
+                if (e == ERROR_INVALID_PARAMETER) continue;  // exited after the snapshot
+                return blocked(st, tid, 0, e);
+            }
+            if (SuspendThread(h) == static_cast<DWORD>(-1)) {
+                const DWORD e = GetLastError();
+                const bool gone = !alive(h);
+                CloseHandle(h);
+                if (gone) continue;
+                return blocked(st, tid, 0, e);
+            }
             handles_.push_back(h);
+            ++st.threads;
             CONTEXT ctx{};
             ctx.ContextFlags = CONTEXT_CONTROL;
-            if (!GetThreadContext(h, &ctx)) { inside = true; continue; }  // unknown position: treat as unsafe
-            if (ctx.Rip >= a && ctx.Rip < a + n) inside = true;
+            if (!GetThreadContext(h, &ctx)) {
+                const DWORD e = GetLastError();
+                if (!alive(h)) continue;
+                return blocked(st, tid, 0, e);
+            }
+            if (rip_in_range(ctx.Rip, a, n)) return blocked(st, tid, ctx.Rip, 0);
         }
-        return true;
+        return Result::safe;
     }
     void thaw() noexcept {
         for (HANDLE h : handles_) { ResumeThread(h); CloseHandle(h); }
         handles_.clear();
     }
 private:
+    static bool alive(HANDLE h) noexcept {
+        DWORD code = 0;
+        return !GetExitCodeThread(h, &code) || code == STILL_ACTIVE;
+    }
+    static Result blocked(FreezeStats& st, DWORD tid, std::uint64_t rip, DWORD error) noexcept {
+        st.blocking_tid = tid;
+        st.blocking_rip = rip;
+        st.blocking_error = error;
+        return Result::unsafe;
+    }
     std::vector<HANDLE> handles_;
 };
 
@@ -341,14 +373,31 @@ bool InlineHook::create(void* target, void* detour, const Options& opt, char* er
 
 bool InlineHook::write_patch(const std::uint8_t* bytes, const std::uint8_t* expect, char* err, std::size_t errcap) noexcept {
     ThreadFreezer fz;
-    bool inside = false;
-    int attempt = 0;
-    for (;; ++attempt) {
-        if (!fz.freeze(target_, patch_len_, inside)) { set_err(err, errcap, "could not enumerate/suspend threads"); return false; }
-        if (!inside) break;
+    const std::size_t guard_n = guarded_len(patch_len_, stolen_);
+    freeze_ = FreezeStats{};
+    const ULONGLONG t0 = GetTickCount64();
+    for (int attempt = 1;; ++attempt) {
+        freeze_.attempts = static_cast<std::uint32_t>(attempt);
+        const ThreadFreezer::Result r = fz.freeze(target_, guard_n, freeze_);
+        freeze_.elapsed_ms = static_cast<std::uint32_t>(GetTickCount64() - t0);
+        if (r == ThreadFreezer::Result::safe) break;
         fz.thaw();
-        if (attempt >= 200) { set_err(err, errcap, "a thread stayed inside the patch range"); return false; }
-        Sleep(1);
+        if (r == ThreadFreezer::Result::error) {
+            set_err(err, errcap, "could not enumerate threads (error %lu); nothing written", static_cast<unsigned long>(freeze_.blocking_error));
+            return false;
+        }
+        if (attempt >= kFreezeAttempts || freeze_.elapsed_ms >= kFreezeBudgetMs) {
+            if (freeze_.blocking_rip)
+                set_err(err, errcap, "thread %lu was inside the patch range %p+0x%zx (RIP %p) in all %d attempts (%u ms); nothing written",
+                        static_cast<unsigned long>(freeze_.blocking_tid), static_cast<void*>(target_), guard_n,
+                        reinterpret_cast<void*>(freeze_.blocking_rip), attempt, freeze_.elapsed_ms);
+            else
+                set_err(err, errcap, "thread %lu could not be suspended or inspected (error %lu) in all %d attempts (%u ms); nothing written",
+                        static_cast<unsigned long>(freeze_.blocking_tid), static_cast<unsigned long>(freeze_.blocking_error), attempt,
+                        freeze_.elapsed_ms);
+            return false;
+        }
+        Sleep(kFreezeRetrySleepMs);
     }
     if (std::memcmp(target_, expect, patch_len_) != 0) {
         fz.thaw();

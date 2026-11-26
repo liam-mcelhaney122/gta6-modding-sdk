@@ -4,7 +4,7 @@
 
 [API index](index.md)
 
-89 types and 898 fields (from 904 recorded field readings; a slot recorded twice keeps its highest-confidence name, as in `classes.hpp`). Offsets are bytes from the start of the object. Sizes without a recorded size are the gap to the next field, capped at 8.
+85 types and 867 fields (from 873 recorded field readings; a slot recorded twice keeps its highest-confidence name, as in `classes.hpp`). Offsets are bytes from the start of the object. Sizes without a recorded size are the gap to the next field, capped at 8.
 
 | Type | C++ struct | Size | Fields | Source part |
 |---|---|---|---|---|
@@ -65,10 +65,6 @@
 | [fs.rds5.file](#fs_rds5_file) | `fs_rds5_file` | 0x48 | 8 | fs.json |
 | [fs.rds5.header](#fs_rds5_header) | `fs_rds5_header` | ? | 5 | fs.json |
 | [fs.rds5.record](#fs_rds5_record) | `fs_rds5_record` | 0x8 | 1 | fs.json |
-| [fs.rpf9.field_desc](#fs_rpf9_field_desc) | `fs_rpf9_field_desc` | 0x18 | 3 | fs.json |
-| [fs.rpf9.header](#fs_rpf9_header) | `fs_rpf9_header` | 0x40 | 16 | fs.json |
-| [fs.rpf9.section_record](#fs_rpf9_section_record) | `fs_rpf9_section_record` | 0x8 | 3 | fs.json |
-| [fs.rpf9.toc_state](#fs_rpf9_toc_state) | `fs_rpf9_toc_state` | 0x48 | 9 | fs.json |
 | [fwAssetStore slot pool (store+0x38)](#fwassetstore_slot_pool_store_0x38) | `fwAssetStore_slot_pool_store_0x38` | ? | 4 | streaming-pools.json |
 | [fwBasePool (GTA VI lock-free variant)](#fwbasepool_gta_vi_lock_free_variant) | `fwBasePool_GTA_VI_lock_free_variant` | 0x38 | 9 | streaming-pools.json |
 | [fwScriptGuid](#fwscriptguid) | `fwScriptGuid` | 0x20 | 3 | streaming-pools.json |
@@ -875,69 +871,6 @@ Note: decoded from 0x144ffd520 / 0x1451d2460; validated on 57 .ttpf headers (mon
 | Offset | Size | Field | Confidence | Provenance |
 |---|---|---|---|---|
 | `0x0` | `0x1` | `bits_0_23_physical_offset_256_code_uses_u32_rec_8` | high | sentinel phys == file size in 57/57 |
-
-## fs_rpf9_field_desc
-
-re-db name `fs.rpf9.field_desc` · size `0x18` · source `fs.json`
-
-| Offset | Size | Field | Confidence | Provenance |
-|---|---|---|---|---|
-| `0x0` | `0x8` | `fieldNameHash64` | high | 0x1428cd240 compare |
-| `0xC` | `0x4` | `columnOffset` | high | 0x1455b2600 |
-| `0x10` | `0x2` | `elementSize` | high | 0x1455b2600 imul by value index |
-
-## fs_rpf9_header
-
-re-db name `fs.rpf9.header` · size `0x40` · source `fs.json`
-
-Note: fields as used by code (0x14087aff0 layout, 0x140a34890, read_header). TOC is column-oriented with 64-bit field-name hashes. The header is the first 0x40 bytes. It is followed by the section directory at file+0x40 (hdr+0x1a records of fs.rpf9.section_record; toc_state+0x10; stored transformed) and the section blob p1 (hdr+0x1c bytes; toc_state+0x18; at file+0x60 in every available archive, where the count is 4), findings/phase3/01 item 5. Corrected 2026-11-25 (findings/phase8/40): those two regions were listed as header fields at +0x40 (32 bytes) and +0x60 (336 bytes), past the declared 0x40.
-
-| Offset | Size | Field | Confidence | Provenance |
-|---|---|---|---|---|
-| `0x0` | `0x4` | `magic_RPF9` | high | read_header |
-| `0x4` | `0x4` | `headerRegionSize_end_of_table2` | high | mode 0 read size; table2 span len = [4]-[8] |
-| `0x8` | `0x4` | `table2Offset` | high | mode 1/2 read size; state_init table2 = hdr+[8] |
-| `0xC` | `0x4` | `trailerSize` | low | not read on the mount path |
-| `0x10` | `0x8` | `archiveId` | low | not read on the mount path |
-| `0x18` | `0x2` | `t_0x7a00_tag` | low | constant in data |
-| `0x1A` | `0x2` | `sectionCount_A_4` | high | layout p0 = A x 8 bytes; section_lookup count |
-| `0x1C` | `0x4` | `sectionBlobSize_B_0x150` | high | layout p1 size; transform span B - [0x30] |
-| `0x20` | `0x2` | `fieldCount_C_3_7` | high | descriptor table C x 24; field_index count |
-| `0x22` | `0x2` | `table2FieldCount_D_1` | high | fields >= C-D live in table2 |
-| `0x24` | `0x4` | `entryCount_N` | high | lookup loops; layout (C-D)*N*E |
-| `0x28` | `0x4` | `keyId_profile` | medium | 4 distinct values in data; no read observed on this path [unknown consumer] |
-| `0x2C` | `0x1` | `indexWidth_E_1_2_bytes` | high | layout and 0x144db65b0 |
-| `0x2D` | `0x1` | `flags_bit0_16_byte_alignment` | high | layout and hdr+0x2d &1 |
-| `0x2E` | `0x1` | `transformId_9_provider_9_1_4_mode_9_1_1_2` | medium | 0x140a34890 |
-| `0x30` | `0x4` | `blobPrefix_0x10_excluded_from_transform_span` | medium | 0x140a34970(B, [0x30]) |
-
-## fs_rpf9_section_record
-
-re-db name `fs.rpf9.section_record` · size `0x8` · source `fs.json`
-
-Note: one entry of the RPF9 section directory (file+0x40, count hdr+0x1a; findings/phase3/01 item 7). section_lookup 0x144e6f740 scans the kinds and returns toc_state+0x18 + offset. Available archives decode to (1,0,0), (5,0,0x18), (6,0,0x30), (9,1,0x140); kind 1 is the 0x18-byte descriptor.
-
-| Offset | Size | Field | Confidence | Provenance |
-|---|---|---|---|---|
-| `0x0` | `0x2` | `kind` | high | 0x144e6f790 cmp word [rcx+rdx*8], r8w (stride 8, count movzx word [hdr+0x1a] at 0x144e6f754) |
-| `0x2` | `0x2` | `flags` | low | values 0 and 1 in decoded data (findings/phase3/01 item 7); no reader on the lookup path |
-| `0x4` | `0x4` | `offset_in_section_blob_p1` | high | 0x144e6f772 mov eax, [rdi+rax*8+4]; 0x144e6f776 add rax, [toc_state+0x18] |
-
-## fs_rpf9_toc_state
-
-re-db name `fs.rpf9.toc_state` · size `0x48` · source `fs.json`
-
-| Offset | Size | Field | Confidence | Provenance |
-|---|---|---|---|---|
-| `0x0` | `0x4` | `mode_0_contiguous_1_split_table2_2_header_only` | high | 0x14087aec0 |
-| `0x8` | `0x8` | `hdr` | high | 0x14087af70 |
-| `0x10` | `0x8` | `p0_sections` | high | layout |
-| `0x18` | `0x8` | `p1_blob` | high | layout; section_lookup adds |
-| `0x20` | `0x8` | `p2_field_descriptors_C_x_24` | high | field_index |
-| `0x28` | `0x8` | `p3_per_entry_index_table_C_D_x_N_x_E` | high | 0x144db65b0 |
-| `0x30` | `0x8` | `p4_column_values_table1` | high | 0x140038300 -> 0x1455b2600 |
-| `0x38` | `0x8` | `table2_ptr` | high | 0x14087b0b0 |
-| `0x40` | `0x8` | `table2_aux` | medium | 0x14087b0b0 16-byte store |
 
 ## fwAssetStore_slot_pool_store_0x38
 

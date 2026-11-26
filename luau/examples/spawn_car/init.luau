@@ -1,5 +1,5 @@
 --!strict
--- Example mod: press INPUT_CONTEXT (51, "E") to spawn a car in front of the player,
+-- Example mod: press INPUT_CONTEXT to spawn a car in front of the player,
 -- and log the player's position every 2 seconds.
 --
 -- Uses only the generated typed wrappers. All natives here are UNVERIFIED for
@@ -10,7 +10,7 @@ local script = require("@gta6/script")
 local native = require("@gta6/native")
 local N = require("@gta6/natives")
 
-local CONTROL_CONTEXT = 51
+local CONTROL_CONTEXT = native.joaat("INPUT_CONTEXT") -- GTA VI action hash
 
 -- Entity handles are opaque 16-byte buffers; print one as a single 128-bit hex
 -- number (the same text the Python example prints). Display only: never build one.

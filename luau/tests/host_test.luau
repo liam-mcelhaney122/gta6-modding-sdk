@@ -1,8 +1,9 @@
 --!strict
 -- Luau host test against the mock runtime (g6_luau_runner fake world, see g6_luau_runner.cpp).
 -- Run: g6_luau_runner sdk\luau\lib sdk\luau\tests\host_test.luau 3000 --press 51@480 --expect-clean --expect-log "PASS host_test"
--- Covers: 16-byte entity buffer round trip, packed Vector3 return, wait() scheduling,
--- one-tick control presses, and the error paths of native.call.
+-- Covers: 16-byte entity buffer round trip, packed Vector3 return and parameter ('w': one 16-byte
+-- block in two slots), the 16-byte aligned Vector3* out-param, wait() scheduling, one-tick control
+-- presses, and the error paths of native.call.
 
 local script = require("@gta6/script")
 local native = require("@gta6/native")
@@ -13,7 +14,7 @@ local PRESS_AT = 480  -- must match --press 51@480
 local function u64lo(h: buffer): number return buffer.readu32(h, 0) + buffer.readu32(h, 4) * 2 ^ 32 end
 local function u64hi(h: buffer): number return buffer.readu32(h, 8) + buffer.readu32(h, 12) * 2 ^ 32 end
 local function eq3(v: vector, x: number, y: number, z: number): boolean return v.x == x and v.y == y and v.z == z end
-local function expectError(what: string, needle: string, f: () -> ())
+local function expectError(what: string, needle: string, f: () -> ...any)
 	local ok, err = pcall(f)
 	assert(not ok, what .. ": expected an error")
 	assert(string.find(tostring(err), needle, 1, true), what .. ": unexpected error: " .. tostring(err))
@@ -37,14 +38,19 @@ expectError("short buffer", "must be 16 bytes", function() N.ENTITY.DOES_ENTITY_
 expectError("not a native", "expected a native handle", function() native.call(buffer.create(16) :: any) end)
 expectError("unregistered native", "not present in this game build", function() N.ENTITY.GET_ENTITY_ALPHA(ped) end)
 
--- ------------------------------------------------------------------ packed Vector3 return
+-- ------------------------------------------------------------------ packed Vector3 return and parameter
 local p = N.ENTITY.GET_ENTITY_COORDS(ped, true)
-assert(typeof(p) == "vector", "GET_ENTITY_COORDS returns a vector")
+assert(type(p) == "vector", "GET_ENTITY_COORDS returns a vector")
 assert(eq3(p, -1000, -2000, 15), `player coords {p}`)
-N.ENTITY.SET_ENTITY_COORDS(ped, 1.5, -2.25, 30.125, false, false, false, false)
+-- SET_ENTITY_COORDS is 'ewbbbbf>n': entity in slots 0-1, the packed position in 2-3 (x,y in slot 2, z in the
+-- low half of slot 3), four BOOLs in 4-7 and a float in 8. The runner's handler reads the position from 2-3.
+N.ENTITY.SET_ENTITY_COORDS(ped, vector.create(1.5, -2.25, 30.125), false, false, false, false)
 p = N.ENTITY.GET_ENTITY_COORDS(ped, true)
-assert(eq3(p, 1.5, -2.25, 30.125), `moved coords {p} (x,y share ret[0], z is the low half of ret[1])`)
-N.ENTITY.SET_ENTITY_COORDS(ped, -1000, -2000, 15, false, false, false, false)
+assert(eq3(p, 1.5, -2.25, 30.125), `moved coords {p} (packed param in, packed return out)`)
+N.ENTITY.SET_ENTITY_COORDS(ped, vector.create(-1000, -2000, 15), false, false, false, false, 0)
+assert(eq3(N.ENTITY.GET_ENTITY_COORDS(ped, true), -1000, -2000, 15), "coords restored")
+local off = N.ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, vector.create(0, 2, 1))
+assert(eq3(off, -1000, -1998, 16), `offset from entity {off} (heading 0: +y forward)`)
 
 -- ------------------------------------------------------------------ scheduling
 local order: { string } = {}
@@ -78,6 +84,15 @@ script.register("sched", function()
 	assert(u64lo(veh) == 0x101 and u64hi(veh) == 0, "first spawned handle is 0x101")
 	assert(N.ENTITY.DOES_ENTITY_EXIST(veh), "spawned vehicle exists")
 	assert(eq3(N.ENTITY.GET_ENTITY_COORDS(veh, true), 7.5, 8.25, -9.0), "vehicle coords round trip")
+
+	-- Vector3* out-param: the host passes a 16-byte aligned buffer (the runner logs an ERROR otherwise,
+	-- which --expect-clean turns into a failure). 'wFV>b': packed coord, float*, Vector3*.
+	N.STREAMING.REQUEST_COLLISION_AT_COORD(vector.create(3, 4, 0))
+	local before = N.MISC.GET_GROUND_Z_AND_NORMAL_FOR_3D_COORD(vector.create(3, 4, 100))
+	assert(before == false, "no ground before collision loads")
+	script.wait(100)
+	local found, gz, normal = N.MISC.GET_GROUND_Z_AND_NORMAL_FOR_3D_COORD(vector.create(3, 4, 100))
+	assert(found == true and gz == 12 and eq3(normal, 0, 0, 1), `ground probe {found} {gz} {normal}`)
 	table.insert(order, "sched:done")
 end)
 

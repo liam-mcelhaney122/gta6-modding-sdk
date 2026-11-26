@@ -1,6 +1,8 @@
 @echo off
-rem Build gta6mod_runtime.dll and the offline self-test with clang-cl (x64, C++20, /W4 /WX).
-rem Usage: build.cmd [test]      "test" also runs build\loader_selftest.exe
+rem Build gta6mod_runtime.dll, the offline self-test, g6inject.exe (build_inject.cmd) and the g6probe
+rem plugin (build_probe.cmd) with clang-cl (x64, C++20, /W4 /WX).
+rem Usage: build.cmd [test]      "test" also runs build\loader_selftest.exe, build\inject_test\inject_test.exe
+rem                              and the g6probe unit and mock-world tests
 setlocal
 set "HERE=%~dp0"
 set "LLVM=C:\Program Files\LLVM\bin"
@@ -25,8 +27,19 @@ if errorlevel 1 (echo BUILD FAILED: loader_selftest.exe & exit /b 1)
 
 if not exist "%OUT%\gta6mod_runtime.ini" copy /y "%HERE%gta6mod_runtime.ini" "%OUT%\gta6mod_runtime.ini" >nul
 echo built: %OUT%\gta6mod_runtime.dll
+call "%HERE%build_inject.cmd"
+if errorlevel 1 exit /b 1
+call "%HERE%build_probe.cmd"
+if errorlevel 1 exit /b 1
+rem "if errorlevel" is evaluated when the line runs; %errorlevel% inside ( ) would be expanded too early.
 if /i "%~1"=="test" (
   "%OUT%\loader_selftest.exe" "%OUT%\gta6mod_runtime.dll"
-  exit /b %errorlevel%
+  if errorlevel 1 exit /b 1
+  "%OUT%\inject_test\inject_test.exe" "%OUT%\g6inject.exe"
+  if errorlevel 1 exit /b 1
+  "%OUT%\probe_test\g6probe_test.exe"
+  if errorlevel 1 exit /b 1
+  "%OUT%\probe_test\probe_mock_test.exe" "%OUT%\probe_test\gta6mod_mock.dll" "%OUT%\probe\g6probe.dll" "%OUT%\probe_test\fake_title.dll" "%OUT%\probe_test\work"
+  if errorlevel 1 exit /b 1
 )
 exit /b 0

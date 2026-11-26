@@ -10,7 +10,9 @@ Two halves:
 * Scripting API (same surface as the Luau API):
   ``gta6mod.runtime`` (backends: in-process mock today, C-ABI runtime later),
   ``gta6mod.natives`` (generated typed wrappers), ``gta6mod.script`` (script
-  registration + cooperative ``wait``).
+  registration + cooperative ``wait``), and ``gta6mod.game``, the script layer
+  most mods should use: clean native names, helpers and ``Mod``
+  (sdk/docs/script_layer.md).
 
 Nothing here writes, copies or redistributes game data.
 """

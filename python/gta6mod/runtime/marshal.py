@@ -22,6 +22,9 @@ def _u2f(u: int) -> float:
 
 MASK64 = 0xFFFFFFFFFFFFFFFF
 OUT_CODES = "IFBVE"
+# In/out: the caller passes a value, the native gets a pointer to scratch holding it, and the value read back
+# after the call is returned like an out-param. X = 16-byte entity handle (docs/native-signatures.md).
+INOUT_CODES = "X"
 
 
 def entity_slots(handle: int) -> list[int]:
@@ -35,7 +38,7 @@ def slots_entity(lo: int, hi: int) -> int:
 
 
 def vec3_packed_slots(v) -> list[int]:
-    """Packed 16-byte Vector3 return {x,y,z,w}: x,y in slot 0, z in the low half of slot 1."""
+    """Packed 16-byte Vector3 {x,y,z,w} ('w' param or return): x,y in slot 0, z in the low half of slot 1."""
     x, y, z = (v.x, v.y, v.z) if isinstance(v, Vector3) else tuple(v)
     return [_f2u(x) | (_f2u(y) << 32), _f2u(z)]
 
@@ -50,10 +53,24 @@ class EntitySlot(ctypes.Structure):
 
 
 class Vec3Slots(ctypes.Structure):
-    """Matches g6_vec3_slots: x, y, z each padded to 8 bytes."""
+    """Matches g6_vec3_slots (GTA V scrVector, 8-byte stride). Not the GTA VI out-param layout: kept for
+    callers that still name it. Vector3* out-params use Vec3Packed."""
     _fields_ = [("x", ctypes.c_float), ("_px", ctypes.c_uint32),
                 ("y", ctypes.c_float), ("_py", ctypes.c_uint32),
                 ("z", ctypes.c_float), ("_pz", ctypes.c_uint32)]
+
+
+class Vec3Packed(ctypes.Structure):
+    """Matches g6_vec3_packed: the 16-byte Vec3V a Vector3* out-param receives. The game writes it with
+    vmovaps, so the address must be 16-byte aligned: allocate with aligned_vec3_packed()."""
+    _fields_ = [("x", ctypes.c_float), ("y", ctypes.c_float), ("z", ctypes.c_float), ("w", ctypes.c_float)]
+
+
+def aligned_vec3_packed() -> tuple[Vec3Packed, object]:
+    """A zeroed Vec3Packed at a 16-byte-aligned address, plus the raw buffer that must be kept alive."""
+    raw = (ctypes.c_char * 32)()
+    addr = (ctypes.addressof(raw) + 15) & ~15
+    return Vec3Packed.from_address(addr), raw
 
 
 @dataclass
@@ -92,6 +109,11 @@ def pack(sig: str, values) -> PackedCall:
             buf = EntitySlot()
             call.out_params.append((code, buf))
             call.slots.append(ctypes.addressof(buf))
+        elif code == "X":
+            lo, hi = entity_slots(next(it))
+            buf = EntitySlot(lo, hi)
+            call.out_params.append((code, buf))
+            call.slots.append(ctypes.addressof(buf))
         elif code == "f":
             call.slots.append(_f2u(next(it)))
         elif code == "b":
@@ -104,6 +126,8 @@ def pack(sig: str, values) -> PackedCall:
                 buf = ctypes.create_string_buffer(str(v).encode("utf-8"))
                 call.keepalive.append(buf)
                 call.slots.append(ctypes.addressof(buf))
+        elif code == "w":
+            call.slots += vec3_packed_slots(next(it))
         elif code == "v":
             v = next(it)
             x, y, z = (v.x, v.y, v.z) if isinstance(v, Vector3) else tuple(v)
@@ -113,7 +137,8 @@ def pack(sig: str, values) -> PackedCall:
             call.out_params.append((code, buf))
             call.slots.append(ctypes.addressof(buf))
         elif code == "V":
-            buf = Vec3Slots()
+            buf, raw = aligned_vec3_packed()
+            call.keepalive.append(raw)
             call.out_params.append((code, buf))
             call.slots.append(ctypes.addressof(buf))
         else:
@@ -161,7 +186,7 @@ def unpack(sig: str, ret_slots: list[int], packed: PackedCall):
             outs.append(bool(buf.value & 0xFF))
         elif code == "V":
             outs.append(Vector3(buf.x, buf.y, buf.z))
-        elif code == "E":
+        elif code in "EX":
             outs.append(slots_entity(buf.lo, buf.hi))
     return tuple(([] if ret_code == "n" else [result]) + outs)
 
@@ -174,6 +199,22 @@ def slot_int(s: int) -> int:
 
 def slot_float(s: int) -> float:
     return _u2f(s)
+
+
+def slots_vec3(slots: list[int], i: int) -> Vector3:
+    """A packed Vector3 argument ('w') occupying slots[i] and slots[i + 1] (mock handlers)."""
+    return slots_vec3_packed(slots[i], slots[i + 1])
+
+
+def read_entity_ptr(address: int) -> int:
+    """The 16-byte handle an Entity* ('E'/'X') argument points at (mock handlers)."""
+    e = EntitySlot.from_address(address)
+    return slots_entity(e.lo, e.hi)
+
+
+def write_entity_ptr(address: int, handle: int) -> None:
+    e = EntitySlot.from_address(address)
+    e.lo, e.hi = entity_slots(handle)
 
 
 def slot_str(s: int) -> str | None:

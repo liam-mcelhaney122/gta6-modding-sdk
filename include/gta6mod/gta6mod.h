@@ -37,7 +37,7 @@ extern "C" {
 #endif
 
 #define G6_API_VERSION_MAJOR 0
-#define G6_API_VERSION_MINOR 1
+#define G6_API_VERSION_MINOR 2  /* 0.2: optional g6_plugin_stop export */
 
 #if defined(_WIN32)
 #  define G6_CALL __cdecl
@@ -82,12 +82,20 @@ typedef enum g6_status {
  *   const char*           : pointer value (caller keeps the string alive)
  *   Entity/Ped/Vehicle/Object/Pickup/PersChar
  *                         : 16-byte opaque handle (g6_entity), TWO slots (lo, hi)
- *   Vector3 param         : three consecutive float slots
+ *   Vector3 param  ('w')  : one packed 16-byte vector {x,y,z,w}, TWO slots:
+ *                           x | y<<32 in the first, z in the low half of the
+ *                           second (g6_arg_vec3_lo/hi, g6_arg_vec3_packed).
+ *                           Measured per native: 254 float triples in 204
+ *                           natives are read this way; TASK_GOTO_ENTITY_OFFSET
+ *                           reads three float slots, so the signature, not a
+ *                           global rule, decides ('v' = three float slots).
  *   Vector3 return        : one packed 16-byte vector {x,y,z,w} in ret[0..1]
  *   entity return         : 16-byte handle in ret[0..1]
  *   pointer out-params    : pointer value; Vector3* out-params point at a
- *                           g6_vec3_slots (layout unconfirmed for GTA VI),
+ *                           16-byte-ALIGNED g6_vec3_packed (the game stores
+ *                           it with vmovaps, which faults when misaligned),
  *                           entity out-params at a g6_entity
+ * Evidence: findings/phase5/23_handle_abi.md (correction 2026-11-25).
  */
 typedef struct g6_native_call {
     uint32_t size;                          /* = sizeof(g6_native_call) */
@@ -97,10 +105,23 @@ typedef struct g6_native_call {
 } g6_native_call;
 
 typedef struct g6_vec3 { float x, y, z; } g6_vec3;
+
+#if defined(__cplusplus)
+#  define G6_ALIGNAS(n) alignas(n)
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
+#  define G6_ALIGNAS(n) _Alignas(n)
+#elif defined(_MSC_VER)
+#  define G6_ALIGNAS(n) __declspec(align(n))
+#else
+#  define G6_ALIGNAS(n) __attribute__((aligned(n)))
+#endif
+/* In-game Vec3V: what a Vector3* out-param receives (one 16-byte aligned store; w is unspecified). */
+typedef struct g6_vec3_packed { G6_ALIGNAS(16) float x; float y, z, w; } g6_vec3_packed;
 /* GTA VI script entity handle: a 128-bit opaque key (lo == 0 means "no entity").
    Pass back exactly what a native returned; do not construct or do arithmetic on it. */
 typedef struct g6_entity { uint64_t lo, hi; } g6_entity;
-/* In-game layout of a script vector: each component padded to 8 bytes. */
+/* GTA V scrVector layout (each component padded to 8 bytes). NOT the GTA VI layout: no GTA VI native
+   was found to use it; Vector3* out-params take a g6_vec3_packed. Kept for source compatibility only. */
 typedef struct g6_vec3_slots { float x; uint32_t _px; float y; uint32_t _py; float z; uint32_t _pz; } g6_vec3_slots;
 
 /* Opaque resolved-native handle: resolve once, invoke many times. */
@@ -187,6 +208,13 @@ typedef struct g6_plugin_info {
 typedef const g6_plugin_info* (G6_CALL *g6_plugin_query_fn)(void);           /* "g6_plugin_query" */
 typedef g6_status            (G6_CALL *g6_plugin_load_fn)(const g6_host_api*); /* "g6_plugin_load"  */
 typedef void                 (G6_CALL *g6_plugin_unload_fn)(void);            /* "g6_plugin_unload"*/
+/* Optional (API 0.2): the stop event. The runtime calls it once per loaded plugin before g6_plugin_unload,
+   from a script fiber on the game script thread while ticks still run, so natives work there; the plugin
+   switches its features off (toggles, spawned entities) without waiting (script_wait is not allowed to
+   delay shutdown). When no script tick arrives in time (game paused or exiting), the runtime calls it from
+   the shutdown thread instead, where natives return G6_E_NOT_ON_SCRIPT_THREAD. Plugins without the
+   export are unloaded as before. */
+typedef void                 (G6_CALL *g6_plugin_stop_fn)(void);              /* "g6_plugin_stop"  */
 
 /* ------------------------------------------------------------------------- */
 /* Runtime exports (the runtime DLL itself; used by embedded language hosts) */
@@ -217,6 +245,13 @@ static inline g6_vec3  g6_ret_vec3_packed(const uint64_t* r) {
 static inline void     g6_set_vec3_packed(uint64_t* r, g6_vec3 v) {
     r[0] = g6_arg_float(v.x) | (g6_arg_float(v.y) << 32); r[1] = g6_arg_float(v.z);
 }
+/* Packed Vector3 *argument* ('w'): the same 16 bytes as a return, in two consecutive arg slots. */
+static inline uint64_t g6_arg_vec3_lo(g6_vec3 v) { return g6_arg_float(v.x) | (g6_arg_float(v.y) << 32); }
+static inline uint64_t g6_arg_vec3_hi(g6_vec3 v) { return g6_arg_float(v.z); }
+static inline void     g6_arg_vec3_packed(uint64_t* slots, g6_vec3 v) { slots[0] = g6_arg_vec3_lo(v); slots[1] = g6_arg_vec3_hi(v); }
+/* Read a packed Vector3 argument back (mock handlers): slots[0..1] as written by g6_arg_vec3_packed. */
+static inline g6_vec3  g6_slots_vec3_packed(const uint64_t* slots) { return g6_ret_vec3_packed(slots); }
+static inline g6_vec3  g6_vec3_from_packed(const g6_vec3_packed* p) { g6_vec3 v; v.x = p->x; v.y = p->y; v.z = p->z; return v; }
 static inline int      g6_entity_valid(g6_entity e) { return e.lo != 0; }
 static inline g6_entity g6_entity_make(uint64_t lo, uint64_t hi) { g6_entity e; e.lo = lo; e.hi = hi; return e; }
 

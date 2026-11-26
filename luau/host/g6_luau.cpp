@@ -41,6 +41,7 @@ struct Script {
     uint64_t    wake_at = 0;
     bool        started = false;
     bool        done = false;
+    bool        cancelled = false;  // cancelled while running: finished by g6_luau_tick after it yields
 };
 
 } // namespace
@@ -54,6 +55,8 @@ struct g6_luau_host {
     std::unordered_map<std::string, int> module_cache;  // name -> registry ref
     std::string         current_mod_dir;
     std::string         current_script;  // log source while a script thread runs
+    std::vector<int>    stop_refs;       // script.onStop handlers (registry refs)
+    bool                stopped = false; // the stop event was raised
 };
 
 static g6_luau_host* host_of(lua_State* L) {
@@ -113,6 +116,20 @@ static void push_entity(lua_State* L, uint64_t lo, uint64_t hi) {
     std::memcpy(static_cast<char*>(b) + 8, &hi, 8);
 }
 
+// An entity argument: a 16-byte buffer exactly as a native returned it, or a number (lo only, hi = 0).
+static void check_entity(lua_State* L, int arg, const char* name, uint64_t& lo, uint64_t& hi) {
+    lo = hi = 0;
+    if (lua_isbuffer(L, arg)) {
+        size_t len = 0;
+        const void* b = luaL_checkbuffer(L, arg, &len);
+        if (len != 16) luaL_error(L, "%s: entity handle buffer must be 16 bytes", name);
+        std::memcpy(&lo, b, 8);
+        std::memcpy(&hi, static_cast<const char*>(b) + 8, 8);
+    } else {
+        lo = (uint64_t)luaL_checknumber(L, arg);
+    }
+}
+
 static int l_native_call(lua_State* L) {
     g6_luau_host* h = host_of(L);
     auto* ref = static_cast<NativeRef*>(lua_touserdatatagged(L, 1, kNativeRefTag));
@@ -130,7 +147,7 @@ static int l_native_call(lua_State* L) {
     g6_native_call c{};
     c.size = sizeof c;
     int64_t       int_outs[8] = {};
-    g6_vec3_slots vec_outs[4] = {};
+    g6_vec3_packed vec_outs[4] = {};  // 16-byte aligned: the game stores Vector3* outs with vmovaps
     g6_entity     ent_outs[4] = {};
     char          out_codes[12] = {};
     void*         out_ptrs[12] = {};
@@ -154,7 +171,14 @@ static int l_native_call(lua_State* L) {
         case 'f': c.args[c.argc++] = g6_arg_float((float)luaL_checknumber(L, arg++)); break;
         case 'b': c.args[c.argc++] = g6_arg_bool(lua_toboolean(L, arg++)); break;
         case 's': c.args[c.argc++] = lua_isnil(L, arg) ? (++arg, 0) : g6_arg_ptr(luaL_checkstring(L, arg++)); break;
-        case 'v': {
+        case 'w': {  /* packed 16-byte Vector3 {x,y,z,w}: two slots */
+            const float* v = luaL_checkvector(L, arg++);
+            const g6_vec3 packed{ v[0], v[1], v[2] };
+            c.args[c.argc++] = g6_arg_vec3_lo(packed);
+            c.args[c.argc++] = g6_arg_vec3_hi(packed);
+            break;
+        }
+        case 'v': {  /* legacy three float slots */
             const float* v = luaL_checkvector(L, arg++);
             c.args[c.argc++] = g6_arg_float(v[0]);
             c.args[c.argc++] = g6_arg_float(v[1]);
@@ -163,17 +187,16 @@ static int l_native_call(lua_State* L) {
         }
         case 'e': {  /* 16-byte entity handle: a 16-byte buffer (as returned), or a number (lo only) */
             uint64_t lo = 0, hi = 0;
-            if (lua_isbuffer(L, arg)) {
-                size_t len = 0;
-                const void* b = luaL_checkbuffer(L, arg++, &len);
-                if (len != 16) luaL_error(L, "%s: entity handle buffer must be 16 bytes", ref->name);
-                std::memcpy(&lo, b, 8);
-                std::memcpy(&hi, static_cast<const char*>(b) + 8, 8);
-            } else {
-                lo = (uint64_t)luaL_checknumber(L, arg++);
-            }
+            check_entity(L, arg++, ref->name, lo, hi);
             c.args[c.argc++] = lo;
             c.args[c.argc++] = hi;
+            break;
+        }
+        case 'X': {  /* in/out Entity*: scratch filled from the argument, read back after the call */
+            if (n_ent >= 4 || n_out >= 12) luaL_error(L, "%s: too many out-params", ref->name);
+            check_entity(L, arg++, ref->name, ent_outs[n_ent].lo, ent_outs[n_ent].hi);
+            out_codes[n_out] = 'X'; out_ptrs[n_out++] = &ent_outs[n_ent];
+            c.args[c.argc++] = g6_arg_ptr(&ent_outs[n_ent++]);
             break;
         }
         case 'I': case 'F': case 'B':
@@ -218,8 +241,8 @@ static int l_native_call(lua_State* L) {
         case 'I': lua_pushnumber(L, (double)(int32_t)*(int64_t*)out_ptrs[i]); break;
         case 'F': lua_pushnumber(L, g6_ret_float((uint64_t)*(int64_t*)out_ptrs[i])); break;
         case 'B': lua_pushboolean(L, (int)(*(int64_t*)out_ptrs[i] & 0xFF)); break;
-        case 'V': { auto* v = (g6_vec3_slots*)out_ptrs[i]; lua_pushvector(L, v->x, v->y, v->z); break; }
-        case 'E': { auto* e = (g6_entity*)out_ptrs[i]; push_entity(L, e->lo, e->hi); break; }
+        case 'V': { auto* v = (g6_vec3_packed*)out_ptrs[i]; lua_pushvector(L, v->x, v->y, v->z); break; }
+        case 'E': case 'X': { auto* e = (g6_entity*)out_ptrs[i]; push_entity(L, e->lo, e->hi); break; }
         }
         ++nret;
     }
@@ -252,7 +275,39 @@ static int l_script_log(lua_State* L) {
     if (!std::strcmp(lvl, "debug")) level = G6_LOG_DEBUG;
     else if (!std::strcmp(lvl, "warn")) level = G6_LOG_WARN;
     else if (!std::strcmp(lvl, "error")) level = G6_LOG_ERROR;
-    host_log(h, level, h->current_script.empty() ? std::string("luau") : h->current_script, msg);
+    // Optional third argument: the log source (e.g. a mod name); default is the running script's name.
+    const char* source = luaL_optstring(L, 3, nullptr);
+    if (source && *source) host_log(h, level, source, msg);
+    else host_log(h, level, h->current_script.empty() ? std::string("luau") : h->current_script, msg);
+    return 0;
+}
+
+static int l_script_cancel(lua_State* L) {
+    g6_luau_host* h = host_of(L);
+    const char* name = luaL_checkstring(L, 1);
+    for (auto& s : h->scripts) {
+        if (s.done || s.name != name) continue;
+        if (s.thread == L || h->current_script == s.name) {
+            s.cancelled = true;  // its thread is executing: g6_luau_tick retires it when the resume returns
+        } else {
+            s.done = true;
+            lua_unref(h->L, s.thread_ref);
+            s.thread = nullptr;
+        }
+        lua_pushboolean(L, 1);
+        return 1;
+    }
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+static int l_script_on_stop(lua_State* L) {
+    g6_luau_host* h = host_of(L);
+    luaL_checktype(L, 1, LUA_TFUNCTION);
+    if (h->stopped) luaL_error(L, "script.onStop: the stop event was already raised");
+    lua_pushvalue(L, 1);
+    h->stop_refs.push_back(lua_ref(L, -1));
+    lua_pop(L, 1);
     return 0;
 }
 
@@ -289,6 +344,14 @@ static void push_lib(lua_State* L, const luaL_Reg* fns) {
     lua_setreadonly(L, -1, true);
 }
 
+// "@gta6/<name>" with name in [a-z_]+ is a library module: <lib_dir>/<name>.luau (e.g. names, game).
+static bool is_lib_module(const std::string& name) {
+    if (name.rfind("@gta6/", 0) != 0 || name.size() == 6) return false;
+    for (size_t i = 6; i < name.size(); ++i)
+        if (!((name[i] >= 'a' && name[i] <= 'z') || name[i] == '_')) return false;
+    return true;
+}
+
 static int l_require(lua_State* L) {
     g6_luau_host* h = host_of(L);
     std::string name = luaL_checkstring(L, 1);
@@ -300,11 +363,12 @@ static int l_require(lua_State* L) {
         static const luaL_Reg fns[] = {{"resolve", l_native_resolve}, {"call", l_native_call}, {"joaat", l_native_joaat}, {nullptr, nullptr}};
         push_lib(L, fns);
     } else if (name == "@gta6/script") {
-        static const luaL_Reg fns[] = {{"register", l_script_register}, {"wait", l_script_wait}, {"now", l_script_now}, {"log", l_script_log}, {nullptr, nullptr}};
+        static const luaL_Reg fns[] = {{"register", l_script_register}, {"wait", l_script_wait}, {"now", l_script_now}, {"log", l_script_log}, {"cancel", l_script_cancel}, {"onStop", l_script_on_stop}, {nullptr, nullptr}};
         push_lib(L, fns);
     } else {
         std::string path;
         if (name == "@gta6/natives") path = (fs::path(h->lib_dir) / "natives.luau").string();
+        else if (is_lib_module(name)) path = (fs::path(h->lib_dir) / (name.substr(6) + ".luau")).string();
         else if (name.rfind("./", 0) == 0) path = (fs::path(h->current_mod_dir) / (name.substr(2) + ".luau")).string();
         else luaL_error(L, "require: unknown module '%s'", name.c_str());
 
@@ -338,8 +402,41 @@ extern "C" g6_luau_host* g6_luau_create(const g6_host_api* api, const g6_luau_co
     return h;
 }
 
+extern "C" int g6_luau_stop(g6_luau_host* h) {
+    if (!h || !h->L || h->stopped) return 0;
+    h->stopped = true;
+    int failed = 0;
+    for (int ref : h->stop_refs) {
+        lua_State* T = lua_newthread(h->L);
+        luaL_sandboxthread(T);
+        lua_getref(h->L, ref);
+        lua_xmove(h->L, T, 1);
+        h->current_script = "stop";
+        const int st = lua_resume(T, nullptr, 0);
+        h->current_script.clear();
+        if (st == LUA_YIELD) {
+            ++failed;
+            host_log(h, G6_LOG_ERROR, "stop", "stop handler waited; it is not resumed (stop handlers must not wait)");
+        } else if (st != LUA_OK) {
+            ++failed;
+            host_log(h, G6_LOG_ERROR, "stop", std::string("stop handler failed: ") + (lua_tostring(T, -1) ? lua_tostring(T, -1) : "error"));
+        }
+        lua_pop(h->L, 1);  // the thread
+        lua_unref(h->L, ref);
+    }
+    h->stop_refs.clear();
+    for (auto& s : h->scripts) {  // whatever the handlers left running is cancelled
+        if (s.done) continue;
+        s.done = true;
+        lua_unref(h->L, s.thread_ref);
+        s.thread = nullptr;
+    }
+    return failed;
+}
+
 extern "C" void g6_luau_destroy(g6_luau_host* h) {
     if (!h) return;
+    g6_luau_stop(h);
     if (h->L) lua_close(h->L);
     delete h;
 }
@@ -377,12 +474,12 @@ extern "C" void g6_luau_tick(g6_luau_host* h) {
         h->current_script.clear();
         Script& cur = h->scripts[i];  // re-fetch: a resumed script may register scripts (vector growth)
         cur.started = true;
-        if (st == LUA_YIELD) {
+        if (st == LUA_YIELD && !cur.cancelled) {
             double ms = lua_gettop(T) > 0 ? lua_tonumber(T, -1) : 0.0;
             lua_settop(T, 0);
             cur.wake_at = now + (uint64_t)ms;
         } else {
-            if (st != LUA_OK) {
+            if (st != LUA_OK && st != LUA_YIELD) {  // a yield here means it was cancelled while running
                 std::string err = lua_tostring(T, -1) ? lua_tostring(T, -1) : "error";
                 host_log(h, G6_LOG_ERROR, cur.name, err + "\n" + lua_debugtrace(T));
             }

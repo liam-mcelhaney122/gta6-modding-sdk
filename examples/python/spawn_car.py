@@ -1,7 +1,7 @@
 """Example Python mod (same behaviour as sdk/luau/examples/spawn_car).
 
 Run offline against the mock world:
-    python -m gta6mod run sdk/examples/python/spawn_car.py --ms 5000 --press 51@1008
+    python -m gta6mod run sdk/examples/python/spawn_car.py --ms 5000 --press INPUT_CONTEXT@1008
 
 All natives used here are UNVERIFIED for GTA VI (GTA V hashes). The mock
 backend accepts them; a real backend needs allow_unverified until re-db
@@ -9,7 +9,7 @@ verifies them.
 """
 from gta6mod import joaat, natives as N, script, runtime
 
-CONTROL_CONTEXT = 51  # "E" in GTA V control numbering
+CONTROL_CONTEXT = joaat("INPUT_CONTEXT")  # GTA VI action hash (sdk/docs/api/controls.md)
 
 
 def spawn_vehicle(model_name: str):

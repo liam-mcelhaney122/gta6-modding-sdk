@@ -1,7 +1,7 @@
 {
  "game_build": "1.0.2.1",
  "exe_sha256": "e95020b2fa4a721db3df59fdecf75621730ac559d8835252f6c3b658d5a08993",
- "generated_on": "2026-11-25",
+ "generated_on": "2026-11-26",
  "image": {
   "image_base": "0x140000000",
   "entry_rva": "0x56a1ec8",
@@ -133,6 +133,135 @@
   }
  },
  "patterns": {
+  "camera.final.frame": {
+   "rva": "a02cf40",
+   "pattern": "C5 FC 10 1D ? ? ? ? C5 E9 69 CA",
+   "confidence": "medium"
+  },
+  "camera.final.get_front": {
+   "rva": "51fccf0",
+   "pattern": null,
+   "confidence": "medium",
+   "chain": {
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 80
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "C5 F8 28 05"
+     }
+    ],
+    "from_anchor": "gfx.viewport.project_normalized"
+   }
+  },
+  "camera.final.get_matrix": {
+   "rva": "520bd90",
+   "pattern": "C5 F9 6F 15 ? ? ? ? C5 FC 10 05",
+   "confidence": "high"
+  },
+  "camera.final.get_position": {
+   "rva": "4f2b0e0",
+   "pattern": "C5 F9 6F 05 ? ? ? ? C5 F9 69 C8 C5 F1 72 E1 10 C5 F8 5B C9 C5 F1 C6 C9 03 C4 E2 79 98 0D ? ? ? ? C5 F8 29 09",
+   "confidence": "high"
+  },
+  "camera.gameplay.director": {
+   "rva": "99fece8",
+   "pattern": null,
+   "confidence": "medium",
+   "chain": {
+    "from_signature": "E8 ? ? ? ? C5 F8 28 03 48 8B 46 08 48 89 F9 C5 F8 11 00 48 83 C4 30 5B 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 DF DF AC A6 91 A6 67 F4",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "56 48 83 EC 20 48 89 CE E8"
+     },
+     {
+      "op": "call_target",
+      "at": 8
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "48 8B 05"
+     },
+     {
+      "op": "rip_target",
+      "at": 0,
+      "disp_at": 3,
+      "insn_len": 7
+     }
+    ]
+   }
+  },
+  "camera.gameplay.get_director": {
+   "rva": "5073c10",
+   "pattern": null,
+   "confidence": "high",
+   "chain": {
+    "from_signature": "E8 ? ? ? ? C5 F8 28 03 48 8B 46 08 48 89 F9 C5 F8 11 00 48 83 C4 30 5B 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 DF DF AC A6 91 A6 67 F4",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "56 48 83 EC 20 48 89 CE E8"
+     },
+     {
+      "op": "call_target",
+      "at": 8
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "48 8B 05"
+     }
+    ]
+   }
+  },
+  "camera.matrix_to_euler": {
+   "rva": "1b4f1d0",
+   "pattern": "48 81 EC 98 00 00 00 C5 78 29 B4 24 80 00 00 00 C5 78 29 6C 24 70 C5 78 29 64 24 60 C5 78 29 5C 24 50 C5 78 29 54 24 40 C5 78 29 4C 24 30 C5 78 29 44 24 20 C5 F8 29 7C 24 10 C5 F8 29 34 24 41 83",
+   "confidence": "medium"
+  },
+  "camera.world_to_screen": {
+   "rva": "29e3070",
+   "pattern": null,
+   "confidence": "high",
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 48 8B 4E 08 0F B6 C0 48 89 01 48 89 F9 48 83 C4 38 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 50 28 AF 34 39 F1 74 33",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "48 83 EC 38 C5 F8 28 01 48 8D 4C 24 20 C5 F8 29 01 E8"
+     },
+     {
+      "op": "call_target",
+      "at": 17
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "41 56 56 57 53 48 83 EC 58 48 89 D7"
+     }
+    ]
+   }
+  },
   "content.chunk_manager": {
    "rva": "293b470",
    "pattern": "56 57 48 83 EC 28 48 89 CF 48 89 D6 4C 8D 4C 24 24 BA 01 00 00 00 48 83 C7 50 49 89 F0 48",
@@ -187,21 +316,6 @@
    "rva": "6e04e00",
    "pattern": "48 8D 0D ? ? ? ? FF 15 ? ? ? ? 83 3B 00",
    "confidence": "high"
-  },
-  "crypto.cipher_factory": {
-   "rva": "4c11250",
-   "pattern": "56 57 48 83 EC 28 48 89 CE 83 FA 16",
-   "confidence": "medium"
-  },
-  "crypto.key_lookup": {
-   "rva": "193f90",
-   "pattern": "83 C2 F0 83 FA 05 0F 87",
-   "confidence": "low"
-  },
-  "crypto.stream_init": {
-   "rva": "613880",
-   "pattern": "41 56 56 57 55 53 48 83 EC 40 48 83 79 08 00 44",
-   "confidence": "medium"
   },
   "ecs.archetype_table": {
    "rva": "abbf3b0",
@@ -896,6 +1010,41 @@
    "rva": "86f090",
    "pattern": "41 57 41 56 41 54 56 57 53 48 83 EC 48 48 89 D7 4C",
    "confidence": "medium"
+  },
+  "gfx.screen.resolution": {
+   "rva": "99fecf8",
+   "pattern": "C4 E3 79 22 05 ? ? ? ? 01 C5 F8 5B C0 C5 F0 5E C0 C4",
+   "confidence": "medium"
+  },
+  "gfx.viewport.array": {
+   "rva": "a94bbb0",
+   "pattern": "48 8D 0D ? ? ? ? 48 69 C0 30 07 00 00 48 01 C1 E8 ? ? ? ? 85",
+   "confidence": "medium"
+  },
+  "gfx.viewport.composite_matrix": {
+   "rva": "4f1d350",
+   "pattern": "48 83 EC 68 C5 78 29 5C 24 50 C5 78 29 54 24 40 C5 78 29 4C 24 30 C5 78 29 44 24 20 C5 F8 29 7C 24 10 C5 F8 29 34 24 C5 F8 28 A9",
+   "confidence": "high"
+  },
+  "gfx.viewport.game": {
+   "rva": "a94d9f0",
+   "pattern": "48 8B 0D ? ? ? ? 48 89 D7 48 85 C9 74 66",
+   "confidence": "medium"
+  },
+  "gfx.viewport.project_normalized": {
+   "rva": "51fcc50",
+   "pattern": "41 57 41 56 56 57 53 48 81 EC 90 07 00 00 48 89",
+   "confidence": "medium"
+  },
+  "gfx.viewport.sphere_visible": {
+   "rva": "52d3170",
+   "pattern": "48 83 EC 48 C5 78 29 4C 24 30 C5 78 29 44 24 20 C5 F8 29 7C 24 10 C5 F8 29 34 24 C4 E2 79 18 E2",
+   "confidence": "medium"
+  },
+  "gfx.viewport.transform_point": {
+   "rva": "4f1d2e0",
+   "pattern": "56 57 48 83 EC 68 48 89 D7 48 8D 54 24 20",
+   "confidence": "high"
   },
   "gpu.barrier.buffer_build": {
    "rva": "95e0",
@@ -1882,6 +2031,40 @@
    "pattern": "48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B 00 48 8B 88",
    "confidence": "high"
   },
+  "streaming.model.has_loaded": {
+   "rva": "1b95e00",
+   "pattern": "56 57 53 48 83 EC 40 BB FF FF 3F 00",
+   "confidence": "high"
+  },
+  "streaming.model.is_valid": {
+   "rva": "166ae10",
+   "pattern": "56 57 48 83 EC 28 48 8D 7C 24 20 45",
+   "confidence": "high"
+  },
+  "streaming.model.release": {
+   "rva": "4482280",
+   "pattern": "41 57 41 56 41 54 56 57 55 53 48 83 EC 40 48 85 C9 0F 84 ? ? ? ? 48 8D",
+   "confidence": "high"
+  },
+  "streaming.model.request": {
+   "rva": "19477f0",
+   "pattern": null,
+   "confidence": "high",
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 48 89 F9 48 83 C4 28 5F 5E E9 ? ? ? ? 48 8B 06 48 B9 C5 01 D7 05 CF 03 B9 9D",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "31 D2 E9 09 00 00 00"
+     }
+    ]
+   }
+  },
   "streaming.module.base_vtable": {
    "rva": "658fe50",
    "pattern": "48 8D 05 ? ? ? ? 44 89 C7 48 89 CE 48 89 01 C7 41 08 00 00 00 00 44",
@@ -2090,6 +2273,31 @@
    "rva": "1ab9b20",
    "pattern": "56 57 53 48 83 EC 50 C5 FC 10 05",
    "confidence": "high"
+  },
+  "world.game_timer": {
+   "rva": "abbef40",
+   "pattern": null,
+   "confidence": "high",
+   "chain": {
+    "from_signature": "56 48 83 EC 20 83 79 10 00 48 89 CE 78 14 E8 ? ? ? ? 48 8B 4E 08 48 98 48 89 01 48 83 C4 20 5E C3 48 8B 06 48 B9 13 17 98 B0 98 09 2C 58",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 14
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "8B 05 ? ? ? ? C3"
+     },
+     {
+      "op": "rip_target",
+      "at": 0,
+      "disp_at": 2,
+      "insn_len": 6
+     }
+    ]
+   }
   },
   "world.physics.gravity": {
    "rva": "6dd5290",
@@ -36340,8 +36548,8 @@
   }
  },
  "counts": {
-  "anchors": 383,
-  "chains": 10,
+  "anchors": 400,
+  "chains": 16,
   "natives": 6829,
   "failed": 0
  },
