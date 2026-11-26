@@ -1,21 +1,26 @@
 // g6_luau_runner — run Luau mods offline against the mock runtime (gta6mod_mock.dll).
-//   g6_luau_runner <lib_dir> <mod_init.luau> [ms=2000] [--press CTL@MS]... [--damage N@MS]...
-//                  [--wanted N@MS]... [--waypoint X,Y,Z@MS]... [--expect-clean] [--expect-log TEXT]...
+//   g6_luau_runner <lib_dir> <mod_init.luau> [ms=2000] [--press CTL@MS[+HOLD]]... [--damage N@MS]...
+//                  [--wanted N@MS]... [--waypoint X,Y,Z@MS]... [--unload-at MS] [--expect-clean]
+//                  [--expect-log TEXT]... [--expect-live N]
 // Registers fake natives with the same semantics as the Python mock world
 // (sdk/python/gta6mod/runtime/mock.py; the contract is "Mock world" in sdk/docs/script_layer.md)
 // so a Luau mod and its Python twin behave the same: player ped 0x100 at (-1000, -2000, 15),
 // spawned handles from 0x101, models load 50 ms after REQUEST_MODEL, CREATE_VEHICLE returns 0
-// until then, a pressed control is "just pressed" for one tick only, flat ground at z = 12 once
+// until then, a pressed control is held for its +HOLD ms (one tick by default), flat ground at z = 12 once
 // collision is loaded (100 ms after the first request for a cell), wanted level 0 / max 5, clock
 // 12:00:00. Each native is registered under its seed (GTA V) hash and, where re-db has one, the
 // observed GTA VI hash.
 // Scenario events fire on the tick whose time equals MS (use multiples of 16):
-//   --press CTL@MS        control CTL "just pressed" on pad 0 for that tick
+//   --press CTL@MS[+HOLD] action CTL pressed on control group 0 at MS and held HOLD ms (default: that tick
+//                         only), then just released on the first tick at or after MS+HOLD; CTL is an
+//                         INPUT_* name (hashed with g6_joaat) or a number (decimal, or 0x hex script key)
 //   --damage N@MS         player ped (and the vehicle it is in) lose N health unless invincible
 //   --wanted N@MS         wanted level = N (a crime: the max wanted level is not applied)
 //   --waypoint X,Y,Z@MS   set the map waypoint
+//   --unload-at MS        raise the host's stop event (g6_luau_stop, what g6_plugin_stop does) at MS; ticks go on
 //   --expect-clean        exit 1 if anything was logged at ERROR (failed script, failed load)
 //   --expect-log TEXT     exit 1 unless some log message contains TEXT (repeatable: all must appear)
+//   --expect-live N       exit 1 unless exactly N scripts are still live when the run ends
 #include "g6_luau.h"
 
 #include <algorithm>
@@ -37,11 +42,13 @@ struct Ent {
     bool     invincible, can_ragdoll, frozen, visible;
     float    vx, vy, vz;
     uint64_t in_vehicle;  // peds: handle of the vehicle they are in, 0 = none
+    bool     script_owned; // created by a script (mission entity): DELETE_* removes it
 };
 struct Model { uint32_t hash; uint64_t loaded_at; };
 struct Cell { long x, y; uint64_t loaded_at; };
 enum class Ev { Press, Damage, Wanted, Waypoint };
-struct Event { uint64_t at; Ev kind; int32_t n; float x, y, z; };
+struct Event { uint64_t at; Ev kind; int32_t n; float x, y, z; uint64_t hold; };
+struct Held { int32_t ctl; uint64_t until; };
 struct Expect { std::string text; bool seen; };
 
 constexpr uint64_t kModelLoadMs = 50;
@@ -55,7 +62,9 @@ g6_host_api          g_api{};            // what the Luau host sees: mock + coun
 std::vector<Ent>     g_ents;
 std::vector<Model>   g_models;
 std::vector<Cell>    g_cells;
-std::vector<int32_t> g_pressed;          // controls "just pressed" on pad 0 this tick
+std::vector<int32_t> g_just_pressed;     // pad 0 controls pressed this tick
+std::vector<Held>    g_held;             // pad 0 controls held, until their release time
+std::vector<int32_t> g_just_released;    // pad 0 controls released this tick
 uint64_t             g_next_handle = kPlayer;
 uint64_t             g_native_calls = 0;
 int                  g_errors = 0;
@@ -71,7 +80,7 @@ uint64_t now_ms() { return g_mock->game_time_ms(); }
 
 uint64_t spawn(bool vehicle, uint32_t model, float x, float y, float z, float heading) {
     const int32_t hp = vehicle ? 1000 : 200;
-    g_ents.push_back({ g_next_handle, vehicle, model, x, y, z, heading, hp, hp, false, true, false, true, 0.f, 0.f, 0.f, 0 });
+    g_ents.push_back({ g_next_handle, vehicle, model, x, y, z, heading, hp, hp, false, true, false, true, 0.f, 0.f, 0.f, 0, false });
     return g_next_handle++;
 }
 // Entity = 2 slots (lo, hi), findings/phase5/23_handle_abi.md. Mock handles have hi == 0.
@@ -186,6 +195,26 @@ void G6_CALL n_create_vehicle(g6_native_call* c, void*) {
     if (!md || now_ms() < md->loaded_at) { c->ret[0] = 0; c->ret[1] = 0; return; }  // game returns 0 when the model is not loaded
     c->ret[0] = spawn(true, m, f(c->args[1]), f(c->args[2]), f(c->args[3]), f(c->args[4]));
     c->ret[1] = 0;
+    g_ents.back().script_owned = true;
+}
+// In/out Entity* ('X'): the game reads the 16-byte handle at the pointer and writes 16 zero bytes back
+// (findings/phase5/30_script_layer_evidence.md, G-084). Same semantics as the Python mock.
+void G6_CALL n_delete_entity(g6_native_call* c, void*) {  // DELETE_ENTITY / _PED / _VEHICLE / _OBJECT
+    auto* p = (g6_entity*)(uintptr_t)c->args[0];
+    if (!p) return;
+    const uint64_t slots[2] = { p->lo, p->hi };
+    if (const Ent* e = ent_at(slots); e && e->script_owned) {
+        const uint64_t h = e->h;
+        g_ents.erase(g_ents.begin() + (e - g_ents.data()));
+        for (auto& q : g_ents) if (q.in_vehicle == h) q.in_vehicle = 0;
+    }
+    p->lo = 0; p->hi = 0;
+}
+void G6_CALL n_no_longer_needed(g6_native_call* c, void*) {  // SET_*_AS_NO_LONGER_NEEDED
+    auto* p = (g6_entity*)(uintptr_t)c->args[0];
+    if (!p) return;
+    const uint64_t slots[2] = { p->lo, p->hi };
+    if (Ent* e = ent_at(slots); e && e->script_owned) { e->script_owned = false; p->lo = 0; p->hi = 0; }
 }
 void G6_CALL n_set_fixed(g6_native_call* c, void*) { if (Ent* e = ent(c->args)) e->health = e->max_health; }
 
@@ -239,12 +268,18 @@ void G6_CALL n_add_clock(g6_native_call* c, void*) {
 void G6_CALL n_pause_clock(g6_native_call* c, void*) { g_clock_paused = (c->args[0] & 0xFF) != 0; }
 
 // ---- pad
-void G6_CALL n_just_pressed(g6_native_call* c, void*) {  // also IS_CONTROL_PRESSED: a mock press lasts one tick
-    const int32_t pad = i32(c->args[0]), ctl = i32(c->args[1]);
-    c->ret[0] = 0;
-    if (pad == 0) for (int32_t p : g_pressed) if (p == ctl) c->ret[0] = 1;
+bool in_list(const std::vector<int32_t>& v, const g6_native_call* c) {
+    return i32(c->args[0]) == 0 && std::find(v.begin(), v.end(), i32(c->args[1])) != v.end();
 }
-void G6_CALL n_false(g6_native_call* c, void*) { c->ret[0] = 0; }
+bool is_held(const g6_native_call* c) {
+    if (i32(c->args[0]) != 0) return false;
+    for (const Held& h : g_held) if (h.ctl == i32(c->args[1])) return true;
+    return false;
+}
+void G6_CALL n_just_pressed(g6_native_call* c, void*) { c->ret[0] = in_list(g_just_pressed, c) ? 1 : 0; }
+void G6_CALL n_pressed(g6_native_call* c, void*) { c->ret[0] = is_held(c) ? 1 : 0; }
+void G6_CALL n_just_released(g6_native_call* c, void*) { c->ret[0] = in_list(g_just_released, c) ? 1 : 0; }
+void G6_CALL n_released(g6_native_call* c, void*) { c->ret[0] = is_held(c) ? 0 : 1; }
 void G6_CALL n_nop(g6_native_call*, void*) {}
 
 // ---- wanted level
@@ -258,7 +293,13 @@ void G6_CALL n_set_max_wanted(g6_native_call* c, void*) {
 
 void fire(const Event& ev) {
     switch (ev.kind) {
-    case Ev::Press: g_pressed.push_back(ev.n); break;
+    case Ev::Press: {
+        g_just_pressed.push_back(ev.n);
+        const uint64_t until = now_ms() + ev.hold;
+        auto it = std::find_if(g_held.begin(), g_held.end(), [&](const Held& h) { return h.ctl == ev.n; });
+        if (it != g_held.end()) it->until = until; else g_held.push_back({ ev.n, until });
+        break;
+    }
     case Ev::Damage: {
         Ent* p = by_handle(kPlayer);
         if (!p) break;
@@ -284,6 +325,33 @@ g6_status G6_CALL counting_invoke(g6_native_handle h, g6_native_call* c) {
     return g_mock->native_invoke(h, c);
 }
 
+// CTL of --press: an INPUT_* name (hashed like GET_HASH_KEY) or a u32 (decimal or 0x hex).
+bool parse_control(const char* spec, int32_t& out) {
+    const std::string v(spec, std::strcspn(spec, "@"));
+    if (v.empty()) return false;
+    if ((v[0] >= 'A' && v[0] <= 'Z') || (v[0] >= 'a' && v[0] <= 'z')) {
+        out = (int32_t)g6_joaat(v.c_str());
+        return true;
+    }
+    char* end = nullptr;
+    const unsigned long long n = std::strtoull(v.c_str(), &end, 0);
+    if (end == v.c_str() || *end != '\0' || n > 0xFFFFFFFFull) return false;
+    out = (int32_t)(uint32_t)n;
+    return true;
+}
+
+// "+HOLD" after "@MS" of --press: hold time in ms (absent: 0). False when present but not a number.
+bool parse_hold(const char* spec, uint64_t& hold) {
+    hold = 0;
+    const char* a = std::strchr(spec, '@');
+    const char* p = a ? std::strchr(a, '+') : nullptr;
+    if (!p) return true;
+    if (p[1] < '0' || p[1] > '9') return false;
+    char* end = nullptr;
+    hold = std::strtoull(p + 1, &end, 10);
+    return *end == '\0';
+}
+
 // "N@MS" -> (N, MS); "X,Y,Z@MS" for waypoints.
 bool parse_at(const char* spec, uint64_t& at) {
     const char* a = std::strchr(spec, '@');
@@ -295,21 +363,31 @@ bool parse_at(const char* spec, uint64_t& at) {
 
 int main(int argc, char** argv) {
     if (argc < 3) {
-        std::fprintf(stderr, "usage: %s <lib_dir> <init.luau> [ms] [--press CTL@MS]... [--damage N@MS]... [--wanted N@MS]..."
-                             " [--waypoint X,Y,Z@MS]... [--expect-clean] [--expect-log TEXT]...\n", argv[0]);
+        std::fprintf(stderr, "usage: %s <lib_dir> <init.luau> [ms] [--press CTL@MS[+HOLD]]... [--damage N@MS]... [--wanted N@MS]..."
+                             " [--waypoint X,Y,Z@MS]... [--unload-at MS] [--expect-clean] [--expect-log TEXT]..."
+                             " [--expect-live N]\n", argv[0]);
         return 2;
     }
     uint64_t run_ms = 2000;
     bool expect_clean = false;
+    bool unload = false;
+    uint64_t unload_at = 0;
+    int expect_live = -1;
     std::vector<Event> events;
     for (int i = 3; i < argc; ++i) {
         const bool has_val = i + 1 < argc;
         if (!std::strcmp(argv[i], "--press") && has_val) {
             const char* spec = argv[++i];
             uint64_t at; parse_at(spec, at);
-            events.push_back({ at, Ev::Press, (int32_t)std::atoi(spec), 0.f, 0.f, 0.f });
+            int32_t ctl = 0;
+            uint64_t hold = 0;
+            if (!parse_control(spec, ctl) || !parse_hold(spec, hold)) {
+                std::fprintf(stderr, "bad --press %s (want INPUT_NAME@MS[+HOLD] or N@MS[+HOLD])\n", spec);
+                return 2;
+            }
+            events.push_back({ at, Ev::Press, ctl, 0.f, 0.f, 0.f, hold });
         } else if (!std::strcmp(argv[i], "--press-ms") && has_val) {  // older form: control 51 at N ms
-            events.push_back({ std::strtoull(argv[++i], nullptr, 10), Ev::Press, 51, 0.f, 0.f, 0.f });
+            events.push_back({ std::strtoull(argv[++i], nullptr, 10), Ev::Press, 51, 0.f, 0.f, 0.f, 0 });
         } else if ((!std::strcmp(argv[i], "--damage") || !std::strcmp(argv[i], "--wanted")) && has_val) {
             const Ev kind = argv[i][2] == 'd' ? Ev::Damage : Ev::Wanted;
             const char* spec = argv[++i];
@@ -320,7 +398,7 @@ int main(int argc, char** argv) {
                 std::fprintf(stderr, "bad %s %s (want N@MS with 0 <= N <= %d)\n", argv[i - 1], spec, INT32_MAX);
                 return 2;
             }
-            events.push_back({ at, kind, (int32_t)n, 0.f, 0.f, 0.f });
+            events.push_back({ at, kind, (int32_t)n, 0.f, 0.f, 0.f, 0 });
         } else if (!std::strcmp(argv[i], "--waypoint") && has_val) {
             const char* spec = argv[++i];
             float x = 0.f, y = 0.f, z = 0.f;
@@ -329,7 +407,12 @@ int main(int argc, char** argv) {
                 std::fprintf(stderr, "bad --waypoint %s (want X,Y,Z@MS)\n", spec);
                 return 2;
             }
-            events.push_back({ (uint64_t)at, Ev::Waypoint, 0, x, y, z });
+            events.push_back({ (uint64_t)at, Ev::Waypoint, 0, x, y, z, 0 });
+        } else if (!std::strcmp(argv[i], "--unload-at") && has_val) {
+            unload = true;
+            unload_at = std::strtoull(argv[++i], nullptr, 10);
+        } else if (!std::strcmp(argv[i], "--expect-live") && has_val) {
+            expect_live = std::atoi(argv[++i]);
         } else if (!std::strcmp(argv[i], "--expect-clean")) {
             expect_clean = true;
         } else if (!std::strcmp(argv[i], "--expect-log") && has_val) {
@@ -364,6 +447,7 @@ int main(int argc, char** argv) {
         { 0x580417101DDB492Full, n_just_pressed },
         // observed GTA VI hashes used by the script layer (sdk/docs/script_layer.md)
         { 0x096275889B8E0EE0ull, n_player_ped },     { 0xD42BD6EB2E0F1677ull, n_exists },
+        { 0x47E385B0D957C8D4ull, n_player_id },  // GET_PLAYER_INDEX (observed; the handler returns 0)
         { 0xA86D5F069399F44Dull, n_coords },         { 0xC230DD956E2F5507ull, n_heading },
         { 0xCF2B9C0645C4651Bull, n_set_heading },    { 0x82368787EA73C0F7ull, n_health },
         { 0x15D757606D170C3Cull, n_max_health },     { 0xAC2767ED8BDFAB15ull, n_set_health },
@@ -382,10 +466,16 @@ int main(int argc, char** argv) {
         { 0x4F67E8ECA7D3F667ull, n_game_timer },     { 0xC82CF208C2B19199ull, n_clock_hours },
         { 0x4E162231B823DBBFull, n_clock_minutes },  { 0xB6101ABE62B5F080ull, n_clock_seconds },
         { 0x3A52C59FFB2DEED8ull, n_set_clock },      { 0xAB7C251C7701D336ull, n_add_clock },
-        { 0x4D1A590C92BF377Eull, n_pause_clock },    { 0xF3A21BCD95725A4Aull, n_just_pressed },
-        { 0x50F940259D3841E6ull, n_false },          { 0xFE99B66D079CF6BCull, n_nop },
+        { 0x4D1A590C92BF377Eull, n_pause_clock },    { 0xF3A21BCD95725A4Aull, n_pressed },
+        { 0x50F940259D3841E6ull, n_just_released },  { 0x648EE3E7F38877DDull, n_released },
+        { 0xFE99B66D079CF6BCull, n_nop },
         { 0xABC532F9098BFD9Dull, n_wanted },         { 0x4E4B996C928C7AA6ull, n_clear_wanted },
         { 0xD04CFAD1E2B7984Aull, n_max_wanted },     { 0x28A4BD2CEE236E19ull, n_set_max_wanted },
+        // in/out Entity* natives (G-084)
+        { 0x4CD38C78BD19A497ull, n_delete_entity },  { 0xCC0EF140F99365C5ull, n_delete_entity },
+        { 0xE20A909D8C4A70F8ull, n_delete_entity },  { 0x931914268722C263ull, n_delete_entity },
+        { 0x4971D2F8162B9674ull, n_no_longer_needed }, { 0x2595DD4236549CE3ull, n_no_longer_needed },
+        { 0x629BFA74418D6239ull, n_no_longer_needed }, { 0x3AE22DEB5BA5A3E6ull, n_no_longer_needed },
     };
     for (const auto& fk : fakes) g6_mock_register_native(fk.hash, fk.fn, nullptr);
 
@@ -396,9 +486,19 @@ int main(int argc, char** argv) {
 
     while (now_ms() < run_ms) {
         for (const Event& ev : events) if (ev.at == now_ms()) fire(ev);
+        if (unload && now_ms() == unload_at) {
+            const int failed = g6_luau_stop(host);
+            std::printf("stop event at %llu ms: %d handler(s) failed; %d live scripts\n",
+                        (unsigned long long)now_ms(), failed, g6_luau_script_count(host));
+        }
         g6_luau_tick(host);
         g6_mock_step(16);
-        g_pressed.clear();
+        g_just_pressed.clear();
+        g_just_released.clear();
+        for (auto it = g_held.begin(); it != g_held.end();) {
+            if (it->until <= now_ms()) { g_just_released.push_back(it->ctl); it = g_held.erase(it); }
+            else ++it;
+        }
     }
     std::printf("ran %llu ms; %llu native calls; %d live scripts; %d errors; %zu entities\n",
                 (unsigned long long)now_ms(), (unsigned long long)g_native_calls, g6_luau_script_count(host), g_errors, g_ents.size());
@@ -408,8 +508,13 @@ int main(int argc, char** argv) {
                     p->health, p->max_health, p->invincible ? 1 : 0, p->can_ragdoll ? 1 : 0, p->x, p->y, p->z,
                     g_wanted, g_max_wanted, (long long)(g_clock / 3600), (long long)(g_clock / 60 % 60),
                     (long long)(g_clock % 60), g_clock_paused ? " (paused)" : "", g_time_scale);
+    const int live = g6_luau_script_count(host);
     g6_luau_destroy(host);
     if (expect_clean && g_errors) { std::fprintf(stderr, "FAIL: %d error(s) logged\n", g_errors); return 1; }
+    if (expect_live >= 0 && live != expect_live) {
+        std::fprintf(stderr, "FAIL: %d live scripts, expected %d\n", live, expect_live);
+        return 1;
+    }
     int missing = 0;
     for (const auto& e : g_expect)
         if (!e.seen) { std::fprintf(stderr, "FAIL: no log message containing \"%s\"\n", e.text.c_str()); ++missing; }

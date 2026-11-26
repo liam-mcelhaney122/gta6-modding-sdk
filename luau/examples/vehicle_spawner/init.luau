@@ -1,13 +1,14 @@
 --!strict
 -- vehicle_spawner: spawn a vehicle in front of the player, seat them in it, and keep the vehicle they
 -- are in repaired (Luau twin of sdk/examples/python/vehicle_spawner.py).
--- Offline: g6_luau_runner sdk\luau\lib sdk\luau\examples\vehicle_spawner\init.luau 3000 --press 52@496 --damage 150@2000
+-- Offline: g6_luau_runner sdk\luau\lib sdk\luau\examples\vehicle_spawner\init.luau 3000 --press INPUT_CONTEXT_SECONDARY@496 --damage 150@2000
 
 local game = require("@gta6/game")
 
--- Config. GTA VI control ids are unknown: this is a GTA V control index (sdk/docs/script_layer.md).
-local KEY_SPAWN = game.GTA5Control.CONTEXT_SECONDARY -- Q
--- A GTA V model name; GTA VI model names are unknown (sdk/docs/script_layer.md).
+-- Config: a GTA VI input action (sdk/docs/api/controls.md). Default GTA VI bindings are not known yet.
+local KEY_SPAWN = game.Control.CONTEXT_SECONDARY -- GTA V default key Q
+-- A GTA V model name, kept as a placeholder: no GTA VI vehicle model hash has call-site evidence
+-- (findings/phase5/30_script_layer_evidence.md, G-081: no story-script model native takes a constant model hash).
 local MODEL = "adder"
 local REPAIR_MS = 1000
 

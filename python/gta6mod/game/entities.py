@@ -15,7 +15,9 @@ from .core import now, wait
 
 MASK64 = 0xFFFFFFFFFFFFFFFF
 
-#: Seat index for the driver in GTA V and RDR2 scripts. Unverified for GTA VI (sdk/docs/script_layer.md).
+#: Driver seat for SET_PED_INTO_VEHICLE. Static evidence (findings/phase5/30_script_layer_evidence.md, G-083):
+#: the handler maps seat s >= -1 to internal seat s + 1 (-2 = any free seat), and story scripts pass -1 at 197
+#: of the 203 sites that seat the player ped. Not yet confirmed in game.
 SEAT_DRIVER = -1
 
 
@@ -124,6 +126,18 @@ class Entity:
         a = self.position
         b = other.position if isinstance(other, Entity) else _vec(other)
         return math.dist((a.x, a.y, a.z), (b.x, b.y, b.z))
+
+    # -- lifetime ---------------------------------------------------------------
+    def delete(self) -> None:
+        """Delete the entity (DELETE_ENTITY). The native takes the handle by pointer and clears it, so this
+        wrapper's handle becomes what the game wrote back: 0 (falsy) once it is gone. The game only deletes
+        entities this script created; it clears the handle either way."""
+        (self.handle,) = n.entity.delete(self.handle)
+
+    def release(self) -> None:
+        """Tell the game this script no longer needs the entity (SET_ENTITY_AS_NO_LONGER_NEEDED); the world may
+        clean it up later. The game clears the handle (the wrapper turns falsy) only when it accepted it."""
+        (self.handle,) = n.entity.set_as_no_longer_needed(self.handle)
 
 
 class Ped(Entity):

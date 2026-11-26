@@ -1,12 +1,12 @@
 --!strict
 -- waypoint_teleport: teleport the player (and the vehicle they are in) to the map waypoint, on the ground
 -- (Luau twin of sdk/examples/python/waypoint_teleport.py).
--- Offline: g6_luau_runner sdk\luau\lib sdk\luau\examples\waypoint_teleport\init.luau 3000 --press 73@496 --waypoint 250,-400,0@1008 --press 73@1504
+-- Offline: g6_luau_runner sdk\luau\lib sdk\luau\examples\waypoint_teleport\init.luau 3000 --press INPUT_VEH_DUCK@496 --waypoint 250,-400,0@1008 --press INPUT_VEH_DUCK@1504
 
 local game = require("@gta6/game")
 
--- Config. GTA VI control ids are unknown: this is a GTA V control index (sdk/docs/script_layer.md).
-local KEY_TELEPORT = game.GTA5Control.VEH_DUCK -- X
+-- Config: a GTA VI input action (sdk/docs/api/controls.md). Default GTA VI bindings are not known yet.
+local KEY_TELEPORT = game.Control.VEH_DUCK -- GTA V default key X
 local GROUND_TIMEOUT_MS = 1500
 
 local m = game.mod("waypoint_teleport")

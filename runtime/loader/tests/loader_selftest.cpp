@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "g6rt_test_api.h"
+#include "gta6mod/patterns.hpp"
 
 /* natives.json for 1.0.2.1: 6,813 .pdata-scanned handlers + 16 .pdata-less wrappers found as NATIVE
    operands in decoded bytecode (findings/phase3/09, rounds 2-3). Update with the manifest. */
@@ -556,6 +557,52 @@ static void test_sched() {
     std::printf("scheduler: done\n");
 }
 
+// ------------------------------------------------------------------ plugin stop event (g6_plugin_stop)
+static int g_seq = 0, stop_seq[3], unload_seq[3], stop_calls[3];
+static g6_status stop_invoke[3];
+static void stop_body(int i) {
+    ++stop_calls[i];
+    stop_seq[i] = ++g_seq;
+    g6_native_call c{}; c.size = sizeof c;
+    stop_invoke[i] = H->native_invoke_hash(0x06843DA7060A026Bull, &c);   // which thread is this on?
+}
+static void G6_CALL stop0(void) { stop_body(0); }
+static void G6_CALL stop1(void) { stop_body(1); }
+static void G6_CALL unload0(void) { unload_seq[0] = ++g_seq; }
+static void G6_CALL unload1(void) { unload_seq[1] = ++g_seq; }
+static void G6_CALL unload2(void) { unload_seq[2] = ++g_seq; }
+
+static void reset_stop_counters() {
+    g_seq = 0;
+    for (int i = 0; i < 3; ++i) { stop_seq[i] = unload_seq[i] = stop_calls[i] = 0; stop_invoke[i] = G6_E_INTERNAL; }
+}
+
+static void test_plugin_stop() {
+    const g6_plugin_stop_fn stops[3] = { stop0, stop1, nullptr };   // plugin 2 has no stop export (API 0.1)
+    const g6_plugin_unload_fn unloads[3] = { unload0, unload1, unload2 };
+    // A script tick arrives: the stop event runs in a script fiber (the thread check passes, so the call gets
+    // as far as the build check), once per plugin, before any unload.
+    reset_stop_counters();
+    CHECK(T->plugin_stop_run(stops, unloads, 3, 1, 1000) == 1, "stop event queued as a script");
+    CHECK(stop_calls[0] == 1 && stop_calls[1] == 1, "each stop called once (%d, %d)", stop_calls[0], stop_calls[1]);
+    CHECK(stop_invoke[0] == G6_E_UNSUPPORTED_BUILD && stop_invoke[1] == G6_E_UNSUPPORTED_BUILD,
+          "stop ran on the script fiber: natives pass the thread check (%d, %d)", stop_invoke[0], stop_invoke[1]);
+    CHECK(stop_seq[0] < stop_seq[1] && stop_seq[1] < unload_seq[0] && unload_seq[0] < unload_seq[1] &&
+          unload_seq[1] < unload_seq[2], "order: stops, then unloads (%d %d | %d %d %d)", stop_seq[0], stop_seq[1],
+          unload_seq[0], unload_seq[1], unload_seq[2]);
+    // No tick (game paused or exiting): stop still runs once before unload, on this thread, where natives are refused.
+    reset_stop_counters();
+    CHECK(T->plugin_stop_run(stops, unloads, 3, 0, 2000) == 1, "stop event queued (no tick follows)");
+    CHECK(stop_calls[0] == 1 && stop_calls[1] == 1, "fallback: each stop called once (%d, %d)", stop_calls[0], stop_calls[1]);
+    CHECK(stop_invoke[0] == G6_E_NOT_ON_SCRIPT_THREAD, "fallback stop is off the script thread (%d)", stop_invoke[0]);
+    CHECK(stop_seq[1] < unload_seq[0], "fallback: stops before unloads");
+    // Only plugins without the export: nothing is queued, they are just unloaded.
+    reset_stop_counters();
+    const g6_plugin_stop_fn none[1] = { nullptr };
+    CHECK(T->plugin_stop_run(none, unloads + 2, 1, 1, 3000) == 0 && unload_seq[2] == 1, "no stop export: plain unload");
+    std::printf("plugin stop event: done\n");
+}
+
 // ------------------------------------------------------------------ game clock (synthetic)
 static void put_rel(uint8_t* buf, size_t at_insn, size_t insn_len, size_t disp_off, size_t target) {
     put32(buf + at_insn + disp_off, static_cast<int64_t>(target) - static_cast<int64_t>(at_insn + insn_len));
@@ -851,6 +898,16 @@ static void test_dump() {
     const int re = T->resolve_engine(img, img_size, rep, sizeof rep, &crva, &vok);
     std::printf("dump engine (%llu ms): %s\n", static_cast<unsigned long long>(GetTickCount64() - t1), rep);
     CHECK(re == 1 && crva == 0xabbef40, "clock block rva 0x%x (want 0xabbef40)", crva);
+    // G-016: the re-db anchor world.game_timer (xref chain from the GET_GAME_TIMER handler, generated patterns.hpp)
+    // lands on the block the clock decode found.
+    const g6::patterns::anchor* ga = g6::patterns::by_name("world.game_timer");
+    CHECK(ga && !ga->signature[0] && g6::patterns::chain_by_name("world.game_timer"), "world.game_timer is a chain anchor in patterns.hpp");
+    if (ga) {
+        const g6::patterns::result gr = g6::patterns::resolve_anchor(img, img_size, tlo, static_cast<size_t>(thi - tlo), *ga);
+        CHECK(gr.state == g6::patterns::status::ok && gr.address == img + crva && crva == 0xabbef40,
+              "world.game_timer anchor: state %d rva 0x%llx, clock block rva 0x%x", static_cast<int>(gr.state),
+              gr.address ? static_cast<long long>(gr.address - img) : -1ll, crva);
+    }
     CHECK(vok == 1, "vfs ABI checks on the file image");
     VirtualFree(img, 0, MEM_RELEASE);
 }
@@ -874,6 +931,7 @@ int main(int argc, char** argv) {
     test_late_load();
     test_selfid();
     test_sched();
+    test_plugin_stop();
     test_clock_decode();
     test_clock_mixer();
     test_vfs_map();

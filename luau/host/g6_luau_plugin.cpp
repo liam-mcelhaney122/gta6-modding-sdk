@@ -1,6 +1,9 @@
 // g6_luau_plugin.cpp — exposes the Luau host as a gta6mod plugin DLL.
 // The runtime loads plugins, calls g6_plugin_load(api); we create a Luau VM,
 // load <game>/mods/luau/*/init.luau, and drive the scheduler from one tick.
+// g6_plugin_stop (optional export, API 0.2) raises the Luau stop event on the script thread, so mods'
+// stop handlers (toggles off, @gta6/game m.stop) can still call natives; g6_plugin_unload raises it too
+// when the runtime did not call g6_plugin_stop (older runtimes), where natives may be refused.
 #include "g6_luau.h"
 
 #include <cstdlib>
@@ -36,6 +39,10 @@ G6_PLUGIN_EXPORT g6_status G6_CALL g6_plugin_load(const g6_host_api* api) {
     if (s != G6_OK) { g6_luau_destroy(g_host); g_host = nullptr; return s; }
     g_api = api;
     return G6_OK;
+}
+
+G6_PLUGIN_EXPORT void G6_CALL g6_plugin_stop(void) {
+    if (g_host) g6_luau_stop(g_host);
 }
 
 G6_PLUGIN_EXPORT void G6_CALL g6_plugin_unload(void) {

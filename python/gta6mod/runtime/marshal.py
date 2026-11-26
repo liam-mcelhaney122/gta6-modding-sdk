@@ -22,6 +22,9 @@ def _u2f(u: int) -> float:
 
 MASK64 = 0xFFFFFFFFFFFFFFFF
 OUT_CODES = "IFBVE"
+# In/out: the caller passes a value, the native gets a pointer to scratch holding it, and the value read back
+# after the call is returned like an out-param. X = 16-byte entity handle (docs/native-signatures.md).
+INOUT_CODES = "X"
 
 
 def entity_slots(handle: int) -> list[int]:
@@ -106,6 +109,11 @@ def pack(sig: str, values) -> PackedCall:
             buf = EntitySlot()
             call.out_params.append((code, buf))
             call.slots.append(ctypes.addressof(buf))
+        elif code == "X":
+            lo, hi = entity_slots(next(it))
+            buf = EntitySlot(lo, hi)
+            call.out_params.append((code, buf))
+            call.slots.append(ctypes.addressof(buf))
         elif code == "f":
             call.slots.append(_f2u(next(it)))
         elif code == "b":
@@ -178,7 +186,7 @@ def unpack(sig: str, ret_slots: list[int], packed: PackedCall):
             outs.append(bool(buf.value & 0xFF))
         elif code == "V":
             outs.append(Vector3(buf.x, buf.y, buf.z))
-        elif code == "E":
+        elif code in "EX":
             outs.append(slots_entity(buf.lo, buf.hi))
     return tuple(([] if ret_code == "n" else [result]) + outs)
 
@@ -196,6 +204,17 @@ def slot_float(s: int) -> float:
 def slots_vec3(slots: list[int], i: int) -> Vector3:
     """A packed Vector3 argument ('w') occupying slots[i] and slots[i + 1] (mock handlers)."""
     return slots_vec3_packed(slots[i], slots[i + 1])
+
+
+def read_entity_ptr(address: int) -> int:
+    """The 16-byte handle an Entity* ('E'/'X') argument points at (mock handlers)."""
+    e = EntitySlot.from_address(address)
+    return slots_entity(e.lo, e.hi)
+
+
+def write_entity_ptr(address: int, handle: int) -> None:
+    e = EntitySlot.from_address(address)
+    e.lo, e.hi = entity_slots(handle)
 
 
 def slot_str(s: int) -> str | None:

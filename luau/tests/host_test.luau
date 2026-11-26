@@ -14,7 +14,7 @@ local PRESS_AT = 480  -- must match --press 51@480
 local function u64lo(h: buffer): number return buffer.readu32(h, 0) + buffer.readu32(h, 4) * 2 ^ 32 end
 local function u64hi(h: buffer): number return buffer.readu32(h, 8) + buffer.readu32(h, 12) * 2 ^ 32 end
 local function eq3(v: vector, x: number, y: number, z: number): boolean return v.x == x and v.y == y and v.z == z end
-local function expectError(what: string, needle: string, f: () -> ())
+local function expectError(what: string, needle: string, f: () -> ...any)
 	local ok, err = pcall(f)
 	assert(not ok, what .. ": expected an error")
 	assert(string.find(tostring(err), needle, 1, true), what .. ": unexpected error: " .. tostring(err))
@@ -40,7 +40,7 @@ expectError("unregistered native", "not present in this game build", function() 
 
 -- ------------------------------------------------------------------ packed Vector3 return and parameter
 local p = N.ENTITY.GET_ENTITY_COORDS(ped, true)
-assert(typeof(p) == "vector", "GET_ENTITY_COORDS returns a vector")
+assert(type(p) == "vector", "GET_ENTITY_COORDS returns a vector")
 assert(eq3(p, -1000, -2000, 15), `player coords {p}`)
 -- SET_ENTITY_COORDS is 'ewbbbbf>n': entity in slots 0-1, the packed position in 2-3 (x,y in slot 2, z in the
 -- low half of slot 3), four BOOLs in 4-7 and a float in 8. The runner's handler reads the position from 2-3.
@@ -88,10 +88,10 @@ script.register("sched", function()
 	-- Vector3* out-param: the host passes a 16-byte aligned buffer (the runner logs an ERROR otherwise,
 	-- which --expect-clean turns into a failure). 'wFV>b': packed coord, float*, Vector3*.
 	N.STREAMING.REQUEST_COLLISION_AT_COORD(vector.create(3, 4, 0))
-	local found, gz, normal = N.MISC.GET_GROUND_Z_AND_NORMAL_FOR_3D_COORD(vector.create(3, 4, 100))
-	assert(found == false, "no ground before collision loads")
+	local before = N.MISC.GET_GROUND_Z_AND_NORMAL_FOR_3D_COORD(vector.create(3, 4, 100))
+	assert(before == false, "no ground before collision loads")
 	script.wait(100)
-	found, gz, normal = N.MISC.GET_GROUND_Z_AND_NORMAL_FOR_3D_COORD(vector.create(3, 4, 100))
+	local found, gz, normal = N.MISC.GET_GROUND_Z_AND_NORMAL_FOR_3D_COORD(vector.create(3, 4, 100))
 	assert(found == true and gz == 12 and eq3(normal, 0, 0, 1), `ground probe {found} {gz} {normal}`)
 	table.insert(order, "sched:done")
 end)

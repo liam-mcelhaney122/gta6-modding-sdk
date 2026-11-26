@@ -1,7 +1,7 @@
 {
  "game_build": "1.0.2.1",
  "exe_sha256": "e95020b2fa4a721db3df59fdecf75621730ac559d8835252f6c3b658d5a08993",
- "generated_on": "2026-11-25",
+ "generated_on": "2026-11-26",
  "image": {
   "image_base": "0x140000000",
   "entry_rva": "0x56a1ec8",
@@ -2273,6 +2273,31 @@
    "rva": "1ab9b20",
    "pattern": "56 57 53 48 83 EC 50 C5 FC 10 05",
    "confidence": "high"
+  },
+  "world.game_timer": {
+   "rva": "abbef40",
+   "pattern": null,
+   "confidence": "high",
+   "chain": {
+    "from_signature": "56 48 83 EC 20 83 79 10 00 48 89 CE 78 14 E8 ? ? ? ? 48 8B 4E 08 48 98 48 89 01 48 83 C4 20 5E C3 48 8B 06 48 B9 13 17 98 B0 98 09 2C 58",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 14
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "8B 05 ? ? ? ? C3"
+     },
+     {
+      "op": "rip_target",
+      "at": 0,
+      "disp_at": 2,
+      "insn_len": 6
+     }
+    ]
+   }
   },
   "world.physics.gravity": {
    "rva": "6dd5290",
@@ -36523,8 +36548,8 @@
   }
  },
  "counts": {
-  "anchors": 399,
-  "chains": 15,
+  "anchors": 400,
+  "chains": 16,
   "natives": 6829,
   "failed": 0
  },

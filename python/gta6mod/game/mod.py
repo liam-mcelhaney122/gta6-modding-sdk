@@ -1,9 +1,9 @@
 """Mod structure: loops, timers, key bindings and toggles on top of ``gta6mod.script``.
 
-    from gta6mod.game import Mod, player, GTA5Control
+    from gta6mod.game import Mod, player, Control
 
     m = Mod("god_mode")
-    god = m.toggle(GTA5Control.DETONATE)
+    god = m.toggle(Control.DETONATE)
 
     @god.on_enable
     def _():
@@ -15,10 +15,22 @@
         if ped.health < ped.max_health:
             ped.heal()
 
+Hotkeys (rules in ``hotkeys.py``): ``on_key`` fires on press, ``on_release`` on release (``max_ms`` makes it
+a tap), ``on_hold`` after the action is held ``ms`` (``repeat_ms`` repeats it). ``mods`` adds modifier
+actions that must be held, and the most specific chord wins:
+
+    @m.on_key(Control.CONTEXT, mods=Control.SPRINT)        # SPRINT + CONTEXT
+    @m.on_hold(Control.CONTEXT, 800)                        # hold CONTEXT 0.8 s
+    @m.on_release(Control.CONTEXT, max_ms=250)              # tap CONTEXT
+    m.block(Control.ATTACK, Control.AIM, when=menu_open)    # disabled every tick while menu_open is on
+
 Every handler may be a plain function or a generator function (to ``yield wait(ms)`` or
 ``yield from`` a helper). A key handler that is a generator runs as its own script, so it never
 delays other key bindings. Toggle and ``on_stop`` callbacks must be plain functions, because
 ``stop()`` runs them outside any script.
+
+``stop()`` also runs when the host raises its stop event (``Scheduler.stop()`` / ``script.shutdown()``,
+called when the scripts are unloaded), so toggles are switched off without the mod calling it.
 """
 from __future__ import annotations
 
@@ -27,7 +39,8 @@ from typing import Callable
 
 from .. import script as _script
 from .core import log as _log
-from .core import wait
+from .core import now, wait
+from .hotkeys import HOLD, PRESS, RELEASE, Block, Hotkey, Hotkeys
 from .world import controls
 
 
@@ -78,13 +91,15 @@ class Mod:
         self.name = name
         self._sched = scheduler or _script.scheduler()
         self._scripts: list[str] = []
-        self._keys: list[_Binding] = []
+        self._hotkeys = Hotkeys()
+        self._blocks: list[Block] = []
         self._key_seq = 0
         self._key_scripts: set[str] = set()
         self._toggles: list[Toggle] = []
         self._stop: list[Callable[[], None]] = []
         self._input_registered = False
         self.stopped = False
+        self._sched.on_stop(self.stop)  # the host's stop event (unload) stops the mod
 
     # -- logging ----------------------------------------------------------------
     def log(self, message: str) -> None:
@@ -125,43 +140,78 @@ class Mod:
             return fn
         return deco
 
-    def on_key(self, key, pad: int = 0):
-        """Decorator: call ``fn`` when ``key`` is just pressed on ``pad``."""
+    def on_key(self, key, pad: int = 0, mods=None):
+        """Decorator: call ``fn`` when ``key`` is just pressed on ``pad`` while every action in ``mods`` is held."""
         def deco(fn: Callable) -> Callable:
-            self._bind(key, pad, fn)
+            self._bind(PRESS, key, pad, mods, fn)
             return fn
         return deco
 
-    def toggle(self, key, label: str | None = None, pad: int = 0) -> Toggle:
+    def on_release(self, key, pad: int = 0, mods=None, max_ms: int | None = None):
+        """Decorator: call ``fn`` when ``key`` is just released; with ``max_ms``, only after a press of at most
+        ``max_ms`` (a tap)."""
+        def deco(fn: Callable) -> Callable:
+            self._bind(RELEASE, key, pad, mods, fn, ms=max_ms)
+            return fn
+        return deco
+
+    def on_hold(self, key, ms: int, pad: int = 0, mods=None, repeat_ms: int | None = None):
+        """Decorator: call ``fn`` once ``key`` has been held ``ms`` (then every ``repeat_ms`` while held)."""
+        def deco(fn: Callable) -> Callable:
+            self._bind(HOLD, key, pad, mods, fn, ms=ms, repeat_ms=repeat_ms)
+            return fn
+        return deco
+
+    def toggle(self, key, label: str | None = None, pad: int = 0, mods=None) -> Toggle:
         t = Toggle(self, key, label)
         self._toggles.append(t)
-        self._bind(key, pad, t.flip)
+        self._bind(PRESS, key, pad, mods, t.flip)
         return t
+
+    def block(self, *actions, pad: int = 0, when=None) -> Block:
+        """Disable ``actions`` on ``pad`` every tick while ``when`` is truthy (a ``Toggle``, a callable, or None
+        for always). The mod's own bindings are read before the disable each tick; other scripts and the game
+        see the actions disabled for the rest of that frame [GTA V semantics, not verified on GTA VI]."""
+        b = Block(actions, pad, when)
+        self._blocks.append(b)
+        self._ensure_input()
+        return b
 
     def on_stop(self, fn: Callable[[], None]) -> Callable[[], None]:
         self._stop.append(fn)
         return fn
 
-    def _bind(self, key, pad: int, fn: Callable) -> None:
-        self._keys.append(_Binding(key, pad, fn))
+    def _bind(self, kind: str, key, pad: int, mods, fn: Callable, ms: int | None = None,
+              repeat_ms: int | None = None) -> Hotkey:
+        b = self._hotkeys.add(kind, key, fn, pad, mods, ms, repeat_ms)
+        self._ensure_input()
+        return b
+
+    def _ensure_input(self) -> None:
         if not self._input_registered:
             self._input_registered = True
             self._add("input", self._input_loop)
 
+    @staticmethod
+    def _read(query: str, action: int, pad: int) -> bool:
+        return getattr(controls, query)(action, pad)
+
     def _input_loop(self):
-        """Poll every binding each frame. A handler that waits runs as its own script (``<mod>.keyN``),
-        so it never delays other bindings; a press while that binding's handler still runs is ignored."""
+        """Poll every binding each frame, then apply the blocks. A handler that waits runs as its own script
+        (``<mod>.keyN``), so it never delays other bindings; a binding whose handler still runs does not fire."""
         while True:
-            for b in list(self._keys):
-                if b.busy or not controls.just_pressed(b.key, b.pad):
-                    continue
+            for b in self._hotkeys.poll(self._read, now()):
                 g = _run(b.fn)
                 if g is not None:
                     self._spawn_handler(b, g)
+            for blk in self._blocks:
+                if blk.active():
+                    for a in blk.actions:
+                        controls.disable(a, blk.pad)
             self._purge_finished()
             yield wait(0)
 
-    def _spawn_handler(self, b: "_Binding", gen) -> None:
+    def _spawn_handler(self, b: Hotkey, gen) -> None:
         b.busy = True
 
         def runner():
@@ -219,9 +269,3 @@ class Mod:
             guarded(fn)
         return errors
 
-
-class _Binding:
-    __slots__ = ("key", "pad", "fn", "busy")
-
-    def __init__(self, key, pad: int, fn: Callable):
-        self.key, self.pad, self.fn, self.busy = key, pad, fn, False

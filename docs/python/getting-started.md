@@ -15,38 +15,38 @@ Alternatively, install the SDK into an environment with `python -m pip install -
 ## Run an example
 
 ```powershell
-python -m gta6mod run sdk\examples\python\god_mode.py --ms 2000 --press 47@496
+python -m gta6mod run sdk\examples\python\god_mode.py --ms 2000 --press INPUT_DETONATE@496
 ```
 
-The output includes a `god mode ON` log and a final summary of native calls, live scripts and errors. The control number is a GTA V placeholder, not a confirmed GTA VI control. Mock events fire on matching ticks; the default frame interval is 16 ms, so use multiples of 16 for event times.
+The output includes a `god mode ON` log and a final summary of native calls, live scripts and errors. `INPUT_DETONATE` is a GTA VI input action (its script key, `joaat("input_detonate")`); which button triggers it in game is not known yet. Mock events fire on matching ticks; the default frame interval is 16 ms, so use multiples of 16 for event times.
 
 ## Create a mod
 
 Save the following as `hello_mod.py` in the repository root:
 
 ```python
-from gta6mod.game import GTA5Control, Mod, player
+from gta6mod.game import Control, Mod, player
 
 mod = Mod("hello")
 
-@mod.on_key(GTA5Control.DETONATE)
+@mod.on_key(Control.DETONATE)
 def show_position():
     pos = player.position()
     mod.log(f"position: {pos.x:.1f}, {pos.y:.1f}, {pos.z:.1f}")
 ```
 
-Run `python -m gta6mod run .\hello_mod.py --ms 1000 --press 47@496`. The mock starts the player at `(-1000, -2000, 15)`, so the log shows that position. The runner selects a backend before loading the file; its decorators register scripts on the default scheduler.
+Run `python -m gta6mod run .\hello_mod.py --ms 1000 --press INPUT_DETONATE@496`. The mock starts the player at `(-1000, -2000, 15)`, so the log shows that position. The runner selects a backend before loading the file; its decorators register scripts on the default scheduler.
 
 ## Wait without blocking
 
 A waiting handler must be a generator. Yield a `wait` request or delegate to a helper that waits:
 
 ```python
-from gta6mod.game import GTA5Control, Mod, player, wait, world
+from gta6mod.game import Control, Mod, player, wait, world
 
 mod = Mod("waypoint")
 
-@mod.on_key(GTA5Control.VEH_DUCK)
+@mod.on_key(Control.VEH_DUCK)
 def teleport():
     point = world.waypoint()
     if point is None:

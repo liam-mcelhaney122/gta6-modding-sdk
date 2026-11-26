@@ -37,7 +37,7 @@ extern "C" {
 #endif
 
 #define G6_API_VERSION_MAJOR 0
-#define G6_API_VERSION_MINOR 1
+#define G6_API_VERSION_MINOR 2  /* 0.2: optional g6_plugin_stop export */
 
 #if defined(_WIN32)
 #  define G6_CALL __cdecl
@@ -208,6 +208,13 @@ typedef struct g6_plugin_info {
 typedef const g6_plugin_info* (G6_CALL *g6_plugin_query_fn)(void);           /* "g6_plugin_query" */
 typedef g6_status            (G6_CALL *g6_plugin_load_fn)(const g6_host_api*); /* "g6_plugin_load"  */
 typedef void                 (G6_CALL *g6_plugin_unload_fn)(void);            /* "g6_plugin_unload"*/
+/* Optional (API 0.2): the stop event. The runtime calls it once per loaded plugin before g6_plugin_unload,
+   from a script fiber on the game script thread while ticks still run, so natives work there; the plugin
+   switches its features off (toggles, spawned entities) without waiting (script_wait is not allowed to
+   delay shutdown). When no script tick arrives in time (game paused or exiting), the runtime calls it from
+   the shutdown thread instead, where natives return G6_E_NOT_ON_SCRIPT_THREAD. Plugins without the
+   export are unloaded as before. */
+typedef void                 (G6_CALL *g6_plugin_stop_fn)(void);              /* "g6_plugin_stop"  */
 
 /* ------------------------------------------------------------------------- */
 /* Runtime exports (the runtime DLL itself; used by embedded language hosts) */

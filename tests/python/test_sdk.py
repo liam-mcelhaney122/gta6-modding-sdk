@@ -32,6 +32,7 @@ DUMP = os.environ.get("G6_DUMP")
 MOCK_DLL = os.path.join(SDK, "build", "gta6mod_mock.dll")
 HAVE_GEN = os.path.isfile(os.path.join(SDK, "generators", "gen_bindings.py"))
 VECTOR_EVIDENCE = os.path.join(SDK, "..", "re-db", "builds", "1.0.2.1", "natives", "script-vm.vector_params.json")
+NATIVES_ARITY = os.path.join(SDK, "..", "tools", "phase5", "natives_arity.py")  # private research tooling
 
 
 class TestJoaat(unittest.TestCase):
@@ -95,6 +96,19 @@ class TestMarshal(unittest.TestCase):
         buf = marshal.EntitySlot.from_address(p.slots[0])
         buf.lo, buf.hi = 7, 9
         self.assertEqual(marshal.unpack("E>n", [0, 0, 0, 0], p), ((9 << 64) | 7,))
+
+    def test_entity_inout_param(self):
+        """'X': one pointer slot to a 16-byte buffer filled from the argument; the value read back is returned."""
+        h = (0xDEADBEEF << 64) | 0x1122334455667788
+        p = marshal.pack("X>n", [h])
+        self.assertEqual(len(p.slots), 1)
+        buf = marshal.EntitySlot.from_address(p.slots[0])
+        self.assertEqual((buf.lo, buf.hi), (0x1122334455667788, 0xDEADBEEF))
+        self.assertEqual(marshal.read_entity_ptr(p.slots[0]), h)
+        marshal.write_entity_ptr(p.slots[0], 0)  # what DELETE_ENTITY does
+        self.assertEqual(marshal.unpack("X>n", [0, 0, 0, 0], p), (0,))
+        with self.assertRaises(TypeError):
+            marshal.pack("X>n", [])  # the caller passes the handle in
 
     def test_arg_count_checked(self):
         with self.assertRaises(TypeError):
@@ -185,7 +199,7 @@ class TestMockWorld(unittest.TestCase):
         backend = self.rt.backend
         for t in range(0, 3000, 16):
             if t == 1008:
-                backend.press_control(0, 51)
+                backend.press_control(0, joaat("INPUT_CONTEXT"))
             S._default.tick()
             backend.step(16)
         vehicles = [e for e in backend.world.entities.values() if e.kind == "vehicle"]
@@ -242,7 +256,7 @@ class TestGenerator(unittest.TestCase):
         self.assertEqual(gen.type_code("Entity"), "e")
         self.assertEqual(gen.type_code("Ped"), "e")
         self.assertEqual(gen.type_code("Player"), "i")
-        self.assertEqual(gen.type_code("Vehicle*"), "E")
+        self.assertEqual(gen.type_code("Vehicle*"), "E")  # in/out 'X' only from handler evidence
         self.assertEqual(gen.type_code("Vector3", is_return=True), "w")
         self.assertEqual(gen.type_code("Vector3"), "v")
         self.assertEqual(gen.type_code("Hash"), "u")
@@ -295,6 +309,7 @@ class TestGenerator(unittest.TestCase):
         self.assertEqual(sum(1 for n in index.values() if "w" in n["sig"].split(">")[0]), 204)
         self.assertEqual(index[0xE39B4FF4FDEBDE27]["sig"], "eeifffi>n")  # TASK_GOTO_ENTITY_OFFSET: 3 float slots
 
+    @unittest.skipUnless(os.path.isfile(NATIVES_ARITY), "needs tools/phase5/natives_arity.py (private tree)")
     def test_vector_evidence_matches_handler(self):
         """The evidence file reproduces from the exe (SET_ENTITY_COORDS)."""
         if not (DUMP and os.path.exists(os.path.join(DUMP, "game_scarlett_master.exe"))):
@@ -324,9 +339,10 @@ class TestGenerator(unittest.TestCase):
 
 
 CHAIN_ANCHORS = ["camera.final.get_front", "camera.gameplay.director", "camera.gameplay.get_director", "camera.world_to_screen", "streaming.model.request", "ecs.comp.seats_sel77", "ecs.ped.comp_12", "ecs.ped.comp_30", "ecs.ped.comp_weapon_26", "ecs.vehicle.comp_01", "fs.packfile.cell_file_type", "pool.buildings",
-                 "script.thread.current_id", "tls.alloc_current.read", "tls.thread_id_cached"]
+                 "script.thread.current_id", "tls.alloc_current.read", "tls.thread_id_cached", "world.game_timer"]
+# world.game_timer: read by the g6probe plugin through anchor_address (G-016).
 RUNTIME_CHAIN_ANCHORS = ["pool.buildings", "script.thread.current_id", "tls.alloc_current.read",
-                         "tls.thread_id_cached"]
+                         "tls.thread_id_cached", "world.game_timer"]
 
 
 def _synthetic_pe(text: bytes, data: bytes, image_base: int = 0x140000000) -> bytes:

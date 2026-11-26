@@ -3,14 +3,14 @@
 Offline run (mock world): damage at 496 ms lands, G at 1008 turns god mode on (heals), damage at 2000
 is blocked, G at 3008 turns it off, damage at 3504 lands again.
 
-    python -m gta6mod run sdk/examples/python/god_mode.py --ms 4000 --damage 50@496 --press 47@1008 --damage 50@2000 --press 47@3008 --damage 30@3504
+    python -m gta6mod run sdk/examples/python/god_mode.py --ms 4000 --damage 50@496 --press INPUT_DETONATE@1008 --damage 50@2000 --press INPUT_DETONATE@3008 --damage 30@3504
 
 Twin of sdk/luau/examples/god_mode. Behaviour and log lines: sdk/docs/script_layer.md.
 """
-from gta6mod.game import GTA5Control, Mod, player
+from gta6mod.game import Control, Mod, player
 
-# Config. GTA VI control ids are unknown; this is a GTA V control index (sdk/docs/script_layer.md).
-KEY_TOGGLE = GTA5Control.DETONATE  # 47, G
+# Config: a GTA VI input action (sdk/docs/api/controls.md). Default GTA VI bindings are not known yet.
+KEY_TOGGLE = Control.DETONATE  # GTA V default key G
 CHECK_MS = 250
 
 m = Mod("god_mode")

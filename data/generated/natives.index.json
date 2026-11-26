@@ -3,7 +3,8 @@
   "sdk/data/seed/natives.seed.json",
   "re-db/builds/1.0.2.1/natives/script-vm.handlers.tsv",
   "re-db/builds/1.0.2.1/natives.json",
-  "re-db/builds/1.0.2.1/natives/script-vm.vector_params.json"
+  "re-db/builds/1.0.2.1/natives/script-vm.vector_params.json",
+  "re-db/builds/1.0.2.1/natives/script-vm.inout_params.json"
  ],
  "natives": [
   {
@@ -5746,13 +5747,13 @@
     {
      "name": "entity",
      "type": "Entity*",
-     "code": "E"
+     "code": "X"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "E>n"
+   "sig": "X>n"
   },
   {
    "hash": "0x64CDE9D6BF8ECAD3",
@@ -7877,13 +7878,13 @@
     {
      "name": "entity",
      "type": "Entity*",
-     "code": "E"
+     "code": "X"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "E>n"
+   "sig": "X>n"
   },
   {
    "hash": "0x0D06D522B90E861F",
@@ -8631,13 +8632,13 @@
     {
      "name": "object",
      "type": "Object*",
-     "code": "E"
+     "code": "X"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "E>n"
+   "sig": "X>n"
   },
   {
    "hash": "0x2595DD4236549CE3",
@@ -8650,13 +8651,13 @@
     {
      "name": "ped",
      "type": "Ped*",
-     "code": "E"
+     "code": "X"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "E>n"
+   "sig": "X>n"
   },
   {
    "hash": "0x629BFA74418D6239",
@@ -8669,13 +8670,13 @@
     {
      "name": "vehicle",
      "type": "Vehicle*",
-     "code": "E"
+     "code": "X"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "E>n"
+   "sig": "X>n"
   },
   {
    "hash": "0x786591D986DE9159",
@@ -22683,13 +22684,13 @@
     {
      "name": "object",
      "type": "Object*",
-     "code": "E"
+     "code": "X"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "E>n"
+   "sig": "X>n"
   },
   {
    "hash": "0xBFA48E2FF417213F",
@@ -25935,13 +25936,13 @@
     {
      "name": "ped",
      "type": "Ped*",
-     "code": "E"
+     "code": "X"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "E>n"
+   "sig": "X>n"
   },
   {
    "hash": "0xED00D72F81CF7278",
@@ -176247,13 +176248,13 @@
     {
      "name": "vehicle",
      "type": "Vehicle*",
-     "code": "E"
+     "code": "X"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "E>n"
+   "sig": "X>n"
   },
   {
    "hash": "0x75DCED9EEC5769D7",

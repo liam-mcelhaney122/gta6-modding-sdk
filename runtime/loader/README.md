@@ -35,6 +35,8 @@ tools/inject/g6inject.cpp    g6inject.exe: waits for the DexNom title process, L
 tools/inject/inject_core.hpp g6inject argument parsing, name matching, exit codes (pure, tested offline)
 build_inject.cmd             builds g6inject.exe and the injector test binaries into build\ and build\inject_test\
 tests/inject/*.cpp           injector test: stand-in target, image-named dummy DLL, marker DLL, driver
+plugins/g6probe/             g6probe.dll: live probe plugin (mode=full) writing JSONL; see tools/live/stages/README.md
+build_probe.cmd              builds build\probe\g6probe.dll and its tests into build\probe_testtests/probe/*.cpp            g6probe unit test, mock-world test (gta6mod_mock.dll + fake title image)
 ```
 
 ## Build
@@ -42,8 +44,8 @@ tests/inject/*.cpp           injector test: stand-in target, image-named dummy D
 ```bat
 sdk\runtime\loader\build.cmd test
 ```
-`build.cmd` builds the runtime, the self-test and `g6inject.exe`; `test` runs the self-test and then
-the injector test, and the script exits non-zero if either fails. (Before 2026-11-25 `build.cmd test`
+`build.cmd` builds the runtime, the self-test, `g6inject.exe` and the `g6probe` plugin; `test` runs the
+self-test, the injector test and the two g6probe tests, and the script exits non-zero if any fails. (Before 2026-11-25 `build.cmd test`
 returned the errorlevel from before the self-test ran, so a failing self-test still exited 0.)
 ```powershell
 .\sdk\runtime\loader\build.ps1 -Test -Dump "<DUMP>"
@@ -158,9 +160,11 @@ re-implementation against pefile and against the manifest.
 
 ## Game clock (`game_time_ms`)
 
-There is no anchor for the timer block in `patterns.hpp`, so the runtime resolves it from the
-manifest handler RVAs of three natives, after their self-id check, by decoding the handler
-bodies with the x64 decoder (`game_clock.cpp`). The handler is walked to its first direct call;
+The runtime resolves the timer block from the manifest handler RVAs of three natives, after
+their self-id check, by decoding the handler bodies with the x64 decoder (`game_clock.cpp`).
+Plugins reach the same block through `anchor_address("world.game_timer")`: an xref-chain anchor
+in `patterns.hpp` along the GET_GAME_TIMER path below (G-016). The self-test checks that both
+land on RVA `0xabbef40` of the dump. The handler is walked to its first direct call;
 the callee must be exactly `load; ret`.
 
 | native (hash) | handler | value path [observed, 1.0.2.1] |

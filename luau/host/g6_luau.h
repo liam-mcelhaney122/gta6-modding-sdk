@@ -14,6 +14,8 @@
  *                    (source replaces the running script's name as the log source)
  *                    cancel(name) -> boolean: the live script `name` is never resumed again.
  *                    Cancelling the running script ends it at its next wait (or return).
+ *                    onStop(fn): fn runs once when the host raises the stop event
+ *                    (g6_luau_stop: plugin stop/unload). @gta6/game mods register m.stop here.
  *   "@gta6/<lib>"    any other [a-z_]+ name: <lib_dir>/<lib>.luau, e.g. "@gta6/names"
  *                    (generated clean names) and "@gta6/game" (helper layer)
  *   "./x"            module x.luau next to the requiring mod's init.luau
@@ -47,6 +49,11 @@ int           g6_luau_run_file(g6_luau_host* host, const char* path);
 int           g6_luau_load_mods(g6_luau_host* host);
 /* Resume every script whose wait has elapsed. Call once per game tick. */
 void          g6_luau_tick(g6_luau_host* host);
+/* Raise the stop event: run every script.onStop handler once (registration order, each in its own thread,
+   errors logged; a handler that waits is not resumed), then cancel every live script. Call it where
+   natives work (the game script thread) before unloading. Idempotent; g6_luau_destroy raises it when it
+   was not raised. Returns the number of handlers that failed. */
+int           g6_luau_stop(g6_luau_host* host);
 int           g6_luau_script_count(const g6_luau_host* host);
 
 #ifdef __cplusplus

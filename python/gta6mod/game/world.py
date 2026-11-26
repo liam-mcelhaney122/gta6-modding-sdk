@@ -1,9 +1,9 @@
 """The player, the world, the clock and controls."""
 from __future__ import annotations
 
-from enum import IntEnum
 from typing import Generator
 
+from ..controls import Control, ControlGroup
 from ..types import Vector3
 from . import names as n
 from .core import now, wait
@@ -17,8 +17,10 @@ class _Player:
         return Ped(n.player.ped_id())
 
     def id(self) -> int:
-        """Player index. Uses PLAYER_ID, which is only a GTA V seed hash (unverified) in 1.0.2.1."""
-        return n.player.id()
+        """Player index: GET_PLAYER_INDEX (observed handler 0x144501320), which takes the PLAYER_ID role in
+        GTA VI scripts: it returns 0, and its result is what scripts pass in 1-slot player-index arguments
+        (findings/phase5/30_script_layer_evidence.md, G-082)."""
+        return n.player.get_index()
 
     def position(self) -> Vector3:
         return self.ped().position
@@ -92,34 +94,32 @@ class _Clock:
         n.clock.pause(bool(on), 0)
 
 
-class GTA5Control(IntEnum):
-    """GTA V control indices (default keyboard key in the comment).
-
-    GTA VI's IS_CONTROL_* natives carry RDR2's signature, where the action is a hash. These values are
-    placeholders for config, not GTA VI facts; sdk/docs/script_layer.md says how to find the real ids.
-    """
-    MULTIPLAYER_INFO = 20      # Z
-    SPECIAL_ABILITY_SECONDARY = 29  # B
-    DETONATE = 47              # G
-    CONTEXT = 51               # E
-    CONTEXT_SECONDARY = 52     # Q
-    VEH_DUCK = 73              # X
-    VEH_HEADLIGHT = 74         # H
-
-
 class _Controls:
-    def just_pressed(self, action, pad: int = 0) -> bool:
+    """Input queries. ``action`` is a ``Control`` member, a script key (int) or an ``"INPUT_*"`` name; ``pad`` is
+    the control group (``ControlGroup``, default PLAYER_CONTROL). Method: sdk/docs/api/controls.md."""
+
+    def just_pressed(self, action, pad: int = ControlGroup.PLAYER_CONTROL) -> bool:
         return n.pad.is_control_just_pressed(int(pad), action)
 
-    def pressed(self, action, pad: int = 0) -> bool:
+    def pressed(self, action, pad: int = ControlGroup.PLAYER_CONTROL) -> bool:
         return n.pad.is_control_pressed(int(pad), action)
 
-    def just_released(self, action, pad: int = 0) -> bool:
+    def just_released(self, action, pad: int = ControlGroup.PLAYER_CONTROL) -> bool:
         return n.pad.is_control_just_released(int(pad), action)
 
-    def disable(self, action, pad: int = 0) -> None:
+    def released(self, action, pad: int = ControlGroup.PLAYER_CONTROL) -> bool:
+        return n.pad.is_control_released(int(pad), action)
+
+    def normal(self, action, pad: int = ControlGroup.PLAYER_CONTROL) -> float:
+        """Analogue value of the action (axis or trigger), as GET_CONTROL_NORMAL returns it."""
+        return n.pad.get_control_normal(int(pad), action)
+
+    def disable(self, action, pad: int = ControlGroup.PLAYER_CONTROL) -> None:
         """Disable an action for this frame (call every tick to keep it disabled)."""
         n.pad.disable_control_action(int(pad), action, False)
+
+    def enable(self, action, pad: int = ControlGroup.PLAYER_CONTROL) -> None:
+        n.pad.enable_control_action(int(pad), action, False)
 
 
 player = _Player()

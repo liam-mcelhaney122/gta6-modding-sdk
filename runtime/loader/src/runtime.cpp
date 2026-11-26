@@ -658,7 +658,9 @@ struct Plugin {
     HMODULE mod = nullptr;
     char name[64] = {};
     g6_plugin_unload_fn unload = nullptr;
+    g6_plugin_stop_fn stop = nullptr;   // optional export (API 0.2): the stop event
     bool loaded = false;
+    bool stop_called = false;
 };
 Plugin g_plugins[32];
 std::size_t g_nplugins = 0;
@@ -695,6 +697,8 @@ void load_plugins() noexcept {
         p.mod = mod;
         std::snprintf(p.name, sizeof p.name, "%s", info->name ? info->name : "?");
         p.unload = unload;
+        p.stop = proc<g6_plugin_stop_fn>(mod, "g6_plugin_stop");
+        p.stop_called = false;
         g_loading_plugin = &p;
         const g6_status st = load(host_api());
         g_loading_plugin = nullptr;
@@ -808,9 +812,67 @@ const g6_host_api g_api = {
 };
 const g6_host_api* host_api() noexcept { return &g_api; }
 
+// ------------------------------------------------------------------ stop event
+// gta6mod.h g6_plugin_stop: before unloading, each loaded plugin gets its stop call once, preferably from a
+// script fiber on the game script thread (natives work there), else from the shutdown thread.
+constexpr DWORD kStopWaitMs = 1000;
+std::atomic<bool> g_stop_done{ false };
+g6_script_id g_stop_script = 0;
+
+void call_plugin_stops(std::size_t first, const char* where) noexcept {
+    for (std::size_t i = first; i < g_nplugins; ++i) {
+        Plugin& p = g_plugins[i];
+        if (!p.loaded || !p.stop || p.stop_called) continue;
+        p.stop_called = true;
+        G6LOG_I("stop event -> plugin '%s' (%s)", p.name, where);
+        p.stop();
+    }
+}
+
+void G6_CALL stop_event_tick(void*) {   // runtime-owned script: one fiber on the script thread
+    call_plugin_stops(0, "script thread");
+    sched::unregister_script(g_stop_script);
+    g_stop_done.store(true, std::memory_order_release);
+}
+
+bool stop_pending(std::size_t first) noexcept {
+    for (std::size_t i = first; i < g_nplugins; ++i)
+        if (g_plugins[i].loaded && g_plugins[i].stop && !g_plugins[i].stop_called) return true;
+    return false;
+}
+
+// Queue the stop event as a script; the next scheduler tick runs it. False when nothing was queued.
+bool request_stop_event() noexcept {
+    g_stop_done.store(false);
+    g6_script_desc d{ sizeof(g6_script_desc), "runtime.stop", stop_event_tick, nullptr };
+    if (sched::register_script(&d, nullptr, &g_stop_script) != G6_OK) { g_stop_script = 0; return false; }
+    return true;
+}
+
+// Plugins from `first` on: the stop call for every plugin that has not had it (this thread), then unload.
+void stop_and_unload_plugins(std::size_t first) noexcept {
+    if (g_stop_script && !g_stop_done.load()) sched::unregister_script(g_stop_script);  // never ran
+    g_stop_script = 0;
+    call_plugin_stops(first, "shutdown thread; natives are refused here");
+    for (std::size_t i = first; i < g_nplugins; ++i) {
+        if (g_plugins[i].loaded && g_plugins[i].unload) g_plugins[i].unload();
+        g_plugins[i].loaded = false;
+    }
+}
+
 // ------------------------------------------------------------------ init / teardown
 void teardown(const char* why) noexcept {
     G6LOG_W("teardown: %s", why);
+    if (stop_pending(0)) {
+        // Ticks still run: let the script thread raise the stop event, so plugin cleanup can call natives.
+        const bool ticking = g_cfg.mode == Mode::full && g_ticks_enabled.load() &&
+                             g_tick_tid.load() != GetCurrentThreadId();
+        if (ticking && request_stop_event()) {
+            const ULONGLONG t0 = GetTickCount64();
+            while (!g_stop_done.load(std::memory_order_acquire) && GetTickCount64() - t0 < kStopWaitMs) Sleep(1);
+        }
+        if (!g_stop_done.load()) G6LOG_W("stop event: no script tick within %lu ms; stopping plugins on this thread", kStopWaitMs);
+    }
     g_ticks_enabled.store(false);
     g_hook_active.store(false, std::memory_order_release);
     for (int k = 0; k < 2000 && g_tick_tid.load() != 0; ++k) Sleep(1);
@@ -819,10 +881,7 @@ void teardown(const char* why) noexcept {
         if (g_run_hook.disable(err, sizeof err)) G6LOG_I("Run hook removed (original bytes restored; trampoline kept allocated)");
         else G6LOG_E("Run hook removal failed: %s (left installed, inert)", err);
     }
-    for (std::size_t i = 0; i < g_nplugins; ++i) {
-        if (g_plugins[i].loaded && g_plugins[i].unload) g_plugins[i].unload();
-        g_plugins[i].loaded = false;
-    }
+    stop_and_unload_plugins(0);
     if (g_tick_tid.load() == 0) sched::delete_all();
 }
 
@@ -1248,12 +1307,36 @@ int t_guard_scan_self(std::uint32_t* own, std::uint32_t* trip, unsigned long* er
     return r.ok ? 1 : 0;
 }
 
+// Teardown's plugin sequence with fake plugins appended after the real ones: queue the stop event, optionally
+// run one scheduler tick on this thread (acting as the script thread), then stop the rest and unload.
+int t_plugin_stop_run(const g6_plugin_stop_fn* stops, const g6_plugin_unload_fn* unloads, std::size_t n, int tick,
+                      std::uint64_t now_ms) {
+    const std::size_t first = g_nplugins;
+    if (n == 0 || first + n > sizeof g_plugins / sizeof g_plugins[0]) return -1;
+    for (std::size_t i = 0; i < n; ++i) {
+        Plugin& p = g_plugins[first + i];
+        p = Plugin{};
+        std::snprintf(p.name, sizeof p.name, "fake%zu", i);
+        p.stop = stops ? stops[i] : nullptr;
+        p.unload = unloads ? unloads[i] : nullptr;
+        p.loaded = true;
+    }
+    g_nplugins = first + n;
+    const int queued = stop_pending(first) && request_stop_event() ? 1 : 0;
+    if (tick) t_sched_tick(now_ms);
+    stop_and_unload_plugins(first);
+    t_sched_tick(now_ms);   // frees the stop script's slot (pending delete)
+    for (std::size_t i = first; i < g_nplugins; ++i) g_plugins[i] = Plugin{};
+    g_nplugins = first;
+    return queued;
+}
+
 const g6rt_test_api g_test_api = {
     sizeof(g6rt_test_api), t_decode, t_scan, t_build, t_hook_create, t_hook_enable, t_hook_disable, t_hook_destroy,
     t_hook_info, t_verify_selfid, t_check_image, t_resolve_anchors, t_verify_handlers, t_sched_tick,
     t_clock_find_load, t_clock_mix, t_resolve_engine, t_vfs_map_path, t_vfs_mount_fake,
     t_guard_classify, t_guard_trips, t_guard_gate_run, t_guard_scan_self,
-    t_rip_in_range, t_guarded_len, t_hook_freeze_info,
+    t_rip_in_range, t_guarded_len, t_hook_freeze_info, t_plugin_stop_run,
 };
 
 } // namespace

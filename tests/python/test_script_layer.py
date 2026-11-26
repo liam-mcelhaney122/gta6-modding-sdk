@@ -166,6 +166,39 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(models.hash_of("adder"), 0xB779A091)
         self.assertEqual(models.hash_of(0x1_B779A091), 0xB779A091)
 
+    def test_player_id_uses_the_observed_index_native(self):
+        """G-082: player.id() calls GET_PLAYER_INDEX (observed handler 0x144501320), not the GTA V seed."""
+        self.assertEqual(player.id(), 0)
+        self.assertEqual(self.mock.calls[-1][0], 0x47E385B0D957C8D4)
+        self.assertEqual(N.BY_HASH[0x47E385B0D957C8D4][3], "observed")
+
+    def test_release_and_delete_clear_the_handle(self):
+        """G-084: the in/out Entity* natives get the handle and the game's write-back replaces it."""
+        w = self.mock.world
+        a = self.run_gen(Vehicle.spawn("lifetime_a", Vector3(1, 2, 3)))
+        keep_a = a.handle
+        a.release()
+        self.assertFalse(a)  # handle cleared
+        self.assertIn(keep_a, w.entities)  # still in the world, no longer the script's
+        self.assertFalse(w.entities[keep_a].script_owned)
+        b = self.run_gen(Vehicle.spawn("lifetime_b", Vector3(4, 5, 6)))
+        keep_b = b.handle
+        b.delete()
+        self.assertFalse(b)
+        self.assertNotIn(keep_b, w.entities)
+        again = Vehicle(keep_a)
+        again.delete()  # not the script's any more: the handle is cleared, the entity stays
+        self.assertFalse(again)
+        self.assertIn(keep_a, w.entities)
+        ped = player.ped()
+        ped.release()  # the player ped is not script-created: the game keeps the handle
+        self.assertEqual(ped.handle, self.mock.player_ped)
+        ped.delete()
+        self.assertFalse(ped)
+        self.assertIn(self.mock.player_ped, w.entities)
+        delete = 0x4CD38C78BD19A497  # DELETE_ENTITY: one pointer slot, 16-byte aligned scratch is not required
+        self.assertEqual(len([s for h, s in self.mock.calls if h == delete][0]), 1)
+
 
 class TestMod(unittest.TestCase):
     def setUp(self):
@@ -239,6 +272,50 @@ class TestMod(unittest.TestCase):
         scenario.drive(self.sched, self.mock, 100)
         self.assertNotIn("tick", cleaned)
 
+    def test_host_stop_event_stops_every_mod(self):
+        """G-086: the scheduler's stop event (host unload) runs Mod.stop: toggles off, scripts cancelled."""
+        m = Mod("a")
+        t = m.toggle(47)
+        log = []
+        t.on_disable(lambda: log.append("a off"))
+        m.every(16)(lambda: log.append("tick"))
+
+        @m.on_key(52)
+        def waiting():
+            yield wait(10_000)
+            log.append("resumed")
+
+        m2 = Mod("b")
+        m2.on_stop(lambda: log.append("b stop"))
+        scenario.drive(self.sched, self.mock, 64, [scenario.parse("press", "47@0"), scenario.parse("press", "52@16")])
+        self.assertTrue(t.on)
+        log.clear()
+        self.assertEqual(script.shutdown(), [])
+        self.assertEqual(log, ["a off", "b stop"])
+        self.assertTrue(m.stopped and m2.stopped and not t.on)
+        self.assertTrue(all(s.done for s in self.sched.scripts))
+        scenario.drive(self.sched, self.mock, 20_000)
+        self.assertEqual(log, ["a off", "b stop"])  # nothing ran again, the waiting handler never resumed
+        self.assertEqual(script.shutdown(), [])  # raised once
+
+    def test_host_stop_event_reports_failures(self):
+        m = Mod("a")
+        t = m.toggle(47)
+
+        @t.on_disable
+        def boom():
+            raise RuntimeError("boom")
+        self.sched.on_stop(lambda: 1 / 0)
+        ran = []
+        self.sched.on_stop(lambda: ran.append(1))
+        t.set(True)
+        errors = self.sched.stop()
+        self.assertEqual(sorted(type(e).__name__ for e in errors), ["RuntimeError", "ZeroDivisionError"])
+        self.assertEqual(ran, [1])  # later handlers still ran
+        msgs = [msg for _, _, msg in self.mock.logs]
+        self.assertIn("stop: cleanup failed: RuntimeError('boom')", msgs)
+        self.assertTrue(any(msg.startswith("stop: handler failed: ZeroDivisionError") for msg in msgs))
+
     def test_stop_while_handler_waits_for_model(self):
         self.rt, self.sched = fresh(model_load_ms=500)
         self.mock = self.rt.backend
@@ -272,7 +349,7 @@ class TestExampleMods(unittest.TestCase):
 
     def test_god_mode(self):
         mock, logs, _ = self.run_mod("god_mode", 4000, damage=["50@496", "50@2000", "30@3504"],
-                                     press=["47@1008", "47@3008"])
+                                     press=["INPUT_DETONATE@1008", "INPUT_DETONATE@3008"])
         self.assertEqual(logs, ["[INFO] god_mode: god mode ON", "[INFO] god_mode: god mode OFF"])
         self.assertEqual(mock.player.health, 170)  # 200 -50, healed, blocked, off, -30
         self.assertFalse(mock.player.invincible)
@@ -282,7 +359,7 @@ class TestExampleMods(unittest.TestCase):
         rt, sched = fresh()
         runpy.run_path(os.path.join(EXAMPLES, "god_mode.py"), run_name="__gta6mod__")
         mock = rt.backend
-        scenario.drive(sched, mock, 304, [scenario.parse("press", "47@0")])
+        scenario.drive(sched, mock, 304, [scenario.parse("press", "INPUT_DETONATE@0")])
         mock.player.invincible = False  # something outside the mod clears the flag
         mock.damage_player(80)
         new_ped = mock.world.spawn("ped", 1, Vector3())
@@ -295,7 +372,7 @@ class TestExampleMods(unittest.TestCase):
         self.assertTrue(mock.world.entities[new_ped].invincible)
 
     def test_never_wanted(self):
-        mock, logs, _ = self.run_mod("never_wanted", 4000, press=["74@496", "74@3008"], wanted=["3@1504"])
+        mock, logs, _ = self.run_mod("never_wanted", 4000, press=["INPUT_VEH_HEADLIGHT@496", "INPUT_VEH_HEADLIGHT@3008"], wanted=["3@1504"])
         self.assertEqual(logs, [
             "[INFO] never_wanted: never wanted ON (max wanted level was 5)",
             "[INFO] never_wanted: cleared wanted level 3",
@@ -304,14 +381,14 @@ class TestExampleMods(unittest.TestCase):
         self.assertEqual((mock.world.wanted_level, mock.world.max_wanted_level), (0, 5))
 
     def test_waypoint_teleport(self):
-        mock, logs, _ = self.run_mod("waypoint_teleport", 3000, press=["73@496", "73@1504"],
+        mock, logs, _ = self.run_mod("waypoint_teleport", 3000, press=["INPUT_VEH_DUCK@496", "INPUT_VEH_DUCK@1504"],
                                      waypoint=["250,-400,0@1008"])
         self.assertEqual(logs, ["[WARN] waypoint_teleport: no waypoint set",
                                 "[INFO] waypoint_teleport: teleported to 250.0 -400.0 13.0"])
         self.assertEqual(mock.player.pos, Vector3(250.0, -400.0, 13.0))
 
     def test_vehicle_spawner(self):
-        mock, logs, _ = self.run_mod("vehicle_spawner", 3000, press=["52@496"], damage=["150@2000"])
+        mock, logs, _ = self.run_mod("vehicle_spawner", 3000, press=["INPUT_CONTEXT_SECONDARY@496"], damage=["150@2000"])
         self.assertEqual(logs, ["[INFO] vehicle_spawner: spawned adder and seated the player",
                                 "[INFO] vehicle_spawner: repaired vehicle (850 -> 1000)"])
         veh = mock.world.entities[mock.player.vehicle]
@@ -320,11 +397,21 @@ class TestExampleMods(unittest.TestCase):
         self.assertEqual(mock.player.health, 50)  # the same damage hit the driver, who survives
 
     def test_time_control(self):
-        mock, logs, ns = self.run_mod("time_control", 2000, press=["20@496", "20@1008", "29@1504"])
+        # taps cycle the scale; a 1200 ms press is no tap but resets after 1000 ms held (at 2608)
+        mock, logs, ns = self.run_mod("time_control", 3000, press=[
+            "INPUT_MULTIPLAYER_INFO@496", "INPUT_MULTIPLAYER_INFO@1008", "INPUT_SPECIAL_ABILITY@1504",
+            "INPUT_MULTIPLAYER_INFO@1600+1200"])
         self.assertEqual(logs, ["[INFO] time_control: time scale 0.50",
                                 "[INFO] time_control: time scale 0.20",
-                                "[INFO] time_control: clock 13:00"])
-        self.assertAlmostEqual(mock.world.time_scale, 0.2, places=6)
+                                "[INFO] time_control: clock 13:00",
+                                "[INFO] time_control: time scale reset to 1.00"])
+        self.assertEqual(mock.world.time_scale, 1.0)
+        ns["m"].stop()
+        self.assertEqual(len(mock.logs), len(logs))  # already 1.0: stop logs nothing
+
+    def test_time_control_stop_resets(self):
+        mock, logs, ns = self.run_mod("time_control", 600, press=["INPUT_MULTIPLAYER_INFO@96"])
+        self.assertAlmostEqual(mock.world.time_scale, 0.5, places=6)
         ns["m"].stop()
         self.assertEqual(mock.world.time_scale, 1.0)
         self.assertEqual(mock.logs[-1][2], "time scale reset to 1.00")

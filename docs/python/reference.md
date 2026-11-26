@@ -10,8 +10,11 @@ Import helpers from `gta6mod.game`. Calls that reach natives require an active r
 |---|---|
 | `@mod.loop` | Register a plain function for every tick, or a generator function that controls its own waits. |
 | `@mod.every(ms, when=None)` | Call a plain or generator handler repeatedly, waiting `ms` after each call. An optional `Toggle` gates calls. |
-| `@mod.on_key(key, pad=0)` | Call a handler on a just-pressed event. A waiting handler runs in a separate script; further presses for that binding are ignored while it runs. |
-| `mod.toggle(key, label=None, pad=0)` | Bind a key and return a `Toggle`, initially off. |
+| `@mod.on_key(key, pad=0, mods=None)` | Call a handler on a just-pressed event while every modifier action in `mods` is held. A waiting handler runs in a separate script; further presses for that binding are ignored while it runs. |
+| `@mod.on_release(key, pad=0, mods=None, max_ms=None)` | Call a handler on release; with `max_ms`, only after a press at most that long (a tap). |
+| `@mod.on_hold(key, ms, pad=0, mods=None, repeat_ms=None)` | Call a handler once the key has been held `ms`, then every `repeat_ms` while held. |
+| `mod.block(*actions, pad=0, when=None)` | Disable the actions every tick while `when` (a `Toggle`, a callable, or `None` for always) is on. |
+| `mod.toggle(key, label=None, pad=0, mods=None)` | Bind a key and return a `Toggle`, initially off. |
 | `@mod.on_stop` | Register a plain cleanup callback. |
 | `mod.log(message)`, `warn(message)`, `error(message)` | Log with the mod name as source. |
 | `mod.stop()` | Cancel scripts, turn off active toggles and run cleanup callbacks. Returns a list of cleanup exceptions; repeated calls return an empty list. |
@@ -26,7 +29,7 @@ For lower-level scheduling, `gta6mod.script.register(name)` decorates a function
 
 ## Player and entities
 
-`player.ped()` returns a `Ped`; `player.id()` returns the player index. `player.position()` returns a `Vector3`; `player.vehicle()` returns a `Vehicle` or `None`. `player.teleport(pos, heading=None, with_vehicle=True)` moves the vehicle when applicable. Wanted-level methods are `wanted_level()`, `clear_wanted()`, `max_wanted()`, and `set_max_wanted(level)`. Player ID uses an unverified seed native.
+`player.ped()` returns a `Ped`; `player.id()` returns the player index. `player.position()` returns a `Vector3`; `player.vehicle()` returns a `Vehicle` or `None`. `player.teleport(pos, heading=None, with_vehicle=True)` moves the vehicle when applicable. Wanted-level methods are `wanted_level()`, `clear_wanted()`, `max_wanted()`, and `set_max_wanted(level)`. `player.id()` calls the observed `GET_PLAYER_INDEX`, which returns 0 (the local player).
 
 `Entity(handle)`, `Ped(handle)` and `Vehicle(handle)` wrap integer script handles. A wrapper is falsy if the low 64 bits of its handle are zero; use `entity.exists` to query whether a nonzero handle exists. `Ped` and `Vehicle` inherit `Entity`.
 
@@ -40,7 +43,7 @@ For lower-level scheduling, `gta6mod.script.register(name)` decorates a function
 | `offset(x=0, y=0, z=0)` | Return a world position from local right, forward and up offsets. |
 | `distance_to(other)` | Distance to an entity or position. |
 
-`Ped` adds `set_can_ragdoll(on)`, `in_vehicle()`, `vehicle()` and `put_into(vehicle, seat=SEAT_DRIVER)`. The default driver seat value is unverified for GTA VI. `Vehicle.repair()` repairs a vehicle. `Vehicle.spawn(model, position, heading=0.0, timeout_ms=2000)` is a generator: use `vehicle = yield from Vehicle.spawn(...)`; it returns a `Vehicle` or `None`. Its create-vehicle native is unverified.
+`Ped` adds `set_can_ragdoll(on)`, `in_vehicle()`, `vehicle()` and `put_into(vehicle, seat=SEAT_DRIVER)`. The default driver seat `-1` is confirmed from the handler and story-script call sites, not yet in game. `Vehicle.repair()` repairs a vehicle. `Vehicle.spawn(model, position, heading=0.0, timeout_ms=2000)` is a generator: use `vehicle = yield from Vehicle.spawn(...)`; it returns a `Vehicle` or `None`. Its create-vehicle native is unverified.
 
 `Vector3` holds `x`, `y`, and `z`. `models.hash_of(model)` hashes a name or converts an integer to a 32-bit hash; `models.is_valid(model)` checks it. `yield from models.request(model, timeout_ms=2000)` returns a boolean and releases the request on timeout or cancellation. On success call `models.release(model)` when finished. The spawn helper handles release after creation.
 
@@ -55,10 +58,10 @@ For lower-level scheduling, `gta6mod.script.register(name)` decorates a function
 | `world.set_time_scale(scale)` | Set the time scale. |
 | `clock.time()` | Return `(hours, minutes, seconds)`. |
 | `clock.set_time(hours, minutes=0, seconds=0)`, `clock.add(hours=0, minutes=0, seconds=0)`, `clock.pause(on=True)` | Set, advance or pause the clock. |
-| `controls.just_pressed(action, pad=0)`, `pressed(action, pad=0)`, `just_released(action, pad=0)` | Query control state. |
-| `controls.disable(action, pad=0)` | Disable the action for the current frame; call each tick to keep it disabled. |
+| `controls.just_pressed(action, pad=0)`, `pressed`, `just_released`, `released`, `normal` | Query control state (`normal` is the analogue value). |
+| `controls.disable(action, pad=0)`, `enable(action, pad=0)` | Disable (or enable) the action for the current frame; call each tick to keep it disabled. |
 
-`GTA5Control` values are GTA V placeholders, not confirmed GTA VI action identifiers. Mock control and world behavior is described in the [script layer design](../script_layer.md#mock-world-offline).
+An `action` is a `Control` member, a script key (int) or an `"INPUT_*"` name; `pad` is a `ControlGroup` (default `PLAYER_CONTROL`, 0). The 858 actions of this build are listed in [the controls reference](../api/controls.md); which button triggers each one in game is not known yet. Hotkey rules (chords, taps, holds) are in the [script layer design](../script_layer.md). Mock control and world behavior is described in the [script layer design](../script_layer.md#mock-world-offline).
 
 ## Runtime and native calls
 

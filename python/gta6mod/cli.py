@@ -11,7 +11,7 @@
   python -m gta6mod patterns list     [--confidence high]
   python -m gta6mod patterns resolve  --exe <exe> --name <anchor> [--name ...]
   python -m gta6mod natives  [--status unverified|verified]
-  python -m gta6mod run      <mod.py> [--ms 5000] [--backend mock|cabi:<dll>] [--press 51@1000]
+  python -m gta6mod run      <mod.py> [--ms 5000] [--backend mock|cabi:<dll>] [--press INPUT_CONTEXT@1000[+HOLD]]
                              [--damage N@MS] [--wanted N@MS] [--waypoint X,Y,Z@MS]   (scenario.py)
 """
 from __future__ import annotations
@@ -194,7 +194,9 @@ def cmd_run(a) -> int:
     alive = [s.name for s in sched.scripts if not s.done]
     errors = [s.name for s in sched.scripts if s.error]
     print(f"ran {t} ms; {rt.call_count} native calls; live scripts: {alive}; errored: {errors}")
-    return 1 if errors else 0
+    stop_errors = sched.stop()  # unload: the stop event switches toggles off and cancels the scripts
+    print(f"stop event: {len(stop_errors)} cleanup error(s)")
+    return 1 if errors or stop_errors else 0
 
 
 def main(argv=None) -> int:
@@ -214,7 +216,7 @@ def main(argv=None) -> int:
     p = sub.add_parser("natives"); p.add_argument("--status"); p.set_defaults(fn=cmd_natives)
     p = sub.add_parser("run"); p.add_argument("mod"); p.add_argument("--ms", type=int, default=5000)
     p.add_argument("--backend", default="mock"); p.add_argument("--allow-unverified", action="store_true")
-    p.add_argument("--press", action="append", help="CONTROL@MS, e.g. 51@1008 (mock only)")
+    p.add_argument("--press", action="append", help="CONTROL@MS[+HOLD], e.g. INPUT_CONTEXT@1008 or INPUT_CONTEXT@1008+600 (mock only)")
     p.add_argument("--damage", action="append", help="N@MS: hurt the player ped and its vehicle (mock only)")
     p.add_argument("--wanted", action="append", help="N@MS: set the wanted level (mock only)")
     p.add_argument("--waypoint", action="append", help="X,Y,Z@MS: set the map waypoint (mock only)")

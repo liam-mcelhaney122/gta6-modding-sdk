@@ -4,11 +4,11 @@
 
 [API index](index.md)
 
-399 anchors for build 1.0.2.1: 384 resolve by a unique byte signature, 15 by an xref chain from a unique start, 0 are unsigned by design. RVAs are offsets from the image base 0x140000000 of the reference exe; resolve them in the live image with `g6::patterns::resolve_anchor` (`patterns.hpp`) or `python -m gta6mod anchors verify`, never by trusting the RVA.
+400 anchors for build 1.0.2.1: 384 resolve by a unique byte signature, 16 by an xref chain from a unique start, 0 are unsigned by design. RVAs are offsets from the image base 0x140000000 of the reference exe; resolve them in the live image with `g6::patterns::resolve_anchor` (`patterns.hpp`) or `python -m gta6mod anchors verify`, never by trusting the RVA.
 
 Data and vtable anchors match the instruction that references the target and then apply the RIP-relative recipe. Chain steps: `call_target`, `rip_target`, `add`, `deref`, `nth_call`, `expect` (semantics in `patterns.hpp`).
 
-Groups: [camera](#camera) (8) · [content](#content) (2) · [crt](#crt) (9) · [ecs](#ecs) (25) · [entity](#entity) (53) · [fs](#fs) (42) · [gfx](#gfx) (9) · [gpu](#gpu) (3) · [hash](#hash) (5) · [health](#health) (1) · [io](#io) (1) · [mem](#mem) (15) · [metadata](#metadata) (3) · [package](#package) (1) · [parser](#parser) (22) · [ped](#ped) (11) · [perschar](#perschar) (1) · [physics](#physics) (1) · [player](#player) (10) · [pool](#pool) (10) · [rds5](#rds5) (1) · [resource](#resource) (13) · [script](#script) (79) · [streaming](#streaming) (36) · [tls](#tls) (7) · [vehicle](#vehicle) (6) · [weapon](#weapon) (2) · [world](#world) (23)
+Groups: [camera](#camera) (8) · [content](#content) (2) · [crt](#crt) (9) · [ecs](#ecs) (25) · [entity](#entity) (53) · [fs](#fs) (42) · [gfx](#gfx) (9) · [gpu](#gpu) (3) · [hash](#hash) (5) · [health](#health) (1) · [io](#io) (1) · [mem](#mem) (15) · [metadata](#metadata) (3) · [package](#package) (1) · [parser](#parser) (22) · [ped](#ped) (11) · [perschar](#perschar) (1) · [physics](#physics) (1) · [player](#player) (10) · [pool](#pool) (10) · [rds5](#rds5) (1) · [resource](#resource) (13) · [script](#script) (79) · [streaming](#streaming) (36) · [tls](#tls) (7) · [vehicle](#vehicle) (6) · [weapon](#weapon) (2) · [world](#world) (24)
 
 ## camera
 
@@ -528,6 +528,7 @@ Groups: [camera](#camera) (8) · [content](#content) (2) · [crt](#crt) (9) · [
 | `world.clock` | data | `0xAB5CDC0` | **signature**: `48 8D 3D ? ? ? ? C5 FC 11 06 C7`; RIP disp at +3, insn length 7 | high | phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24 (gameplay-fields) |
 | `world.clock.set_date` | function | `0x51ACD40` | **signature**: `56 57 55 53 48 83 EC 28 48 89 CE 44 89 C3` | high | phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24 (gameplay-fields) |
 | `world.clock.set_time` | function | `0x1AB9B20` | **signature**: `56 57 53 48 83 EC 50 C5 FC 10 05` | high | phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24 (gameplay-fields) |
+| `world.game_timer` | data | `0xABBEF40` | **chain**: from signature `56 48 83 EC 20 83 79 10 00 48 89 CE 78 14 E8 ? ? ? ? 48 8B 4E 08 48 98 48 89 01 48 83 C4 20 5E C3 48 8B 06 48 B9 13 17 98 B0 98 09 2C 58`; steps: call_target, expect, rip_target | high | aka game timer block read by GET_GAME_TIMER / GET_FRAME_COUNT / GET_FRAME_TIME; G-016; GET_GAME_TIMER handler decode (sdk/runtime/loader/README.md 'Game clock', game_clock.cpp) (game-timer) |
 | `world.physics.gravity` | data | `0x6DD5290` | **signature**: `C5 F8 28 05 ? ? ? ? 48 8D 0D ? ? ? ? 48 8D 54`; RIP disp at +4, insn length 8 | medium | phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24 (gameplay-fields) |
 | `world.time_scale.effective` | data | `0x6DF5B80` | **signature**: `C7 05 ? ? ? ? 00 00 80 3F 48 89 CE`; RIP disp at +2, insn length 10 | medium | phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24 (gameplay-fields) |
 | `world.time_scale.script` | data | `0x6DD88F4` | **signature**: `C5 FA 11 05 ? ? ? ? 83 3D ? ? ? ? 00 C5 FA 10 35`; RIP disp at +4, insn length 8 | medium | phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24 (gameplay-fields) |

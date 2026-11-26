@@ -1,11 +1,11 @@
 --!strict
 -- god_mode: toggle invincibility, no ragdoll and full health (Luau twin of sdk/examples/python/god_mode.py).
--- Offline: g6_luau_runner sdk\luau\lib sdk\luau\examples\god_mode\init.luau 4000 --damage 50@496 --press 47@1008 --damage 50@2000 --press 47@3008 --damage 30@3504
+-- Offline: g6_luau_runner sdk\luau\lib sdk\luau\examples\god_mode\init.luau 4000 --damage 50@496 --press INPUT_DETONATE@1008 --damage 50@2000 --press INPUT_DETONATE@3008 --damage 30@3504
 
 local game = require("@gta6/game")
 
--- Config. GTA VI control ids are unknown: this is a GTA V control index (sdk/docs/script_layer.md).
-local KEY_TOGGLE = game.GTA5Control.DETONATE -- G
+-- Config: a GTA VI input action (sdk/docs/api/controls.md). Default GTA VI bindings are not known yet.
+local KEY_TOGGLE = game.Control.DETONATE -- GTA V default key G
 local CHECK_MS = 250
 
 local m = game.mod("god_mode")

@@ -4,16 +4,18 @@ repaired once a second whenever it is damaged.
 Offline run (mock world): Q at 496 spawns and seats the player; damage at 2000 hits the vehicle and the
 next check repairs it.
 
-    python -m gta6mod run sdk/examples/python/vehicle_spawner.py --ms 3000 --press 52@496 --damage 150@2000
+    python -m gta6mod run sdk/examples/python/vehicle_spawner.py --ms 3000 --press INPUT_CONTEXT_SECONDARY@496 --damage 150@2000
 
 Twin of sdk/luau/examples/vehicle_spawner. Behaviour and log lines: sdk/docs/script_layer.md.
-CREATE_VEHICLE has only a GTA V seed hash (unverified) in 1.0.2.1; see the unknowns table there.
+CREATE_VEHICLE has only a GTA V seed hash (unverified) in 1.0.2.1: no handler with its shape was found
+(findings/phase5/30_script_layer_evidence.md, G-082); see the unknowns table there.
 """
-from gta6mod.game import GTA5Control, Mod, Vehicle, player
+from gta6mod.game import Control, Mod, Vehicle, player
 
-# Config. GTA VI control ids are unknown; this is a GTA V control index (sdk/docs/script_layer.md).
-KEY_SPAWN = GTA5Control.CONTEXT_SECONDARY  # 52, Q
-MODEL = "adder"  # a GTA V model name; GTA VI model names are not confirmed
+# Config: a GTA VI input action (sdk/docs/api/controls.md). Default GTA VI bindings are not known yet.
+KEY_SPAWN = Control.CONTEXT_SECONDARY  # GTA V default key Q
+MODEL = "adder"  # a GTA V model name, kept as a placeholder: no GTA VI vehicle model hash has call-site evidence
+# (findings/phase5/30_script_layer_evidence.md, G-081: no story-script model native takes a constant model hash).
 SPAWN_AHEAD = 5.0  # metres in front of the player
 REPAIR_CHECK_MS = 1000
 

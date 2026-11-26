@@ -4,14 +4,14 @@ Turning it off restores the max wanted level the game had before.
 Offline run (mock world): H at 496 turns it on, a crime at 1504 raises the level to 3 and the next
 check clears it, H at 3008 turns it off.
 
-    python -m gta6mod run sdk/examples/python/never_wanted.py --ms 4000 --press 74@496 --wanted 3@1504 --press 74@3008
+    python -m gta6mod run sdk/examples/python/never_wanted.py --ms 4000 --press INPUT_VEH_HEADLIGHT@496 --wanted 3@1504 --press INPUT_VEH_HEADLIGHT@3008
 
 Twin of sdk/luau/examples/never_wanted. Behaviour and log lines: sdk/docs/script_layer.md.
 """
-from gta6mod.game import GTA5Control, Mod, player
+from gta6mod.game import Control, Mod, player
 
-# Config. GTA VI control ids are unknown; this is a GTA V control index (sdk/docs/script_layer.md).
-KEY_TOGGLE = GTA5Control.VEH_HEADLIGHT  # 74, H
+# Config: a GTA VI input action (sdk/docs/api/controls.md). Default GTA VI bindings are not known yet.
+KEY_TOGGLE = Control.VEH_HEADLIGHT  # GTA V default key H
 CHECK_MS = 500
 
 m = Mod("never_wanted")

@@ -6,14 +6,14 @@ it is found or the timeout passes. It never teleports blind.
 Offline run (mock world): X at 496 with no waypoint warns; the waypoint is set at 1008; X at 1504
 teleports once collision has loaded (100 ms in the mock).
 
-    python -m gta6mod run sdk/examples/python/waypoint_teleport.py --ms 3000 --press 73@496 --waypoint 250,-400,0@1008 --press 73@1504
+    python -m gta6mod run sdk/examples/python/waypoint_teleport.py --ms 3000 --press INPUT_VEH_DUCK@496 --waypoint 250,-400,0@1008 --press INPUT_VEH_DUCK@1504
 
 Twin of sdk/luau/examples/waypoint_teleport. Behaviour and log lines: sdk/docs/script_layer.md.
 """
-from gta6mod.game import GTA5Control, Mod, Vector3, player, world
+from gta6mod.game import Control, Mod, Vector3, player, world
 
-# Config. GTA VI control ids are unknown; this is a GTA V control index (sdk/docs/script_layer.md).
-KEY_TELEPORT = GTA5Control.VEH_DUCK  # 73, X
+# Config: a GTA VI input action (sdk/docs/api/controls.md). Default GTA VI bindings are not known yet.
+KEY_TELEPORT = Control.VEH_DUCK  # GTA V default key X
 GROUND_TIMEOUT_MS = 1500
 LIFT = 1.0  # metres above the ground
 

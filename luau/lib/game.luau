@@ -3,7 +3,7 @@
 --
 --   local game = require("@gta6/game")
 --   local m = game.mod("god_mode")
---   local god = m.toggle(game.GTA5Control.DETONATE)
+--   local god = m.toggle(game.Control.DETONATE)
 --   god.onEnable(function() game.player.ped():setInvincible(true) end)
 --   m.every(250, function() ... end, god)
 --
@@ -14,6 +14,8 @@
 local script = require("@gta6/script")
 local native = require("@gta6/native")
 local names = require("@gta6/names")
+local controlsData = require("@gta6/controls")
+local hotkeysLib = require("@gta6/hotkeys")
 
 local game = {}
 game.names = names
@@ -40,7 +42,9 @@ end
 -- A wrapper holds the 16-byte handle buffer exactly as a native returned it. It never builds or
 -- changes a handle. A handle whose low 8 bytes are 0 means "no entity" (isValid() is false).
 
---- Seat index for the driver in GTA V and RDR2 scripts. Unverified for GTA VI (sdk/docs/script_layer.md).
+--- Driver seat for SET_PED_INTO_VEHICLE. Static evidence (findings/phase5/30_script_layer_evidence.md, G-083):
+--- the handler maps seat s >= -1 to internal seat s + 1 (-2 = any free seat), and story scripts pass -1 at 197
+--- of the 203 sites that seat the player ped. Not yet confirmed in game.
 game.SEAT_DRIVER = -1
 
 local Entity = {}
@@ -149,7 +153,7 @@ function Entity:offset(x: number?, y: number?, z: number?): vector
 	return names.entity.getOffsetFromEntityInWorldCoords(self.handle, vector.create(x or 0, y or 0, z or 0))
 end
 function Entity:distanceTo(other): number
-	local b = if typeof(other) == "vector" then other else other:position()
+	local b = if type(other) == "vector" then other else other:position()
 	return vector.magnitude(self:position() - b)
 end
 
@@ -173,6 +177,18 @@ end
 
 function Vehicle:repair()
 	names.vehicle.setFixed(self.handle)
+end
+
+-- Delete the entity (DELETE_ENTITY). The native takes the handle by pointer and clears it, so the wrapper's
+-- handle becomes what the game wrote back: an all-zero handle (isValid() false) once it is gone. The game only
+-- deletes entities this script created; it clears the handle either way.
+function Entity:delete()
+	self.handle = names.entity.delete(self.handle)
+end
+-- Tell the game this script no longer needs the entity (SET_ENTITY_AS_NO_LONGER_NEEDED); the world may clean
+-- it up later. The game clears the handle (isValid() false) only when it accepted the release.
+function Entity:release()
+	self.handle = names.entity.setAsNoLongerNeeded(self.handle)
 end
 
 game.Entity = Entity
@@ -250,9 +266,11 @@ local player = {}
 function player.ped()
 	return Ped.new(names.player.pedId())
 end
--- Player index. Uses PLAYER_ID, which is only a GTA V seed hash (unverified) in 1.0.2.1.
+-- Player index: GET_PLAYER_INDEX (observed handler 0x144501320), which takes the PLAYER_ID role in GTA VI
+-- scripts: it returns 0, and its result is what scripts pass in 1-slot player-index arguments
+-- (findings/phase5/30_script_layer_evidence.md, G-082).
 function player.id(): number
-	return names.player.id()
+	return names.player.getIndex()
 end
 function player.position(): vector
 	return player.ped():position()
@@ -337,19 +355,12 @@ end
 game.clock = clock
 
 -- ------------------------------------------------------------------ controls
---- GTA V control indices (default keyboard key in the comment).
---- GTA VI's IS_CONTROL_* natives carry RDR2's signature, where the action is a hash. These values are
---- placeholders for config, not GTA VI facts; sdk/docs/script_layer.md says how to find the real ids.
-game.GTA5Control = table.freeze({
-	MULTIPLAYER_INFO = 20, -- Z
-	SPECIAL_ABILITY_SECONDARY = 29, -- B
-	DETONATE = 47, -- G
-	CONTEXT = 51, -- E
-	CONTEXT_SECONDARY = 52, -- Q
-	VEH_DUCK = 73, -- X
-	VEH_HEADLIGHT = 74, -- H
-})
+-- Input actions (script keys) and control groups of this build, from @gta6/controls (generated;
+-- sdk/docs/api/controls.md). An action may also be given as an "INPUT_*" string or a number.
+game.Control = controlsData.Control
+game.ControlGroup = controlsData.ControlGroup
 
+-- pad: control group, default ControlGroup.PLAYER_CONTROL (0)
 local controls = {}
 function controls.justPressed(action: number | string, pad: number?): boolean
 	return names.pad.isControlJustPressed(pad or 0, action)
@@ -360,24 +371,47 @@ end
 function controls.justReleased(action: number | string, pad: number?): boolean
 	return names.pad.isControlJustReleased(pad or 0, action)
 end
+function controls.released(action: number | string, pad: number?): boolean
+	return names.pad.isControlReleased(pad or 0, action)
+end
+-- Analogue value of the action (axis or trigger), as GET_CONTROL_NORMAL returns it.
+function controls.normal(action: number | string, pad: number?): number
+	return names.pad.getControlNormal(pad or 0, action)
+end
 -- Disable an action for this frame (call every tick to keep it disabled).
 function controls.disable(action: number | string, pad: number?)
 	names.pad.disableControlAction(pad or 0, action, false)
 end
+function controls.enable(action: number | string, pad: number?)
+	names.pad.enableControlAction(pad or 0, action, false)
+end
 game.controls = controls
 
 -- ------------------------------------------------------------------ mod structure
+-- One named type for a toggle's enable and disable lists: `if on then enable else disable` is then a
+-- single type the analyzer can iterate (two inferred {() -> ()} tables form a union it cannot).
+type Callbacks = { () -> () }
+
 -- game.mod(name) registers the mod's scripts as "<name>.<part>". Handlers run inside a script, so they
 -- may wait. A key handler (other than a toggle) runs as its own script "<name>.keyN", so a waiting
 -- handler never delays other bindings; a press while that binding's handler still runs is ignored.
 -- Toggle and onStop callbacks also run from m.stop(), which may be called outside a script: keep them
--- free of waits.
+-- free of waits. The host calls m.stop() itself when it raises its stop event (plugin unload).
+-- Hotkeys (rules in @gta6/hotkeys): onKey fires on press, onRelease on release (maxMs makes it a tap),
+-- onHold after the action is held ms (repeatMs repeats it). opts.mods adds modifier actions that must be
+-- held; the most specific chord wins. m.block disables actions every tick while opts.when is on.
+--   m.onKey(game.Control.CONTEXT, fn, { mods = game.Control.SPRINT })   -- SPRINT + CONTEXT
+--   m.onHold(game.Control.CONTEXT, 800, fn)                            -- hold CONTEXT 0.8 s
+--   m.onRelease(game.Control.CONTEXT, fn, { maxMs = 250 })             -- tap CONTEXT
+--   m.block({ game.Control.ATTACK, game.Control.AIM }, { when = menu }) -- menu: a toggle or a function
+-- Where opts is accepted, a number means { pad = number } (pad: control group, default 0).
 function game.mod(name: string)
 	local m = { name = name, stopped = false }
 	local used: { [string]: boolean } = {}
 	local live: { string } = {}  -- every script name this mod registered (cancelled on stop)
 	local threads: { [thread]: boolean } = setmetatable({}, { __mode = "k" }) :: any
-	local bindings = {}
+	local keys = hotkeysLib.new()
+	local blocks = {}
 	local toggles = {}
 	local stopHandlers = {}
 	local inputRegistered = false
@@ -436,15 +470,17 @@ function game.mod(name: string)
 		end)
 	end
 
+	-- b.fn = { f = handler, inline = true for toggle flips (never wait) }
 	local function dispatch(b)
-		if b.inline then
-			b.fn()
+		local h = b.fn
+		if h.inline then
+			h.f()
 			return
 		end
 		b.busy = true
 		keySeq += 1
 		add("key" .. keySeq, function()
-			local ok, err = pcall(b.fn)
+			local ok, err = pcall(h.f)
 			b.busy = false
 			if not ok then
 				error(err, 0)
@@ -452,13 +488,23 @@ function game.mod(name: string)
 		end)
 	end
 
+	local function readControls(query, action: number, pad: number): boolean
+		return controls[query](action, pad)
+	end
+
+	-- Bindings are read first, then the blocks are applied, every tick.
 	local function inputLoop()
 		while not m.stopped do
-			for _, b in bindings do
-				if not b.busy and controls.justPressed(b.key, b.pad) then
-					dispatch(b)
-					if m.stopped then
-						return
+			for _, b in keys.poll(readControls, game.now()) do
+				dispatch(b)
+				if m.stopped then
+					return
+				end
+			end
+			for _, blk in blocks do
+				if blk.active() then
+					for _, a in blk.actions do
+						controls.disable(a, blk.pad)
 					end
 				end
 			end
@@ -466,24 +512,63 @@ function game.mod(name: string)
 		end
 	end
 
-	local function bind(key, pad: number?, fn: () -> (), inline: boolean)
-		table.insert(bindings, { key = key, pad = pad or 0, fn = fn, inline = inline, busy = false })
+	local function ensureInput()
 		if not inputRegistered then
 			inputRegistered = true
 			add("input", inputLoop)
 		end
 	end
 
-	-- Call fn when key is just pressed on pad (default 0).
-	function m.onKey(key, fn: () -> (), pad: number?)
-		bind(key, pad, fn, false)
+	local function options(o): (number, { [string]: any })
+		if o == nil then
+			return 0, {}
+		elseif type(o) == "number" then
+			return o, {}
+		end
+		return o.pad or 0, o
 	end
 
-	-- An on/off switch bound to a key. Flip it with the key, or call set / flip.
-	function m.toggle(key, label: string?, pad: number?)
+	local function bind(kind, key, fn: () -> (), inline: boolean, o, ms: number?, repeatMs: number?)
+		local pad, opts = options(o)
+		keys.add(kind, key, { f = fn, inline = inline }, pad, opts.mods, ms, repeatMs)
+		ensureInput()
+	end
+
+	-- Call fn when key is just pressed (opts: pad number, or { pad, mods }).
+	function m.onKey(key, fn: () -> (), opts)
+		bind("press", key, fn, false, opts)
+	end
+
+	-- Call fn when key is just released (opts: { pad, mods, maxMs }; maxMs: only after a press that short).
+	function m.onRelease(key, fn: () -> (), opts)
+		local _, o = options(opts)
+		bind("release", key, fn, false, opts, o.maxMs)
+	end
+
+	-- Call fn once key has been held ms (opts: { pad, mods, repeatMs }; repeatMs: again while still held).
+	function m.onHold(key, ms: number, fn: () -> (), opts)
+		local _, o = options(opts)
+		bind("hold", key, fn, false, opts, ms, o.repeatMs)
+	end
+
+	-- Disable actions (one or a list) every tick while opts.when is on (a toggle, a function, or nil for
+	-- always; opts.pad default 0). The mod's own bindings are read before the disable each tick; other
+	-- scripts and the game see the actions disabled for the rest of that frame [GTA V semantics, not
+	-- verified on GTA VI].
+	function m.block(actions, opts)
+		local pad, o = options(opts)
+		local blk = hotkeysLib.block(actions, pad, o.when)
+		table.insert(blocks, blk)
+		ensureInput()
+		return blk
+	end
+
+	-- An on/off switch bound to a key (opts: pad number, or { pad, mods }). Flip it with the key, or call
+	-- set / flip.
+	function m.toggle(key, label: string?, opts)
 		local t = { key = key, label = label or name }
 		local on = false
-		local enable, disable = {}, {}
+		local enable: Callbacks, disable: Callbacks = {}, {}
 		function t.isOn(): boolean
 			return on
 		end
@@ -518,7 +603,7 @@ function game.mod(name: string)
 			end
 		end
 		table.insert(toggles, t)
-		bind(key, pad, t.flip, true)
+		bind("press", key, t.flip, true, opts)
 		return t
 	end
 
@@ -558,6 +643,12 @@ function game.mod(name: string)
 		end
 		return errors
 	end
+
+	-- The host's stop event (plugin stop/unload, g6_luau_stop) stops the mod. Registered when the mod is
+	-- created, from top-level code; a mod created after the event is not stopped by it.
+	pcall(script.onStop, function()
+		m.stop()
+	end)
 
 	return m
 end

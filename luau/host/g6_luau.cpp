@@ -55,6 +55,8 @@ struct g6_luau_host {
     std::unordered_map<std::string, int> module_cache;  // name -> registry ref
     std::string         current_mod_dir;
     std::string         current_script;  // log source while a script thread runs
+    std::vector<int>    stop_refs;       // script.onStop handlers (registry refs)
+    bool                stopped = false; // the stop event was raised
 };
 
 static g6_luau_host* host_of(lua_State* L) {
@@ -114,6 +116,20 @@ static void push_entity(lua_State* L, uint64_t lo, uint64_t hi) {
     std::memcpy(static_cast<char*>(b) + 8, &hi, 8);
 }
 
+// An entity argument: a 16-byte buffer exactly as a native returned it, or a number (lo only, hi = 0).
+static void check_entity(lua_State* L, int arg, const char* name, uint64_t& lo, uint64_t& hi) {
+    lo = hi = 0;
+    if (lua_isbuffer(L, arg)) {
+        size_t len = 0;
+        const void* b = luaL_checkbuffer(L, arg, &len);
+        if (len != 16) luaL_error(L, "%s: entity handle buffer must be 16 bytes", name);
+        std::memcpy(&lo, b, 8);
+        std::memcpy(&hi, static_cast<const char*>(b) + 8, 8);
+    } else {
+        lo = (uint64_t)luaL_checknumber(L, arg);
+    }
+}
+
 static int l_native_call(lua_State* L) {
     g6_luau_host* h = host_of(L);
     auto* ref = static_cast<NativeRef*>(lua_touserdatatagged(L, 1, kNativeRefTag));
@@ -157,9 +173,9 @@ static int l_native_call(lua_State* L) {
         case 's': c.args[c.argc++] = lua_isnil(L, arg) ? (++arg, 0) : g6_arg_ptr(luaL_checkstring(L, arg++)); break;
         case 'w': {  /* packed 16-byte Vector3 {x,y,z,w}: two slots */
             const float* v = luaL_checkvector(L, arg++);
-            const g6_vec3 p{ v[0], v[1], v[2] };
-            c.args[c.argc++] = g6_arg_vec3_lo(p);
-            c.args[c.argc++] = g6_arg_vec3_hi(p);
+            const g6_vec3 packed{ v[0], v[1], v[2] };
+            c.args[c.argc++] = g6_arg_vec3_lo(packed);
+            c.args[c.argc++] = g6_arg_vec3_hi(packed);
             break;
         }
         case 'v': {  /* legacy three float slots */
@@ -171,17 +187,16 @@ static int l_native_call(lua_State* L) {
         }
         case 'e': {  /* 16-byte entity handle: a 16-byte buffer (as returned), or a number (lo only) */
             uint64_t lo = 0, hi = 0;
-            if (lua_isbuffer(L, arg)) {
-                size_t len = 0;
-                const void* b = luaL_checkbuffer(L, arg++, &len);
-                if (len != 16) luaL_error(L, "%s: entity handle buffer must be 16 bytes", ref->name);
-                std::memcpy(&lo, b, 8);
-                std::memcpy(&hi, static_cast<const char*>(b) + 8, 8);
-            } else {
-                lo = (uint64_t)luaL_checknumber(L, arg++);
-            }
+            check_entity(L, arg++, ref->name, lo, hi);
             c.args[c.argc++] = lo;
             c.args[c.argc++] = hi;
+            break;
+        }
+        case 'X': {  /* in/out Entity*: scratch filled from the argument, read back after the call */
+            if (n_ent >= 4 || n_out >= 12) luaL_error(L, "%s: too many out-params", ref->name);
+            check_entity(L, arg++, ref->name, ent_outs[n_ent].lo, ent_outs[n_ent].hi);
+            out_codes[n_out] = 'X'; out_ptrs[n_out++] = &ent_outs[n_ent];
+            c.args[c.argc++] = g6_arg_ptr(&ent_outs[n_ent++]);
             break;
         }
         case 'I': case 'F': case 'B':
@@ -227,7 +242,7 @@ static int l_native_call(lua_State* L) {
         case 'F': lua_pushnumber(L, g6_ret_float((uint64_t)*(int64_t*)out_ptrs[i])); break;
         case 'B': lua_pushboolean(L, (int)(*(int64_t*)out_ptrs[i] & 0xFF)); break;
         case 'V': { auto* v = (g6_vec3_packed*)out_ptrs[i]; lua_pushvector(L, v->x, v->y, v->z); break; }
-        case 'E': { auto* e = (g6_entity*)out_ptrs[i]; push_entity(L, e->lo, e->hi); break; }
+        case 'E': case 'X': { auto* e = (g6_entity*)out_ptrs[i]; push_entity(L, e->lo, e->hi); break; }
         }
         ++nret;
     }
@@ -286,6 +301,16 @@ static int l_script_cancel(lua_State* L) {
     return 1;
 }
 
+static int l_script_on_stop(lua_State* L) {
+    g6_luau_host* h = host_of(L);
+    luaL_checktype(L, 1, LUA_TFUNCTION);
+    if (h->stopped) luaL_error(L, "script.onStop: the stop event was already raised");
+    lua_pushvalue(L, 1);
+    h->stop_refs.push_back(lua_ref(L, -1));
+    lua_pop(L, 1);
+    return 0;
+}
+
 static int l_script_register(lua_State* L) {
     g6_luau_host* h = host_of(L);
     const char* name = luaL_checkstring(L, 1);
@@ -338,7 +363,7 @@ static int l_require(lua_State* L) {
         static const luaL_Reg fns[] = {{"resolve", l_native_resolve}, {"call", l_native_call}, {"joaat", l_native_joaat}, {nullptr, nullptr}};
         push_lib(L, fns);
     } else if (name == "@gta6/script") {
-        static const luaL_Reg fns[] = {{"register", l_script_register}, {"wait", l_script_wait}, {"now", l_script_now}, {"log", l_script_log}, {"cancel", l_script_cancel}, {nullptr, nullptr}};
+        static const luaL_Reg fns[] = {{"register", l_script_register}, {"wait", l_script_wait}, {"now", l_script_now}, {"log", l_script_log}, {"cancel", l_script_cancel}, {"onStop", l_script_on_stop}, {nullptr, nullptr}};
         push_lib(L, fns);
     } else {
         std::string path;
@@ -377,8 +402,41 @@ extern "C" g6_luau_host* g6_luau_create(const g6_host_api* api, const g6_luau_co
     return h;
 }
 
+extern "C" int g6_luau_stop(g6_luau_host* h) {
+    if (!h || !h->L || h->stopped) return 0;
+    h->stopped = true;
+    int failed = 0;
+    for (int ref : h->stop_refs) {
+        lua_State* T = lua_newthread(h->L);
+        luaL_sandboxthread(T);
+        lua_getref(h->L, ref);
+        lua_xmove(h->L, T, 1);
+        h->current_script = "stop";
+        const int st = lua_resume(T, nullptr, 0);
+        h->current_script.clear();
+        if (st == LUA_YIELD) {
+            ++failed;
+            host_log(h, G6_LOG_ERROR, "stop", "stop handler waited; it is not resumed (stop handlers must not wait)");
+        } else if (st != LUA_OK) {
+            ++failed;
+            host_log(h, G6_LOG_ERROR, "stop", std::string("stop handler failed: ") + (lua_tostring(T, -1) ? lua_tostring(T, -1) : "error"));
+        }
+        lua_pop(h->L, 1);  // the thread
+        lua_unref(h->L, ref);
+    }
+    h->stop_refs.clear();
+    for (auto& s : h->scripts) {  // whatever the handlers left running is cancelled
+        if (s.done) continue;
+        s.done = true;
+        lua_unref(h->L, s.thread_ref);
+        s.thread = nullptr;
+    }
+    return failed;
+}
+
 extern "C" void g6_luau_destroy(g6_luau_host* h) {
     if (!h) return;
+    g6_luau_stop(h);
     if (h->L) lua_close(h->L);
     delete h;
 }

@@ -40,8 +40,9 @@ inline constexpr std::uint64_t kCheckNativeHash = 0x06843DA7060A026Bull;  // SET
 // (findings/phase5/26); the guard is attestation + a TCP check of this process (guard.cpp).
 
 // ---------------------------------------------------------------- game clock
-// The clock block has no anchor in patterns.hpp. It is resolved at run time from the manifest
-// handler RVAs of these three natives by decoding their bodies (game_clock.cpp). [observed 1.0.2.1]:
+// The runtime resolves the clock block from the manifest handler RVAs of these three natives by
+// decoding their bodies (game_clock.cpp). Plugins use the patterns.hpp chain anchor world.game_timer
+// (same GET_GAME_TIMER path; the self-test checks both agree). [observed 1.0.2.1]:
 //   GET_GAME_TIMER  0x143e85810: ... js; call 0x1405f2ef0; cdqe; mov [ret],rax   core: 8B 05 rel32 (mov eax,[0x14abbef40]); C3
 //   GET_FRAME_COUNT 0x143e85700: ... js; call 0x143eb1ef0                       core: 8B 05 rel32 (mov eax,[0x14abbef44]); C3
 //   GET_FRAME_TIME  0x143e85740: ... js; call 0x140738420                       core: C5 FA 10 05 rel32 (vmovss xmm0,[0x14abbef4c]); C3

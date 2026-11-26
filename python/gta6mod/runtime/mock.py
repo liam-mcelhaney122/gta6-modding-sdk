@@ -19,8 +19,8 @@ from typing import Callable
 from ..joaat import joaat
 from ..types import Vector3
 from .backend import G6_E_UNKNOWN_NATIVE, Backend, BuildInfo, NativeError
-from .marshal import (Vec3Packed, float_slot, slot_float, slot_int, slot_str, slots_entity, slots_vec3,
-                      vec3_packed_slots)
+from .marshal import (Vec3Packed, float_slot, read_entity_ptr, slot_float, slot_int, slot_str, slots_entity,
+                      slots_vec3, vec3_packed_slots, write_entity_ptr)
 
 Handler = Callable[["MockBackend", list[int], list[int]], None]
 
@@ -43,6 +43,7 @@ class MockEntity:
     visible: bool = True
     velocity: Vector3 = field(default_factory=Vector3)
     vehicle: int = 0  # peds: handle of the vehicle they are in
+    script_owned: bool = False  # created by a script (mission entity): DELETE_* removes it
 
     def forward(self) -> Vector3:
         h = math.radians(self.heading)
@@ -59,6 +60,8 @@ class MockWorld:
     next_handle: int = 0x100
     loaded_models: dict[int, int] = field(default_factory=dict)  # model -> ms when loaded
     controls_just_pressed: set[tuple[int, int]] = field(default_factory=set)
+    controls_held: dict[tuple[int, int], int] = field(default_factory=dict)  # (pad, action) -> release time
+    controls_just_released: set[tuple[int, int]] = field(default_factory=set)
     wanted_level: int = 0
     max_wanted_level: int = 5
     waypoint: Vector3 | None = None
@@ -73,6 +76,12 @@ class MockWorld:
         hp = 1000 if kind == "vehicle" else 200
         self.entities[h] = MockEntity(h, kind, model, pos, heading, hp, hp)
         return h
+
+    def remove(self, handle: int) -> None:
+        self.entities.pop(handle, None)
+        for p in self.entities.values():
+            if p.vehicle == handle:
+                p.vehicle = 0
 
 
 class MockBackend(Backend):
@@ -116,10 +125,20 @@ class MockBackend(Backend):
 
     def step(self, elapsed_ms: int) -> None:
         self.clock_ms += elapsed_ms
-        self.world.controls_just_pressed.clear()
+        w = self.world
+        w.controls_just_pressed.clear()
+        w.controls_just_released.clear()
+        for key, until in list(w.controls_held.items()):
+            if until <= self.clock_ms:
+                del w.controls_held[key]
+                w.controls_just_released.add(key)
 
-    def press_control(self, pad: int, action: int) -> None:
-        self.world.controls_just_pressed.add((pad, action))
+    def press_control(self, pad: int, action: int, hold_ms: int = 0) -> None:
+        """Press now; the action stays pressed for ``hold_ms`` (at least this tick) and is just released on the
+        first tick at or after that."""
+        key = (slot_int(pad), slot_int(action))  # as the handler reads them
+        self.world.controls_just_pressed.add(key)
+        self.world.controls_held[key] = self.clock_ms + max(0, int(hold_ms))
 
     def damage_player(self, amount: int) -> None:
         """Scenario event: hurt the player ped and the vehicle it is in, unless invincible."""
@@ -203,9 +222,19 @@ class MockBackend(Backend):
                 return
             pos = Vector3(slot_float(s[1]), slot_float(s[2]), slot_float(s[3]))
             r[0] = w.spawn("vehicle", m, pos, slot_float(s[4]))
+            w.entities[r[0]].script_owned = True
 
         def control_just_pressed(b, s, r):
             r[0] = 1 if (slot_int(s[0]), slot_int(s[1])) in w.controls_just_pressed else 0
+
+        def control_pressed(b, s, r):
+            r[0] = 1 if (slot_int(s[0]), slot_int(s[1])) in w.controls_held else 0
+
+        def control_just_released(b, s, r):
+            r[0] = 1 if (slot_int(s[0]), slot_int(s[1])) in w.controls_just_released else 0
+
+        def control_released(b, s, r):
+            r[0] = 0 if (slot_int(s[0]), slot_int(s[1])) in w.controls_held else 1
 
         def wait(b, s, r):
             pass  # scripts use the scheduler's wait(); the native is a no-op here
@@ -279,6 +308,22 @@ class MockBackend(Backend):
                 p.vehicle = v.handle
                 p.pos = v.pos
 
+        # In/out Entity* ('X'): the game reads the 16-byte handle at the pointer and writes 16 zero bytes back
+        # (findings/phase5/30_script_layer_evidence.md, G-084). DELETE_*: removes a script-created entity;
+        # the handle is cleared in every path the mock models. *_AS_NO_LONGER_NEEDED: clears it only when the
+        # entity exists and was script-created (the entity stays in the world).
+        def delete_entity(b, s, r):
+            e = w.entities.get(read_entity_ptr(s[0]))
+            if e is not None and e.script_owned:
+                w.remove(e.handle)
+            write_entity_ptr(s[0], 0)
+
+        def no_longer_needed(b, s, r):
+            e = w.entities.get(read_entity_ptr(s[0]))
+            if e is not None and e.script_owned:
+                e.script_owned = False
+                write_entity_ptr(s[0], 0)
+
         def set_fixed(b, s, r):
             e = ent(s)
             if e:
@@ -329,9 +374,6 @@ class MockBackend(Backend):
         def pause_clock(b, s, r):
             w.clock_paused = b_(s[0])
 
-        def control_false(b, s, r):
-            r[0] = 0
-
         def noop(b, s, r):
             pass
 
@@ -355,6 +397,7 @@ class MockBackend(Backend):
             0x9CD27B0045628463: game_timer,
             0xD80958FC74E988A6: player_ped_id,
             0x4F8644AF03D0E0D6: player_id,
+            0x47E385B0D957C8D4: player_id,  # GET_PLAYER_INDEX (observed; the handler returns 0)
             0x7239B21A38F536BA: does_exist,
             0x3FEF770D40960D5A: get_coords,
             0x06843DA7060A026B: set_coords,  # also the observed GTA VI hash
@@ -405,13 +448,22 @@ class MockBackend(Backend):
             0x3A52C59FFB2DEED8: set_clock_time,
             0xAB7C251C7701D336: add_clock_time,
             0x4D1A590C92BF377E: pause_clock,
-            0xF3A21BCD95725A4A: control_just_pressed,  # IS_CONTROL_PRESSED: a mock press lasts one tick
-            0x50F940259D3841E6: control_false,
+            0xF3A21BCD95725A4A: control_pressed,
+            0x50F940259D3841E6: control_just_released,
+            0x648EE3E7F38877DD: control_released,
             0xFE99B66D079CF6BC: noop,
             0xABC532F9098BFD9D: wanted_level,
             0x4E4B996C928C7AA6: clear_wanted,
             0xD04CFAD1E2B7984A: max_wanted,
             0x28A4BD2CEE236E19: set_max_wanted,
+            0x4CD38C78BD19A497: delete_entity,      # DELETE_ENTITY
+            0xCC0EF140F99365C5: delete_entity,      # DELETE_PED
+            0xE20A909D8C4A70F8: delete_entity,      # DELETE_VEHICLE
+            0x931914268722C263: delete_entity,      # DELETE_OBJECT
+            0x4971D2F8162B9674: no_longer_needed,   # SET_ENTITY_AS_NO_LONGER_NEEDED
+            0x2595DD4236549CE3: no_longer_needed,   # SET_PED_AS_NO_LONGER_NEEDED
+            0x629BFA74418D6239: no_longer_needed,   # SET_VEHICLE_AS_NO_LONGER_NEEDED
+            0x3AE22DEB5BA5A3E6: no_longer_needed,   # SET_OBJECT_AS_NO_LONGER_NEEDED
         }.items():
             self.register(h, fn)
 

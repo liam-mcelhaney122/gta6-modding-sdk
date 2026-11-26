@@ -4715,6 +4715,35 @@
    "unsigned": false
   },
   {
+   "name": "world.game_timer",
+   "kind": "data",
+   "signature": "",
+   "expected_rva": 180088640,
+   "chain": {
+    "from_signature": "56 48 83 EC 20 83 79 10 00 48 89 CE 78 14 E8 ? ? ? ? 48 8B 4E 08 48 98 48 89 01 48 83 C4 20 5E C3 48 8B 06 48 B9 13 17 98 B0 98 09 2C 58",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 14
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "8B 05 ? ? ? ? C3"
+     },
+     {
+      "op": "rip_target",
+      "at": 0,
+      "disp_at": 2,
+      "insn_len": 6
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "G-016; GET_GAME_TIMER handler decode (sdk/runtime/loader/README.md 'Game clock', game_clock.cpp)",
+   "unsigned": false
+  },
+  {
    "name": "world.physics.gravity",
    "kind": "data",
    "signature": "C5 F8 28 05 ? ? ? ? 48 8D 0D ? ? ? ? 48 8D 54",

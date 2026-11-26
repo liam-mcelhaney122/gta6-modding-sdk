@@ -19,6 +19,7 @@ evidence is in `findings/phase5/23_handle_abi.md`.
 | `v` | a `Vector3` parameter with no handler evidence (legacy GTA V form) | 3 (x, y, z floats) | `g6_vec3` | `Vector3` | `vector` |
 | `I` `F` `B` `E` | `int*`, `float*`, `BOOL*`, `Entity*`-family out-params | 1 (pointer to scratch) | pointer | appended to the returned tuple | extra return values |
 | `V` | `Vector3*` out-param | 1 (pointer to a **16-byte-aligned** `{x, y, z, w}`) | `g6_vec3_packed*` | appended to the returned tuple | extra return value |
+| `X` | `Entity*`-family **in/out** param: the handler reads the handle at the pointer and writes it back (evidence per native) | 1 (pointer to a 16-byte buffer filled from the argument) | `g6_entity*` (fill it before the call) | `int` argument; the value read back is appended to the returned tuple | `buffer \| number` argument; `buffer` extra return value |
 | `n` | `void` (return only) | 0 | `void` | `None` | nothing |
 
 Return codes follow `>`:
@@ -62,6 +63,15 @@ Python marshaller and the Luau host allocate aligned scratch. `g6_vec3_slots` is
 **Hashes in Luau:** Luau numbers are doubles, so a 64-bit native hash cannot be passed exactly. The generated
 Luau code passes each hash to `native.resolve` as a 16-digit hex string, once per native at module load. It then
 calls through the resolved handle. Entity handles travel as 16-byte `buffer`s for the same reason.
+
+**In/out entity pointers (`X`) are decided per native, from evidence.** nativedb types `DELETE_ENTITY(Entity*)` and
+`SET_ENTITY_AS_NO_LONGER_NEEDED(Entity*)` like out-params, but the GTA VI command bodies read the 16-byte handle at the
+pointer (`qword [p]`, `[p+8]`) and store 16 zero bytes back (`vmovups xmmword [p], xmm0`) when the entity is gone or
+released. `re-db/builds/1.0.2.1/natives/script-vm.inout_params.json` lists the eight natives where this was read from
+the handler (DELETE_ENTITY/PED/VEHICLE/OBJECT, SET_ENTITY/PED/VEHICLE/OBJECT_AS_NO_LONGER_NEEDED; addresses in
+`findings/phase5/30_script_layer_evidence.md`). `gen_bindings.py` turns exactly those `E` params into `X` and
+refuses stale evidence. Every other `Entity*` stays `E` (out-only). Example: `DELETE_ENTITY` is `"X>n"`; in Python
+`(handle,) = N.ENTITY.DELETE_ENTITY(handle)` returns `0` once the game cleared it.
 
 **Untyped natives:** a native with no usable types gets a generic `u64` wrapper instead of a typed one. It takes
 raw slots in and returns the first return slot (`G6_N_<hash>` / `N.RAW` / `N.raw(native, ...)`). When
