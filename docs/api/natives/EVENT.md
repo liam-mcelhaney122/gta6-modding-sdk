@@ -286,9 +286,10 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _SET_EVENT_TRACKER_FOR_PED
 
-`0xBB1E41DD3D3C6250` · sig `esi>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C150D0`
+`0xBB1E41DD3D3C6250` · sig `eui>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C150D0`
 
-- nativedb form: `void _SET_EVENT_TRACKER_FOR_PED(Ped ped, const char* eventName, int p2)`
-- C: `void G6_EVENT__SET_EVENT_TRACKER_FOR_PED(const g6_host_api* api, g6_entity ped, const char* eventName, int32_t p2)`
-- Python: `N.EVENT._SET_EVENT_TRACKER_FOR_PED(ped: int, eventName: str | None, p2: int) -> None`
-- Luau: `N.EVENT._SET_EVENT_TRACKER_FOR_PED(ped: buffer | number, eventName: string?, p2: number): ()`
+- nativedb form: `void _SET_EVENT_TRACKER_FOR_PED(Ped ped, Hash eventName, int p2)`
+- C: `void G6_EVENT__SET_EVENT_TRACKER_FOR_PED(const g6_host_api* api, g6_entity ped, uint32_t eventName, int32_t p2)`
+- Python: `N.EVENT._SET_EVENT_TRACKER_FOR_PED(ped: int, eventName: int | str, p2: int) -> None`
+- Luau: `N.EVENT._SET_EVENT_TRACKER_FOR_PED(ped: buffer | number, eventName: number | string, p2: number): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143c150f1), compared as a 32-bit key (0x143c25913); script-vm.param_types.observed.json (G-114)

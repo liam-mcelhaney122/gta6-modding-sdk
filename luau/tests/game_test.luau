@@ -36,6 +36,21 @@ assert(h == 0 and mm == 30, `clock wraps at 24 h (got {h}:{mm})`)
 game.clock.setTime(12)
 
 assert(game.player.wantedLevel() == 0 and game.player.maxWanted() == 5, "wanted 0/5")
+
+-- G-090: GET/CLEAR_PLAYER_WANTED_LEVEL get the player ped's 16-byte handle, not the player index.
+do
+	local P = (require("@gta6/names") :: any).player
+	local seen = {}
+	local get, clear = P.getWantedLevel, P.clearWantedLevel
+	P.getWantedLevel = function(...) table.insert(seen, table.pack(...)); return get(...) end
+	P.clearWantedLevel = function(...) table.insert(seen, table.pack(...)); return clear(...) end
+	local level = game.player.wantedLevel()
+	game.player.clearWanted()
+	P.getWantedLevel, P.clearWantedLevel = get, clear
+	assert(level == 0 and #seen == 2 and seen[1].n == 1 and seen[2].n == 1, "one argument per wanted native")
+	assert(typeof(seen[1][1]) == "buffer" and game.Entity.new(seen[1][1]):equals(ped), "wantedLevel passes the player ped")
+	assert(typeof(seen[2][1]) == "buffer" and game.Entity.new(seen[2][1]):equals(ped), "clearWanted passes the player ped")
+end
 assert(game.world.waypoint() == nil, "no waypoint")
 assert(game.world.groundZ(0, 0) == nil, "no ground before collision is requested")
 assert(game.models.hashOf("adder") == game.joaat("adder"), "hashOf(name) is joaat")

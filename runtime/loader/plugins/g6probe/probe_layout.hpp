@@ -8,6 +8,7 @@
 //
 // Kinds of values: "rva" = offset from the title image base; "off" = field offset inside an object.
 #pragma once
+#include <cstddef>
 #include <cstdint>
 
 namespace g6probe::layout {
@@ -123,6 +124,48 @@ inline constexpr std::uint32_t kHostHealthData = 0x68;  // CHealthHost+0x68 -> C
 inline constexpr std::uint32_t kDataMaxHealth = 0x38;   // f32 cache, recomputed by 0x1408dc4a0 [high]
 inline constexpr std::uint32_t kDataHealth = 0x40;      // f32 cache [high]
 inline constexpr std::uint32_t kProofFlags = 0x10;      // u32, bit 4 = invincible [high]
+
+// The player ped's last-vehicle pointers (G-003 second entity). Not in re-db yet; derived on feat/stage4-prep
+// from static disassembly of the 1.0.2.1 image, confidence medium, unverified live:
+//   GET_PLAYERS_LAST_VEHICLE handler 0x144501530 -> core 0x1420f4b40: ped = [player.ped.local];
+//   comp = 0x144dd7540(ped+0x9c ECS id), which is the static ped store column 0x47 (arch 3 only; index =
+//   row * slots_per_row + 0x47 through ecs.ped.row_stride/index_table/columns; base/stride at columns+0x470);
+//   if (byte comp+0x10 bit 5) and qword comp+0x898 != 0 the vehicle is comp+0x898, else comp+0x8a8 if != 0;
+//   the result goes through the entity->handle converter 0x1402a6520 (mode 2) into the native's 16-byte return.
+// Element size 0xb30: tools/phase5/types_ecs_columns.py, ped_static col 0x47 (pool creator 0x145b0c9f0).
+inline constexpr Component kPedCol47{ "CPedComp_col47", 0x47, 0xb30, false };
+inline constexpr std::uint32_t kCol47Flags = 0x10;      // u8; bit 5 selects +0x898
+inline constexpr std::uint32_t kCol47FlagsBit = 5;
+inline constexpr std::uint32_t kCol47VehicleA = 0x898;  // CVehicle* used when bit 5 is set
+inline constexpr std::uint32_t kCol47VehicleB = 0x8a8;  // CVehicle* used otherwise
+inline constexpr std::uint32_t kVehicleArch = 2;        // vehicle archetype (gameplay-fields.json, entity kind byte 2)
 } // namespace ecs
+
+namespace entity_kind {
+// CEntity+0x30 values (gameplay-fields.json "entity kind byte": 3 = ped, 2 = vehicle), confidence high.
+inline constexpr std::uint8_t kVehicle = 2;
+} // namespace entity_kind
+
+// Argument layouts of the second-entity natives (probe_natives.hpp), 1.0.2.1 handlers. Slot = 8 bytes.
+//   GET_PLAYERS_LAST_VEHICLE ">e"  handler 0x144501530: no argument; 16-byte return (re-db arity: ret extent 16).
+//   GET_CLOSEST_VEHICLE "wfui>e"   handler 0x144a824c0, core 0x144ab3780. re-db vector_params raw_reads
+//     [0,16 xmm16][16,4 float][24,8 gpr][32,4 gpr]: slots 0-1 packed position, 2 radius (f32), 3 model hash
+//     (0 = any: the core skips the model lookup when it is 0), 4 flags (bits 12..14 pick vehicle kinds; with none
+//     set only kinds 0, 3, 7 of CVehicle+0xfa pass; other bits not decoded). 16-byte return, zero when none.
+//   GET_CLOSEST_PED "wfbbEbbbi>b"  handler 0x144bca8c0, core 0x144beb910. raw_reads [0,16 xmm16][16,4 float]
+//     [24,4][32,4][40,8][48,4][56,4][64,4][72,4]: slots 0-1 position, 2 radius, 3-4 and 6-9 tested != 0 (the
+//     handler turns slot 9, "pedType" in nativedb, into a bool too), slot 5 a pointer the core fills with exactly
+//     16 bytes (the handle via 0x1402a6520, or 16 zero bytes when none is found). Returns the found flag.
+//     The core rejects candidates when some of those flags are 0 (filter 0x144beba70); the probe sets
+//     3, 4, 6, 8 and 9 to 1 and 7 to 0, so fewer peds are excluded. Which peds each flag excludes is not decoded.
+//     The filter also always rejects a ped whose column 0x47 byte +0x10 has bit 5 set (the bit the last-vehicle
+//     core tests); whether that excludes the player is unknown, so the record says whether the result is the player.
+namespace nearby {
+inline constexpr std::uint32_t kClosestVehicleModelAny = 0;
+inline constexpr std::uint32_t kClosestVehicleFlags = 0;
+inline constexpr std::int64_t kClosestPedFlag3 = 1, kClosestPedFlag4 = 1, kClosestPedFlag6 = 1, kClosestPedFlag7 = 0,
+                              kClosestPedFlag8 = 1, kClosestPedSlot9 = -1;
+inline constexpr std::size_t kClosestPedOutBytes = 16;
+} // namespace nearby
 
 } // namespace g6probe::layout

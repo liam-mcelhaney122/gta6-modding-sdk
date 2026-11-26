@@ -121,6 +121,16 @@ void test_config() {
     CHECK(bad("writes", "hotkey", "0x100"), "hotkey 0x100 refused");
     CHECK(bad("writes", "allow", "health,nope"), "unknown probe refuses the load");
     CHECK(bad("wait", "probe_ms", "-1"), "negative wait refused");
+    CHECK(bad("probe", "near_radius_m", "0.5"), "near radius below 1 m refused");
+    CHECK(bad("probe", "near_radius_m", "2000"), "near radius above 1000 m refused");
+    {
+        MapIni ini;
+        ini.set("probe", "stage", "3");
+        Config c;
+        CHECK(parse_config(ini, c).ok && c.near_radius_m == 50.0, "near radius defaults to 50 m");
+        ini.set("probe", "near_radius_m", "12.5");
+        CHECK(parse_config(ini, c).ok && c.near_radius_m == 12.5, "near radius set");
+    }
     {
         MapIni ini;
         ini.set("probe", "stage", "4").set("writes", "hotkey", "0").set("writes", "trigger_file", "");
@@ -276,6 +286,15 @@ void test_slots() {
     CHECK(arg_slots("eieqq>n") == 7, "SET_ENTITY_HEALTH 7 slots");
     CHECK(arg_slots("ebqq>b") == 5 && arg_slots(">e") == 0 && arg_slots("iii>n") == 3, "slot counts");
     CHECK(ret_code("ebb>w") == 'w' && ret_code(">e") == 'e' && ret_code("iq>n") == 'n', "ret codes");
+    // 'h' = 16-byte non-entity handle (ScenarioPoint, G-099): 2 argument slots, 2 return slots, decoded as lo/hi
+    CHECK(arg_slots("hib>n") == 4 && arg_slots("ehsibbubfbq>n") == 13 && ret_slots('h') == 2 && ret_slots('n') == 0 &&
+          ret_slots('i') == 1, "16-byte handle slot counts");
+    {
+        const std::uint64_t hr[2] = { 0x5C00000000000001ull, 0x5C5Cull };
+        Json g;
+        json_ret(g, 'h', hr);
+        CHECK(g.str() == "{\"lo\":\"0x5c00000000000001\",\"hi\":\"0x0000000000005c5c\"}", "16-byte handle return decoded lo/hi");
+    }
     std::uint64_t s[2];
     vec3_slots({ 1.0, 2.0, -3.5 }, s);
     const Vec3 v = slots_vec3(s);
@@ -291,6 +310,16 @@ void test_slots() {
           arg_slots(spec(N::is_ped_in_any_vehicle).sig) == 5 && arg_slots(spec(N::get_vehicle_ped_is_using).sig) == 3 &&
           arg_slots(spec(N::get_player_wanted_level).sig) == 2 && arg_slots(spec(N::clear_player_wanted_level).sig) == 2 &&
           arg_slots(spec(N::add_to_clock_time).sig) == 3, "argument counts used by the plugin");
+    // second-entity natives: slots as the handlers read them (probe_layout.hpp namespace nearby)
+    CHECK(arg_slots(spec(N::get_players_last_vehicle).sig) == 0 && ret_code(spec(N::get_players_last_vehicle).sig) == 'e',
+          "GET_PLAYERS_LAST_VEHICLE: no argument, 16-byte return");
+    CHECK(arg_slots(spec(N::get_closest_vehicle).sig) == 5 && ret_code(spec(N::get_closest_vehicle).sig) == 'e',
+          "GET_CLOSEST_VEHICLE: 5 slots (packed position 0-1, radius, model, flags), 16-byte return");
+    CHECK(arg_slots(spec(N::get_closest_ped).sig) == 10 && ret_code(spec(N::get_closest_ped).sig) == 'b' &&
+          spec(N::get_closest_ped).sig[4] == 'E', "GET_CLOSEST_PED: 10 slots, the out pointer in slot 5 (5th code: w covers slots 0-1), BOOL return");
+    for (N n : { N::get_players_last_vehicle, N::get_closest_vehicle, N::get_closest_ped })
+        CHECK(!spec(n).write, "%s is not a setter", spec(n).name);
+    CHECK(distance({ 1, 2, 3 }, { 4, 6, 3 }) == 5.0, "distance");
 }
 
 void test_ecs() {
@@ -307,6 +336,19 @@ void test_ecs() {
     CHECK(E::kIndexMinusStride == 0xc && E::kColumnsMinusStride == 0x1c, "static record field distances");
     CHECK(E::kRecTypeToColumn + E::kGenHealth.column_or_type == 0x4d && E::kRecTypeToColumn + E::kGenProofs.column_or_type == 0x4f,
           "generic selectors land on the +0x4d / +0x4f bytes of findings/phase5/24");
+    // GET_PLAYERS_LAST_VEHICLE core 0x1420f4b40: +0x898 only with bit 5 of +0x10, else +0x8a8 when non-null
+    CHECK(!E::kPedCol47.generic && E::kPedCol47.column_or_type == 0x47 && E::kCol47VehicleB + 8 <= E::kPedCol47.size,
+          "column 0x47 fields lie inside its 0xb30-byte element");
+    const LastVehiclePick p0 = pick_last_vehicle(0x00, 0x1000, 0x2000);
+    CHECK(p0.ptr == 0x2000 && p0.field == 0x8a8, "bit 5 clear: +0x8a8");
+    const LastVehiclePick p1 = pick_last_vehicle(0x20, 0x1000, 0x2000);
+    CHECK(p1.ptr == 0x1000 && p1.field == 0x898, "bit 5 set and +0x898 non-null: +0x898");
+    const LastVehiclePick p2 = pick_last_vehicle(0x20, 0, 0x2000);
+    CHECK(p2.ptr == 0x2000 && p2.field == 0x8a8, "bit 5 set but +0x898 null: +0x8a8");
+    const LastVehiclePick p3 = pick_last_vehicle(0xdf, 0x1000, 0);
+    CHECK(p3.ptr == 0 && p3.field == 0, "only bit 5 counts; nothing when +0x8a8 is null");
+    const LastVehiclePick p4 = pick_last_vehicle(0xff, 0, 0);
+    CHECK(p4.ptr == 0 && p4.field == 0, "no vehicle");
 }
 
 void test_bindings() {

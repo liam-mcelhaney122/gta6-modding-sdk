@@ -2,6 +2,7 @@
 
 #include "log.hpp"
 #include "manifest_1_0_2_1.inc"
+#include "script_objects.hpp"
 #include "x64_decode.hpp"
 
 #include <windows.h>
@@ -154,6 +155,8 @@ g6_status call_handler(std::size_t i, g6_native_call* call) noexcept {
     if (i >= kCount || !g_base) return G6_E_UNKNOWN_NATIVE;
     if (static_cast<Verify>(g_state[i].load()) != Verify::ok) return G6_E_UNVERIFIED_NATIVE;
     if (call->argc > G6_MAX_NATIVE_ARGS) return G6_E_TOO_MANY_ARGS;
+    objects::CallObjects objs;  // string_slots / text_slots -> script objects for this call, restored on return
+    if (const g6_status os = objs.prepare(call); os != G6_OK) return os;
     std::memset(call->ret, 0, sizeof call->ret);
     CallContext c{ call->args, call->ret, static_cast<std::int32_t>(call->argc), G6_MAX_NATIVE_RETS };
     const Handler h = reinterpret_cast<Handler>(g_base + m::kNatives[i].handler_rva);

@@ -553,14 +553,15 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _SIMULATED_ROUTE_CREATE
 
-`0xFD5BB35AAB83FD48` · sig `wwi>i` · params 3, argc_inferred 4, arg slots 5 · returns `Any` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4462BC0`
+`0xFD5BB35AAB83FD48` · sig `ww>i` · params 2, argc_inferred 4, arg slots 4 · returns `Any` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4462BC0`
 
 - vector params: packed 16-byte Vector3 (`w`, 2 slots), measured in the handler: `1` = nativedb x1, y1, z1, `2` = nativedb x2, y2, z2
 
-- nativedb form: `Any _SIMULATED_ROUTE_CREATE(float x1, float y1, float z1, float x2, float y2, float z2, int p6)`
-- C: `int32_t G6_PATH__SIMULATED_ROUTE_CREATE(const g6_host_api* api, g6_vec3 _1, g6_vec3 _2, int32_t p6)`
-- Python: `N.PATH._SIMULATED_ROUTE_CREATE(_1: Vector3, _2: Vector3, p6: int) -> int`
-- Luau: `N.PATH._SIMULATED_ROUTE_CREATE(_1: vector, _2: vector, p6: number): number`
+- nativedb form: `Any _SIMULATED_ROUTE_CREATE(float x1, float y1, float z1, float x2, float y2, float z2)`
+- C: `int32_t G6_PATH__SIMULATED_ROUTE_CREATE(const g6_host_api* api, g6_vec3 _1, g6_vec3 _2)`
+- Python: `N.PATH._SIMULATED_ROUTE_CREATE(_1: Vector3, _2: Vector3) -> int`
+- Luau: `N.PATH._SIMULATED_ROUTE_CREATE(_1: vector, _2: vector): number`
+- provenance: nativedb hash match (rdr3); GTA VI prototype from handler and call-site evidence: all 2 call sites (2 programs) pass 4 slots and the handler reads 4; nativedb params not taken: p6; script-vm.prototypes.observed.json (G-118)
 
 ### _SIMULATED_ROUTE_DELETE
 

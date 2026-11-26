@@ -5,31 +5,33 @@ A single-player modding SDK for **GTA VI build 1.0.2.1** (Xbox Series dump): a s
 ![build 1.0.2.1](https://img.shields.io/badge/game%20build-1.0.2.1-2a78d6)
 ![single-player only](https://img.shields.io/badge/scope-single--player%20only-52514e)
 ![offline](https://img.shields.io/badge/verified-offline%20%2F%20static-52514e)
-![in-game](https://img.shields.io/badge/in--game-not%20yet%20run-b26b00)
+![in-game](https://img.shields.io/badge/in--game-read--only%20under%20DexNom-b26b00)
 ![license](https://img.shields.io/badge/license-not%20yet%20chosen-898781)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/overview-dark.svg">
-  <img alt="Pipeline: a private research pipeline produces the generated data in this repository, which feeds the C ABI, C++, Python and Luau bindings and the runtime DLL. Tiles: 6,829 native handlers, 400 engine anchors, 867 struct fields, 19,178 PSO structures, 366/366 runtime self-tests passed offline, 56 native namespace pages." src="docs/assets/overview-light.svg">
+  <img alt="Pipeline: a private research pipeline produces the generated data in this repository, which feeds the C ABI, C++, Python and Luau bindings and the runtime DLL. Tiles: 6,829 native handlers, 412 engine anchors, 896 struct fields, 19,662 PSO structures, 414/414 runtime self-tests passed offline, 56 native namespace pages." src="docs/assets/overview-light.svg">
 </picture>
 
 > [!IMPORTANT]
-> **Status: built and self-tested offline, never run in-game.** Mods can be written and unit-tested today against the mock runtime. The runtime DLL builds and passes its self-test against the executable *file*, but it has not been loaded into a running game yet.
+> **Status: built and self-tested offline; first in-game runs were read-only.** Mods can be written and unit-tested today against the mock runtime. The runtime DLL has been loaded into the running game under the [DexNom/VIctory](https://github.com/DexNom/VIctory) host: it passed its identity and anchor checks, installed the script-thread tick hook, ticked a plugin on the script thread and read the player's handle, coordinates, heading and health through natives. Nothing that **writes** game state, the UI overlay, the embedded Python host and the script-string natives has run in game yet.
 
 ## What works today
 
 | Piece | Status |
 |---|---|
 | C ABI (`include/gta6mod/gta6mod.h`) | Stable host function table and plugin entry points, size-versioned; implemented by the mock runtime |
-| Natives | **6,829 handlers** with typed wrappers in C, C++, Python and Luau; 1,886 carry a name, the rest are exposed by hash (`N.RAW.N_<hash>`); 13 seed-only entries are marked `unverified` and refused by real backends unless you opt in |
-| Engine anchors (`include/gta6mod/patterns.hpp`) | **400 anchors**: 384 byte signatures unique in the 1.0.2.1 exe, 16 resolved through xref chains |
-| Types (`classes.hpp`, `offsets.hpp`) | 85 engine types, 867 fields, with `static_assert` offsets |
-| PSO schema (`data/generated/pso/`) | 19,178 structures, 77,044 members and 2,572 enums as JSON Schema (draft 2020-12), plus an XSD for the 67 structures with a known name |
+| Natives | **6,829 handlers** with typed wrappers in C, C++, Python and Luau; 1,903 carry a name, the rest are exposed by hash (`N.RAW.N_<hash>`); 13 seed-only entries are marked `unverified` and refused by real backends unless you opt in |
+| Engine anchors (`include/gta6mod/patterns.hpp`) | **412 anchors**: 394 byte signatures unique in the 1.0.2.1 exe, 18 resolved through xref chains |
+| Types (`classes.hpp`, `offsets.hpp`) | 89 engine types, 896 fields, with `static_assert` offsets |
+| PSO schema (`data/generated/pso/`) | 19,662 structures, 79,222 members and 2,679 enums as JSON Schema (draft 2020-12), plus an XSD for the 2,014 structures with a known name |
 | Python package (`python/gta6mod`) | Mock backend and a ctypes backend over the C ABI; PE reader, signature scanner, pattern resolver and RPF9/RDS5 header readers that work on your own dump |
 | Luau host (`luau/`) | Plugin DLL, embedding API and an offline runner; the example mods run against the mock world |
 | Script layer (`gta6mod.game`, `@gta6/game`) | Clean native names, helpers (player, entities, vehicles, world, clock, input) and a `Mod` structure with loops, timers, toggles and hotkeys; six example mods in Python and Luau with identical log lines, tested on the mocks only ([design](docs/script_layer.md)) |
 | Input actions (`gta6mod.controls`, `@gta6/controls`, `controls.h`) | The build's **858 input actions** as script keys (`joaat("INPUT_<NAME>")`, the RDR2 scheme), 629 of them named, and the three control groups ([reference](docs/api/controls.md)). Which button triggers each action is not known yet |
-| Runtime DLL (`runtime/loader`) | Builds with clang-cl (`/W4 /WX`); self-test **366/366** offline against the exe file; **not yet run in-game** |
+| Runtime DLL (`runtime/loader`) | Builds with clang-cl (`/W4 /WX`); self-test **414/414** offline against the exe file; loaded in game under DexNom (read-only stages: identity, anchors, tick hook, plugin tick, read natives); `g6inject` loads it into a running host |
+| UI overlay (`runtime/loader/ui`, `gta6mod.ui`, `@gta6/ui`) | Dear ImGui 1.91.9b drawn on the host's D3D12 swap chain through the `g6_ui_api` C ABI, with Python and Luau bindings and trainer-menu examples; tested offline on a D3D12 test window and the mocks; **not yet run in game** |
+| Embedded Python host (`g6_python`) | Optional plugin that embeds CPython 3.12 (isolated) and runs Python mods on the script thread with per-mod isolation, a watchdog and hot reload ([design](docs/python_host.md)); tested against the mock runtime; **not yet run in game** |
 | API reference (`docs/api`) | One page per native namespace, plus types, anchors, the native ABI and the PSO type table |
 
 ## Architecture
@@ -140,7 +142,8 @@ The CMake build and `ctest` were verified on an exported copy of this repository
 | `runtime/src/` | Mock implementation of the C ABI |
 | `data/generated/` | Natives index, pattern index, address manifest, types index, PSO schema |
 | `data/seed/` | Seed natives and anchors |
-| `docs/` | [Runtime design](docs/runtime_design.md), [script layer](docs/script_layer.md), [API reference](docs/api/index.md), [input actions](docs/api/controls.md), [native signatures](docs/native-signatures.md), [Python guide](docs/python/index.md) |
+| `third_party/imgui/` | Dear ImGui v1.91.9b (MIT, `LICENSE.txt`), vendored unmodified for the overlay |
+| `docs/` | [Runtime design](docs/runtime_design.md), [script layer](docs/script_layer.md), [Python host](docs/python_host.md), [API reference](docs/api/index.md), [input actions](docs/api/controls.md), [native signatures](docs/native-signatures.md), [Python guide](docs/python/index.md) |
 | `examples/`, `tests/` | Example Python mods; Python unit tests and C/C++ header checks |
 
 ## Guardrails and scope

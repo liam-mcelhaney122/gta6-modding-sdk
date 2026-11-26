@@ -4,7 +4,7 @@
 
 [API index](../index.md) · [ABI and marshalling](../abi.md)
 
-48 natives in re-db namespace `DATABINDING`: 10 named, 38 unnamed. Confidence: high 10, low 38.
+47 natives in re-db namespace `DATABINDING`: 12 named, 35 unnamed. Confidence: high 10, low 35, medium 2.
 
 Unnamed natives have no cross-title name. The bindings expose them as `N.RAW.N_<hash>` (C `G6_N_<hash>`), and the namespace shown here is the re-db namespace, inferred from handler clustering where the provenance says `cluster:`. Their parameters are synthesised from the observed slot reads (`Any` = an untyped 8-byte slot, `float` where a 32-bit float load was seen).
 
@@ -35,15 +35,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `void G6_N_0BC6FE8CC8C34D0B(const g6_host_api* api, int32_t p0)`
 - Python: `N.RAW.N_0BC6FE8CC8C34D0B(p0: int) -> None`
 - Luau: `N.RAW.N_0BC6FE8CC8C34D0B(p0: number): ()`
-- provenance: cluster:3nn_unanimous+argc
-
-### N_0CB5D1E14473D8A5
-
-`0x0CB5D1E14473D8A5` · sig `i>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: unnamed · confidence **low** · status observed · handler RVA `0x44CD4F0`
-
-- C: `void G6_N_0CB5D1E14473D8A5(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_0CB5D1E14473D8A5(p0: int) -> None`
-- Luau: `N.RAW.N_0CB5D1E14473D8A5(p0: number): ()`
 - provenance: cluster:3nn_unanimous+argc
 
 ### N_149522427612B1C3
@@ -273,12 +264,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_B0917C827C61D31C
 
-`0xB0917C827C61D31C` · sig `i>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: unnamed · confidence **low** · status observed · handler RVA `0x44CE240`
+`0xB0917C827C61D31C` · sig `T>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: unnamed · confidence **low** · status observed · handler RVA `0x44CE240`
 
-- C: `void G6_N_B0917C827C61D31C(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_B0917C827C61D31C(p0: int) -> None`
-- Luau: `N.RAW.N_B0917C827C61D31C(p0: number): ()`
-- provenance: cluster:3nn_unanimous+argc
+- C: `void G6_N_B0917C827C61D31C(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_B0917C827C61D31C(p0: str | None) -> None`
+- Luau: `N.RAW.N_B0917C827C61D31C(p0: string?): ()`
+- provenance: cluster:3nn_unanimous+argc; param 0 typed ScriptText (was Any): slot 0 read as a script text object (0x1444cef85, slot load 0x1444ce261, depth 1); script-vm.string_params.json (G-120)
 
 ### N_C243C3861CEA5E2E
 
@@ -316,15 +307,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - Luau: `N.RAW.N_D8B2F6612B48FCD7(p0: number): ()`
 - provenance: cluster:3nn_unanimous+argc
 
-### N_D942E6168EB81167
-
-`0xD942E6168EB81167` · sig `iii>i` · params 3, argc_inferred 3, arg slots 3 · returns `int` · name: unnamed · confidence **low** · status observed · handler RVA `0x44BBDB0`
-
-- C: `int32_t G6_N_D942E6168EB81167(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2)`
-- Python: `N.RAW.N_D942E6168EB81167(p0: int, p1: int, p2: int) -> int`
-- Luau: `N.RAW.N_D942E6168EB81167(p0: number, p1: number, p2: number): number`
-- provenance: cluster:3nn_unanimous+argc
-
 ### N_E23C9BB263D61DFB
 
 `0xE23C9BB263D61DFB` · sig `ii>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **low** · status observed · handler RVA `0x44CE5B0`
@@ -341,15 +323,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `void G6_N_E79628AA1F36CCB4(const g6_host_api* api, int32_t p0)`
 - Python: `N.RAW.N_E79628AA1F36CCB4(p0: int) -> None`
 - Luau: `N.RAW.N_E79628AA1F36CCB4(p0: number): ()`
-- provenance: cluster:3nn_unanimous+argc
-
-### N_EEE019373C7A9589
-
-`0xEEE019373C7A9589` · sig `iif>i` · params 3, argc_inferred 3, arg slots 3 · returns `int` · name: unnamed · confidence **low** · status observed · handler RVA `0x44BBED0`
-
-- C: `int32_t G6_N_EEE019373C7A9589(const g6_host_api* api, int32_t p0, int32_t p1, float p2)`
-- Python: `N.RAW.N_EEE019373C7A9589(p0: int, p1: int, p2: float) -> int`
-- Luau: `N.RAW.N_EEE019373C7A9589(p0: number, p1: number, p2: number): number`
 - provenance: cluster:3nn_unanimous+argc
 
 ### N_FB91695D2C82C886
@@ -370,6 +343,16 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - Python: `N.DATABINDING._DATABINDING_ADD_DATA_BOOL_BY_HASH(p0: int, p1: int | str, p2: bool) -> int`
 - Luau: `N.DATABINDING._DATABINDING_ADD_DATA_BOOL_BY_HASH(p0: number, p1: number | string, p2: boolean): number`
 
+### _DATABINDING_ADD_DATA_BOOL_FROM_PATH
+
+`0xD942E6168EB81167` · sig `iub>i` · params 3, argc_inferred 3, arg slots 3 · returns `Any` · name: behaviour-descriptive (not a nativedb name) · confidence **medium** · status observed · handler RVA `0x44BBDB0`
+
+- nativedb form: `Any _DATABINDING_ADD_DATA_BOOL_FROM_PATH(Any path, Hash name, BOOL value)`
+- C: `int32_t G6_DATABINDING__DATABINDING_ADD_DATA_BOOL_FROM_PATH(const g6_host_api* api, int32_t path, uint32_t name, int value)`
+- Python: `N.DATABINDING._DATABINDING_ADD_DATA_BOOL_FROM_PATH(path: int, name: int | str, value: bool) -> int`
+- Luau: `N.DATABINDING._DATABINDING_ADD_DATA_BOOL_FROM_PATH(path: number, name: number | string, value: boolean): number`
+- provenance: method=observed-behaviour; slot 0 decoded as a path object (decoder 0x1444f9330 of _DATABINDING_ADD_DATA_CONTAINER_FROM_PATH_BY_HASH); slot 2 tested and stored as a byte in the bool value class 0x146625380 of _DATABINDING_ADD_DATA_BOOL_BY_HASH; child insert returns the entry; 14 cited instructions re-read by tools/phase5/ui_evidence.py (re-db/builds/1.0.2.1/ui/ui_natives.json); call sites: 1 in 1 programs; findings/phase5/35_ui_system.md
+
 ### _DATABINDING_ADD_DATA_CONTAINER_BY_HASH
 
 `0x98BB14345BB68257` · sig `iu>i` · params 2, argc_inferred 2, arg slots 2 · returns `Any` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44BBE10`
@@ -387,6 +370,16 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `int32_t G6_DATABINDING__DATABINDING_ADD_DATA_CONTAINER_FROM_PATH_BY_HASH(const g6_host_api* api, const char* p0, uint32_t p1)`
 - Python: `N.DATABINDING._DATABINDING_ADD_DATA_CONTAINER_FROM_PATH_BY_HASH(p0: str | None, p1: int | str) -> int`
 - Luau: `N.DATABINDING._DATABINDING_ADD_DATA_CONTAINER_FROM_PATH_BY_HASH(p0: string?, p1: number | string): number`
+
+### _DATABINDING_ADD_DATA_FLOAT_BY_HASH
+
+`0xEEE019373C7A9589` · sig `iuf>i` · params 3, argc_inferred 3, arg slots 3 · returns `Any` · name: behaviour-descriptive (not a nativedb name) · confidence **medium** · status observed · handler RVA `0x44BBED0`
+
+- nativedb form: `Any _DATABINDING_ADD_DATA_FLOAT_BY_HASH(Any parent, Hash name, float value)`
+- C: `int32_t G6_DATABINDING__DATABINDING_ADD_DATA_FLOAT_BY_HASH(const g6_host_api* api, int32_t parent, uint32_t name, float value)`
+- Python: `N.DATABINDING._DATABINDING_ADD_DATA_FLOAT_BY_HASH(parent: int, name: int | str, value: float) -> int`
+- Luau: `N.DATABINDING._DATABINDING_ADD_DATA_FLOAT_BY_HASH(parent: number, name: number | string, value: number): number`
+- provenance: method=observed-behaviour; slot 2 read as a float; the store edit 0x141a2c290 of _DATABINDING_ADD_DATA_INT_BY_HASH; float value class 0x1466254a0 with the value at +0x18; child insert 0x141cf4ad0 returns the entry; 11 cited instructions re-read by tools/phase5/ui_evidence.py (re-db/builds/1.0.2.1/ui/ui_natives.json); call sites: 3 in 1 programs; findings/phase5/35_ui_system.md
 
 ### _DATABINDING_ADD_DATA_INT_BY_HASH
 

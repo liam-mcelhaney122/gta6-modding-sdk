@@ -166,6 +166,30 @@ struct CEcsColumn {
 };
 static_assert(sizeof(CEcsColumn) == 0x10, "CEcsColumn layout size");
 
+/* CEcsComp_sel40 — size 0x1b8; source gameplay-fields.json */
+/* note: per archetype: ped 0xa40, vehicle 0x2c0, archetype 4 0x2e0 (pool element sizes of the aliased static columns, types_ecs_columns.py); no single size, so none is recorded */
+struct CEcsComp_sel40 {
+    std::uint8_t pad_0[0x8];
+    /* +0x8 sz 0x8 [medium] r [{'insn': '0x1416b88ea', 'fn': '0x1416b88e0', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_owner_entity[0x8];
+    std::uint8_t pad_10[0x20];
+    /* +0x30 sz 0x8 [low] r [{'insn': '0x1416b891f', 'fn': '0x1416b88e0', 'handler': None, 'access': 'r'}, {'insn': '0x141115dc7', 'fn': '0x141115d50', 'handler': None, 'access': 'r'}, {'insn': '0x14203bcaa', 'fn': '0x14203baf0', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_source_30[0x8];
+    std::uint8_t pad_38[0x38];
+    /* +0x70 sz 0x8 [low] r [{'insn': '0x144c4294a', 'fn': '0x144c428d0', 'handler': None, 'access': 'r'}, {'insn': '0x144c5af28', 'fn': '0x144c5aef0', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_ptr_70[0x8];
+    std::uint8_t pad_78[0x10];
+    /* +0x88 sz 0x8 [low] r [{'insn': '0x1416b890d', 'fn': '0x1416b88e0', 'handler': None, 'access': 'r'}, {'insn': '0x1416b893e', 'fn': '0x1416b88e0', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_resolved_88[0x8];
+    std::uint8_t pad_90[0x78];
+    /* +0x108 sz 0x4 [low] r [{'insn': '0x1416b894c', 'fn': '0x1416b88e0', 'handler': None, 'access': 'r'}, {'insn': '0x1437d3f33', 'fn': '0x1437d3ef0', 'handler': '0x143c10310', 'access': 'r'}] (1 handler(s)) */
+    std::uint8_t f_callback_id[0x4];
+    std::uint8_t pad_10c[0xa4];
+    /* +0x1b0 sz 0x8 [low] r [{'insn': '0x1403804bc', 'fn': '0x140380460', 'handler': None, 'access': 'r'}, {'insn': '0x140f5719b', 'fn': '0x140f57130', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_ptr_1b0[0x8];
+};
+static_assert(sizeof(CEcsComp_sel40) == 0x1b8, "CEcsComp_sel40 layout size");
+
 /* CEcsComp_sel4d — size 0x8b0; source gameplay-fields.json */
 /* note: 0x8b0: pool element size of generic_arch3 type 0x15 (descriptor 0x1499ab138 built by 0x145b0f3f0, `mov r8d, 0x8b0` at 0x145b0f444 before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x149937718 vfunc[3] 0x145f004d0 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: runtime column stride; not static */
 struct CEcsComp_sel4d {
@@ -200,6 +224,24 @@ struct CEcsComp_sel57 {
     std::uint8_t pad_18[0x20];
 };
 static_assert(sizeof(CEcsComp_sel57) == 0x38, "CEcsComp_sel57 layout size");
+
+/* CEcsComp_sel5e — size 0x1d0; source gameplay-fields.json */
+/* note: 0x1d0: pool element size of generic_arch3 type 0x26 (descriptor 0x14a024608 built by 0x145b101f0, `mov r8d, 0x1d0` at 0x145b10244 before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x14993a508 vfunc[3] 0x145f00150 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: runtime column stride */
+struct CEcsComp_sel5e {
+    std::uint8_t pad_0[0x8];
+    /* +0x8 sz 0x8 [medium] r [{'insn': '0x14121c7fe', 'fn': '0x14121c7c0', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_owner_entity[0x8];
+    std::uint8_t pad_10[0x10];
+    /* +0x20 sz 0x4 [medium] rw [{'insn': '0x14121ccfc', 'fn': '0x14121cce0', 'handler': '0x143c046a0', 'access': 'r'}, {'insn': '0x14121ce7e', 'fn': '0x14121cce0', 'handler': None, 'access': 'w'}, {'insn': '0x140c448a7', 'fn': '0x140c44620', 'handler': '0x143cd57d0', 'access': 'r'}] (2 handler(s)) */
+    std::uint8_t f_group_count[0x4];
+    /* +0x24 sz 0x4 [low] r [{'insn': '0x14121cd15', 'fn': '0x14121cce0', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_element_count[0x4];
+    std::uint8_t pad_28[0x8];
+    /* +0x30 sz 0x8 [medium] rw [{'insn': '0x14121cd2b', 'fn': '0x14121cce0', 'handler': None, 'access': 'r'}, {'insn': '0x14121ce7a', 'fn': '0x14121cce0', 'handler': None, 'access': 'w'}, {'insn': '0x140c448aa', 'fn': '0x140c44620', 'handler': '0x143cd5830', 'access': 'r'}] (1 handler(s)) */
+    std::uint8_t f_groups[0x8];
+    std::uint8_t pad_38[0x198];
+};
+static_assert(sizeof(CEcsComp_sel5e) == 0x1d0, "CEcsComp_sel5e layout size");
 
 /* CEcsComp_sel61 — size 0x30; source gameplay-fields.json */
 /* note: 0x30: pool element size of generic_arch3 type 0x29 (descriptor 0x1499aaf20 built by 0x141d486a0, `mov r8d, 0x30` at 0x141d486ef before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x14993a850 vfunc[3] 0x145f00110 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: runtime column stride */
@@ -273,6 +315,35 @@ struct CEntity {
     std::uint8_t f_get_vehicle_model_number_of_seats[0x8];
 };
 static_assert(sizeof(CEntity) == 0x100, "CEntity layout size");
+
+/* CEventGiveTask_7d — size 0x1f0; source gameplay-fields.json */
+/* note: 0x1f0 = slot size of the shared event pool (0x145ada400: `mov r8d, 0x1f0` at 0x145ada46c before the pool constructor 0x145540ef0); every event type shares it, so it is an upper bound */
+struct CEventGiveTask_7d {
+    /* +0x0 sz 0x8 [high] w [{'insn': '0x141391ad3', 'fn': '0x141391aa0', 'handler': None, 'access': 'w'}] */
+    std::uint8_t f_vtable[0x8];
+    std::uint8_t pad_8[0x8];
+    /* +0x10 sz 0x4 [high] rw [{'insn': '0x141391b1c', 'fn': '0x141391aa0', 'handler': None, 'access': 'w'}, {'insn': '0x141a5f8a8', 'fn': '0x141a5f680', 'handler': '0x144bfa020', 'access': 'r'}] (1 handler(s)) */
+    std::uint8_t f_event_type[0x4];
+    std::uint8_t pad_14[0x8c];
+    /* +0xa0 sz 0x4 [low] rw [{'insn': '0x141391ad6', 'fn': '0x141391aa0', 'handler': None, 'access': 'w'}, {'insn': '0x141391a0e', 'fn': '0x1413919e0', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_kind_a0[0x4];
+    std::uint8_t pad_a4[0x4];
+    /* +0xa8 sz 0x8 [high] rw [{'insn': '0x141391adc', 'fn': '0x141391aa0', 'handler': None, 'access': 'w'}, {'insn': '0x141a5f8b9', 'fn': '0x141a5f680', 'handler': '0x144bfa020', 'access': 'r'}] (1 handler(s)) */
+    std::uint8_t f_task[0x8];
+    /* +0xb0 sz 0x1 [low] rw [{'insn': '0x141391afd', 'fn': '0x141391aa0', 'handler': None, 'access': 'w'}, {'insn': '0x141391a07', 'fn': '0x1413919e0', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_flag_b0[0x1];
+    /* +0xb1 sz 0x1 [low] rw [{'insn': '0x141391b03', 'fn': '0x141391aa0', 'handler': None, 'access': 'w'}, {'insn': '0x141391a01', 'fn': '0x1413919e0', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_flag_b1[0x1];
+    /* +0xb2 sz 0x1 [low] rw [{'insn': '0x141391b0a', 'fn': '0x141391aa0', 'handler': None, 'access': 'w'}, {'insn': '0x141391a43', 'fn': '0x1413919e0', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_flag_b2[0x1];
+    std::uint8_t pad_b3[0x1];
+    /* +0xb4 sz 0x4 [low] w [{'insn': '0x141a5f92c', 'fn': '0x141a5f680', 'handler': '0x144bfa020', 'access': 'w'}, {'insn': '0x141391b11', 'fn': '0x141391aa0', 'handler': None, 'access': 'w'}] (1 handler(s)) */
+    std::uint8_t f_time_b4[0x4];
+    /* +0xb8 sz 0x4 [low] w [{'insn': '0x141a5f936', 'fn': '0x141a5f680', 'handler': '0x144bfa020', 'access': 'w'}] (1 handler(s)) */
+    std::uint8_t f_time_b8[0x4];
+    std::uint8_t pad_bc[0x134];
+};
+static_assert(sizeof(CEventGiveTask_7d) == 0x1f0, "CEventGiveTask_7d layout size");
 
 /* CHealthData — size 0x45; source gameplay-fields.json */
 /* note: no allocation site found; highest observed access +0x44 (u8) */
@@ -397,14 +468,26 @@ struct CPedComp_col02 {
     std::uint8_t pad_0[0x2f0];
     /* +0x2f0 sz 0x4 [high] rw [{'insn': '0x144be0db4', 'fn': '0x144be0d90', 'handler': '0x144bd94e0', 'access': 'w'}, {'insn': '0x14214578c', 'fn': '0x142145770', 'handler': '0x144bccd30', 'access': 'r'}] (2 handler(s)) */
     std::uint8_t f_interaction_personality[0x4];
-    std::uint8_t pad_2f4[0x2fac];
+    std::uint8_t pad_2f4[0x2bd];
+    /* +0x5b1 sz 0x1 [low] r [{'insn': '0x144f3aab3', 'fn': '0x144f3aa30', 'handler': None, 'access': 'r'}, {'insn': '0x140cb345e', 'fn': '0x140cb3410', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_flags_5b1[0x1];
+    std::uint8_t pad_5b2[0xa];
+    /* +0x5bc sz 0x10 [low] rw [{'insn': '0x1411ca582', 'fn': '0x1411ca580', 'handler': '0x144bdc4c0', 'access': 'rw'}, {'insn': '0x144f3aa7e', 'fn': '0x144f3aa30', 'handler': None, 'access': 'r'}] (1 handler(s)) */
+    std::uint8_t f_forced_flag_mask[0x10];
+    std::uint8_t pad_5cc[0x2cd4];
 };
 static_assert(sizeof(CPedComp_col02) == 0x32a0, "CPedComp_col02 layout size");
 
 /* CPedComp_col0f — size 0x1d30; source gameplay-fields.json */
 /* note: 0x1d30: pool element size of ped_static column 0xf (descriptor 0x1499ab220 built by 0x145b0a710, `mov r8d, 0x1d30` at 0x145b0a764 before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x149948428 vfunc[3] 0x145ae7d20 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: runtime column stride; > 0x15d8 */
 struct CPedComp_col0f {
-    std::uint8_t pad_0[0x15d4];
+    std::uint8_t pad_0[0x1040];
+    /* +0x1040 sz 0x4 [low] r [{'insn': '0x140c44725', 'fn': '0x140c44620', 'handler': '0x143cd5b20', 'access': 'r'}] (1 handler(s)) */
+    std::uint8_t f_target_tag_1040[0x4];
+    std::uint8_t pad_1044[0x14];
+    /* +0x1058 sz 0x4 [low] r [{'insn': '0x140c44733', 'fn': '0x140c44620', 'handler': '0x143cd5b20', 'access': 'r'}] (1 handler(s)) */
+    std::uint8_t f_target_tag_1058[0x4];
+    std::uint8_t pad_105c[0x578];
     /* +0x15d4 sz 0x4 [medium] rw [{'insn': '0x144aa0862', 'fn': '0x144aa0800', 'handler': '0x144a90c30', 'access': 'r'}, {'insn': '0x144aa0870', 'fn': '0x144aa0800', 'handler': '0x144a90c30', 'access': 'w'}] (1 handler(s)) */
     std::uint8_t f_infinite_ammo_clip_bit11[0x4];
     std::uint8_t pad_15d8[0x758];
@@ -433,7 +516,7 @@ struct CPedComp_col1a {
     std::uint8_t pad_0[0x8];
     /* +0x8 sz 0x8 [high] r [{'insn': '0x144bebe19', 'fn': '0x144bebde0', 'handler': '0x144bca690', 'access': 'r'}, {'insn': '0x140871cd2', 'fn': '0x140871cb0', 'handler': None, 'access': 'r'}] (1 handler(s)) */
     std::uint8_t f_owner_entity[0x8];
-    /* +0x10 sz 0x4 [high] rw [{'insn': '0x1404dfa80', 'fn': '0x1404dfa80', 'handler': '0x144bd5cb0', 'access': 'r'}, {'insn': '0x1404dfa8e', 'fn': '0x1404dfa80', 'handler': '0x144bd5cb0', 'access': 'w'}, {'insn': '0x144bebe1d', 'fn': '0x144bebde0', 'handler': '0x144bca690', 'access': 'r'}, {'insn': '0x141a5f875', 'fn': '0x141a5f680', 'handler': '0x144bfa020', 'access': 'r'}, {'insn': '0x141a5f972', 'fn': '0x141a5f680', 'handler': '0x144bfa020', 'access': 'w'}] (3 handler(s)) */
+    /* +0x10 sz 0x4 [high] rw [{'insn': '0x1404dfa80', 'fn': '0x1404dfa80', 'handler': '0x144bd5cb0', 'access': 'r'}, {'insn': '0x1404dfa8e', 'fn': '0x1404dfa80', 'handler': '0x144bd5cb0', 'access': 'w'}, {'insn': '0x144bebe1d', 'fn': '0x144bebde0', 'handler': '0x144bca690', 'access': 'r'}, {'insn': '0x141a5f875', 'fn': '0x141a5f680', 'handler': '0x144bfa020', 'access': 'r'}, {'insn': '0x141a5f972', 'fn': '0x141a5f680', 'handler': '0x144bfa020', 'access': 'w'}, {'insn': '0x141a5f8e6', 'fn': '0x141a5f680', 'handler': '0x144bfa020', 'access': 'rw'}, {'insn': '0x141a5f969', 'fn': '0x141a5f680', 'handler': '0x144bfa020', 'access': 'r'}, {'insn': '0x14297046b', 'fn': '0x142970330', 'handler': None, 'access': 'r'}] (3 handler(s)) */
     std::uint8_t f_block_non_temporary_events_bit4[0x4];
     std::uint8_t pad_14[0x1a4];
     /* +0x1b8 sz 0x100 [low] r [{'insn': '0x141a5f888', 'fn': '0x141a5f680', 'handler': '0x144bfa020', 'access': 'r'}] (1 handler(s)) */
@@ -489,6 +572,22 @@ struct CPedComp_col26 {
     std::uint8_t pad_20[0x90];
 };
 static_assert(sizeof(CPedComp_col26) == 0xb0, "CPedComp_col26 layout size");
+
+/* CPedComp_col2f — size 0x1730; source gameplay-fields.json */
+/* note: 0x1730: pool element size of ped_static column 0x2f (descriptor 0x1499ab188 built by 0x145b0bb10, `mov r8d, 0x1730` at 0x145b0bb64 before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x14994ed28 vfunc[3] 0x145ae8100 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: runtime column stride */
+struct CPedComp_col2f {
+    std::uint8_t pad_0[0x1658];
+    /* +0x1658 sz 0x1 [low] r [{'insn': '0x140de57ad', 'fn': '0x140de5770', 'handler': None, 'access': 'r'}, {'insn': '0x140de582f', 'fn': '0x140de57f0', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_state_1658[0x1];
+    std::uint8_t pad_1659[0x7];
+    /* +0x1660 sz 0x1 [low] rw [{'insn': '0x142d32294', 'fn': '0x142d32280', 'handler': None, 'access': 'rw'}, {'insn': '0x142d3814c', 'fn': '0x142d38100', 'handler': None, 'access': 'r'}] */
+    std::uint8_t f_flags_1660[0x1];
+    std::uint8_t pad_1661[0x3];
+    /* +0x1664 sz 0x4 [low] rw [{'insn': '0x145b931ca', 'fn': '0x145b93120', 'handler': '0x144bf0ae0', 'access': 'w'}, {'insn': '0x142d3b088', 'fn': '0x142d3b070', 'handler': None, 'access': 'r'}] (1 handler(s)) */
+    std::uint8_t f_linked_handle_1664[0x4];
+    std::uint8_t pad_1668[0xc8];
+};
+static_assert(sizeof(CPedComp_col2f) == 0x1730, "CPedComp_col2f layout size");
 
 /* CPedComp_col30 — size 0x50; source gameplay-fields.json */
 /* note: 0x50: pool element size of ped_static column 0x30 (descriptor 0x1499aad50 built by 0x145b0bbf0, `mov r8d, 0x50` at 0x145b0bc44 before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x14994f070 vfunc[3] 0x145ae8120 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: runtime column stride */
@@ -762,8 +861,8 @@ struct CVehicle {
 };
 static_assert(sizeof(CVehicle) == 0x100, "CVehicle layout size");
 
-/* CVehicleComp_col01 — size 0x4b0; source gameplay-fields.json */
-/* note: no pool (tag column); lower bound > 0x584 (byte or at 0x140fdd175) */
+/* CVehicleComp_col01 — size 0x5e0; source gameplay-fields.json */
+/* note: 0x5e0: pool element size of vehicle_static column 0x0 (descriptor 0x1499aad98 built by 0x145b1a910, `mov r8d, 0x5e0` at 0x145b1a97c before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x1499552e0 vfunc[3] 0x145ae6940 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: column 0x00 and column 0x01 share one pool: see note (0x145ae6940, 0x1407cbbff/0x1407cbc06) */
 struct CVehicleComp_col01 {
     /* +0x0 sz 0x8 [medium] r [{'insn': '0x1401e3bc5', 'fn': '0x1401e3b80', 'handler': '0x144a933c0', 'access': 'r'}] (1 handler(s)) */
     std::uint8_t f_vtable[0x8];
@@ -781,8 +880,16 @@ struct CVehicleComp_col01 {
     std::uint8_t pad_464[0x44];
     /* +0x4a8 sz 0x8 [high] rw [{'insn': '0x143d556de', 'fn': '0x143d55610', 'handler': '0x144a7f340', 'access': 'w'}, {'insn': '0x144a9a90e', 'fn': '0x144a9a8b0', 'handler': '0x144a958c0', 'access': 'r'}, {'insn': '0x144aa7b3e', 'fn': '0x144aa7ae0', 'handler': '0x144a89e60', 'access': 'r'}] (3 handler(s)) */
     std::uint8_t f_halt_request[0x8];
+    std::uint8_t pad_4b0[0x120];
+    /* +0x5d0 sz 0x8 [low] w [{'insn': '0x1407cbca7', 'fn': '0x1407cbc90', 'handler': None, 'access': 'w'}] */
+    std::uint8_t f_ctor_5d0[0x8];
+    /* +0x5d8 sz 0x4 [low] w [{'insn': '0x1407cbcb2', 'fn': '0x1407cbc90', 'handler': None, 'access': 'w'}] */
+    std::uint8_t f_ctor_5d8[0x4];
+    /* +0x5dc sz 0x1 [low] w [{'insn': '0x1407cbcbc', 'fn': '0x1407cbc90', 'handler': None, 'access': 'w'}] */
+    std::uint8_t f_ctor_5dc[0x1];
+    std::uint8_t pad_5dd[0x3];
 };
-static_assert(sizeof(CVehicleComp_col01) == 0x4b0, "CVehicleComp_col01 layout size");
+static_assert(sizeof(CVehicleComp_col01) == 0x5e0, "CVehicleComp_col01 layout size");
 
 /* CVehicleComp_col0d — size 0x700; source gameplay-fields.json */
 /* note: 0x700: pool element size of vehicle_static column 0xd (descriptor 0x149974db0 built by 0x141d25180, `mov r8d, 0x700` at 0x141d251be before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x149957a40 vfunc[3] 0x145ae6420 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: runtime column stride */

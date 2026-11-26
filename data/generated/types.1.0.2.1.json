@@ -3737,6 +3737,36 @@
    "bases": [],
    "fields": [
     {
+     "off": 4160,
+     "size": 4,
+     "name": "f_target_tag_1040",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x140c44725",
+       "fn": "0x140c44620",
+       "handler": "0x143cd5b20",
+       "access": "r"
+      }
+     ],
+     "note": "key looked up in a candidate's CEcsComp_sel5e set by the target filter 0x140c44620 (REGISTER_TARGET and the hated-target natives); meaning of the match [unknown]"
+    },
+    {
+     "off": 4184,
+     "size": 4,
+     "name": "f_target_tag_1058",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x140c44733",
+       "fn": "0x140c44620",
+       "handler": "0x143cd5b20",
+       "access": "r"
+      }
+     ],
+     "note": "second key tested the same way (0x140c448d7..0x140c448e8)"
+    },
+    {
      "off": 5588,
      "size": 4,
      "name": "f_infinite_ammo_clip_bit11",
@@ -4638,9 +4668,27 @@
        "fn": "0x141a5f680",
        "handler": "0x144bfa020",
        "access": "w"
+      },
+      {
+       "insn": "0x141a5f8e6",
+       "fn": "0x141a5f680",
+       "handler": "0x144bfa020",
+       "access": "rw"
+      },
+      {
+       "insn": "0x141a5f969",
+       "fn": "0x141a5f680",
+       "handler": "0x144bfa020",
+       "access": "r"
+      },
+      {
+       "insn": "0x14297046b",
+       "fn": "0x142970330",
+       "handler": null,
+       "access": "r"
       }
      ],
-     "note": "bit 4 = SET_BLOCKING_OF_NON_TEMPORARY_EVENTS argument (0x1404dfa80: and ~0x10, or arg<<4); _GET_BLOCKING_OF_NON_TEMPORARY_EVENTS tests it (0x1451d0330 test dl,0x10). The script-task entry 0x141a5f680 tests bit 5, clears it and sets bit 10 when it installs a task (meaning [unknown])"
+     "note": "bit 4 = SET_BLOCKING_OF_NON_TEMPORARY_EVENTS argument (0x1404dfa80: and ~0x10, or arg<<4); _GET_BLOCKING_OF_NON_TEMPORARY_EVENTS tests it (0x1451d0330 test dl,0x10). Round 5 (G-043): bit 5 = a give-task event (queue item type 0x7d) is pending: the script-task entry 0x141a5f680 walks the queue only when it is set (0x141a5f875), hands the new task to a pending event whose task has type 0x49 and byte +0x184 == 1 and clears bit 5 (0x141a5f8e6, and 0xdf); bit 10 = a script task was installed: after installing, the entry clears bit 5 and sets bit 10 in one store (0x141a5f969 and 0xfffffbdf, or 0x400, 0x141a5f972); 0x142970330 reads bit 10 (0x14297046b test byte +0x11,4). No static setter of bit 5 and no other clearer of bit 10 were found in the 522 accessor callers (immediate or/and/bts forms)"
     },
     {
      "off": 440,
@@ -4655,7 +4703,7 @@
        "access": "r"
       }
      ],
-     "note": "16 slots of 16 bytes; item+0x10 is a type id (the task entry looks for 0x7d and removes it before installing a script task). The word event is inferred from the blocking-events flag in the same component"
+     "note": "16 slots of 16 bytes; item+0x10 is a type id (the task entry looks for 0x7d and removes it before installing a script task). The word event is inferred from the blocking-events flag in the same component. Round 5 (G-043): items are polymorphic objects from the shared pool ped.event.pool 0x14ab5d008 (0x1f0-byte slots, created by 0x145ada400) and are destroyed through vtable slot 0 (call at 0x141a5faeb); type 0x7d is CEventGiveTask_7d (ctor 0x141391aa0)"
     },
     {
      "off": 696,
@@ -4993,8 +5041,8 @@
    ]
   },
   "CVehicleComp_col01": {
-   "size": null,
-   "note": "no pool (tag column); lower bound > 0x584 (byte or at 0x140fdd175)",
+   "size": 1504,
+   "note": "0x5e0: pool element size of vehicle_static column 0x0 (descriptor 0x1499aad98 built by 0x145b1a910, `mov r8d, 0x5e0` at 0x145b1a97c before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x1499552e0 vfunc[3] 0x145ae6940 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: column 0x00 and column 0x01 share one pool: see note (0x145ae6940, 0x1407cbbff/0x1407cbc06)",
    "class_hash": null,
    "vtable": null,
    "bases": [],
@@ -5136,6 +5184,51 @@
       }
      ],
      "note": "non-null while a bring-to-halt request is active: BRING_VEHICLE_TO_HALT installs it, STOP_BRINGING_VEHICLE_TO_HALT and _IS_VEHICLE_BROUGHT_TO_HALT read it"
+    },
+    {
+     "off": 1488,
+     "size": 8,
+     "name": "f_ctor_5d0",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x1407cbca7",
+       "fn": "0x1407cbc90",
+       "handler": null,
+       "access": "w"
+      }
+     ],
+     "note": "zeroed by the constructor 0x1407cbc90"
+    },
+    {
+     "off": 1496,
+     "size": 4,
+     "name": "f_ctor_5d8",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x1407cbcb2",
+       "fn": "0x1407cbc90",
+       "handler": null,
+       "access": "w"
+      }
+     ],
+     "note": "zeroed by the constructor 0x1407cbc90"
+    },
+    {
+     "off": 1500,
+     "size": 1,
+     "name": "f_ctor_5dc",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x1407cbcbc",
+       "fn": "0x1407cbc90",
+       "handler": null,
+       "access": "w"
+      }
+     ],
+     "note": "zeroed by the constructor 0x1407cbc90"
     }
    ]
   },
@@ -5166,6 +5259,48 @@
       }
      ],
      "note": "getter/setter agree (through the +0x10 wrapper 0x144f013e0, displacement 0x2e0): _SET_PED_INTERACTION_PERSONALITY stores when changed, _GET_PED_INTERACTION_PERSONALITY reads and maps it through 0x140019da0"
+    },
+    {
+     "off": 1457,
+     "size": 1,
+     "name": "f_flags_5b1",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x144f3aab3",
+       "fn": "0x144f3aa30",
+       "handler": null,
+       "access": "r"
+      },
+      {
+       "insn": "0x140cb345e",
+       "fn": "0x140cb3410",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "bit 0 tested by 8 engine functions (e.g. 0x140cb345e, 0x14145db6b) and by the state builder 0x144f3aa30"
+    },
+    {
+     "off": 1468,
+     "size": 16,
+     "name": "f_forced_flag_mask",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x1411ca582",
+       "fn": "0x1411ca580",
+       "handler": "0x144bdc4c0",
+       "access": "rw"
+      },
+      {
+       "insn": "0x144f3aa7e",
+       "fn": "0x144f3aa30",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "128-bit mask: the unnamed native 0x0D52EA47146EA762 (Ped, int id) ORs bit id into it through the +0x10 wrapper (0x1411ca580, displacements 0x5ac..0x5b8); the state builder 0x144f3aa30 copies it and ORs in the flags computed by 0x144f3ae40. Name [inferred]"
     }
    ]
   },
@@ -5493,6 +5628,492 @@
       }
      ],
      "note": "ped pool handles per seat (0x1ffff = empty), validated against the ped pool 0x14abb6918 (generation in [pool+0x28], mask [pool+0x30]); seat block displacement 0x44. GET_PED_IN_VEHICLE_SEAT (seat+1, 0x144db6397) and GET_DRIVER_OF_VEHICLE (driver index, 0x144eb37f9) agree"
+    }
+   ]
+  },
+  "CEventGiveTask_7d": {
+   "size": 496,
+   "note": "0x1f0 = slot size of the shared event pool (0x145ada400: `mov r8d, 0x1f0` at 0x145ada46c before the pool constructor 0x145540ef0); every event type shares it, so it is an upper bound",
+   "class_hash": null,
+   "vtable": null,
+   "bases": [],
+   "fields": [
+    {
+     "off": 0,
+     "size": 8,
+     "name": "f_vtable",
+     "confidence": "high",
+     "evidence": [
+      {
+       "insn": "0x141391ad3",
+       "fn": "0x141391aa0",
+       "handler": null,
+       "access": "w"
+      }
+     ],
+     "note": "0x146215cb0 written by the constructor"
+    },
+    {
+     "off": 16,
+     "size": 4,
+     "name": "f_event_type",
+     "confidence": "high",
+     "evidence": [
+      {
+       "insn": "0x141391b1c",
+       "fn": "0x141391aa0",
+       "handler": null,
+       "access": "w"
+      },
+      {
+       "insn": "0x141a5f8a8",
+       "fn": "0x141a5f680",
+       "handler": "0x144bfa020",
+       "access": "r"
+      }
+     ],
+     "note": "event type id; 0x7d for this class. The script-task entry matches queue items on it"
+    },
+    {
+     "off": 160,
+     "size": 4,
+     "name": "f_kind_a0",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x141391ad6",
+       "fn": "0x141391aa0",
+       "handler": null,
+       "access": "w"
+      },
+      {
+       "insn": "0x141391a0e",
+       "fn": "0x1413919e0",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "constructor argument 2, forced to 0 when >= 6; copied by the clone 0x1413919e0; meaning [unknown]"
+    },
+    {
+     "off": 168,
+     "size": 8,
+     "name": "f_task",
+     "confidence": "high",
+     "evidence": [
+      {
+       "insn": "0x141391adc",
+       "fn": "0x141391aa0",
+       "handler": null,
+       "access": "w"
+      },
+      {
+       "insn": "0x141a5f8b9",
+       "fn": "0x141a5f680",
+       "handler": "0x144bfa020",
+       "access": "r"
+      }
+     ],
+     "note": "the task to give (registered with 0x1450caf90); the entry reads its type (task+0xd0 & 0x7ff) and, for type 0x49 with byte +0x184 == 1, passes the new task to it (0x144722900) instead of queueing"
+    },
+    {
+     "off": 176,
+     "size": 1,
+     "name": "f_flag_b0",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x141391afd",
+       "fn": "0x141391aa0",
+       "handler": null,
+       "access": "w"
+      },
+      {
+       "insn": "0x141391a07",
+       "fn": "0x1413919e0",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "constructor argument 4 (byte); copied by the clone"
+    },
+    {
+     "off": 177,
+     "size": 1,
+     "name": "f_flag_b1",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x141391b03",
+       "fn": "0x141391aa0",
+       "handler": null,
+       "access": "w"
+      },
+      {
+       "insn": "0x141391a01",
+       "fn": "0x1413919e0",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "constructor stack argument 5 (byte); copied"
+    },
+    {
+     "off": 178,
+     "size": 1,
+     "name": "f_flag_b2",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x141391b0a",
+       "fn": "0x141391aa0",
+       "handler": null,
+       "access": "w"
+      },
+      {
+       "insn": "0x141391a43",
+       "fn": "0x1413919e0",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "constructor stack argument 6 (byte); copied"
+    },
+    {
+     "off": 180,
+     "size": 4,
+     "name": "f_time_b4",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x141a5f92c",
+       "fn": "0x141a5f680",
+       "handler": "0x144bfa020",
+       "access": "w"
+      },
+      {
+       "insn": "0x141391b11",
+       "fn": "0x141391aa0",
+       "handler": null,
+       "access": "w"
+      }
+     ],
+     "note": "the script-task entry stores min(its float stack argument, xmm3) here; the constructor zeroes +0xb4..+0xbb"
+    },
+    {
+     "off": 184,
+     "size": 4,
+     "name": "f_time_b8",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x141a5f936",
+       "fn": "0x141a5f680",
+       "handler": "0x144bfa020",
+       "access": "w"
+      }
+     ],
+     "note": "the script-task entry stores its float stack argument here"
+    }
+   ]
+  },
+  "CEcsComp_sel40": {
+   "size": null,
+   "note": "per archetype: ped 0xa40, vehicle 0x2c0, archetype 4 0x2e0 (pool element sizes of the aliased static columns, types_ecs_columns.py); no single size, so none is recorded",
+   "class_hash": null,
+   "vtable": null,
+   "bases": [],
+   "fields": [
+    {
+     "off": 8,
+     "size": 8,
+     "name": "f_owner_entity",
+     "confidence": "medium",
+     "evidence": [
+      {
+       "insn": "0x1416b88ea",
+       "fn": "0x1416b88e0",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "owning CEntity pointer with tag bits in the low 4 bits: every reader masks it (and ~0xf) and reads CEntity+0x9c (the ECS id) or the entity kind; same header in every round-3 component; 0x1416b88e0 continues only when [owner+0xb4] & 0x3e == 0xa"
+    },
+    {
+     "off": 48,
+     "size": 8,
+     "name": "f_source_30",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x1416b891f",
+       "fn": "0x1416b88e0",
+       "handler": null,
+       "access": "r"
+      },
+      {
+       "insn": "0x141115dc7",
+       "fn": "0x141115d50",
+       "handler": null,
+       "access": "r"
+      },
+      {
+       "insn": "0x14203bcaa",
+       "fn": "0x14203baf0",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "object passed to 0x1416b89e0 (ready test 0x144f12550, then 0x144f124c0); also read by 0x141115d50 and 0x14203baf0"
+    },
+    {
+     "off": 112,
+     "size": 8,
+     "name": "f_ptr_70",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x144c4294a",
+       "fn": "0x144c428d0",
+       "handler": null,
+       "access": "r"
+      },
+      {
+       "insn": "0x144c5af28",
+       "fn": "0x144c5aef0",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "read by 0x144c428d0 and 0x144c5aef0; meaning [unknown]"
+    },
+    {
+     "off": 136,
+     "size": 8,
+     "name": "f_resolved_88",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x1416b890d",
+       "fn": "0x1416b88e0",
+       "handler": null,
+       "access": "r"
+      },
+      {
+       "insn": "0x1416b893e",
+       "fn": "0x1416b88e0",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "non-null once the +0x78 request has produced a result; 0x1416b88e0 issues the request only while it is null"
+    },
+    {
+     "off": 264,
+     "size": 4,
+     "name": "f_callback_id",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x1416b894c",
+       "fn": "0x1416b88e0",
+       "handler": null,
+       "access": "r"
+      },
+      {
+       "insn": "0x1437d3f33",
+       "fn": "0x1437d3ef0",
+       "handler": "0x143c10310",
+       "access": "r"
+      }
+     ],
+     "note": "-1 = no callback registered: 0x1416b88e0 then registers one on the list at +0xf8 (0x1403dbe00, key 0xf301e135); the Vector3 getter 0x1437d3ef0 (native 0x8FDC5A6BAE5411E7) calls 0x1416b88e0 first"
+    },
+    {
+     "off": 432,
+     "size": 8,
+     "name": "f_ptr_1b0",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x1403804bc",
+       "fn": "0x140380460",
+       "handler": null,
+       "access": "r"
+      },
+      {
+       "insn": "0x140f5719b",
+       "fn": "0x140f57130",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "read by 0x140380460 and 0x140f57130; meaning [unknown]"
+    }
+   ]
+  },
+  "CEcsComp_sel5e": {
+   "size": 464,
+   "note": "0x1d0: pool element size of generic_arch3 type 0x26 (descriptor 0x14a024608 built by 0x145b101f0, `mov r8d, 0x1d0` at 0x145b10244 before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x14993a508 vfunc[3] 0x145f00150 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: runtime column stride",
+   "class_hash": null,
+   "vtable": null,
+   "bases": [],
+   "fields": [
+    {
+     "off": 8,
+     "size": 8,
+     "name": "f_owner_entity",
+     "confidence": "medium",
+     "evidence": [
+      {
+       "insn": "0x14121c7fe",
+       "fn": "0x14121c7c0",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "owning CEntity pointer with tag bits in the low 4 bits: every reader masks it (and ~0xf) and reads CEntity+0x9c (the ECS id) or the entity kind; same header in every round-3 component"
+    },
+    {
+     "off": 32,
+     "size": 4,
+     "name": "f_group_count",
+     "confidence": "medium",
+     "evidence": [
+      {
+       "insn": "0x14121ccfc",
+       "fn": "0x14121cce0",
+       "handler": "0x143c046a0",
+       "access": "r"
+      },
+      {
+       "insn": "0x14121ce7e",
+       "fn": "0x14121cce0",
+       "handler": null,
+       "access": "w"
+      },
+      {
+       "insn": "0x140c448a7",
+       "fn": "0x140c44620",
+       "handler": "0x143cd57d0",
+       "access": "r"
+      }
+     ],
+     "note": "Swiss-table group count (power of two; group index = (key >> 7) & (count - 1)); insert 0x14121cce0 reads and rewrites it on growth; the target filter 0x140c44620 passes it to the contains-test 0x1401e8110"
+    },
+    {
+     "off": 36,
+     "size": 4,
+     "name": "f_element_count",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x14121cd15",
+       "fn": "0x14121cce0",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "the insert grows the table when it equals group_count * 0x570 / 100 (87 % of 16 slots per group)"
+    },
+    {
+     "off": 48,
+     "size": 8,
+     "name": "f_groups",
+     "confidence": "medium",
+     "evidence": [
+      {
+       "insn": "0x14121cd2b",
+       "fn": "0x14121cce0",
+       "handler": null,
+       "access": "r"
+      },
+      {
+       "insn": "0x14121ce7a",
+       "fn": "0x14121cce0",
+       "handler": null,
+       "access": "w"
+      },
+      {
+       "insn": "0x140c448aa",
+       "fn": "0x140c44620",
+       "handler": "0x143cd5830",
+       "access": "r"
+      }
+     ],
+     "note": "control groups of 0x90 bytes (16 control bytes, 16 x {u32 key; u32}); inline storage at +0x40 while small"
+    }
+   ]
+  },
+  "CPedComp_col2f": {
+   "size": 5936,
+   "note": "0x1730: pool element size of ped_static column 0x2f (descriptor 0x1499ab188 built by 0x145b0bb10, `mov r8d, 0x1730` at 0x145b0bb64 before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x14994ed28 vfunc[3] 0x145ae8100 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: runtime column stride",
+   "class_hash": null,
+   "vtable": null,
+   "bases": [],
+   "fields": [
+    {
+     "off": 5720,
+     "size": 1,
+     "name": "f_state_1658",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x140de57ad",
+       "fn": "0x140de5770",
+       "handler": null,
+       "access": "r"
+      },
+      {
+       "insn": "0x140de582f",
+       "fn": "0x140de57f0",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "compared with 0/1 by 7 engine functions"
+    },
+    {
+     "off": 5728,
+     "size": 1,
+     "name": "f_flags_1660",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x142d32294",
+       "fn": "0x142d32280",
+       "handler": null,
+       "access": "rw"
+      },
+      {
+       "insn": "0x142d3814c",
+       "fn": "0x142d38100",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "bit 1 cleared by 0x142d32280, bit 2 tested by 0x142d38100"
+    },
+    {
+     "off": 5732,
+     "size": 4,
+     "name": "f_linked_handle_1664",
+     "confidence": "low",
+     "evidence": [
+      {
+       "insn": "0x145b931ca",
+       "fn": "0x145b93120",
+       "handler": "0x144bf0ae0",
+       "access": "w"
+      },
+      {
+       "insn": "0x142d3b088",
+       "fn": "0x142d3b070",
+       "handler": null,
+       "access": "r"
+      }
+     ],
+     "note": "handle of an object in the unnamed pool 0x14aa552d8 (hash 0x5b3a3875, 0x1f0-byte items): 0x145b93120 stores the object's index | generation here; reached by the unnamed AUDIO-cluster native 0xCD3D996EB5245F74"
     }
    ]
   },

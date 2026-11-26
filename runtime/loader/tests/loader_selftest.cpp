@@ -5,15 +5,18 @@
 #include <windows.h>
 
 #include <algorithm>
+#include <atomic>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "g6rt_test_api.h"
 #include "gta6mod/patterns.hpp"
+#include "gta6mod/script_objects.h"
 
 /* natives.json for 1.0.2.1: 6,813 .pdata-scanned handlers + 16 .pdata-less wrappers found as NATIVE
    operands in decoded bytecode (findings/phase3/09, rounds 2-3). Update with the manifest. */
@@ -520,9 +523,19 @@ static void G6_CALL tick_a(void*) {
     ++a_ticks;
 }
 static void G6_CALL tick_b(void*) { ++b_ticks; }
+static void G6_CALL tick_ui(const g6_ui_frame*, void*) {}
 
 static void test_sched() {
     CHECK(H && H->size == sizeof(g6_host_api) && H->version_major == G6_API_VERSION_MAJOR, "host api table");
+    {   // API 0.3 UI table without the overlay ([ui] overlay=0, no game): present, every call refused or a no-op
+        const g6_ui_api* ui = g6_ui_get(H);
+        CHECK(ui && ui->abi_major == G6_UI_ABI_MAJOR && ui->size == sizeof(g6_ui_api), "ui table reachable through g6_ui_get");
+        g6_ui_id id = 7;
+        const g6_ui_frame_desc d{ sizeof(g6_ui_frame_desc), 0, "selftest", tick_ui, nullptr };
+        CHECK(ui && ui->frame_register(&d, &id) == G6_E_NOT_IMPLEMENTED && id == 0, "frame_register without the overlay: not implemented");
+        std::int32_t v = 1;
+        CHECK(ui && ui->begin("x", nullptr, 0) == 0 && ui->checkbox("x", &v) == 0 && v == 1, "widgets without the overlay do nothing");
+    }
     g6_native_handle nh = nullptr;
     CHECK(H->native_resolve(0x06843DA7060A026Bull, &nh) == G6_OK && nh, "resolve SET_ENTITY_COORDS");
     CHECK(H->native_resolve(0x1234ull, &nh) == G6_E_UNKNOWN_NATIVE, "unknown hash");
@@ -838,6 +851,284 @@ static void test_guard() {
     std::printf("guard: done (live scan: %u own rows)\n", own);
 }
 
+// ------------------------------------------------------------------ scrThread fields (G-093)
+static void test_thread_fields() {
+    alignas(16) uint8_t thr[0x400] = {};
+    const uint32_t name = 0xB407AF85u, id = 28;
+    std::memcpy(thr + 0x2b8, &name, 4);
+    const uint8_t live_state[4] = { 0x01, 0x00, 0xB3, 0x3F };   // stage 2 read 0x3FB30001 as a u32
+    std::memcpy(thr + 0x344, live_state, 4);
+    std::memcpy(thr + 0x348, &id, 4);
+    uint32_t n = 0, s = 0, i = 0;
+    T->thread_fields(thr, &n, &s, &i);
+    CHECK(n == name && s == 1 && i == id, "thread fields: name 0x%08X state %u id %u (want state 1: a u8 at +0x344)", n, s, i);
+    thr[0x344] = 3; thr[0x345] = 0x7F;   // 0x7F03 as a u32
+    T->thread_fields(thr, &n, &s, &i);
+    CHECK(s == 3, "thread fields: state %u, upper bytes ignored", s);
+}
+
+// ------------------------------------------------------------------ script-thread binder (G-095)
+namespace {
+struct Sim {
+    void* b;
+    uint32_t gen = 0, bound = 0;
+    explicit Sim(int mode = 0, uint32_t hash = 0, uint32_t observe_ms = 3000, uint32_t absent_ms = 3000)
+        : b(T->binder_create(mode, hash, observe_ms, absent_ms)) {}
+    ~Sim() { T->binder_destroy(b); }
+    Sim(const Sim&) = delete;
+    Sim& operator=(const Sim&) = delete;
+    int run(uint32_t id, uint32_t name, uint8_t state, uint64_t t) { return T->binder_run(b, id, name, state, t, &gen, &bound); }
+    uint32_t binds() { uint32_t x = 0; T->binder_counts(b, &x, nullptr, nullptr, nullptr); return x; }
+    uint32_t unbinds() { uint32_t x = 0; T->binder_counts(b, nullptr, &x, nullptr, nullptr); return x; }
+    uint32_t gone() { uint32_t x = 0; T->binder_counts(b, nullptr, nullptr, &x, nullptr); return x; }
+};
+constexpr uint32_t kStub = 0xB407AF85u, kRealA = 0x5B5EEFFEu, kRealB = 0x2F44071Au, kRealC = 0x889F3695u;
+}
+
+static void test_binder() {
+    CHECK(T->binder_create(3, 0, 0, 0) == nullptr, "binder: bad mode refused");
+    {   // Stage-3 shape: short-lived threads at state 1 (0xB407AF85), real scripts at 3/2. Bind only after the
+        // observation window, never a state-1 thread, and keep the binding while the real thread runs.
+        Sim s;
+        int early_ticks = 0, stub_ticks = 0, ticks = 0;
+        uint32_t stub_id = 100;
+        for (uint64_t t = 0; t < 20000; t += 100) {
+            if (t % 900 == 0) ++stub_id;                                   // a new stub instance every 0.9 s
+            stub_ticks += s.run(stub_id, kStub, 1, t);
+            const int k = s.run(2, kRealA, (t / 100) % 2 ? 3 : 2, t + 1);
+            if (t < 3000) early_ticks += k; else ticks += k;
+        }
+        CHECK(early_ticks == 0, "binder: no tick inside the observation window (%d)", early_ticks);
+        CHECK(stub_ticks == 0, "binder: a thread at state 1 never ticks (%d)", stub_ticks);
+        CHECK(s.bound == 2 && s.binds() == 1 && s.unbinds() == 0, "binder: bound %u, binds %u, unbinds %u", s.bound, s.binds(),
+              s.unbinds());
+        CHECK(ticks >= 169, "binder: ticks %d on the bound thread after the window (want every call from ~3.1 s)", ticks);
+    }
+    {   // Prefer the longer continuous presence: A runs since 0 s, B since 2 s; both eligible at 5 s.
+        Sim s;
+        for (uint64_t t = 0; t < 6000; t += 100) {
+            if (t >= 2000) s.run(3, kRealB, 3, t);
+            s.run(2, kRealA, 3, t + 1);
+        }
+        CHECK(s.bound == 2, "binder: longest continuous presence wins (bound %u)", s.bound);
+    }
+    {   // bind=hash only considers the host hash, even when another thread is older.
+        Sim s(1, kRealB);
+        for (uint64_t t = 0; t < 8000; t += 100) {
+            s.run(2, kRealA, 3, t);
+            if (t >= 1000) s.run(3, kRealB, 2, t + 1);
+        }
+        CHECK(s.bound == 3, "binder hash: bound %u (want 3)", s.bound);
+        Sim o(2);
+        int k = 0;
+        for (uint64_t t = 0; t < 8000; t += 100) k += o.run(2, kRealA, 3, t);
+        CHECK(k == 0 && o.bound == 0 && o.binds() == 0, "binder observe: never binds");
+    }
+    {   // Bound thread finishes (state 4..7): the replacement takes over on the same call.
+        Sim s;
+        for (uint64_t t = 0; t < 5000; t += 100) { s.run(2, kRealA, 3, t); s.run(3, kRealB, 3, t + 1); }
+        const uint32_t g0 = s.gen;
+        CHECK(s.bound == 2, "binder: A bound first (%u)", s.bound);
+        s.run(2, kRealA, 5, 5000);
+        CHECK(s.bound == 3 && s.gen == g0 + 1 && s.unbinds() == 1, "binder: finishing A -> B bound (bound %u gen %u -> %u)",
+              s.bound, g0, s.gen);
+    }
+    {   // Bound thread disappears; a replacement takes over after rebind_absent_ms of others running.
+        Sim s;
+        uint64_t switched = 0;
+        for (uint64_t t = 0; t < 25000; t += 100) {
+            if (t < 8000) s.run(2, kRealA, 3, t);
+            s.run(3, kRealB, 3, t + 1);
+            if (!switched && s.bound == 3) switched = t;
+        }
+        CHECK(switched >= 8000 + 3000 - 200 && switched <= 8000 + 3000 + 200, "binder: replacement after absence at %llu ms "
+              "(want ~11000)", static_cast<unsigned long long>(switched));
+        CHECK(s.binds() == 2 && s.unbinds() == 1, "binder: one rebind (binds %u unbinds %u)", s.binds(), s.unbinds());
+        CHECK(s.gone() >= 1, "binder: the vanished thread is forgotten (gone %u)", s.gone());
+    }
+    {   // A global stall (load screen: no Run calls at all) is not absence.
+        Sim s;
+        for (uint64_t t = 0; t < 5000; t += 100) { s.run(2, kRealA, 3, t); s.run(3, kRealB, 3, t + 1); }
+        const uint32_t b0 = s.bound;
+        for (uint64_t t = 25000; t < 27000; t += 100) { s.run(3, kRealB, 3, t + 1); s.run(2, kRealA, 3, t); }
+        CHECK(s.bound == b0 && s.binds() == 1 && s.unbinds() == 0, "binder: stall keeps the binding (bound %u -> %u, binds %u)",
+              b0, s.bound, s.binds());
+    }
+    {   // Tick rate across rebinds: 10 Run calls/s per thread. A finishes at 10 s (state 5), B vanishes at 20 s.
+        Sim s;
+        int win[40] = {};
+        for (uint64_t t = 0; t < 40000; t += 100) {
+            if (t < 10000) win[t / 1000] += s.run(1, kRealA, t == 9900 ? 5 : 3, t);
+            if (t < 20000) win[t / 1000] += s.run(2, kRealB, 2, t + 1);
+            win[t / 1000] += s.run(3, kRealC, 3, t + 2);
+        }
+        bool steady = true;
+        for (int w = 4; w < 40; ++w) {
+            if (w >= 20 && w <= 23) continue;                    // the absence window after B vanished
+            if (win[w] < 9 || win[w] > 10) { steady = false; std::printf("    window %d s: %d ticks\n", w, win[w]); }
+        }
+        CHECK(steady, "binder: 9..10 ticks per second before, between and after both rebinds");
+        int dup = 0;
+        for (int w = 0; w < 40; ++w) dup += win[w] > 10;
+        CHECK(dup == 0 && s.binds() == 3, "binder: never more than one ticking thread per call (binds %u)", s.binds());
+    }
+    {   // Two OS threads race for the first binding: exactly one winner, and only it ever ticks.
+        // Shared clock (one tick per 4 calls); observe 1 ms, so both become eligible together; absence 60 s,
+        // so a descheduled worker is never "absent" and every extra bind would be a race.
+        Sim s(0, 0, 1, 60000);
+        std::atomic<uint64_t> clock{ 0 };
+        std::atomic<int> go{ 0 };
+        std::atomic<uint32_t> tick_ids[2] = { 0, 0 };
+        std::atomic<int> ticks[2] = { 0, 0 };
+        auto worker = [&](int k) {
+            while (!go.load()) {}
+            uint32_t g = 0, b = 0;
+            for (int i = 0; i < 20000; ++i) {
+                const uint64_t t = clock.fetch_add(1) / 4;
+                if (T->binder_run(s.b, 500 + k, kRealA + k, 3, t, &g, &b)) { ticks[k].fetch_add(1); tick_ids[k].store(500 + k); }
+            }
+        };
+        std::thread a(worker, 0), b(worker, 1);
+        go.store(1);
+        a.join();
+        b.join();
+        const int winners = (ticks[0].load() > 0) + (ticks[1].load() > 0);
+        CHECK(winners == 1 && s.binds() == 1 && s.unbinds() == 0, "binder race: %d thread(s) ticked (%d / %d), binds %u",
+              winners, ticks[0].load(), ticks[1].load(), s.binds());
+    }
+}
+
+// ------------------------------------------------------------------ simulated host TLS rewrite (G-091)
+// Byte-for-byte the rewrite of DexNom crates/victory-loader/src/tls.rs `patch` (@2e01ab4), which VIctory-family
+// hosts apply to every executable section when the image does not get TLS index 0 (always, mapped as a DLL):
+// `mov r64, gs:[0x58]` = 65 (48|4C) 8B ModRM(&C7 == 04, reg != rsp) 25 58 00 00 00
+//   -> E8 rel32(thunks + reg*32) 0F 1F 40 00, then the scan continues after the 9 bytes.
+// The thunk page sits within rel32 reach; live it was 0x10000 below the image (findings/live stage 1).
+static constexpr size_t kExpectedTlsLoads = 53246;   // 1.0.2.1: all 53,246 hits are instruction starts (tls.rs)
+
+static size_t host_patch(uint8_t* code, size_t len, uintptr_t at, uintptr_t thunks) {
+    size_t count = 0;
+    for (size_t i = 0; i + 9 <= len;) {
+        const uint8_t* c = code + i;
+        const uint8_t rex = c[1];
+        const unsigned reg = ((c[3] >> 3) & 7u) | ((rex & 4) ? 8u : 0u);
+        if (c[0] == 0x65 && (rex == 0x48 || rex == 0x4C) && c[2] == 0x8B && (c[3] & 0xC7) == 0x04 && c[4] == 0x25 &&
+            c[5] == 0x58 && c[6] == 0 && c[7] == 0 && c[8] == 0 && reg != 4) {
+            const int64_t rel = static_cast<int64_t>(thunks + reg * 32) - static_cast<int64_t>(at + i + 5);
+            const int32_t rel32 = static_cast<int32_t>(rel);
+            code[i] = 0xE8;
+            std::memcpy(code + i + 1, &rel32, 4);
+            const uint8_t nop4[4] = { 0x0F, 0x1F, 0x40, 0x00 };
+            std::memcpy(code + i + 5, nop4, 4);
+            ++count;
+            i += 9;
+        } else {
+            ++i;
+        }
+    }
+    return count;
+}
+
+static size_t simulate_host_tls_rewrite(uint8_t* img, size_t img_size) {
+    const auto* nt = reinterpret_cast<const IMAGE_NT_HEADERS64*>(img + reinterpret_cast<const IMAGE_DOS_HEADER*>(img)->e_lfanew);
+    const auto* sh = IMAGE_FIRST_SECTION(nt);
+    const uintptr_t thunks = reinterpret_cast<uintptr_t>(img) - 0x10000;
+    size_t n = 0;
+    for (unsigned i = 0; i < nt->FileHeader.NumberOfSections; ++i) {
+        if (!(sh[i].Characteristics & IMAGE_SCN_MEM_EXECUTE)) continue;
+        const size_t len = std::min<size_t>(sh[i].Misc.VirtualSize, img_size - std::min<size_t>(img_size, sh[i].VirtualAddress));
+        n += host_patch(img + sh[i].VirtualAddress, len, reinterpret_cast<uintptr_t>(img) + sh[i].VirtualAddress, thunks);
+    }
+    return n;
+}
+
+static void test_host_rewrite() {
+    // rax (48/04), r8 (4C/04), r12 (4C/24), rsp (48/24: skipped by the host), a 4? REX the host ignores (41)
+    uint8_t code[] = { 0x65, 0x48, 0x8B, 0x04, 0x25, 0x58, 0, 0, 0,
+                       0x65, 0x4C, 0x8B, 0x04, 0x25, 0x58, 0, 0, 0,
+                       0x65, 0x4C, 0x8B, 0x24, 0x25, 0x58, 0, 0, 0,
+                       0x65, 0x48, 0x8B, 0x24, 0x25, 0x58, 0, 0, 0,
+                       0x65, 0x41, 0x8B, 0x04, 0x25, 0x58, 0, 0, 0, 0xC3 };
+    const uintptr_t at = 0x7ffc3ce80000ull, thunks = 0x7ffc3ce70000ull;
+    CHECK(host_patch(code, sizeof code, at, thunks) == 3, "host rewrite: 3 loads patched");
+    auto target = [&](size_t i) { int32_t r; std::memcpy(&r, code + i + 1, 4); return at + i + 5 + static_cast<int64_t>(r); };
+    CHECK(code[0] == 0xE8 && target(0) == thunks + 0 * 32 && code[5] == 0x0F && code[6] == 0x1F && code[7] == 0x40 && code[8] == 0,
+          "host rewrite: rax load -> call thunk[0]; nop4");
+    CHECK(code[9] == 0xE8 && target(9) == thunks + 8 * 32, "host rewrite: r8 load -> call thunk[8]");
+    CHECK(code[18] == 0xE8 && target(18) == thunks + 12 * 32, "host rewrite: r12 load -> call thunk[12]");
+    CHECK(code[27] == 0x65 && code[36] == 0x65, "host rewrite: rsp and REX 41 forms left alone");
+}
+
+// ------------------------------------------------------------------ script objects (G-120)
+struct ObjSeen {
+    int calls = 0;
+    const void* s0 = nullptr;   // args[0] as the native saw it
+    uint64_t a1 = 0;
+    const void* t2 = nullptr;
+    uint64_t a3 = 0;
+};
+static void G6_CALL obj_fn(g6_native_call* c, void* user) {
+    auto* o = static_cast<ObjSeen*>(user);
+    ++o->calls;
+    o->s0 = reinterpret_cast<const void*>(static_cast<uintptr_t>(c->args[0]));
+    o->a1 = c->args[1];
+    o->t2 = reinterpret_cast<const void*>(static_cast<uintptr_t>(c->args[2]));
+    o->a3 = c->args[3];
+}
+static void test_objects() {
+    alignas(16) static uint8_t type_rec[0x88], elem_rec[0x88];
+    const char* hello = "hello";
+    const char* objective = "Lose the cops";
+    g6_native_call c{};
+    c.size = sizeof c;
+    c.argc = 4;
+    c.args[0] = reinterpret_cast<uintptr_t>(hello);
+    c.args[1] = 42;
+    c.args[2] = reinterpret_cast<uintptr_t>(objective);
+    c.args[3] = 0;                       // a null String stays 0
+    c.string_slots = 0x9;                // slots 0 and 3
+    c.text_slots = 0x4;                  // slot 2
+    ObjSeen o;
+    CHECK(T->objects_call(type_rec, elem_rec, 1, &c, obj_fn, &o) == G6_OK && o.calls == 1, "objects_call ok");
+    const uint8_t* s = static_cast<const uint8_t*>(o.s0);
+    CHECK(s && s != reinterpret_cast<const uint8_t*>(hello), "slot 0 became an object");
+    if (s) {
+        const void* tr; const void* er; uint32_t cap, stride; uint64_t q18;
+        std::memcpy(&tr, s + G6_SSTR_TYPE, 8); std::memcpy(&er, s + G6_SSTR_ELEM, 8);
+        std::memcpy(&cap, s + G6_SSTR_CAPACITY, 4); std::memcpy(&stride, s + G6_SSTR_STRIDE, 4); std::memcpy(&q18, s + G6_SSTR_Q18, 8);
+        CHECK(tr == type_rec && er == elem_rec, "String records at +0x00 / +0x20");
+        CHECK(g6_script_string_length(s) == 5 && cap == 6 && stride == 1 && s[G6_SSTR_FLAGS] == 0 && q18 == 9,
+              "String header: length 5, capacity 6, stride 1, inline, +0x18 = 9");
+        CHECK(std::strcmp(g6_script_string_text(s), "hello") == 0 && s[G6_SSTR_TEXT + 5] == 0, "String text inline at +0x28");
+    }
+    CHECK(o.a1 == 42 && o.a3 == 0, "unmasked slot untouched, null String passed as 0");
+    const char* got = o.t2 ? g6_script_text_read(o.t2) : nullptr;
+    CHECK(got && std::strcmp(got, objective) == 0, "text object read through +0x18 and virtual +0x18: %s", got ? got : "(null)");
+    CHECK(c.args[0] == reinterpret_cast<uintptr_t>(hello) && c.args[2] == reinterpret_cast<uintptr_t>(objective),
+          "caller's slots restored after the call");
+    ObjSeen o2;
+    CHECK(T->objects_call(type_rec, elem_rec, 1, &c, obj_fn, &o2) == G6_OK && o2.s0 == o.s0 && o2.t2 == o.t2,
+          "the same text gives the same (interned) object");
+    uint32_t ns = 0, nt = 0, ntmp = 0; size_t nb = 0;
+    T->objects_stats(&ns, &nt, &ntmp, &nb);
+    CHECK(ns >= 1 && nt >= 1 && ntmp == 0 && nb > 0, "interned: %u strings, %u texts, %zu bytes", ns, nt, nb);
+    // refusals change nothing and do not call the native
+    ObjSeen o3;
+    c.text_slots = 0x1;  // overlaps string_slots
+    CHECK(T->objects_call(type_rec, elem_rec, 1, &c, obj_fn, &o3) == G6_E_INVALID_ARG && o3.calls == 0, "overlapping masks refused");
+    c.text_slots = 0x10;  // beyond argc
+    CHECK(T->objects_call(type_rec, elem_rec, 1, &c, obj_fn, &o3) == G6_E_INVALID_ARG && o3.calls == 0, "mask beyond argc refused");
+    c.text_slots = 0x4;
+    CHECK(T->objects_call(nullptr, nullptr, 1, &c, obj_fn, &o3) == G6_E_NO_SUCH_ANCHOR && o3.calls == 0,
+          "String refused without the records");
+    CHECK(T->objects_call(type_rec, elem_rec, 0, &c, obj_fn, &o3) == G6_E_NO_SUCH_ANCHOR && o3.calls == 0,
+          "text refused when the text path did not check out");
+    CHECK(c.args[0] == reinterpret_cast<uintptr_t>(hello) && c.args[2] == reinterpret_cast<uintptr_t>(objective), "refusals leave the slots");
+    c.size = G6_NATIVE_CALL_V3_SIZE;  // an API 0.3 caller: no masks
+    ObjSeen o4;
+    CHECK(T->objects_call(nullptr, nullptr, 0, &c, obj_fn, &o4) == G6_OK && o4.s0 == hello, "API 0.3 call: masks ignored");
+}
+
 // ------------------------------------------------------------------ dump (optional)
 static void test_dump() {
     char dir[1024];
@@ -874,6 +1165,10 @@ static void test_dump() {
     const int ra = T->resolve_anchors(img, img_size, rep, sizeof rep);
     std::printf("dump anchors (%llu ms): %s\n", static_cast<unsigned long long>(GetTickCount64() - t0), rep);
     CHECK(ra == 1, "required anchors on the file image");
+    unsigned exact = 0, chained = 0, chain_failed = 0, missing = 0, ambiguous = 0;
+    CHECK(sscanf_s(rep, "%*u anchors: %u exact, %u via chain, %u chain failed, %u missing, %u ambiguous", &exact, &chained,
+                      &chain_failed, &missing, &ambiguous) == 5 && missing == 0 && ambiguous == 0 && chain_failed == 0,
+          "file image: %u missing, %u ambiguous, %u chain failed", missing, ambiguous, chain_failed);
     uint32_t ok = 0, bad = 0;
     CHECK(T->verify_handlers(img, img_size, &ok, &bad) == 1 && ok == kExpectedNatives && bad == 0, "handlers ok %u bad %u", ok, bad);
     std::printf("dump handlers: %u verified, %u failed\n", ok, bad);
@@ -898,6 +1193,12 @@ static void test_dump() {
     const int re = T->resolve_engine(img, img_size, rep, sizeof rep, &crva, &vok);
     std::printf("dump engine (%llu ms): %s\n", static_cast<unsigned long long>(GetTickCount64() - t1), rep);
     CHECK(re == 1 && crva == 0xabbef40, "clock block rva 0x%x (want 0xabbef40)", crva);
+    // G-120: String records from the opcode 52 handler (== the data anchors) and the text accessor path
+    uint32_t trva = 0, erva = 0; int tok = 0;
+    const int ro = T->objects_resolve(img, img_size, &trva, &erva, &tok, rep, sizeof rep);
+    std::printf("dump script objects: %s\n", rep);
+    CHECK(ro == 1 && trva == 0xabc3fe0 && erva == 0xabc4640 && tok == 1,
+          "script objects: type rva 0x%x (want 0xabc3fe0), element rva 0x%x (want 0xabc4640), text %d", trva, erva, tok);
     // G-016: the re-db anchor world.game_timer (xref chain from the GET_GAME_TIMER handler, generated patterns.hpp)
     // lands on the block the clock decode found.
     const g6::patterns::anchor* ga = g6::patterns::by_name("world.game_timer");
@@ -909,6 +1210,21 @@ static void test_dump() {
               gr.address ? static_cast<long long>(gr.address - img) : -1ll, crva);
     }
     CHECK(vok == 1, "vfs ABI checks on the file image");
+
+    // G-091: the same image after the VIctory-family host's TLS rewrite. Every anchor must still resolve
+    // exactly (0 missing), as it must live under DexNom. Done in place: nothing below reads the original.
+    const size_t rewritten = simulate_host_tls_rewrite(img, img_size);
+    CHECK(rewritten == kExpectedTlsLoads, "simulated host: %zu gs:[0x58] loads rewritten (want %zu)", rewritten, kExpectedTlsLoads);
+    const ULONGLONG t2 = GetTickCount64();
+    const int rh = T->resolve_anchors(img, img_size, rep, sizeof rep);
+    std::printf("dump anchors, simulated host (%zu loads rewritten, %llu ms): %s\n", rewritten,
+                static_cast<unsigned long long>(GetTickCount64() - t2), rep);
+    CHECK(rh == 1, "required anchors on the simulated-host image");
+    exact = chained = chain_failed = missing = ambiguous = 0;
+    CHECK(sscanf_s(rep, "%*u anchors: %u exact, %u via chain, %u chain failed, %u missing, %u ambiguous", &exact, &chained,
+                      &chain_failed, &missing, &ambiguous) == 5 && missing == 0 && ambiguous == 0 && chain_failed == 0,
+          "simulated host: %u missing, %u ambiguous, %u chain failed (every anchor must survive the host rewrite)",
+          missing, ambiguous, chain_failed);
     VirtualFree(img, 0, MEM_RELEASE);
 }
 
@@ -937,6 +1253,10 @@ int main(int argc, char** argv) {
     test_vfs_map();
     test_vfs_fake();
     test_guard();
+    test_host_rewrite();
+    test_thread_fields();
+    test_binder();
+    test_objects();
     test_dump();
     std::printf("\n%d passed, %d failed\n", g_pass, g_fail);
     return g_fail ? 1 : 0;

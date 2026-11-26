@@ -8,16 +8,19 @@ Summary of [`sdk/docs/native-signatures.md`](../native-signatures.md), which is 
 
 | Code | nativedb types | Slots | C | Python | Luau | Natives using it |
 |---|---|---|---|---|---|---|
-| `i` | int, Any, Player, Cam, Blip, ScrHandle, ... | 1 (sign-extended int32) | `int32_t` | `int` | `number` | 5158 |
-| `e` | Entity, Ped, Vehicle, Object, Pickup, PersChar | 2 (16-byte opaque handle lo, hi) | `g6_entity` | `int` | `buffer \| number` | 1037 |
-| `u` | Hash, unsigned int | 1 (zero-extended uint32) | `uint32_t` | `int \| str` | `number \| string` | 310 |
-| `f` | float | 1 (IEEE-754 bits in the low 32) | `float` | `float` | `number` | 741 |
-| `b` | BOOL, bool | 1 (0/1) | `int` | `bool` | `boolean` | 460 |
-| `s` | const char*, char* | 1 (pointer; caller keeps it alive) | `const char*` | `str \| None` | `string?` | 142 |
-| `q` | uint64_t, argc_inferred filler slot | 1 (raw u64) | `uint64_t` | `int` | `number` | 314 |
+| `i` | int, Any, Player, Cam, Blip, ScrHandle, ... | 1 (sign-extended int32) | `int32_t` | `int` | `number` | 5087 |
+| `e` | Entity, Ped, Vehicle, Object, Pickup, PersChar | 2 (16-byte opaque handle lo, hi) | `g6_entity` | `int` | `buffer \| number` | 1069 |
+| `h` | ScenarioPoint (16-byte non-entity handle, from handler evidence) | 2 (16-byte opaque handle lo, hi) | `g6_handle16` | `int` | `buffer` | 16 |
+| `u` | Hash, unsigned int | 1 (zero-extended uint32) | `uint32_t` | `int \| str` | `number \| string` | 430 |
+| `f` | float | 1 (IEEE-754 bits in the low 32) | `float` | `float` | `number` | 739 |
+| `b` | BOOL, bool | 1 (0/1) | `int` | `bool` | `boolean` | 453 |
+| `s` | const char*, char* | 1 (pointer; caller keeps it alive) | `const char*` | `str \| None` | `string?` | 22 |
+| `q` | uint64_t, argc_inferred filler slot | 1 (raw u64) | `uint64_t` | `int` | `number` | 279 |
 | `w` | Vector3 parameter measured as packed (nativedb float x, y, z) | 2 (one 16-byte {x, y, z, w}: x, y in the first slot, z in the low half of the second) | `g6_vec3` | `Vector3` | `vector` | 204 |
 | `v` | Vector3 parameter without handler evidence (legacy) | 3 (x, y, z floats) | `g6_vec3` | `Vector3` | `vector` | 0 |
-| `I` | int* out-param | 1 (pointer to scratch) | `int64_t*` | `int` appended to the returned tuple | `number` extra return value | 107 |
+| `S` | ScriptString: the handler reads a script String object (from handler evidence, G-120) | 1 (pointer to UTF-8 + its string_slots bit; the runtime passes a String built from it) | `const char*` | `str \| None` | `string?` | 31 |
+| `T` | ScriptText: the handler reads a script text object (from handler evidence, G-120) | 1 (pointer to UTF-8 + its text_slots bit; the runtime passes a text object built from it) | `const char*` | `str \| None` | `string?` | 9 |
+| `I` | int* out-param | 1 (pointer to scratch) | `int64_t*` | `int` appended to the returned tuple | `number` extra return value | 108 |
 | `F` | float* out-param | 1 (pointer to scratch) | `float*` | `float` appended to the returned tuple | `number` extra return value | 18 |
 | `B` | BOOL* out-param | 1 (pointer to scratch) | `int64_t*` | `bool` appended to the returned tuple | `boolean` extra return value | 4 |
 | `V` | Vector3* (16-byte aligned Vec3V) out-param | 1 (pointer to scratch) | `g6_vec3_packed*` | `Vector3` appended to the returned tuple | `vector` extra return value | 19 |
@@ -29,14 +32,15 @@ Return codes follow `>`:
 | Code | Meaning | C | Python | Luau | Natives returning it |
 |---|---|---|---|---|---|
 | `n` | void | `void` | `None` | `()` | 3473 |
-| `i` | int32 | `int32_t` | `int` | `number` | 2310 |
+| `i` | int32 | `int32_t` | `int` | `number` | 2307 |
 | `u` | uint32 | `uint32_t` | `int` | `number` | 42 |
 | `f` | float | `float` | `float` | `number` | 177 |
-| `b` | BOOL | `int` | `bool` | `boolean` | 584 |
+| `b` | BOOL | `int` | `bool` | `boolean` | 585 |
 | `s` | string pointer | `const char*` | `str \| None` | `string?` | 1 |
 | `q` | raw u64 | `uint64_t` | `int` | `number` | 0 |
-| `e` | 16-byte entity handle in ret[0..1] | `g6_entity` | `int` | `buffer` | 54 |
-| `w` | packed 16-byte vector {x, y, z, w}: x, y in ret[0], z in the low half of ret[1] | `g6_vec3` | `Vector3` | `vector` | 201 |
+| `e` | 16-byte entity handle in ret[0..1] | `g6_entity` | `int` | `buffer` | 62 |
+| `h` | 16-byte scenario-point handle in ret[0..1] (all zero = none) | `g6_handle16` | `int` | `buffer` | 3 |
+| `w` | packed 16-byte vector {x, y, z, w}: x, y in ret[0], z in the low half of ret[1] | `g6_vec3` | `Vector3` | `vector` | 192 |
 | `v` | legacy 3-slot vector (compatibility only; GTA VI bindings use w) | `g6_vec3` | `Vector3` | `vector` | 0 |
 
 Example: `GET_ENTITY_COORDS(Entity, BOOL, BOOL) -> Vector3` is `"ebb>w"` and uses 4 argument slots. `SET_ENTITY_COORDS` is `"ewbbbbf>n"`: entity in slots 0-1, the packed position in 2-3, four BOOLs in 4-7 and a float the handler loads from slot 8 (9 slots).

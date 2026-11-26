@@ -324,6 +324,29 @@
    "unsigned": false
   },
   {
+   "name": "ecs.comp.base_sel40",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 82217152,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 48 85 C0 74 13 4C 8B 08 48 89 C1 4C",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "B8 11 05 00 00 48"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
    "name": "ecs.comp.damage_sel4d",
    "kind": "function",
    "signature": "B8 11 05 00 00 48 8D 15 ? ? ? ? C4 E2 78 F7 C1 4C 69 C0 38 02 00 00 41 8B 44 10 14 85 C0 74 2E 4C 01 C2 44 0F B6 42 4D",
@@ -374,6 +397,29 @@
    "expected_rva": 82524032,
    "chain": {
     "from_signature": "E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 89 F1 49 89 C4 E8 ? ? ? ? 48 85 C0 74",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "B8 11 05 00 00 48"
+     }
+    ]
+   },
+   "confidence": "high",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ecs.comp.tagset_sel5e",
+   "kind": "function",
+   "signature": "",
+   "expected_rva": 7226320,
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 48 85 C0 75 07 48 83 C4 38 5F 5E C3 48 89 C1 BA",
     "steps": [
      {
       "op": "call_target",
@@ -2585,6 +2631,31 @@
    "unsigned": false
   },
   {
+   "name": "ped.event.give_task.ctor",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 55 53 48 83 EC 28 40 8A AC 24 88 00 00 00 44 8A BC 24 80 00 00 00 44 89 CB",
+   "expected_rva": 20519584,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "ped.event.pool",
+   "kind": "data",
+   "signature": "48 8B 0D ? ? ? ? 31 F6 49 B8 00 00 00 00 FF FF FF FF 48 8B 41 20 48",
+   "expected_rva": 179687432,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
    "name": "ped.events.set_blocking_non_temporary",
    "kind": "function",
    "signature": "8B 41 10 0F B6 D2 C1 E2 04 83 E0 EF",
@@ -3695,6 +3766,78 @@
    "unsigned": false
   },
   {
+   "name": "script.string.literal_elem_record",
+   "kind": "data",
+   "signature": "4C 8D 05 ? ? ? ? 48 03 81 F0 00",
+   "expected_rva": 180110912,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "+0x20 of a string literal (opcode 52 writes it); run-time strings carry record 7 (0x14abc4068) there instead, from the array allocator",
+   "unsigned": false
+  },
+  {
+   "name": "script.string.literal_op",
+   "kind": "code",
+   "signature": "48 8B 4C 24 50 8B 44 24 30 48 8D 15",
+   "expected_rva": 64911015,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Opcode 52 pushes the String object stored at [program+0xf0] + u32 operand and writes its type record (+0x00) and element record (+0x20) before the push; the literal bytes in the data block already hold length +0x08, capacity +0x0c, stride +0x10, flags +0x14, +0x18 and the text at +0x28",
+   "unsigned": false
+  },
+  {
+   "name": "script.string.new",
+   "kind": "function",
+   "signature": "56 57 53 48 83 EC 20 89 D3 8B 05 ? ? ? ? ? ? ? ? ? ? ? ? ? 45",
+   "expected_rva": 7018976,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Run-time String constructor (62 callers: String builtins, ToString): GC-heap array of record 7 with count = capacity or length + 1 (0x1451a42f0), +0x00 = String record, +0x08 = length, bytes copied to +0x28 when src is not null, NUL at +0x28+length. Needs the script thread's allocation context (TLS[0]+0x1470); the object is unrooted until stored",
+   "unsigned": false
+  },
+  {
+   "name": "script.string.type_record",
+   "kind": "data",
+   "signature": "48 8D 15 ? ? ? ? 4C 8D 05 ? ? ? ? 48 03",
+   "expected_rva": 180109280,
+   "offset": 0,
+   "rip": {
+    "disp_at": 3,
+    "insn_len": 7
+   },
+   "confidence": "high",
+   "provenance": "+0x00 of every String object: written by opcode 52 for literals and by the allocator 0x1406b19e0 (0x1406b1a2f) for run-time strings; String builtins (type 6, Concat/Format/get_Length) return engine type 0x80000006",
+   "unsigned": false
+  },
+  {
+   "name": "script.text.get",
+   "kind": "function",
+   "signature": "48 83 EC 28 48 8B 05 ? ? ? ? 48 89 4C 24 20 48 8D 90 FF FF 1F 00 48 39 C8 0F 96 C0 48 39 CA 0F 93 C2 20 C2 80 FA 01 74 14",
+   "expected_rva": 33902608,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Reads a script text object (class 0x148fdc8f8): null -> empty string 0x14678d1bb; else [obj+0x18] -> 0x14100b8b0, which tail-calls the native text object's virtual +0x18 with (this, true). The only reader of the text argument in 9 native handlers (_UILOG_SET_CACHED_OBJECTIVE and 8 unnamed)",
+   "unsigned": false
+  },
+  {
+   "name": "script.text.native_get",
+   "kind": "code",
+   "signature": "48 85 C9 74 0C 48 8B 01 B2 01 48 8B 40 18",
+   "expected_rva": 16824496,
+   "offset": 0,
+   "rip": null,
+   "confidence": "high",
+   "provenance": "Leaf without .pdata: null -> 0; else mov rax,[rcx]; mov dl,1; jmp [rax+0x18] (no call guard)",
+   "unsigned": false
+  },
+  {
    "name": "script.thread.by_id",
    "kind": "function",
    "signature": "56 48 83 EC 20 85 C9 75 08 31 C0 48 83 C4 20 5E C3 89 CE 48",
@@ -4617,6 +4760,28 @@
    "kind": "function",
    "signature": "56 48 83 EC 20 48 89 CE 8B 89 9C 00 00 00 E8 ? ? ? ? 48 85 C0 74 12 F0",
    "expected_rva": 10397664,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "vehicle.object.add",
+   "kind": "function",
+   "signature": "41 57 41 56 56 57 53 48 83 EC 20 44 89 C0 4C 89 CB 44 89 C7 48 89 D6 25 00 00 3E 00 3D 00 00 04 00 75 2D",
+   "expected_rva": 8174240,
+   "offset": 0,
+   "rip": null,
+   "confidence": "medium",
+   "provenance": "phase5 types worker (gameplay fields); tools/phase5/types_gameplay_fields.py; findings/phase5/24",
+   "unsigned": false
+  },
+  {
+   "name": "vehicle.object.ctor",
+   "kind": "function",
+   "signature": "56 48 83 EC 20 48 89 CE E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 89 06 48 C7 86 D0 05",
+   "expected_rva": 8174736,
    "offset": 0,
    "rip": null,
    "confidence": "medium",

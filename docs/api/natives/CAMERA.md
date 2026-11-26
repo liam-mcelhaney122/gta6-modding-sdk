@@ -1299,21 +1299,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### SHAKE_CAM
 
-`0xF9A7BCF5D050D4E7` · sig `isf>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD8D50`
+`0xF9A7BCF5D050D4E7` · sig `iuf>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD8D50`
 
-- nativedb form: `void SHAKE_CAM(Cam cam, const char* type, float amplitude)`
-- C: `void G6_CAMERA_SHAKE_CAM(const g6_host_api* api, int32_t cam, const char* type, float amplitude)`
-- Python: `N.CAMERA.SHAKE_CAM(cam: int, type: str | None, amplitude: float) -> None`
-- Luau: `N.CAMERA.SHAKE_CAM(cam: number, type: string?, amplitude: number): ()`
+- nativedb form: `void SHAKE_CAM(Cam cam, Hash type, float amplitude)`
+- C: `void G6_CAMERA_SHAKE_CAM(const g6_host_api* api, int32_t cam, uint32_t type, float amplitude)`
+- Python: `N.CAMERA.SHAKE_CAM(cam: int, type: int | str, amplitude: float) -> None`
+- Luau: `N.CAMERA.SHAKE_CAM(cam: number, type: number | string, amplitude: number): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 1 read as 32 bits (0x143cd8d78), compared as a 32-bit key (0x14050445c); script-vm.param_types.observed.json (G-114)
 
 ### SHAKE_GAMEPLAY_CAM
 
-`0xD9B31B4650520529` · sig `sf>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD8DF0`
+`0xD9B31B4650520529` · sig `uf>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD8DF0`
 
-- nativedb form: `void SHAKE_GAMEPLAY_CAM(const char* shakeName, float intensity)`
-- C: `void G6_CAMERA_SHAKE_GAMEPLAY_CAM(const g6_host_api* api, const char* shakeName, float intensity)`
-- Python: `N.CAMERA.SHAKE_GAMEPLAY_CAM(shakeName: str | None, intensity: float) -> None`
-- Luau: `N.CAMERA.SHAKE_GAMEPLAY_CAM(shakeName: string?, intensity: number): ()`
+- nativedb form: `void SHAKE_GAMEPLAY_CAM(Hash shakeName, float intensity)`
+- C: `void G6_CAMERA_SHAKE_GAMEPLAY_CAM(const g6_host_api* api, uint32_t shakeName, float intensity)`
+- Python: `N.CAMERA.SHAKE_GAMEPLAY_CAM(shakeName: int | str, intensity: float) -> None`
+- Luau: `N.CAMERA.SHAKE_GAMEPLAY_CAM(shakeName: number | string, intensity: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143cd8e16), compared as a 32-bit key (0x14050445c); script-vm.param_types.observed.json (G-114)
 
 ### STOP_CAM_POINTING
 
@@ -1371,48 +1373,53 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x9AC65A36D3C0C189
 
-`0x9AC65A36D3C0C189` · sig `i>n` · params 1, argc_inferred 0, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD9730`
+`0x9AC65A36D3C0C189` · sig `>n` · params 0, argc_inferred 0, arg slots 0 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD9730`
 
-- nativedb form: `void _0x9AC65A36D3C0C189(Any p0)`
-- C: `void G6_CAMERA__0x9AC65A36D3C0C189(const g6_host_api* api, int32_t p0)`
-- Python: `N.CAMERA._0x9AC65A36D3C0C189(p0: int) -> None`
-- Luau: `N.CAMERA._0x9AC65A36D3C0C189(p0: number): ()`
+- nativedb form: `void _0x9AC65A36D3C0C189()`
+- C: `void G6_CAMERA__0x9AC65A36D3C0C189(const g6_host_api* api)`
+- Python: `N.CAMERA._0x9AC65A36D3C0C189() -> None`
+- Luau: `N.CAMERA._0x9AC65A36D3C0C189(): ()`
+- provenance: nativedb hash match (rdr3); GTA VI prototype from handler and call-site evidence: all 33 call sites (19 programs) pass 0 slots and the handler reads 0; nativedb params not taken: p0; script-vm.prototypes.observed.json (G-118)
 
 ### _0xC285FD21294A1C49
 
-`0xC285FD21294A1C49` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD3CC0`
+`0xC285FD21294A1C49` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD3CC0`
 
-- nativedb form: `BOOL _0xC285FD21294A1C49(const char* cameraDictionary)`
-- C: `int G6_CAMERA__0xC285FD21294A1C49(const g6_host_api* api, const char* cameraDictionary)`
-- Python: `N.CAMERA._0xC285FD21294A1C49(cameraDictionary: str | None) -> bool`
-- Luau: `N.CAMERA._0xC285FD21294A1C49(cameraDictionary: string?): boolean`
+- nativedb form: `BOOL _0xC285FD21294A1C49(Hash cameraDictionary)`
+- C: `int G6_CAMERA__0xC285FD21294A1C49(const g6_host_api* api, uint32_t cameraDictionary)`
+- Python: `N.CAMERA._0xC285FD21294A1C49(cameraDictionary: int | str) -> bool`
+- Luau: `N.CAMERA._0xC285FD21294A1C49(cameraDictionary: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143cd3ce1), compared as a 32-bit key (0x140b17141); script-vm.param_types.observed.json (G-114)
 
 ### _0xFEFDDC6E8FDF8A75
 
-`0xFEFDDC6E8FDF8A75` · sig `sf>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD7550`
+`0xFEFDDC6E8FDF8A75` · sig `uf>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD7550`
 
-- nativedb form: `void _0xFEFDDC6E8FDF8A75(const char* shakeName, float intensity)`
-- C: `void G6_CAMERA__0xFEFDDC6E8FDF8A75(const g6_host_api* api, const char* shakeName, float intensity)`
-- Python: `N.CAMERA._0xFEFDDC6E8FDF8A75(shakeName: str | None, intensity: float) -> None`
-- Luau: `N.CAMERA._0xFEFDDC6E8FDF8A75(shakeName: string?, intensity: number): ()`
+- nativedb form: `void _0xFEFDDC6E8FDF8A75(Hash shakeName, float intensity)`
+- C: `void G6_CAMERA__0xFEFDDC6E8FDF8A75(const g6_host_api* api, uint32_t shakeName, float intensity)`
+- Python: `N.CAMERA._0xFEFDDC6E8FDF8A75(shakeName: int | str, intensity: float) -> None`
+- Luau: `N.CAMERA._0xFEFDDC6E8FDF8A75(shakeName: number | string, intensity: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143cd7576), compared as a 32-bit key (0x1406c4a46); script-vm.param_types.observed.json (G-114)
 
 ### _IS_CAM_DATA_DICT_LOADED
 
-`0xDD0B7C5AE58F721D` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD3C60`
+`0xDD0B7C5AE58F721D` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD3C60`
 
-- nativedb form: `BOOL _IS_CAM_DATA_DICT_LOADED(const char* cameraDictionary)`
-- C: `int G6_CAMERA__IS_CAM_DATA_DICT_LOADED(const g6_host_api* api, const char* cameraDictionary)`
-- Python: `N.CAMERA._IS_CAM_DATA_DICT_LOADED(cameraDictionary: str | None) -> bool`
-- Luau: `N.CAMERA._IS_CAM_DATA_DICT_LOADED(cameraDictionary: string?): boolean`
+- nativedb form: `BOOL _IS_CAM_DATA_DICT_LOADED(Hash cameraDictionary)`
+- C: `int G6_CAMERA__IS_CAM_DATA_DICT_LOADED(const g6_host_api* api, uint32_t cameraDictionary)`
+- Python: `N.CAMERA._IS_CAM_DATA_DICT_LOADED(cameraDictionary: int | str) -> bool`
+- Luau: `N.CAMERA._IS_CAM_DATA_DICT_LOADED(cameraDictionary: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143cd3c81), compared as a 32-bit key (0x140b17111); script-vm.param_types.observed.json (G-114)
 
 ### _LOAD_CAMERA_DATA_DICT
 
-`0x6A4D224FC7643941` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD4C30`
+`0x6A4D224FC7643941` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CD4C30`
 
-- nativedb form: `void _LOAD_CAMERA_DATA_DICT(const char* cameraDictionary)`
-- C: `void G6_CAMERA__LOAD_CAMERA_DATA_DICT(const g6_host_api* api, const char* cameraDictionary)`
-- Python: `N.CAMERA._LOAD_CAMERA_DATA_DICT(cameraDictionary: str | None) -> None`
-- Luau: `N.CAMERA._LOAD_CAMERA_DATA_DICT(cameraDictionary: string?): ()`
+- nativedb form: `void _LOAD_CAMERA_DATA_DICT(Hash cameraDictionary)`
+- C: `void G6_CAMERA__LOAD_CAMERA_DATA_DICT(const g6_host_api* api, uint32_t cameraDictionary)`
+- Python: `N.CAMERA._LOAD_CAMERA_DATA_DICT(cameraDictionary: int | str) -> None`
+- Luau: `N.CAMERA._LOAD_CAMERA_DATA_DICT(cameraDictionary: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143cd4c51), compared as a 32-bit key (0x14321c0c3); script-vm.param_types.observed.json (G-114)
 
 ### _REACTIVATE_PED_HEADSHOT_EXECUTE_SLOWCAM
 

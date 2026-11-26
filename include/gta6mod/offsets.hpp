@@ -122,6 +122,21 @@ static_assert(offsetof(types::CEcsColumn, f_base) == 0x0, "CEcsColumn::f_base");
 static_assert(offsetof(types::CEcsColumn, f_stride) == 0x8, "CEcsColumn::f_stride");
 }
 
+namespace cEcsComp_sel40 {
+inline constexpr std::uint32_t owner_entity = 0x8;  /* [medium] */
+inline constexpr std::uint32_t source_30 = 0x30;  /* [low] */
+inline constexpr std::uint32_t ptr_70 = 0x70;  /* [low] */
+inline constexpr std::uint32_t resolved_88 = 0x88;  /* [low] */
+inline constexpr std::uint32_t callback_id = 0x108;  /* [low] */
+inline constexpr std::uint32_t ptr_1b0 = 0x1b0;  /* [low] */
+static_assert(offsetof(types::CEcsComp_sel40, f_owner_entity) == 0x8, "CEcsComp_sel40::f_owner_entity");
+static_assert(offsetof(types::CEcsComp_sel40, f_source_30) == 0x30, "CEcsComp_sel40::f_source_30");
+static_assert(offsetof(types::CEcsComp_sel40, f_ptr_70) == 0x70, "CEcsComp_sel40::f_ptr_70");
+static_assert(offsetof(types::CEcsComp_sel40, f_resolved_88) == 0x88, "CEcsComp_sel40::f_resolved_88");
+static_assert(offsetof(types::CEcsComp_sel40, f_callback_id) == 0x108, "CEcsComp_sel40::f_callback_id");
+static_assert(offsetof(types::CEcsComp_sel40, f_ptr_1b0) == 0x1b0, "CEcsComp_sel40::f_ptr_1b0");
+}
+
 namespace cEcsComp_sel4d {
 inline constexpr std::uint32_t health_host = 0x20;  /* [high] */
 inline constexpr std::uint32_t damage_part_count = 0x14c;  /* [medium] */
@@ -139,6 +154,17 @@ static_assert(offsetof(types::CEcsComp_sel4f, f_proof_flags) == 0x10, "CEcsComp_
 namespace cEcsComp_sel57 {
 inline constexpr std::uint32_t health_data = 0x10;  /* [high] */
 static_assert(offsetof(types::CEcsComp_sel57, f_health_data) == 0x10, "CEcsComp_sel57::f_health_data");
+}
+
+namespace cEcsComp_sel5e {
+inline constexpr std::uint32_t owner_entity = 0x8;  /* [medium] */
+inline constexpr std::uint32_t group_count = 0x20;  /* [medium] */
+inline constexpr std::uint32_t element_count = 0x24;  /* [low] */
+inline constexpr std::uint32_t groups = 0x30;  /* [medium] */
+static_assert(offsetof(types::CEcsComp_sel5e, f_owner_entity) == 0x8, "CEcsComp_sel5e::f_owner_entity");
+static_assert(offsetof(types::CEcsComp_sel5e, f_group_count) == 0x20, "CEcsComp_sel5e::f_group_count");
+static_assert(offsetof(types::CEcsComp_sel5e, f_element_count) == 0x24, "CEcsComp_sel5e::f_element_count");
+static_assert(offsetof(types::CEcsComp_sel5e, f_groups) == 0x30, "CEcsComp_sel5e::f_groups");
 }
 
 namespace cEcsComp_sel61 {
@@ -186,6 +212,27 @@ static_assert(offsetof(types::CEntity, f_get_entity_heading) == 0x9c, "CEntity::
 static_assert(offsetof(types::CEntity, f_set_entity_disable_fire) == 0xb0, "CEntity::f_set_entity_disable_fire");
 static_assert(offsetof(types::CEntity, f_set_entity_lockon_point_offset) == 0xc0, "CEntity::f_set_entity_lockon_point_offset");
 static_assert(offsetof(types::CEntity, f_get_vehicle_model_number_of_seats) == 0xf8, "CEntity::f_get_vehicle_model_number_of_seats");
+}
+
+namespace cEventGiveTask_7d {
+inline constexpr std::uint32_t vtable = 0x0;  /* [high] */
+inline constexpr std::uint32_t event_type = 0x10;  /* [high] */
+inline constexpr std::uint32_t kind_a0 = 0xa0;  /* [low] */
+inline constexpr std::uint32_t task = 0xa8;  /* [high] */
+inline constexpr std::uint32_t flag_b0 = 0xb0;  /* [low] */
+inline constexpr std::uint32_t flag_b1 = 0xb1;  /* [low] */
+inline constexpr std::uint32_t flag_b2 = 0xb2;  /* [low] */
+inline constexpr std::uint32_t time_b4 = 0xb4;  /* [low] */
+inline constexpr std::uint32_t time_b8 = 0xb8;  /* [low] */
+static_assert(offsetof(types::CEventGiveTask_7d, f_vtable) == 0x0, "CEventGiveTask_7d::f_vtable");
+static_assert(offsetof(types::CEventGiveTask_7d, f_event_type) == 0x10, "CEventGiveTask_7d::f_event_type");
+static_assert(offsetof(types::CEventGiveTask_7d, f_kind_a0) == 0xa0, "CEventGiveTask_7d::f_kind_a0");
+static_assert(offsetof(types::CEventGiveTask_7d, f_task) == 0xa8, "CEventGiveTask_7d::f_task");
+static_assert(offsetof(types::CEventGiveTask_7d, f_flag_b0) == 0xb0, "CEventGiveTask_7d::f_flag_b0");
+static_assert(offsetof(types::CEventGiveTask_7d, f_flag_b1) == 0xb1, "CEventGiveTask_7d::f_flag_b1");
+static_assert(offsetof(types::CEventGiveTask_7d, f_flag_b2) == 0xb2, "CEventGiveTask_7d::f_flag_b2");
+static_assert(offsetof(types::CEventGiveTask_7d, f_time_b4) == 0xb4, "CEventGiveTask_7d::f_time_b4");
+static_assert(offsetof(types::CEventGiveTask_7d, f_time_b8) == 0xb8, "CEventGiveTask_7d::f_time_b8");
 }
 
 namespace cHealthData {
@@ -272,11 +319,19 @@ static_assert(offsetof(types::CPed, f_set_ped_can_be_lassoed) == 0xe8, "CPed::f_
 
 namespace cPedComp_col02 {
 inline constexpr std::uint32_t interaction_personality = 0x2f0;  /* [high] */
+inline constexpr std::uint32_t flags_5b1 = 0x5b1;  /* [low] */
+inline constexpr std::uint32_t forced_flag_mask = 0x5bc;  /* [low] */
 static_assert(offsetof(types::CPedComp_col02, f_interaction_personality) == 0x2f0, "CPedComp_col02::f_interaction_personality");
+static_assert(offsetof(types::CPedComp_col02, f_flags_5b1) == 0x5b1, "CPedComp_col02::f_flags_5b1");
+static_assert(offsetof(types::CPedComp_col02, f_forced_flag_mask) == 0x5bc, "CPedComp_col02::f_forced_flag_mask");
 }
 
 namespace cPedComp_col0f {
+inline constexpr std::uint32_t target_tag_1040 = 0x1040;  /* [low] */
+inline constexpr std::uint32_t target_tag_1058 = 0x1058;  /* [low] */
 inline constexpr std::uint32_t infinite_ammo_clip_bit11 = 0x15d4;  /* [medium] */
+static_assert(offsetof(types::CPedComp_col0f, f_target_tag_1040) == 0x1040, "CPedComp_col0f::f_target_tag_1040");
+static_assert(offsetof(types::CPedComp_col0f, f_target_tag_1058) == 0x1058, "CPedComp_col0f::f_target_tag_1058");
 static_assert(offsetof(types::CPedComp_col0f, f_infinite_ammo_clip_bit11) == 0x15d4, "CPedComp_col0f::f_infinite_ammo_clip_bit11");
 }
 
@@ -328,6 +383,15 @@ static_assert(offsetof(types::CPedComp_col20, f_action_mode_until_requested) == 
 namespace cPedComp_col26 {
 inline constexpr std::uint32_t weapon_data = 0x18;  /* [high] */
 static_assert(offsetof(types::CPedComp_col26, f_weapon_data) == 0x18, "CPedComp_col26::f_weapon_data");
+}
+
+namespace cPedComp_col2f {
+inline constexpr std::uint32_t state_1658 = 0x1658;  /* [low] */
+inline constexpr std::uint32_t flags_1660 = 0x1660;  /* [low] */
+inline constexpr std::uint32_t linked_handle_1664 = 0x1664;  /* [low] */
+static_assert(offsetof(types::CPedComp_col2f, f_state_1658) == 0x1658, "CPedComp_col2f::f_state_1658");
+static_assert(offsetof(types::CPedComp_col2f, f_flags_1660) == 0x1660, "CPedComp_col2f::f_flags_1660");
+static_assert(offsetof(types::CPedComp_col2f, f_linked_handle_1664) == 0x1664, "CPedComp_col2f::f_linked_handle_1664");
 }
 
 namespace cPedComp_col30 {
@@ -527,12 +591,18 @@ inline constexpr std::uint32_t vehicle_flags_220 = 0x220;  /* [medium] */
 inline constexpr std::uint32_t forward_speed_request = 0x44c;  /* [medium] */
 inline constexpr std::uint32_t top_speed_modifier = 0x460;  /* [medium] */
 inline constexpr std::uint32_t halt_request = 0x4a8;  /* [high] */
+inline constexpr std::uint32_t ctor_5d0 = 0x5d0;  /* [low] */
+inline constexpr std::uint32_t ctor_5d8 = 0x5d8;  /* [low] */
+inline constexpr std::uint32_t ctor_5dc = 0x5dc;  /* [low] */
 static_assert(offsetof(types::CVehicleComp_col01, f_vtable) == 0x0, "CVehicleComp_col01::f_vtable");
 static_assert(offsetof(types::CVehicleComp_col01, f_owner_entity) == 0x8, "CVehicleComp_col01::f_owner_entity");
 static_assert(offsetof(types::CVehicleComp_col01, f_vehicle_flags_220) == 0x220, "CVehicleComp_col01::f_vehicle_flags_220");
 static_assert(offsetof(types::CVehicleComp_col01, f_forward_speed_request) == 0x44c, "CVehicleComp_col01::f_forward_speed_request");
 static_assert(offsetof(types::CVehicleComp_col01, f_top_speed_modifier) == 0x460, "CVehicleComp_col01::f_top_speed_modifier");
 static_assert(offsetof(types::CVehicleComp_col01, f_halt_request) == 0x4a8, "CVehicleComp_col01::f_halt_request");
+static_assert(offsetof(types::CVehicleComp_col01, f_ctor_5d0) == 0x5d0, "CVehicleComp_col01::f_ctor_5d0");
+static_assert(offsetof(types::CVehicleComp_col01, f_ctor_5d8) == 0x5d8, "CVehicleComp_col01::f_ctor_5d8");
+static_assert(offsetof(types::CVehicleComp_col01, f_ctor_5dc) == 0x5dc, "CVehicleComp_col01::f_ctor_5dc");
 }
 
 namespace cVehicleComp_col0d {

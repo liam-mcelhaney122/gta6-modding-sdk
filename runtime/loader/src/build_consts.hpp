@@ -29,7 +29,11 @@ inline constexpr std::uint32_t kTlsActiveExecCtx = 0x1478;   // TLS block: activ
 inline constexpr std::uint32_t kTlsBlockSize = 0x1480;       // [observed] .tls template size (manifest/REA)
 inline constexpr std::uint32_t kCtxThread = 0x08;            // scrExecContext: scrThread*
 inline constexpr std::uint32_t kThreadNameHash = 0x2b8;      // scrThread: script name hash (u32)
-inline constexpr std::uint32_t kThreadState = 0x344;         // scrThread: 1 = running
+// scrThread state: ONE BYTE (G-093). Every access in the exe is byte-sized, e.g. reset 0x141c183e7
+// `mov al, byte [rsi+0x344]` + 0x141c183ef `lock cmpxchg byte [rsi+0x344], cl`; update 0x143de1042 `mov al, byte
+// [rsi+0x344]` and 0x143de109c / 0x143de11c4 `lock cmpxchg byte`. Bytes +0x345..+0x347 are not accessed by any of
+// the six functions that CAS the state (unidentified). Values: binder.hpp.
+inline constexpr std::uint32_t kThreadState = 0x344;         // scrThread: u8 state (2/3 = updated by the game)
 inline constexpr std::uint32_t kThreadId = 0x348;            // scrThread: thread id
 
 // Handler used to cross-check the native table against live code (manifest + anchor

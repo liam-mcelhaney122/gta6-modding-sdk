@@ -1,0 +1,79 @@
+# Mock UI transcript of sdk/luau/tests/scenarios/ui_widgets.luau, run-length encoded by mock time (g6mock::UiLog).
+# Written by: g6_luau_runner sdk\luau\lib sdk\luau\tests\scenarios\ui_widgets.luau 1500 --ui-click Heal@96 --ui-click "God mode@96" --ui-set Wanted=4@96 --ui-set Speed=2.5@96 --ui-set Name=Jason@96 --ui-set Weather=Fog@96 --ui-click Advanced@96 --ui-click Second@96 --ui-set Tint=0.1,0.2,0.3,0.4@96 --ui-menu 0@496 --ui-menu 1@800 --ui-log <this file>
+# Must equal: the Luau run (--expect-ui-log) and sdk/python/host/tests/mods/ui_widgets.py on the Python mock; in
+# g6_python.dll (retained UI) every frame but 96 ms, where the tree opened by the click shows its contents one frame later.
+@ 0-80 ms
+frame widgets
+  begin Widgets
+    button Heal
+    checkbox God mode = 0
+    slider_int Wanted = 0
+    slider_float Speed = 1.000
+    input_text Name = Lucia
+    combo Weather = 0 (Clear)
+    tree_node Advanced
+    tab_bar tabs
+      tab_item First (selected)
+      end_tab_item
+      tab_item Second
+    end_tab_bar
+    color_edit Tint = 1.000 1.000 1.000 1.000
+  end
+@ 96 ms
+frame widgets
+  begin Widgets
+    button Heal (clicked)
+    checkbox God mode = 1
+    slider_int Wanted = 4
+    slider_float Speed = 2.500
+    input_text Name = Jason
+    combo Weather = 2 (Fog)
+    tree_node Advanced (open)
+      text inside
+    tree_pop
+    tab_bar tabs
+      tab_item First (selected)
+      end_tab_item
+      tab_item Second (selected)
+      end_tab_item
+    end_tab_bar
+    color_edit Tint = 0.100 0.200 0.300 0.400
+  end
+@ 112-480 ms
+frame widgets
+  begin Widgets
+    button Heal
+    checkbox God mode = 1
+    slider_int Wanted = 4
+    slider_float Speed = 2.500
+    input_text Name = Jason
+    combo Weather = 2 (Fog)
+    tree_node Advanced (open)
+      text inside
+    tree_pop
+    tab_bar tabs
+      tab_item First
+      tab_item Second (selected)
+      end_tab_item
+    end_tab_bar
+    color_edit Tint = 0.100 0.200 0.300 0.400
+  end
+@ 800-1488 ms
+frame widgets
+  begin Widgets
+    button Heal
+    checkbox God mode = 1
+    slider_int Wanted = 4
+    slider_float Speed = 2.500
+    input_text Name = Jason
+    combo Weather = 2 (Fog)
+    tree_node Advanced (open)
+      text inside
+    tree_pop
+    tab_bar tabs
+      tab_item First
+      tab_item Second (selected)
+      end_tab_item
+    end_tab_bar
+    color_edit Tint = 0.100 0.200 0.300 0.400
+  end

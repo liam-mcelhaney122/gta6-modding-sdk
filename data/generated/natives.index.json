@@ -464,14 +464,14 @@
     },
     {
      "name": "archetype",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>n"
+   "sig": "eu>n"
   },
   {
    "hash": "0xA4C8E23E29040DE0",
@@ -536,14 +536,14 @@
    "params": [
     {
      "name": "mode",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0x153973AB99FE8980",
@@ -560,8 +560,8 @@
     },
     {
      "name": "groupName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p2",
@@ -572,7 +572,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "esf>n"
+   "sig": "euf>n"
   },
   {
    "hash": "0x95D9F4BC443956E7",
@@ -584,8 +584,8 @@
    "params": [
     {
      "name": "convoRoot",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "ped",
@@ -594,14 +594,14 @@
     },
     {
      "name": "characterName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ses>n"
+   "sig": "ueu>n"
   },
   {
    "hash": "0x845FFC3A4FEEFA3E",
@@ -652,14 +652,14 @@
    "params": [
     {
      "name": "convoRoot",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0xDDC635D5B3262C56",
@@ -671,14 +671,14 @@
    "params": [
     {
      "name": "mode",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0xA9A41C1E940FB0E8",
@@ -751,14 +751,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>i"
+   "sig": "u>i"
   },
   {
    "hash": "0xE7A0D23DC414507B",
@@ -963,8 +963,8 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "ped",
@@ -980,7 +980,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "sei>b"
+   "sig": "uei>b"
   },
   {
    "hash": "0xA151A7394A214E65",
@@ -1005,14 +1005,14 @@
    "params": [
     {
      "name": "convoRoot",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0x1ECC76792F661CF5",
@@ -1024,14 +1024,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0xCC9AA18DCC7084F4",
@@ -1068,8 +1068,8 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p1",
@@ -1095,7 +1095,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sbbbb>n"
+   "sig": "ubbbb>n"
   },
   {
    "hash": "0xED640017ED337E45",
@@ -1223,14 +1223,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0xBDA07E5950085E46",
@@ -1242,8 +1242,8 @@
    "params": [
     {
      "name": "zoneName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "isEnabled",
@@ -1259,7 +1259,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sbb>n"
+   "sig": "ubb>n"
   },
   {
    "hash": "0x892B6AB8F33606F5",
@@ -1450,14 +1450,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0xB8BEC0CA6F0EDB0F",
@@ -1541,8 +1541,8 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p1",
@@ -1558,7 +1558,7 @@
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "sbb>i"
+   "sig": "ubb>i"
   },
   {
    "hash": "0xB165AB7C248B2DC1",
@@ -1589,14 +1589,14 @@
    "params": [
     {
      "name": "convoRoot",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0x0D7FD6A55FD63AEF",
@@ -1637,8 +1637,8 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "currentScriptedConvoLine",
@@ -1649,7 +1649,7 @@
    "return_type": "Ped",
    "typed": true,
    "vector_layout": null,
-   "sig": "si>e"
+   "sig": "ui>e"
   },
   {
    "hash": "0x254B0241E964B450",
@@ -1661,8 +1661,8 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "currentScriptedConvoLine",
@@ -1673,7 +1673,7 @@
    "return_type": "Ped",
    "typed": true,
    "vector_layout": null,
-   "sig": "si>e"
+   "sig": "ui>e"
   },
   {
    "hash": "0x295859EB18F48D82",
@@ -1685,14 +1685,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>i"
+   "sig": "u>i"
   },
   {
    "hash": "0x2B101AD9F651243A",
@@ -1752,8 +1752,8 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p1",
@@ -1764,7 +1764,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sf>n"
+   "sig": "uf>n"
   },
   {
    "hash": "0x40CA665AB9D8D505",
@@ -1776,8 +1776,8 @@
    "params": [
     {
      "name": "convoRoot",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "singleLineIndex",
@@ -1788,7 +1788,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "si>n"
+   "sig": "ui>n"
   },
   {
    "hash": "0x4A98E228A936DBCC",
@@ -1876,8 +1876,8 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "currentScriptedConvoLine",
@@ -1888,7 +1888,7 @@
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "si>i"
+   "sig": "ui>i"
   },
   {
    "hash": "0xD0730C1FA40348D9",
@@ -1900,14 +1900,14 @@
    "params": [
     {
      "name": "convoRoot",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0xD47D47EFBF103FB8",
@@ -2019,14 +2019,14 @@
    "params": [
     {
      "name": "convoRoot",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0x72E4D1C4639BC465",
@@ -2124,14 +2124,14 @@
    "params": [
     {
      "name": "convoRoot",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0xF01C570E0A0A1E67",
@@ -2143,14 +2143,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0xB18FEC133C7C6C69",
@@ -2186,8 +2186,8 @@
     },
     {
      "name": "whistleConfig",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "value",
@@ -2198,7 +2198,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "esf>n"
+   "sig": "euf>n"
   },
   {
    "hash": "0x36559148B78853B3",
@@ -3460,8 +3460,8 @@
     },
     {
      "name": "type",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "amplitude",
@@ -3472,7 +3472,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "isf>n"
+   "sig": "iuf>n"
   },
   {
    "hash": "0xD9B31B4650520529",
@@ -3484,8 +3484,8 @@
    "params": [
     {
      "name": "shakeName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "intensity",
@@ -3496,7 +3496,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sf>n"
+   "sig": "uf>n"
   },
   {
    "hash": "0xCA1B30A3357C71F1",
@@ -3655,17 +3655,11 @@
    "status": "observed",
    "source": "",
    "handler_rva": 63805232,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
+   "params": [],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "i>n"
+   "sig": ">n"
   },
   {
    "hash": "0xC285FD21294A1C49",
@@ -3677,14 +3671,14 @@
    "params": [
     {
      "name": "cameraDictionary",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0xFEFDDC6E8FDF8A75",
@@ -3696,8 +3690,8 @@
    "params": [
     {
      "name": "shakeName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "intensity",
@@ -3708,7 +3702,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sf>n"
+   "sig": "uf>n"
   },
   {
    "hash": "0xDD0B7C5AE58F721D",
@@ -3720,14 +3714,14 @@
    "params": [
     {
      "name": "cameraDictionary",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0x6A4D224FC7643941",
@@ -3739,14 +3733,14 @@
    "params": [
     {
      "name": "cameraDictionary",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0x986F7A51EE3E1F92",
@@ -4377,44 +4371,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a3",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a4",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a5",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sqqqqq>n"
+   "sig": "S>n"
   },
   {
    "hash": "0x23CCAB8F40B9CBEE",
@@ -4450,44 +4414,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a3",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a4",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a5",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "sqqqqq>b"
+   "sig": "S>b"
   },
   {
    "hash": "0x4E42CA5BCD45444A",
@@ -4550,14 +4484,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
+     "type": "int",
+     "code": "i"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "i>n"
   },
   {
    "hash": "0xD8E3D22AA4F0E0A5",
@@ -4569,44 +4503,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "const char*",
-     "code": "s"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a3",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a4",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a5",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "sqqqqq>b"
+   "sig": "S>b"
   },
   {
    "hash": "0xE72E234B30DA7B7A",
@@ -4689,6 +4593,35 @@
    "sig": "iub>i"
   },
   {
+   "hash": "0xD942E6168EB81167",
+   "namespace": "DATABINDING",
+   "name": "_DATABINDING_ADD_DATA_BOOL_FROM_PATH",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 72072624,
+   "params": [
+    {
+     "name": "path",
+     "type": "Any",
+     "code": "i"
+    },
+    {
+     "name": "name",
+     "type": "Hash",
+     "code": "u"
+    },
+    {
+     "name": "value",
+     "type": "BOOL",
+     "code": "b"
+    }
+   ],
+   "return_type": "Any",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "iub>i"
+  },
+  {
    "hash": "0x98BB14345BB68257",
    "namespace": "DATABINDING",
    "name": "_DATABINDING_ADD_DATA_CONTAINER_BY_HASH",
@@ -4735,6 +4668,35 @@
    "typed": true,
    "vector_layout": null,
    "sig": "su>i"
+  },
+  {
+   "hash": "0xEEE019373C7A9589",
+   "namespace": "DATABINDING",
+   "name": "_DATABINDING_ADD_DATA_FLOAT_BY_HASH",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 72072912,
+   "params": [
+    {
+     "name": "parent",
+     "type": "Any",
+     "code": "i"
+    },
+    {
+     "name": "name",
+     "type": "Hash",
+     "code": "u"
+    },
+    {
+     "name": "value",
+     "type": "float",
+     "code": "f"
+    }
+   ],
+   "return_type": "Any",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "iuf>i"
   },
   {
    "hash": "0x267F9527F4350ADE",
@@ -4990,14 +4952,14 @@
     },
     {
      "name": "propertyName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>b"
+   "sig": "eu>b"
   },
   {
    "hash": "0xDEF3F1B071ABB197",
@@ -5014,14 +4976,14 @@
     },
     {
      "name": "propertyName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>b"
+   "sig": "eu>b"
   },
   {
    "hash": "0x44DB62727762FD9B",
@@ -5038,14 +5000,14 @@
     },
     {
      "name": "propertyName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>i"
+   "sig": "eu>i"
   },
   {
    "hash": "0x72355278C069F272",
@@ -5057,8 +5019,8 @@
    "params": [
     {
      "name": "propertyName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "type",
@@ -5069,7 +5031,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "si>b"
+   "sig": "ui>b"
   },
   {
    "hash": "0x0B253D644E3C36B3",
@@ -5081,8 +5043,8 @@
    "params": [
     {
      "name": "propertyName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "type",
@@ -5093,7 +5055,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "si>n"
+   "sig": "ui>n"
   },
   {
    "hash": "0x2BA7F5877A088A1D",
@@ -5110,14 +5072,14 @@
     },
     {
      "name": "propertyName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>b"
+   "sig": "eu>b"
   },
   {
    "hash": "0xFE26E4609B1C3772",
@@ -5134,8 +5096,8 @@
     },
     {
      "name": "propertyName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "value",
@@ -5146,7 +5108,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "esb>b"
+   "sig": "eub>b"
   },
   {
    "hash": "0xE88F4D7F52A6090F",
@@ -5163,8 +5125,8 @@
     },
     {
      "name": "propertyName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "value",
@@ -5175,7 +5137,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "esi>b"
+   "sig": "eui>b"
   },
   {
    "hash": "0x0671C1A3FF7AFDFC",
@@ -5192,8 +5154,8 @@
     },
     {
      "name": "propertyName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "value",
@@ -5204,7 +5166,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "ess>b"
+   "sig": "eus>b"
   },
   {
    "hash": "0x4587374F88B7F6C2",
@@ -5216,8 +5178,8 @@
    "params": [
     {
      "name": "propertyName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "type",
@@ -5233,7 +5195,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sib>n"
+   "sig": "uib>n"
   },
   {
    "hash": "0x71D4BF5890659B0C",
@@ -5796,17 +5758,12 @@
      "name": "entity",
      "type": "Entity",
      "code": "e"
-    },
-    {
-     "name": "p1",
-     "type": "BOOL",
-     "code": "b"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "eb>b"
+   "sig": "e>b"
   },
   {
    "hash": "0x7239B21A38F536BA",
@@ -6004,14 +5961,14 @@
     },
     {
      "name": "boneName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>i"
+   "sig": "eu>i"
   },
   {
    "hash": "0xAA2FADD30F45A9DA",
@@ -6527,44 +6484,14 @@
     },
     {
      "name": "p5",
-     "type": "const char*",
-     "code": "s"
-    },
-    {
-     "name": "a6",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a7",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a8",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a9",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a10",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiusqqqqq>i"
+   "sig": "iiiiuS>i"
   },
   {
    "hash": "0x497C6B1A2C9AE69C",
@@ -7348,13 +7275,13 @@
     },
     {
      "name": "animDict",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "animName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "animType",
@@ -7365,7 +7292,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "essi>b"
+   "sig": "euui>b"
   },
   {
    "hash": "0x86468ADFA0F6B861",
@@ -8286,17 +8213,12 @@
      "name": "p1",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "p2",
-     "type": "float",
-     "code": "f"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ebf>n"
+   "sig": "eb>n"
   },
   {
    "hash": "0x9B9EE31AED48072E",
@@ -8693,13 +8615,13 @@
     },
     {
      "name": "animation",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "animGroup",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p3",
@@ -8710,7 +8632,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "essf>b"
+   "sig": "euuf>b"
   },
   {
    "hash": "0x3546FAB293FF2981",
@@ -9322,19 +9244,19 @@
     },
     {
      "name": "animDict",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "animName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "float",
    "typed": true,
    "vector_layout": null,
-   "sig": "ess>f"
+   "sig": "euu>f"
   },
   {
    "hash": "0x75DF9E73F2F005FD",
@@ -10851,8 +10773,8 @@
     },
     {
      "name": "eventName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p2",
@@ -10863,7 +10785,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "esi>n"
+   "sig": "eui>n"
   },
   {
    "hash": "0x7D6F58F69DA92530",
@@ -11264,24 +11186,14 @@
      ]
     },
     {
-     "name": "p3",
-     "type": "int",
-     "code": "i"
-    },
-    {
      "name": "p4",
      "type": "float",
      "code": "f"
     },
     {
-     "name": "p5",
-     "type": "BOOL",
-     "code": "b"
-    },
-    {
      "name": "soundsetName",
-     "type": "const char*",
-     "code": "s"
+     "type": "ScriptString",
+     "code": "S"
     },
     {
      "name": "p7",
@@ -11292,18 +11204,12 @@
      "name": "p8",
      "type": "int",
      "code": "i"
-    },
-    {
-     "name": "a8",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "FireId",
    "typed": true,
    "vector_layout": "packed",
-   "sig": "wifbsfiq>i"
+   "sig": "wfSfi>i"
   },
   {
    "hash": "0x8390751DC40C1E98",
@@ -12374,14 +12280,14 @@
    "params": [
     {
      "name": "name",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0x57639FD876B68A91",
@@ -12499,8 +12405,8 @@
     },
     {
      "name": "propertyName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "amount",
@@ -12516,7 +12422,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "isfb>n"
+   "sig": "iufb>n"
   },
   {
    "hash": "0x9B04D471DA0AD7AA",
@@ -12663,19 +12569,19 @@
    "params": [
     {
      "name": "oldAsset",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "newAsset",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ss>n"
+   "sig": "uu>n"
   },
   {
    "hash": "0xCFCC78391C8B3814",
@@ -12706,14 +12612,14 @@
    "params": [
     {
      "name": "modifierName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0xFDB74C9CC54C3F37",
@@ -12797,8 +12703,8 @@
    "params": [
     {
      "name": "modifierName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "transitionBlend",
@@ -12809,7 +12715,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sf>n"
+   "sig": "uf>n"
   },
   {
    "hash": "0x46F246D6504F0031",
@@ -13242,14 +13148,14 @@
    "params": [
     {
      "name": "effectName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "Hash",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>u"
+   "sig": "u>u"
   },
   {
    "hash": "0xEEF83A759AE06A27",
@@ -13318,8 +13224,8 @@
    "params": [
     {
      "name": "effectName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p1",
@@ -13335,7 +13241,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sif>n"
+   "sig": "uif>n"
   },
   {
    "hash": "0xCAB4DD2D5B2B7246",
@@ -13347,8 +13253,8 @@
    "params": [
     {
      "name": "effectName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "strength",
@@ -13359,7 +13265,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sf>n"
+   "sig": "uf>n"
   },
   {
    "hash": "0xEDA5CBECF56E1386",
@@ -13441,6 +13347,95 @@
    "typed": true,
    "vector_layout": null,
    "sig": "b>n"
+  },
+  {
+   "hash": "0x5D318F9A72B2464F",
+   "namespace": "GRAPHICS",
+   "name": "_DRAW_SPRITE_WITH_UV",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 62946624,
+   "params": [
+    {
+     "name": "textureDict",
+     "type": "uint64_t",
+     "code": "q"
+    },
+    {
+     "name": "textureName",
+     "type": "uint64_t",
+     "code": "q"
+    },
+    {
+     "name": "x",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "y",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "width",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "height",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "heading",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "red",
+     "type": "int",
+     "code": "i"
+    },
+    {
+     "name": "green",
+     "type": "int",
+     "code": "i"
+    },
+    {
+     "name": "blue",
+     "type": "int",
+     "code": "i"
+    },
+    {
+     "name": "alpha",
+     "type": "int",
+     "code": "i"
+    },
+    {
+     "name": "u1",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "v1",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "u2",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "v2",
+     "type": "float",
+     "code": "f"
+    }
+   ],
+   "return_type": "void",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "qqfffffiiiiffff>n"
   },
   {
    "hash": "0x78C56B8A7B1D000C",
@@ -13688,44 +13683,14 @@
    "params": [
     {
      "name": "text",
-     "type": "const char*",
-     "code": "s"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a3",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a4",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a5",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sqqqqq>n"
+   "sig": "S>n"
   },
   {
    "hash": "0xB981DD2DFAF9B1C9",
@@ -14706,8 +14671,8 @@
     },
     {
      "name": "entitySetName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p2",
@@ -14724,7 +14689,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "isiq>n"
+   "sig": "iuiq>n"
   },
   {
    "hash": "0xA1762D5BBFCA13A8",
@@ -14760,8 +14725,8 @@
     },
     {
      "name": "entitySetName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p2",
@@ -14772,7 +14737,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "isb>n"
+   "sig": "iub>n"
   },
   {
    "hash": "0xBC29A9894C976945",
@@ -15018,14 +14983,14 @@
     },
     {
      "name": "entitySetName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "is>b"
+   "sig": "iu>b"
   },
   {
    "hash": "0x941560D2D45DBFC8",
@@ -15142,14 +15107,14 @@
     },
     {
      "name": "entitySetName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "is>b"
+   "sig": "iu>b"
   },
   {
    "hash": "0x033EE4B89F3AC545",
@@ -17202,21 +17167,15 @@
    "handler_rva": 65547216,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "iq>b"
+   "sig": "e>b"
   },
   {
    "hash": "0xECE7FD47DEF990DC",
@@ -17246,21 +17205,15 @@
    "handler_rva": 65570336,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iq>i"
+   "sig": "e>i"
   },
   {
    "hash": "0xAD401C63158ACBAA",
@@ -17271,15 +17224,9 @@
    "handler_rva": 65584384,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "a2",
@@ -17297,7 +17244,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "iqqq>b"
+   "sig": "eqq>b"
   },
   {
    "hash": "0xC08E804C91F47C80",
@@ -17308,26 +17255,20 @@
    "handler_rva": 65595152,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "crimeType",
      "type": "Hash",
      "code": "u"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iuq>i"
+   "sig": "eu>i"
   },
   {
    "hash": "0x785177E4D57D7389",
@@ -17338,9 +17279,9 @@
    "handler_rva": 65611488,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "crimeType",
@@ -17361,18 +17302,12 @@
      "name": "p4",
      "type": "int",
      "code": "i"
-    },
-    {
-     "name": "a5",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iuiiiq>n"
+   "sig": "euiii>n"
   },
   {
    "hash": "0x018F30D762E62DF8",
@@ -17442,14 +17377,14 @@
    "params": [
     {
      "name": "name",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0x0EAF918F751F27BA",
@@ -17479,15 +17414,9 @@
    "handler_rva": 65572016,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "a2",
@@ -17505,7 +17434,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "iqqq>b"
+   "sig": "eqq>b"
   },
   {
    "hash": "0x21213B833EF4DAE7",
@@ -17545,21 +17474,15 @@
    "handler_rva": 65573008,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "iq>b"
+   "sig": "e>b"
   },
   {
    "hash": "0x40851BCC33ACD9AB",
@@ -17619,21 +17542,15 @@
    "handler_rva": 65551392,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iq>n"
+   "sig": "e>n"
   },
   {
    "hash": "0x6ABC50979655BEE7",
@@ -17644,9 +17561,9 @@
    "handler_rva": 65555968,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "crimeType",
@@ -17657,18 +17574,12 @@
      "name": "p2",
      "type": "Any",
      "code": "i"
-    },
-    {
-     "name": "a3",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iIiq>n"
+   "sig": "eIi>n"
   },
   {
    "hash": "0x7EF2A2FE38D74456",
@@ -17796,26 +17707,20 @@
    "handler_rva": 65557136,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "itemSet",
      "type": "ItemSet",
      "code": "i"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiq>n"
+   "sig": "ei>n"
   },
   {
    "hash": "0x9D5C9A5A3321B128",
@@ -17826,21 +17731,15 @@
    "handler_rva": 65546992,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "iq>b"
+   "sig": "e>b"
   },
   {
    "hash": "0x9EF07CFBB19A9733",
@@ -17938,26 +17837,20 @@
    "handler_rva": 65601984,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "p1",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ibq>n"
+   "sig": "eb>n"
   },
   {
    "hash": "0xFFEBE5AA96BC2E4E",
@@ -18056,8 +17949,8 @@
    "params": [
     {
      "name": "guardZoneName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "entity",
@@ -18083,7 +17976,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": "unconfirmed",
-   "sig": "sefff>b"
+   "sig": "uefff>b"
   },
   {
    "hash": "0x75CBF20BA47E4F89",
@@ -18227,15 +18120,9 @@
    "handler_rva": 65556384,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "a2",
@@ -18253,7 +18140,7 @@
    "return_type": "Hash",
    "typed": true,
    "vector_layout": null,
-   "sig": "iqqq>u"
+   "sig": "eqq>u"
   },
   {
    "hash": "0x717DA2281DF90855",
@@ -18301,15 +18188,9 @@
    "handler_rva": 65572160,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "a2",
@@ -18327,7 +18208,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "iqqq>b"
+   "sig": "eqq>b"
   },
   {
    "hash": "0xD743C4293F47AFAD",
@@ -21499,8 +21380,8 @@
    "params": [
     {
      "name": "memberId",
-     "type": "const char*",
-     "code": "s"
+     "type": "ScriptString",
+     "code": "S"
     },
     {
      "name": "gamerHandle",
@@ -21511,30 +21392,12 @@
      "name": "gamerHandleSize",
      "type": "int",
      "code": "i"
-    },
-    {
-     "name": "a3",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a4",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a5",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sIiqqq>n"
+   "sig": "SIi>n"
   },
   {
    "hash": "0x388EB2B86C73B6B3",
@@ -21570,8 +21433,8 @@
    "params": [
     {
      "name": "userId",
-     "type": "const char*",
-     "code": "s"
+     "type": "ScriptString",
+     "code": "S"
     },
     {
      "name": "gamerHandle",
@@ -21582,30 +21445,12 @@
      "name": "gamerHandleSize",
      "type": "int",
      "code": "i"
-    },
-    {
-     "name": "a3",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a4",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a5",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sIiqqq>n"
+   "sig": "SIi>n"
   },
   {
    "hash": "0x58575AC3CF2CA8EC",
@@ -25508,17 +25353,12 @@
       "y2",
       "z2"
      ]
-    },
-    {
-     "name": "p6",
-     "type": "int",
-     "code": "i"
     }
    ],
    "return_type": "Any",
    "typed": true,
    "vector_layout": "packed",
-   "sig": "wwi>i"
+   "sig": "ww>i"
   },
   {
    "hash": "0x4907D0E4FB26EE65",
@@ -25557,6 +25397,30 @@
    "typed": true,
    "vector_layout": null,
    "sig": "i>b"
+  },
+  {
+   "hash": "0x387E306529592436",
+   "namespace": "PED",
+   "name": "ADD_RELATIONSHIP_GROUP",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 79455904,
+   "params": [
+    {
+     "name": "name",
+     "type": "Hash",
+     "code": "u"
+    },
+    {
+     "name": "groupHash",
+     "type": "Hash*",
+     "code": "I"
+    }
+   ],
+   "return_type": "BOOL",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "uI>b"
   },
   {
    "hash": "0x697157CED63F18D4",
@@ -25618,8 +25482,8 @@
     },
     {
      "name": "damagePack",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "damage",
@@ -25635,7 +25499,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "esff>n"
+   "sig": "euff>n"
   },
   {
    "hash": "0xEAD42DE3610D0721",
@@ -25678,17 +25542,12 @@
      "name": "targetPed",
      "type": "Ped",
      "code": "e"
-    },
-    {
-     "name": "p2",
-     "type": "BOOL",
-     "code": "b"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "eeb>i"
+   "sig": "ee>i"
   },
   {
    "hash": "0x726256CC1EEB182F",
@@ -25772,14 +25631,14 @@
     },
     {
      "name": "p2",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "eis>n"
+   "sig": "eiu>n"
   },
   {
    "hash": "0x6585D955A68452A5",
@@ -26459,14 +26318,14 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>b"
+   "sig": "eu>b"
   },
   {
    "hash": "0xA29FD00D45311EB7",
@@ -26483,14 +26342,14 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "float",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>f"
+   "sig": "eu>f"
   },
   {
    "hash": "0xB71B91B398F8F067",
@@ -26507,14 +26366,14 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>i"
+   "sig": "eu>i"
   },
   {
    "hash": "0x17C07FC640E86B4E",
@@ -28423,14 +28282,14 @@
     },
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "ei>b"
+   "sig": "eh>b"
   },
   {
    "hash": "0x117C70D1F5730B5E",
@@ -28524,19 +28383,19 @@
     },
     {
      "name": "animName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "animDict",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ess>n"
+   "sig": "euu>n"
   },
   {
    "hash": "0x9222F300BF8354FE",
@@ -30715,17 +30574,12 @@
      "name": "p2",
      "type": "int",
      "code": "i"
-    },
-    {
-     "name": "action",
-     "type": "const char*",
-     "code": "s"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ebis>n"
+   "sig": "ebi>n"
   },
   {
    "hash": "0xB5485E4907B53019",
@@ -32548,17 +32402,12 @@
      "name": "listener",
      "type": "Ped",
      "code": "e"
-    },
-    {
-     "name": "includeNoiseBoost",
-     "type": "BOOL",
-     "code": "b"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "eeb>b"
+   "sig": "ee>b"
   },
   {
    "hash": "0xC3D4B754C0E86B9E",
@@ -32956,14 +32805,14 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>b"
+   "sig": "eu>b"
   },
   {
    "hash": "0x56E58D4D118FB45E",
@@ -32980,14 +32829,14 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "float",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>f"
+   "sig": "eu>f"
   },
   {
    "hash": "0xBF5E791BBBF90A3C",
@@ -33004,14 +32853,14 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "Hash",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>u"
+   "sig": "eu>u"
   },
   {
    "hash": "0xEC6B59BE445FEC51",
@@ -33310,8 +33159,8 @@
     },
     {
      "name": "propName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "detachProp",
@@ -33322,7 +33171,7 @@
    "return_type": "Entity",
    "typed": true,
    "vector_layout": null,
-   "sig": "esb>e"
+   "sig": "eub>e"
   },
   {
    "hash": "0x2BA9D7BF629F920C",
@@ -33458,14 +33307,14 @@
     },
     {
      "name": "name",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>b"
+   "sig": "eu>b"
   },
   {
    "hash": "0xB7DBB2986B87E230",
@@ -33833,8 +33682,8 @@
     },
     {
      "name": "presetName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "targetPed",
@@ -33855,7 +33704,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "eseii>n"
+   "sig": "eueii>n"
   },
   {
    "hash": "0x2B4CE170DE09F346",
@@ -34003,14 +33852,14 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>n"
+   "sig": "eu>n"
   },
   {
    "hash": "0x411189E51B8020BA",
@@ -34027,14 +33876,14 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>n"
+   "sig": "eu>n"
   },
   {
    "hash": "0x0E17378642156790",
@@ -34051,14 +33900,14 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>n"
+   "sig": "eu>n"
   },
   {
    "hash": "0x81B75428A7813E67",
@@ -34075,14 +33924,14 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>n"
+   "sig": "eu>n"
   },
   {
    "hash": "0xFC3BAB1801A8255A",
@@ -34099,14 +33948,14 @@
     },
     {
      "name": "name",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>n"
+   "sig": "eu>n"
   },
   {
    "hash": "0x5337B721C51883A9",
@@ -34224,14 +34073,14 @@
     },
     {
      "name": "name",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>n"
+   "sig": "eu>n"
   },
   {
    "hash": "0xED9582B3DA8F02B4",
@@ -34528,8 +34377,8 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "value",
@@ -34545,7 +34394,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "esbi>n"
+   "sig": "eubi>n"
   },
   {
    "hash": "0x437C08DB4FEBE2BD",
@@ -34562,8 +34411,8 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "value",
@@ -34579,7 +34428,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "esfi>n"
+   "sig": "eufi>n"
   },
   {
    "hash": "0xA762C9D6CF165E0D",
@@ -34596,8 +34445,8 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "value",
@@ -34613,7 +34462,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "essi>n"
+   "sig": "eusi>n"
   },
   {
    "hash": "0x5F53010C4C3F6BAF",
@@ -34630,8 +34479,8 @@
     },
     {
      "name": "variableName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "value",
@@ -34647,7 +34496,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "esii>n"
+   "sig": "euii>n"
   },
   {
    "hash": "0x8BA83CC4288CD56D",
@@ -34896,14 +34745,14 @@
     },
     {
      "name": "locoMotionType",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>n"
+   "sig": "eu>n"
   },
   {
    "hash": "0xBAD2A311667A50D7",
@@ -36050,17 +35899,12 @@
      "name": "persChar",
      "type": "PersChar",
      "code": "e"
-    },
-    {
-     "name": "p1",
-     "type": "BOOL",
-     "code": "b"
     }
    ],
    "return_type": "Entity",
    "typed": true,
    "vector_layout": null,
-   "sig": "eb>e"
+   "sig": "e>e"
   },
   {
    "hash": "0x32A1E3B83D501096",
@@ -36435,21 +36279,15 @@
    "handler_rva": 65549312,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iq>n"
+   "sig": "e>n"
   },
   {
    "hash": "0x2970929FD5F9FC89",
@@ -36648,21 +36486,15 @@
    "handler_rva": 65570208,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iq>i"
+   "sig": "e>i"
   },
   {
    "hash": "0x1B1A3B358F7D8F07",
@@ -36692,26 +36524,20 @@
    "handler_rva": 65583872,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "atArresting",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "ibq>b"
+   "sig": "eb>b"
   },
   {
    "hash": "0x2E9C3FCB6798F397",
@@ -36864,26 +36690,20 @@
    "handler_rva": 65587296,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "wantedLevel",
      "type": "int",
      "code": "i"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiq>b"
+   "sig": "ei>b"
   },
   {
    "hash": "0x4F8644AF03D0E0D6",
@@ -36933,15 +36753,9 @@
    "handler_rva": 65598400,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "a2",
@@ -36953,7 +36767,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iqq>n"
+   "sig": "eq>n"
   },
   {
    "hash": "0x12917931C31F1750",
@@ -36964,21 +36778,15 @@
    "handler_rva": 65599744,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iq>n"
+   "sig": "e>n"
   },
   {
    "hash": "0x61A2EECAB274829B",
@@ -37008,21 +36816,15 @@
    "handler_rva": 65600464,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iq>n"
+   "sig": "e>n"
   },
   {
    "hash": "0x5DA6500FE849DA16",
@@ -37057,21 +36859,15 @@
    "handler_rva": 65601152,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iq>n"
+   "sig": "e>n"
   },
   {
    "hash": "0xD5C198A62F1DEB0A",
@@ -37082,21 +36878,15 @@
    "handler_rva": 65601600,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iq>n"
+   "sig": "e>n"
   },
   {
    "hash": "0x34630A768925B852",
@@ -37107,26 +36897,20 @@
    "handler_rva": 65602704,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "toggle",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ibq>n"
+   "sig": "eb>n"
   },
   {
    "hash": "0x28A4BD2CEE236E19",
@@ -37293,6 +37077,30 @@
    "typed": true,
    "vector_layout": null,
    "sig": "iq>n"
+  },
+  {
+   "hash": "0xC827D3A0773681A1",
+   "namespace": "PLAYER",
+   "name": "SET_PLAYER_WANTED_LEVEL",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 65609136,
+   "params": [
+    {
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
+    },
+    {
+     "name": "wantedLevel",
+     "type": "int",
+     "code": "i"
+    }
+   ],
+   "return_type": "void",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "ei>n"
   },
   {
    "hash": "0xFA0C063C422C4355",
@@ -37675,14 +37483,14 @@
     },
     {
      "name": "name",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "is>n"
+   "sig": "iu>n"
   },
   {
    "hash": "0x8E84119A23C16623",
@@ -37825,15 +37633,9 @@
    "handler_rva": 72366432,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "a2",
@@ -37845,7 +37647,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "iqq>b"
+   "sig": "eq>b"
   },
   {
    "hash": "0x28A13BF6B05C3D83",
@@ -37856,20 +37658,14 @@
    "handler_rva": 72367936,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "toggle",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     },
     {
      "name": "a3",
@@ -37881,7 +37677,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ibqq>n"
+   "sig": "ebq>n"
   },
   {
    "hash": "0x0751D461F06E41CE",
@@ -37989,26 +37785,20 @@
    "handler_rva": 65607776,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "disable",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ibq>n"
+   "sig": "eb>n"
   },
   {
    "hash": "0xEA6DE0CD15AECBE2",
@@ -38062,20 +37852,14 @@
    "handler_rva": 72368784,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "auraHash",
      "type": "Hash",
      "code": "u"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     },
     {
      "name": "a3",
@@ -38087,7 +37871,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iuqq>n"
+   "sig": "euq>n"
   },
   {
    "hash": "0x93F499CAE53FCD05",
@@ -38216,20 +38000,14 @@
    "handler_rva": 72387392,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "type",
      "type": "int",
      "code": "i"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     },
     {
      "name": "a3",
@@ -38241,7 +38019,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiqq>n"
+   "sig": "eiq>n"
   },
   {
    "hash": "0xBBA140062B15A8AC",
@@ -38252,15 +38030,9 @@
    "handler_rva": 72389072,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
-    },
-    {
-     "name": "a1",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "a2",
@@ -38272,7 +38044,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iqq>n"
+   "sig": "eq>n"
   },
   {
    "hash": "0xAE637BB8EF017875",
@@ -38283,20 +38055,14 @@
    "handler_rva": 72389200,
    "params": [
     {
-     "name": "player",
-     "type": "Player",
-     "code": "i"
+     "name": "ped",
+     "type": "Ped",
+     "code": "e"
     },
     {
      "name": "disabled",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     },
     {
      "name": "a3",
@@ -38308,7 +38074,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ibqq>n"
+   "sig": "ebq>n"
   },
   {
    "hash": "0xC6DCC2A3A8825C85",
@@ -39129,39 +38895,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0x00F3AEC4B2D736E9",
@@ -41847,17 +41588,12 @@
      "name": "p0",
      "type": "Any",
      "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ii>n"
+   "sig": "i>n"
   },
   {
    "hash": "0x06AC5DB43B613663",
@@ -43918,39 +43654,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0x09E37FD5B4E663A7",
@@ -44929,14 +44640,14 @@
     },
     {
      "name": "p1",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptText",
+     "code": "T"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ii>n"
+   "sig": "iT>n"
   },
   {
    "hash": "0x0BC6FE8CC8C34D0B",
@@ -45376,25 +45087,6 @@
    "typed": true,
    "vector_layout": null,
    "sig": "iiiiiiii>n"
-  },
-  {
-   "hash": "0x0CB5D1E14473D8A5",
-   "namespace": "RAW",
-   "name": "N_0CB5D1E14473D8A5",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 72144112,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "void",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "i>n"
   },
   {
    "hash": "0x0CCCB533ACF07B47",
@@ -47087,31 +46779,11 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     },
     {
      "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
      "type": "Any",
      "code": "i"
     }
@@ -47119,7 +46791,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>n"
+   "sig": "Si>n"
   },
   {
    "hash": "0x1079F44545FDADAB",
@@ -49987,25 +49659,6 @@
    "sig": "iii>i"
   },
   {
-   "hash": "0x1660AC5AAF47CE2E",
-   "namespace": "RAW",
-   "name": "N_1660AC5AAF47CE2E",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 71726800,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "Vector3",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "i>w"
-  },
-  {
    "hash": "0x166B6C6EC20A7BDC",
    "namespace": "RAW",
    "name": "N_166B6C6EC20A7BDC",
@@ -50299,14 +49952,14 @@
     },
     {
      "name": "p1",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptText",
+     "code": "T"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ii>n"
+   "sig": "iT>n"
   },
   {
    "hash": "0x16E088B78CA09A0D",
@@ -58183,39 +57836,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0x2720C63FEFA3CD37",
@@ -59561,25 +59189,6 @@
    "sig": "ii>i"
   },
   {
-   "hash": "0x29454F052443C9EB",
-   "namespace": "RAW",
-   "name": "N_29454F052443C9EB",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 71726512,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "Vector3",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "i>w"
-  },
-  {
    "hash": "0x2946B45C25EE15CE",
    "namespace": "RAW",
    "name": "N_2946B45C25EE15CE",
@@ -60316,70 +59925,6 @@
    "typed": true,
    "vector_layout": null,
    "sig": "iiifiiiii>n"
-  },
-  {
-   "hash": "0x2A73138A3AA3F3CC",
-   "namespace": "RAW",
-   "name": "N_2A73138A3AA3F3CC",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 62945792,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p2",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p3",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p4",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p5",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p6",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p7",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p8",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p9",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "void",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "ifffffiiii>n"
   },
   {
    "hash": "0x2A797F6E0AA01BB1",
@@ -61207,17 +60752,12 @@
      "name": "p0",
      "type": "Any",
      "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "ii>i"
+   "sig": "i>i"
   },
   {
    "hash": "0x2C4FDDD813173096",
@@ -62697,39 +62237,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0x2FBA812222C3124B",
@@ -67430,30 +66945,6 @@
    "sig": "ii>i"
   },
   {
-   "hash": "0x387E306529592436",
-   "namespace": "RAW",
-   "name": "N_387E306529592436",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 79455904,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "int",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "ii>i"
-  },
-  {
    "hash": "0x387FBEF0A7D31A05",
    "namespace": "RAW",
    "name": "N_387FBEF0A7D31A05",
@@ -67856,14 +67347,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "i>i"
+   "sig": "S>i"
   },
   {
    "hash": "0x38F680479573DDC2",
@@ -75722,39 +75213,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0x4876D4E9911E18DF",
@@ -77882,25 +77348,6 @@
    "sig": "ii>n"
   },
   {
-   "hash": "0x4CF27CB4CA538E0D",
-   "namespace": "RAW",
-   "name": "N_4CF27CB4CA538E0D",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 71726128,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "Vector3",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "i>w"
-  },
-  {
    "hash": "0x4CF81C224D584BF0",
    "namespace": "RAW",
    "name": "N_4CF81C224D584BF0",
@@ -79329,39 +78776,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0x4FB3ED2D5E59E32B",
@@ -82722,25 +82144,6 @@
    "sig": "ii>w"
   },
   {
-   "hash": "0x58B552E6A5652281",
-   "namespace": "RAW",
-   "name": "N_58B552E6A5652281",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 71727712,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "Vector3",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "i>w"
-  },
-  {
    "hash": "0x58D11568426AFC14",
    "namespace": "RAW",
    "name": "N_58D11568426AFC14",
@@ -84362,95 +83765,6 @@
    "sig": "iii>n"
   },
   {
-   "hash": "0x5D318F9A72B2464F",
-   "namespace": "RAW",
-   "name": "N_5D318F9A72B2464F",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 62946624,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p3",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p4",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p5",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p6",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p7",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p8",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p9",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p10",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p11",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p12",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p13",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "p14",
-     "type": "float",
-     "code": "f"
-    }
-   ],
-   "return_type": "void",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "iifffffiiiiffff>n"
-  },
-  {
    "hash": "0x5D3AFE1AFE715005",
    "namespace": "RAW",
    "name": "N_5D3AFE1AFE715005",
@@ -84791,25 +84105,6 @@
    "typed": true,
    "vector_layout": null,
    "sig": "i>n"
-  },
-  {
-   "hash": "0x5E355622C5AF21D1",
-   "namespace": "RAW",
-   "name": "N_5E355622C5AF21D1",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 71726320,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "Vector3",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "i>w"
   },
   {
    "hash": "0x5E3D24E85C0B92CB",
@@ -90160,17 +89455,12 @@
      "name": "p0",
      "type": "Any",
      "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ii>n"
+   "sig": "i>n"
   },
   {
    "hash": "0x698FAB77CA7A11F8",
@@ -91039,39 +90329,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0x6B6899C888CD05E8",
@@ -92837,39 +92102,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0x6F7064B840FA1D10",
@@ -95832,25 +95072,6 @@
    "sig": "i>n"
   },
   {
-   "hash": "0x756CD37D14B03371",
-   "namespace": "RAW",
-   "name": "N_756CD37D14B03371",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 71728000,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "Vector3",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "i>w"
-  },
-  {
    "hash": "0x758D07DCA8872069",
    "namespace": "RAW",
    "name": "N_758D07DCA8872069",
@@ -98457,39 +97678,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0x7B57E958218FD8DC",
@@ -100431,8 +99627,8 @@
     },
     {
      "name": "p1",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptText",
+     "code": "T"
     },
     {
      "name": "p2",
@@ -100448,7 +99644,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiii>n"
+   "sig": "iTii>n"
   },
   {
    "hash": "0x7F3107A7C3090619",
@@ -104300,27 +103496,12 @@
      "name": "p2",
      "type": "Any",
      "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>n"
+   "sig": "iii>n"
   },
   {
    "hash": "0x871D86A7A5429A46",
@@ -110807,14 +109988,14 @@
     },
     {
      "name": "p6",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptText",
+     "code": "T"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiiii>n"
+   "sig": "iiiiiiT>n"
   },
   {
    "hash": "0x953387E2BAFFB776",
@@ -114550,14 +113731,14 @@
     },
     {
      "name": "p1",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptText",
+     "code": "T"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ii>n"
+   "sig": "iT>n"
   },
   {
    "hash": "0x9D4F9546390C3118",
@@ -114722,39 +113903,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0x9D7B0F897303B4EB",
@@ -115130,39 +114286,14 @@
     },
     {
      "name": "p5",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p6",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p7",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p8",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p9",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p10",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiiiiiiii>i"
+   "sig": "iiiiiS>i"
   },
   {
    "hash": "0x9E98138D3A6EA1F6",
@@ -116635,39 +115766,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0xA149EC2C0C5E031A",
@@ -117608,39 +116714,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0xA2A2DC7EC163F5E9",
@@ -119425,14 +118506,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptText",
+     "code": "T"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "i>n"
+   "sig": "T>n"
   },
   {
    "hash": "0xA5D7A7CBDA008398",
@@ -120927,39 +120008,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0xA8C4A2FECAB6A595",
@@ -122722,39 +121778,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0xACD01953CCD65D06",
@@ -124333,14 +123364,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptText",
+     "code": "T"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "i>n"
+   "sig": "T>n"
   },
   {
    "hash": "0xB09A3FC1E835B815",
@@ -129452,22 +128483,12 @@
      "name": "p1",
      "type": "Any",
      "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiii>n"
+   "sig": "ii>n"
   },
   {
    "hash": "0xBC3917EE15627955",
@@ -129960,25 +128981,6 @@
    "typed": true,
    "vector_layout": null,
    "sig": "i>n"
-  },
-  {
-   "hash": "0xBD3BAFF6D642EFC4",
-   "namespace": "RAW",
-   "name": "N_BD3BAFF6D642EFC4",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 71726224,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "Vector3",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "i>w"
   },
   {
    "hash": "0xBD6A2F05D87A4C04",
@@ -134514,17 +133516,12 @@
      "name": "p0",
      "type": "Any",
      "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ii>n"
+   "sig": "i>n"
   },
   {
    "hash": "0xC5BE2C5465957A94",
@@ -135504,35 +134501,6 @@
    "status": "observed",
    "source": "",
    "handler_rva": 78200672,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "void",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "iii>n"
-  },
-  {
-   "hash": "0xC827D3A0773681A1",
-   "namespace": "RAW",
-   "name": "N_C827D3A0773681A1",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 65609136,
    "params": [
     {
      "name": "p0",
@@ -140402,14 +139370,14 @@
     },
     {
      "name": "p6",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptText",
+     "code": "T"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiiii>n"
+   "sig": "iiiiiiT>n"
   },
   {
    "hash": "0xD25D4FF4A9733824",
@@ -141497,25 +140465,6 @@
    "typed": true,
    "vector_layout": null,
    "sig": ">i"
-  },
-  {
-   "hash": "0xD4DC75D4B87334BA",
-   "namespace": "RAW",
-   "name": "N_D4DC75D4B87334BA",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 71728384,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "Vector3",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "i>w"
   },
   {
    "hash": "0xD4EE583C9DEDDE2E",
@@ -143696,35 +142645,6 @@
    "sig": "i>f"
   },
   {
-   "hash": "0xD942E6168EB81167",
-   "namespace": "RAW",
-   "name": "N_D942E6168EB81167",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 72072624,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "int",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "iii>i"
-  },
-  {
    "hash": "0xD9443B4D2ED4A819",
    "namespace": "RAW",
    "name": "N_D9443B4D2ED4A819",
@@ -143781,25 +142701,6 @@
    "typed": true,
    "vector_layout": null,
    "sig": "iiii>n"
-  },
-  {
-   "hash": "0xD9711FCEA997E8F7",
-   "namespace": "RAW",
-   "name": "N_D9711FCEA997E8F7",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 71728192,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "int",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "i>i"
   },
   {
    "hash": "0xD972308C26E0E737",
@@ -144888,39 +143789,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0xDB96E6B4329EFC14",
@@ -147573,39 +146449,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0xE1CF0330D00E8D81",
@@ -148707,25 +147558,6 @@
    "typed": true,
    "vector_layout": null,
    "sig": "ii>i"
-  },
-  {
-   "hash": "0xE3A0EFAFF3DFE27B",
-   "namespace": "RAW",
-   "name": "N_E3A0EFAFF3DFE27B",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 71727088,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    }
-   ],
-   "return_type": "Vector3",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "i>w"
   },
   {
    "hash": "0xE3A444D9C297FDC9",
@@ -151627,8 +150459,8 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     },
     {
      "name": "p1",
@@ -151644,7 +150476,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iii>n"
+   "sig": "Sii>n"
   },
   {
    "hash": "0xE91AB6A2201C9379",
@@ -152657,39 +151489,14 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "int",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>i"
+   "sig": "S>i"
   },
   {
    "hash": "0xEB2C4C4EF09DFBA4",
@@ -154562,35 +153369,6 @@
    "sig": "iiiiii>n"
   },
   {
-   "hash": "0xEEE019373C7A9589",
-   "namespace": "RAW",
-   "name": "N_EEE019373C7A9589",
-   "status": "observed",
-   "source": "",
-   "handler_rva": 72072912,
-   "params": [
-    {
-     "name": "p0",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p1",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p2",
-     "type": "float",
-     "code": "f"
-    }
-   ],
-   "return_type": "int",
-   "typed": true,
-   "vector_layout": null,
-   "sig": "iif>i"
-  },
-  {
    "hash": "0xEEE9B4D94C088E21",
    "namespace": "RAW",
    "name": "N_EEE9B4D94C088E21",
@@ -154646,27 +153424,12 @@
      "name": "p2",
      "type": "Any",
      "code": "i"
-    },
-    {
-     "name": "p3",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p4",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "p5",
-     "type": "Any",
-     "code": "i"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiiiii>n"
+   "sig": "iii>n"
   },
   {
    "hash": "0xEF079555F7213888",
@@ -164088,14 +162851,14 @@
    "params": [
     {
      "name": "animDict",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0x27FF6FE8009B40CA",
@@ -164107,14 +162870,14 @@
    "params": [
     {
      "name": "animDict",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0x1F23D6B6DA1CC3B2",
@@ -164126,14 +162889,14 @@
    "params": [
     {
      "name": "clipSet",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0x98A4EB5D89A0C952",
@@ -164427,14 +163190,14 @@
    "params": [
     {
      "name": "animDict",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0x817FA1B1EE7CD6F0",
@@ -164446,14 +163209,14 @@
    "params": [
     {
      "name": "clipSet",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0x5A3E5CF7B4014B96",
@@ -164527,14 +163290,14 @@
    "params": [
     {
      "name": "animDict",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0xEF7611B57A820126",
@@ -164546,14 +163309,14 @@
    "params": [
     {
      "name": "clipSet",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0x0A3720F162A033C9",
@@ -164957,8 +163720,8 @@
    "params": [
     {
      "name": "route",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "props",
@@ -164969,7 +163732,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "si>n"
+   "sig": "ui>n"
   },
   {
    "hash": "0x2D19BC4DF626CBE7",
@@ -164985,25 +163748,15 @@
      "code": "e"
     },
     {
-     "name": "itemHash",
-     "type": "Hash",
-     "code": "u"
-    },
-    {
-     "name": "interactionAnimHash",
-     "type": "Hash",
-     "code": "u"
-    },
-    {
-     "name": "p3",
-     "type": "int",
-     "code": "i"
+     "name": "ref1",
+     "type": "uint64_t",
+     "code": "q"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "euui>b"
+   "sig": "eq>b"
   },
   {
    "hash": "0x176CECF6F920D707",
@@ -165175,10 +163928,10 @@
      "pad": true
     }
    ],
-   "return_type": "int",
+   "return_type": "ScenarioPoint",
    "typed": true,
    "vector_layout": "unconfirmed",
-   "sig": "uffffiibq>i"
+   "sig": "uffffiibq>h"
   },
   {
    "hash": "0x794AB1379A74064D",
@@ -165255,14 +164008,14 @@
    "params": [
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "i>b"
+   "sig": "h>b"
   },
   {
    "hash": "0xF533D68FF970D190",
@@ -165380,14 +164133,14 @@
    "params": [
     {
      "name": "waypointRecording",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>b"
+   "sig": "u>b"
   },
   {
    "hash": "0x804425C4BBD00883",
@@ -165673,8 +164426,8 @@
    "params": [
     {
      "name": "waypointRecording",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p1",
@@ -165685,7 +164438,7 @@
    "return_type": "float",
    "typed": true,
    "vector_layout": null,
-   "sig": "si>f"
+   "sig": "ui>f"
   },
   {
    "hash": "0xD4D8636C0199A939",
@@ -166003,14 +164756,14 @@
     },
     {
      "name": "waypointRecording",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "es>b"
+   "sig": "eu>b"
   },
   {
    "hash": "0xF5134943EA29868C",
@@ -166152,14 +164905,14 @@
    "params": [
     {
      "name": "waypointRecording",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0x9EEFB62EB27B5792",
@@ -166171,14 +164924,14 @@
    "params": [
     {
      "name": "waypointRecording",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "s>n"
+   "sig": "u>n"
   },
   {
    "hash": "0x5C9B84BD7D31D908",
@@ -166284,22 +165037,12 @@
       "y",
       "z"
      ]
-    },
-    {
-     "name": "taskMode",
-     "type": "int",
-     "code": "i"
-    },
-    {
-     "name": "ignoreTargetVehDeadCheck",
-     "type": "BOOL",
-     "code": "b"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": "packed",
-   "sig": "eeewib>n"
+   "sig": "eeew>n"
   },
   {
    "hash": "0x1E982AC8716912C5",
@@ -166446,13 +165189,13 @@
     },
     {
      "name": "animDictionary",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "animationName",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p3",
@@ -166463,7 +165206,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "essf>n"
+   "sig": "euuf>n"
   },
   {
    "hash": "0x93B93A37987F1F3D",
@@ -167111,14 +165854,14 @@
     },
     {
      "name": "p3",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "eies>n"
+   "sig": "eieu>n"
   },
   {
    "hash": "0x2F8AF0E82773A171",
@@ -167217,50 +165960,15 @@
      "code": "e"
     },
     {
-     "name": "animScene",
-     "type": "AnimScene",
-     "code": "i"
-    },
-    {
-     "name": "entityName",
-     "type": "const char*",
-     "code": "s"
-    },
-    {
-     "name": "playbackListName",
-     "type": "const char*",
-     "code": "s"
-    },
-    {
-     "name": "enterSpeed",
-     "type": "float",
-     "code": "f"
-    },
-    {
-     "name": "bAutoStart",
-     "type": "BOOL",
-     "code": "b"
-    },
-    {
-     "name": "flag",
-     "type": "int",
-     "code": "i"
-    },
-    {
-     "name": "p7",
-     "type": "int",
-     "code": "i"
-    },
-    {
-     "name": "p8",
-     "type": "float",
-     "code": "f"
+     "name": "ref1",
+     "type": "uint64_t",
+     "code": "q"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "eissfbiif>n"
+   "sig": "eq>n"
   },
   {
    "hash": "0xC20E50AA46D09CA8",
@@ -168756,44 +167464,14 @@
     },
     {
      "name": "p14",
-     "type": "Any",
-     "code": "i"
-    },
-    {
-     "name": "a16",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a17",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a18",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a19",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a20",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
+     "type": "ScriptString",
+     "code": "S"
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "eiiiiiiiiiiiiiiqqqqq>n"
+   "sig": "eiiiiiiiiiiiiiS>n"
   },
   {
    "hash": "0x11315AB3385B8AC0",
@@ -170655,8 +169333,8 @@
     },
     {
      "name": "p9",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p10",
@@ -170672,7 +169350,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": "packed",
-   "sig": "euwfibbsfb>n"
+   "sig": "euwfibbufb>n"
   },
   {
    "hash": "0x524B54361229154F",
@@ -170992,13 +169670,13 @@
     },
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     },
     {
      "name": "conditionalAnim",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p3",
@@ -171036,12 +169714,6 @@
      "code": "b"
     },
     {
-     "name": "a11",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
      "name": "a12",
      "type": "uint64_t",
      "code": "q",
@@ -171051,7 +169723,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "eisibbubfbqq>n"
+   "sig": "ehuibbubfbq>n"
   },
   {
    "hash": "0x447C1E9EF844BC0F",
@@ -171494,8 +170166,8 @@
     },
     {
      "name": "waypointRecording",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "drivingMode",
@@ -171607,7 +170279,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "eesiiiifbfiqfqqqqqfqff>n"
+   "sig": "eeuiiiifbfiqfqqqqqfqff>n"
   },
   {
    "hash": "0x195AEEB13CEFE2EE",
@@ -172306,8 +170978,8 @@
    "params": [
     {
      "name": "waypointRecording",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "p1",
@@ -172345,7 +171017,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "sbffbqq>n"
+   "sig": "ubffbqq>n"
   },
   {
    "hash": "0x4D6D30AB18B0B089",
@@ -172830,8 +171502,8 @@
    "params": [
     {
      "name": "waypointRecording",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "coords",
@@ -172864,7 +171536,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": "packed",
-   "sig": "swIqq>b"
+   "sig": "uwIqq>b"
   },
   {
    "hash": "0x2FB897405C90B361",
@@ -172876,8 +171548,8 @@
    "params": [
     {
      "name": "waypointRecording",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "point",
@@ -172893,7 +171565,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "siV>b"
+   "sig": "uiV>b"
   },
   {
    "hash": "0x5343532C01A07234",
@@ -172905,8 +171577,8 @@
    "params": [
     {
      "name": "waypointRecording",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "points",
@@ -172917,7 +171589,7 @@
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "sI>b"
+   "sig": "uI>b"
   },
   {
    "hash": "0x005622AEBC33ACA9",
@@ -172929,8 +171601,8 @@
    "params": [
     {
      "name": "waypointRecording",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "point",
@@ -172941,7 +171613,7 @@
    "return_type": "float",
    "typed": true,
    "vector_layout": null,
-   "sig": "si>f"
+   "sig": "ui>f"
   },
   {
    "hash": "0x1A7D63CB1B0BB223",
@@ -173355,25 +172027,19 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     },
     {
      "name": "p1",
      "type": "Any",
      "code": "i"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiq>n"
+   "sig": "hi>n"
   },
   {
    "hash": "0xADC45010BC17AF0E",
@@ -173385,25 +172051,19 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     },
     {
      "name": "p1",
      "type": "Any",
      "code": "i"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiq>n"
+   "sig": "hi>n"
   },
   {
    "hash": "0xB8E213D02F37947D",
@@ -173539,25 +172199,19 @@
    "params": [
     {
      "name": "p0",
-     "type": "Any",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     },
     {
      "name": "p1",
      "type": "Any",
      "code": "i"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiq>n"
+   "sig": "hi>n"
   },
   {
    "hash": "0xFDECCA06E8B81346",
@@ -173754,14 +172408,14 @@
    "params": [
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     }
    ],
    "return_type": "Ped",
    "typed": true,
    "vector_layout": null,
-   "sig": "i>e"
+   "sig": "h>e"
   },
   {
    "hash": "0xA8452DD321607029",
@@ -173773,25 +172427,19 @@
    "params": [
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     },
     {
      "name": "p1",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "Vector3",
    "typed": true,
    "vector_layout": null,
-   "sig": "ibq>w"
+   "sig": "hb>w"
   },
   {
    "hash": "0x7467165EE97D3C68",
@@ -173803,14 +172451,14 @@
    "params": [
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     }
    ],
    "return_type": "Entity",
    "typed": true,
    "vector_layout": null,
-   "sig": "i>e"
+   "sig": "h>e"
   },
   {
    "hash": "0xB93EA7184BAA85C3",
@@ -173822,25 +172470,19 @@
    "params": [
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     },
     {
      "name": "p1",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "float",
    "typed": true,
    "vector_layout": null,
-   "sig": "ibq>f"
+   "sig": "hb>f"
   },
   {
    "hash": "0xDF7993356F52359A",
@@ -173861,10 +172503,10 @@
      "code": "b"
     }
    ],
-   "return_type": "int",
+   "return_type": "ScenarioPoint",
    "typed": true,
    "vector_layout": null,
-   "sig": "eb>i"
+   "sig": "eb>h"
   },
   {
    "hash": "0xA92450B5AE687AAF",
@@ -173876,14 +172518,14 @@
    "params": [
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     }
    ],
    "return_type": "Hash",
    "typed": true,
    "vector_layout": null,
-   "sig": "i>u"
+   "sig": "h>u"
   },
   {
    "hash": "0x2D0571BB55879DA2",
@@ -174041,14 +172683,14 @@
    "params": [
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "i>b"
+   "sig": "h>b"
   },
   {
    "hash": "0x8569C38D2FB80650",
@@ -174060,25 +172702,19 @@
    "params": [
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     },
     {
      "name": "flag",
      "type": "int",
      "code": "i"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "BOOL",
    "typed": true,
    "vector_layout": null,
-   "sig": "iiq>b"
+   "sig": "hi>b"
   },
   {
    "hash": "0x02EBBB3989B7E695",
@@ -174145,8 +172781,8 @@
     },
     {
      "name": "bait",
-     "type": "const char*",
-     "code": "s"
+     "type": "Hash",
+     "code": "u"
     },
     {
      "name": "withoutBuoy",
@@ -174162,7 +172798,7 @@
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "esbb>n"
+   "sig": "eubb>n"
   },
   {
    "hash": "0xB35370D5353995CB",
@@ -174227,25 +172863,19 @@
    "params": [
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     },
     {
      "name": "active",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "a2",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "ibq>n"
+   "sig": "hb>n"
   },
   {
    "hash": "0x5AF19B6CC2115D34",
@@ -174257,8 +172887,8 @@
    "params": [
     {
      "name": "scenario",
-     "type": "int",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     },
     {
      "name": "flag",
@@ -174269,18 +172899,12 @@
      "name": "value",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "a3",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "iibq>n"
+   "sig": "hib>n"
   },
   {
    "hash": "0xE53D17AD837CBF7C",
@@ -174760,13 +173384,13 @@
     },
     {
      "name": "p1",
-     "type": "Any",
-     "code": "i"
+     "type": "ScenarioPoint",
+     "code": "h"
     },
     {
      "name": "p2",
-     "type": "const char*",
-     "code": "s"
+     "type": "ScriptString",
+     "code": "S"
     },
     {
      "name": "p3",
@@ -174787,24 +173411,12 @@
      "name": "p6",
      "type": "BOOL",
      "code": "b"
-    },
-    {
-     "name": "a8",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
-    },
-    {
-     "name": "a9",
-     "type": "uint64_t",
-     "code": "q",
-     "pad": true
     }
    ],
    "return_type": "void",
    "typed": true,
    "vector_layout": null,
-   "sig": "eisibfbqq>n"
+   "sig": "ehSibfb>n"
   },
   {
    "hash": "0x322BFDEA666E2B0E",
@@ -175381,6 +173993,25 @@
    "typed": true,
    "vector_layout": null,
    "sig": "q>n"
+  },
+  {
+   "hash": "0x0CB5D1E14473D8A5",
+   "namespace": "UILOG",
+   "name": "_UILOG_SET_CACHED_OBJECTIVE",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 72144112,
+   "params": [
+    {
+     "name": "text",
+     "type": "ScriptText",
+     "code": "T"
+    }
+   ],
+   "return_type": "void",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "T>n"
   },
   {
    "hash": "0x1AF02E3CB79849DC",
@@ -175985,6 +174616,260 @@
    "typed": true,
    "vector_layout": null,
    "sig": "e>n"
+  },
+  {
+   "hash": "0x2A73138A3AA3F3CC",
+   "namespace": "UNKNOWN",
+   "name": "_DRAW_RECT",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 62945792,
+   "params": [
+    {
+     "name": "p0",
+     "type": "int",
+     "code": "i"
+    },
+    {
+     "name": "x",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "y",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "width",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "height",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "heading",
+     "type": "float",
+     "code": "f"
+    },
+    {
+     "name": "red",
+     "type": "int",
+     "code": "i"
+    },
+    {
+     "name": "green",
+     "type": "int",
+     "code": "i"
+    },
+    {
+     "name": "blue",
+     "type": "int",
+     "code": "i"
+    },
+    {
+     "name": "alpha",
+     "type": "int",
+     "code": "i"
+    }
+   ],
+   "return_type": "void",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "ifffffiiii>n"
+  },
+  {
+   "hash": "0x4CF27CB4CA538E0D",
+   "namespace": "UNKNOWN",
+   "name": "_GET_REGISTERED_PED",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 71726128,
+   "params": [
+    {
+     "name": "id",
+     "type": "Hash",
+     "code": "u"
+    }
+   ],
+   "return_type": "Ped",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "u>e"
+  },
+  {
+   "hash": "0xBD3BAFF6D642EFC4",
+   "namespace": "UNKNOWN",
+   "name": "_GET_REGISTERED_PERSCHAR",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 71726224,
+   "params": [
+    {
+     "name": "id",
+     "type": "Hash",
+     "code": "u"
+    }
+   ],
+   "return_type": "PersChar",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "u>e"
+  },
+  {
+   "hash": "0x5E355622C5AF21D1",
+   "namespace": "UNKNOWN",
+   "name": "_GET_REGISTERED_PERSCHAR_PED",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 71726320,
+   "params": [
+    {
+     "name": "id",
+     "type": "Hash",
+     "code": "u"
+    }
+   ],
+   "return_type": "Ped",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "u>e"
+  },
+  {
+   "hash": "0x29454F052443C9EB",
+   "namespace": "UNKNOWN",
+   "name": "_GET_REGISTERED_PICKUP",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 71726512,
+   "params": [
+    {
+     "name": "id",
+     "type": "Hash",
+     "code": "u"
+    }
+   ],
+   "return_type": "Entity",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "u>e"
+  },
+  {
+   "hash": "0x1660AC5AAF47CE2E",
+   "namespace": "UNKNOWN",
+   "name": "_GET_REGISTERED_PROP",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 71726800,
+   "params": [
+    {
+     "name": "id",
+     "type": "Hash",
+     "code": "u"
+    }
+   ],
+   "return_type": "Entity",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "u>e"
+  },
+  {
+   "hash": "0xE3A0EFAFF3DFE27B",
+   "namespace": "UNKNOWN",
+   "name": "_GET_REGISTERED_SCENARIO_POINT",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 71727088,
+   "params": [
+    {
+     "name": "id",
+     "type": "Hash",
+     "code": "u"
+    }
+   ],
+   "return_type": "ScenarioPoint",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "u>h"
+  },
+  {
+   "hash": "0x58B552E6A5652281",
+   "namespace": "UNKNOWN",
+   "name": "_GET_REGISTERED_TRAIN",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 71727712,
+   "params": [
+    {
+     "name": "id",
+     "type": "Hash",
+     "code": "u"
+    }
+   ],
+   "return_type": "Vehicle",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "u>e"
+  },
+  {
+   "hash": "0x756CD37D14B03371",
+   "namespace": "UNKNOWN",
+   "name": "_GET_REGISTERED_VEHICLE",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 71728000,
+   "params": [
+    {
+     "name": "id",
+     "type": "Hash",
+     "code": "u"
+    }
+   ],
+   "return_type": "Vehicle",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "u>e"
+  },
+  {
+   "hash": "0xD9711FCEA997E8F7",
+   "namespace": "UNKNOWN",
+   "name": "_GET_REGISTERED_VOLUME",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 71728192,
+   "params": [
+    {
+     "name": "id",
+     "type": "Hash",
+     "code": "u"
+    }
+   ],
+   "return_type": "Volume",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "u>i"
+  },
+  {
+   "hash": "0xD4DC75D4B87334BA",
+   "namespace": "UNKNOWN",
+   "name": "_GET_REGISTERED_WEAPON_PICKUP",
+   "status": "observed",
+   "source": "",
+   "handler_rva": 71728384,
+   "params": [
+    {
+     "name": "id",
+     "type": "Hash",
+     "code": "u"
+    }
+   ],
+   "return_type": "Entity",
+   "typed": true,
+   "vector_layout": null,
+   "sig": "u>e"
   },
   {
    "hash": "0xC4B660C7B6040E75",
@@ -181973,17 +180858,12 @@
      "name": "ped",
      "type": "Ped",
      "code": "e"
-    },
-    {
-     "name": "p1",
-     "type": "BOOL",
-     "code": "b"
     }
    ],
    "return_type": "Object",
    "typed": true,
    "vector_layout": null,
-   "sig": "eb>e"
+   "sig": "e>e"
   },
   {
    "hash": "0x899A04AFCC725D04",

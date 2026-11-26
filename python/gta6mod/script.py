@@ -25,10 +25,11 @@ raises it when the run ends.
 """
 from __future__ import annotations
 
+import contextlib
 import inspect
 import traceback
 from dataclasses import dataclass, field
-from typing import Callable, Generator
+from typing import Callable, Generator, Iterator
 
 from . import runtime as _rt
 
@@ -50,6 +51,7 @@ class _Script:
     wake_at: int = 0
     done: bool = False
     error: str | None = None
+    exc: BaseException | None = None  # the exception that ended the script (hosts read its type)
     ticks: int = 0
 
 
@@ -57,11 +59,18 @@ class _Script:
 class Scheduler:
     scripts: list[_Script] = field(default_factory=list)
     stop_handlers: list[Callable[[], object]] = field(default_factory=list)
+    after_tick_handlers: list[Callable[[], object]] = field(default_factory=list)
     stopped: bool = False
 
     def on_stop(self, fn: Callable[[], object]) -> Callable[[], object]:
         """Register a stop-event handler (a plain function: it runs outside any script, so it cannot wait)."""
         self.stop_handlers.append(fn)
+        return fn
+
+    def after_tick(self, fn: Callable[[], object]) -> Callable[[], object]:
+        """Run ``fn`` at the end of every ``tick()``, after the scripts (``gta6mod.ui`` records in-game frames
+        there). An ``Exception`` from it is logged and the next handler still runs; nothing runs once stopped."""
+        self.after_tick_handlers.append(fn)
         return fn
 
     def stop(self) -> list[BaseException]:
@@ -119,10 +128,18 @@ class Scheduler:
                 s.wake_at = now + ms
             except StopIteration:
                 s.done = True
-            except Exception:  # one broken script must not kill the others
+            except Exception as e:  # one broken script must not kill the others
                 s.done = True
+                s.exc = e
                 s.error = traceback.format_exc()
                 rt.log("ERROR", s.name, s.error)
+        if self.stopped:
+            return
+        for fn in list(self.after_tick_handlers):
+            try:
+                fn()
+            except Exception:  # noqa: BLE001 - like a script: logged, the others still run
+                rt.log("ERROR", "script", "after-tick handler failed:\n" + traceback.format_exc())
 
 
 _default = Scheduler()
@@ -150,6 +167,20 @@ def reset() -> Scheduler:
     global _default
     _default = Scheduler()
     return _default
+
+
+@contextlib.contextmanager
+def using(sched: Scheduler) -> Iterator[Scheduler]:
+    """Make ``sched`` the default scheduler for the ``with`` block, then restore the previous one.
+    The in-game host (``runtime/host.py``) runs each mod's load and ticks inside ``using(<that mod's
+    scheduler>)``, so ``script.register`` and ``Mod(...)`` land in the mod's own scheduler."""
+    global _default
+    prev = _default
+    _default = sched
+    try:
+        yield sched
+    finally:
+        _default = prev
 
 
 def run_for(ms: int, frame_ms: int = 16, sched: Scheduler | None = None) -> None:

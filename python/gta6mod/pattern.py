@@ -103,16 +103,68 @@ def _heuristic_mask(code: bytes) -> bytes:  # pragma: no cover
     return bytes(mask)
 
 
+# `mov r, gs:[0x58]` = 65 REX 8B ModRM(mod 00, rm 100) SIB 25 (disp32, no base) 58 00 00 00.
+# VIctory-family hosts (ztrx; DexNom crates/victory-loader/src/tls.rs `patch`) rewrite these 9 bytes
+# into `E8 rel32 0F 1F 40 00` (call thunk; nop4) when the image does not get TLS index 0.
+# DexNom matches REX 48|4C only; this rule takes any REX 4? so it stays conservative
+# (1.0.2.1 has 53,246 such loads, all with REX 48|4C).
+TLS_LOAD_LEN = 9
+_TLS_TAIL = b"\x25\x58\x00\x00\x00"
+
+
+def _tls_byte_ok(j: int, b: int) -> bool:
+    """Whether byte ``b`` may sit at position ``j`` (0..8) of a `mov r, gs:[0x58]`."""
+    if j == 0:
+        return b == 0x65
+    if j == 1:
+        return b & 0xF0 == 0x40
+    if j == 2:
+        return b == 0x8B
+    if j == 3:
+        return b & 0xC7 == 0x04
+    return b == _TLS_TAIL[j - 4]
+
+
+def is_tls_load(code: bytes, i: int) -> bool:
+    return 0 <= i and i + TLS_LOAD_LEN <= len(code) and all(_tls_byte_ok(j, code[i + j]) for j in range(TLS_LOAD_LEN))
+
+
 def _tls_mask(code: bytes, mask: bytes) -> bytes:
-    """Wildcard `mov r64, qword gs:[0x58]` (65 48|4C 8B /r 25 58 00 00 00). HLE hosts such as
+    """Wildcard `mov r64, qword gs:[0x58]` (65 4? 8B /r 25 58 00 00 00). HLE hosts such as
     ztrx/VIctory rewrite these 9 bytes into a call (findings/live/30_live_menu.md), so signatures
     that pin them only match on console-faithful images."""
     m = bytearray(mask)
     for i in range(len(code) - 8):
-        if (code[i] == 0x65 and code[i + 1] in (0x48, 0x4C) and code[i + 2] == 0x8B
-                and (code[i + 3] & 0xC7) == 0x04 and code[i + 4:i + 9] == b"\x25\x58\x00\x00\x00"):
+        if is_tls_load(code, i):
             m[i:i + 9] = b"\x00" * 9
     return bytes(m)
+
+
+def fixed_tls_loads(pat: "Pattern | str") -> list[int]:
+    """Image-free check: start offsets (negative when the window begins before the signature) of
+    every `mov r, gs:[0x58]` window that the signature's fixed bytes pin.
+
+    A window is reported when every fixed byte of the signature inside it agrees with the load's
+    byte pattern and at least 3 of its 9 bytes are fixed, so a lone `48 8B 00` (`mov rax,[rax]`)
+    after a wildcard is not a hit. Windows that start before the signature or run past its end
+    count: a signature that starts or ends inside a load pins it all the same. ``pins_tls`` is the
+    image-backed check; this one needs no exe, so the anchor merge and the tests can run it."""
+    if isinstance(pat, str):
+        pat = Pattern.parse(pat)
+    n = len(pat.data)
+    out = []
+    for s in range(-(TLS_LOAD_LEN - 1), n):
+        fixed = 0
+        for j in range(TLS_LOAD_LEN):
+            k = s + j
+            if 0 <= k < n and pat.mask[k]:
+                if not _tls_byte_ok(j, pat.data[k]):
+                    break
+                fixed += 1
+        else:
+            if fixed >= 3:
+                out.append(s)
+    return out
 
 
 def make_signature(image: PEImage, rva: int, min_len: int = 12, max_len: int = 96) -> Pattern | None:

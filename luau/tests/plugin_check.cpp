@@ -4,7 +4,8 @@
 // Passes when the plugin loads, its scheduler tick drives the Luau scripts (where_am_i
 // logs twice), god_mode's toggle (INPUT_DETONATE pressed at 1008 ms) is switched off by the stop event
 // (g6_plugin_stop) and not again by unload, nothing is logged at ERROR, and the tick is unregistered
-// on unload.
+// on unload. UI: trainer_menu registers its menu through the host's g6_ui_api (the mock UI draws a frame after
+// every tick) and g6_plugin_unload unregisters it.
 #include "gta6mod/gta6mod.h"
 #include "gta6mod/controls.h"
 
@@ -74,6 +75,9 @@ int main(int argc, char** argv) {
     // time_control's tap and hold bindings: observed IS_CONTROL_PRESSED and IS_CONTROL_JUST_RELEASED
     g6_mock_register_native(0xF3A21BCD95725A4Aull, n_false, nullptr);
     g6_mock_register_native(0x50F940259D3841E6ull, n_false, nullptr);
+    // trainer_menu's view loop: observed GET_ENTITY_COORDS_F44D and GET_PLAYER_WANTED_LEVEL
+    g6_mock_register_native(0xA86D5F069399F44Dull, n_coords, nullptr);
+    g6_mock_register_native(0xABC532F9098BFD9Dull, n_false, nullptr);
 
     _putenv_s("G6_LUAU_LIB", argv[2]);
     _putenv_s("G6_LUAU_MODS", argv[3]);
@@ -92,7 +96,13 @@ int main(int argc, char** argv) {
 
     if (load(&g_api) != G6_OK) return fail("g6_plugin_load");
     if (g_registered != 1) return fail("scheduler tick not registered");
-    for (int t = 0; t <= 2016; t += 16) g6_mock_step(16);
+    if (g6_mock_ui_registered() != 1) return fail("trainer_menu's UI frame not registered");
+    bool menu_drawn = false;
+    for (int t = 0; t <= 2016; t += 16) {
+        g6_mock_step(16);
+        if (g6_mock_ui_frame() == 1 && std::strstr(g6_mock_ui_transcript(), "text Player: 1.0 2.0 3.0")) menu_drawn = true;
+    }
+    if (!menu_drawn) return fail("trainer_menu's menu never showed the player's coordinates");
     if (g_god_on != 1 || g_god_off != 0) return fail("god_mode should be on before the stop event");
     stop();  // the runtime's stop event, before unload
     if (g_god_off != 1) return fail("stop event did not switch god_mode off");
@@ -100,6 +110,8 @@ int main(int argc, char** argv) {
     unload();
     if (g_god_off != 1) return fail("unload raised the stop event a second time");
     if (g_registered != 0) return fail("scheduler tick still registered after unload");
+    if (g6_mock_ui_registered() != 0) return fail("UI frame still registered after unload");
+    if (g6_mock_ui_errors() != 0) return fail("unbalanced UI calls");
     g6_mock_step(16);  // no tick may reach the destroyed host
     FreeLibrary(dll);
 

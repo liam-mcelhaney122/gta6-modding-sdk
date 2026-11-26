@@ -21,12 +21,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x0FD3ECF9D0C8655F
 
-`0x0FD3ECF9D0C8655F` · sig `sqqqqq>n` · params 6, argc_inferred 6, arg slots 6 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CCFBE0`
+`0x0FD3ECF9D0C8655F` · sig `S>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CCFBE0`
 
-- nativedb form: `void _0x0FD3ECF9D0C8655F(const char* p0)`
-- C: `void G6_CRASHLOG__0x0FD3ECF9D0C8655F(const g6_host_api* api, const char* p0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5)`
-- Python: `N.CRASHLOG._0x0FD3ECF9D0C8655F(p0: str | None, a1: int = 0, a2: int = 0, a3: int = 0, a4: int = 0, a5: int = 0) -> None`
-- Luau: `N.CRASHLOG._0x0FD3ECF9D0C8655F(p0: string?, a1: number?, a2: number?, a3: number?, a4: number?, a5: number?): ()`
+- nativedb form: `void _0x0FD3ECF9D0C8655F(ScriptString p0)`
+- C: `void G6_CRASHLOG__0x0FD3ECF9D0C8655F(const g6_host_api* api, const char* p0)`
+- Python: `N.CRASHLOG._0x0FD3ECF9D0C8655F(p0: str | None) -> None`
+- Luau: `N.CRASHLOG._0x0FD3ECF9D0C8655F(p0: string?): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed ScriptString (was const char*): slot 0 read as a script string object (0x143ccfc05, slot load 0x143ccfbfd, depth 0); script-vm.string_params.json (G-120)
 
 ### _0x23CCAB8F40B9CBEE
 
@@ -41,12 +42,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x33C1D63E55FA4284
 
-`0x33C1D63E55FA4284` · sig `sqqqqq>b` · params 6, argc_inferred 6, arg slots 6 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CCFAF0`
+`0x33C1D63E55FA4284` · sig `S>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CCFAF0`
 
-- nativedb form: `BOOL _0x33C1D63E55FA4284(const char* p0)`
-- C: `int G6_CRASHLOG__0x33C1D63E55FA4284(const g6_host_api* api, const char* p0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5)`
-- Python: `N.CRASHLOG._0x33C1D63E55FA4284(p0: str | None, a1: int = 0, a2: int = 0, a3: int = 0, a4: int = 0, a5: int = 0) -> bool`
-- Luau: `N.CRASHLOG._0x33C1D63E55FA4284(p0: string?, a1: number?, a2: number?, a3: number?, a4: number?, a5: number?): boolean`
+- nativedb form: `BOOL _0x33C1D63E55FA4284(ScriptString p0)`
+- C: `int G6_CRASHLOG__0x33C1D63E55FA4284(const g6_host_api* api, const char* p0)`
+- Python: `N.CRASHLOG._0x33C1D63E55FA4284(p0: str | None) -> bool`
+- Luau: `N.CRASHLOG._0x33C1D63E55FA4284(p0: string?): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed ScriptString (was const char*): slot 0 read as a script string object (0x143ccfb15, slot load 0x143ccfb0d, depth 0); script-vm.string_params.json (G-120)
 
 ### _0x4E42CA5BCD45444A
 
@@ -77,21 +79,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0xCA0BAC376C541978
 
-`0xCA0BAC376C541978` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CCFE30`
+`0xCA0BAC376C541978` · sig `i>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CCFE30`
 
-- nativedb form: `void _0xCA0BAC376C541978(const char* p0)`
-- C: `void G6_CRASHLOG__0xCA0BAC376C541978(const g6_host_api* api, const char* p0)`
-- Python: `N.CRASHLOG._0xCA0BAC376C541978(p0: str | None) -> None`
-- Luau: `N.CRASHLOG._0xCA0BAC376C541978(p0: string?): ()`
+- nativedb form: `void _0xCA0BAC376C541978(int p0)`
+- C: `void G6_CRASHLOG__0xCA0BAC376C541978(const g6_host_api* api, int32_t p0)`
+- Python: `N.CRASHLOG._0xCA0BAC376C541978(p0: int) -> None`
+- Luau: `N.CRASHLOG._0xCA0BAC376C541978(p0: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed int (nativedb const char*) from a traced consumer: slot 0 read as 32 bits (0x143ccfe51), used as an integer (0x14222a768: mov r8d, dword ptr [rip + 0x52265d9]); script-vm.param_types.observed.json (G-117)
 
 ### _0xD8E3D22AA4F0E0A5
 
-`0xD8E3D22AA4F0E0A5` · sig `sqqqqq>b` · params 6, argc_inferred 6, arg slots 6 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CCFDD0`
+`0xD8E3D22AA4F0E0A5` · sig `S>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CCFDD0`
 
-- nativedb form: `BOOL _0xD8E3D22AA4F0E0A5(const char* p0)`
-- C: `int G6_CRASHLOG__0xD8E3D22AA4F0E0A5(const g6_host_api* api, const char* p0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5)`
-- Python: `N.CRASHLOG._0xD8E3D22AA4F0E0A5(p0: str | None, a1: int = 0, a2: int = 0, a3: int = 0, a4: int = 0, a5: int = 0) -> bool`
-- Luau: `N.CRASHLOG._0xD8E3D22AA4F0E0A5(p0: string?, a1: number?, a2: number?, a3: number?, a4: number?, a5: number?): boolean`
+- nativedb form: `BOOL _0xD8E3D22AA4F0E0A5(ScriptString p0)`
+- C: `int G6_CRASHLOG__0xD8E3D22AA4F0E0A5(const g6_host_api* api, const char* p0)`
+- Python: `N.CRASHLOG._0xD8E3D22AA4F0E0A5(p0: str | None) -> bool`
+- Luau: `N.CRASHLOG._0xD8E3D22AA4F0E0A5(p0: string?): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed ScriptString (was const char*): slot 0 read as a script string object (0x143ccfdf5, slot load 0x143ccfded, depth 0); script-vm.string_params.json (G-120)
 
 ### _0xE72E234B30DA7B7A
 

@@ -287,11 +287,14 @@ function player.teleport(pos: vector, heading: number?, withVehicle: boolean?)
 		target:setHeading(heading)
 	end
 end
+-- GET/CLEAR_PLAYER_WANTED_LEVEL take the player *ped*, not the player index: the handlers pass both argument
+-- slots as one 16-byte handle to the ped resolver 0x14526e340, and a non-ped argument resolves to null, so the
+-- level reads 0 and nothing is cleared (re-db script-vm.param_types.json, G-090).
 function player.wantedLevel(): number
-	return names.player.getWantedLevel(player.id(), 0)
+	return names.player.getWantedLevel(player.ped().handle)
 end
 function player.clearWanted()
-	names.player.clearWantedLevel(player.id(), 0)
+	names.player.clearWantedLevel(player.ped().handle)
 end
 function player.maxWanted(): number
 	return names.player.getMaxWantedLevel()
@@ -564,7 +567,7 @@ function game.mod(name: string)
 	end
 
 	-- An on/off switch bound to a key (opts: pad number, or { pad, mods }). Flip it with the key, or call
-	-- set / flip.
+	-- set / flip. key = nil: no key, only set / flip (e.g. from an @gta6/ui menu through ui.defer).
 	function m.toggle(key, label: string?, opts)
 		local t = { key = key, label = label or name }
 		local on = false
@@ -603,7 +606,9 @@ function game.mod(name: string)
 			end
 		end
 		table.insert(toggles, t)
-		bind("press", key, t.flip, true, opts)
+		if key ~= nil then
+			bind("press", key, t.flip, true, opts)
+		end
 		return t
 	end
 

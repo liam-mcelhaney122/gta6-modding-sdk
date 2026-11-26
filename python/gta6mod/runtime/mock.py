@@ -5,7 +5,7 @@ GTA VI hashes the script layer uses, on an in-memory world: one player ped,
 spawnable vehicles, models that "load" after a few frames, wanted level,
 waypoint, ground probe, clock, and a game clock driven by ``step()``. The exact
 semantics are in sdk/docs/script_layer.md ("Mock world") and are shared with the
-Luau runner (luau/host/g6_luau_runner.cpp). It is not a simulation of GTA VI. It
+C mock world (runtime/src/mock_world.cpp, used by g6_luau_runner and g6_python_test). It is not a simulation of GTA VI. It
 exists to exercise the binding/marshalling/scheduling stack and to give mod
 authors something to unit-test against.
 """
@@ -18,14 +18,23 @@ from typing import Callable
 
 from ..joaat import joaat
 from ..types import Vector3
-from .backend import G6_E_UNKNOWN_NATIVE, Backend, BuildInfo, NativeError
-from .marshal import (Vec3Packed, float_slot, read_entity_ptr, slot_float, slot_int, slot_str, slots_entity,
-                      slots_vec3, vec3_packed_slots, write_entity_ptr)
+from .backend import G6_E_NOT_ON_SCRIPT_THREAD, G6_E_UNKNOWN_NATIVE, Backend, BuildInfo, NativeError
+from .mock_ui import MockUi
+from .marshal import (ScriptObjects, Vec3Packed, float_slot, read_entity_ptr, read_script_string, read_script_text,
+                      slot_float, slot_int,
+                      slot_str, slots_entity, slots_vec3, vec3_packed_slots, write_entity_ptr)
 
 Handler = Callable[["MockBackend", list[int], list[int]], None]
 
+# What a mock handler finds at +0x00 / +0x20 of a script String (the C mock exports its own pair).
+MOCK_STRING_TYPE_RECORD = (ctypes.c_uint64 * 17)(0x5354524953545950)
+MOCK_STRING_ELEM_RECORD = (ctypes.c_uint64 * 17)(0x4D454C4553545249)
+
 GROUND_Z = 12.0
 COLLISION_LOAD_MS = 100
+# Mock scenario-point handle halves (sdk/docs/script_layer.md, "Mock world").
+MOCK_SCENARIO_LO = 0x5C00000000000000
+MOCK_SCENARIO_HI = 0x5C5C
 
 
 @dataclass
@@ -69,6 +78,10 @@ class MockWorld:
     clock_seconds: int = 12 * 3600
     clock_paused: bool = False
     time_scale: float = 1.0
+    # _UILOG cached objective (G-087): the text SET copied (the game keeps at most 0x1ff bytes), and every PRINT
+    # that showed it as (game ms, text, display ms)
+    objective_text: str = ""
+    objectives_shown: list[tuple[int, str, int]] = field(default_factory=list)
 
     def spawn(self, kind: str, model: int, pos: Vector3, heading: float = 0.0) -> int:
         h = self.next_handle
@@ -96,16 +109,24 @@ class MockBackend(Backend):
         self.calls: list[tuple[int, list[int]]] = []
         self.player_ped = self.world.spawn("ped", joaat("player_zero"), Vector3(-1000.0, -2000.0, 15.0))
         self.handlers: dict[int, Handler] = {}
+        self.ui = MockUi(self)  # records gta6mod.ui calls; frames run with ui.frame() (scenario.drive does it)
         self._install_defaults()
 
     # -- Backend ---------------------------------------------------------------
-    def invoke(self, native_hash: int, slots: list[int]) -> list[int]:
+    def invoke(self, native_hash: int, slots: list[int], string_slots: int = 0, text_slots: int = 0) -> list[int]:
+        if self.ui.in_frame:  # in-game, frame callbacks run on the render thread, where natives are refused
+            raise NativeError(G6_E_NOT_ON_SCRIPT_THREAD, f"0x{native_hash:016X}", "not on the script thread (UI frame)")
         self.calls.append((native_hash, list(slots)))
         h = self.handlers.get(native_hash)
         if h is None:
             raise NativeError(G6_E_UNKNOWN_NATIVE, f"0x{native_hash:016X}", "no mock implementation")
         ret = [0, 0, 0, 0]
+        objs = None
+        if string_slots or text_slots:  # the layouts the runtime builds (script_objects.h), freed after the call
+            objs = ScriptObjects(ctypes.addressof(MOCK_STRING_TYPE_RECORD), ctypes.addressof(MOCK_STRING_ELEM_RECORD))
+            slots = objs.convert(slots, string_slots, text_slots)
         h(self, slots, ret)
+        del objs
         return ret
 
     def build_info(self) -> BuildInfo:
@@ -377,14 +398,49 @@ class MockBackend(Backend):
         def noop(b, s, r):
             pass
 
+        # GET/CLEAR_PLAYER_WANTED_LEVEL take a ped ('e', 2 slots): the game resolves it with the ped resolver and
+        # a null or non-player ped reads 0 / clears nothing (re-db script-vm.param_types.json, G-090).
+        def is_player_ped(b, s):
+            return slots_entity(s[0], s[1]) == b.player_ped
+
         def wanted_level(b, s, r):
-            r[0] = w.wanted_level
+            r[0] = w.wanted_level if is_player_ped(b, s) else 0
 
         def clear_wanted(b, s, r):
-            w.wanted_level = 0
+            if is_player_ped(b, s):
+                w.wanted_level = 0
 
         def max_wanted(b, s, r):
             r[0] = w.max_wanted_level
+
+        # Scenario points ('h', 16-byte non-entity handles, G-099): a non-zero registry id gives lo = 0x5C<<56 | id,
+        # hi = 0x5C5C; id 0 gives 16 zero bytes. DOES_SCENARIO_POINT_EXIST needs both halves (round-trip check).
+        def registered_scenario_point(b, s, r):
+            i = s[0] & 0xFFFFFFFF
+            r[0], r[1] = ((MOCK_SCENARIO_LO | i), MOCK_SCENARIO_HI) if i else (0, 0)
+
+        def scenario_point_exists(b, s, r):
+            r[0] = 1 if s[0] & 0xFFFFFFFF and s[0] >> 32 == MOCK_SCENARIO_LO >> 32 and s[1] == MOCK_SCENARIO_HI else 0
+
+        # _UILOG cached objective ('T>n', 'q>n', '>n'): the text object is read the game's way (read_script_text);
+        # SET keeps at most 511 bytes (the game copies 0x200 bytes with the NUL to +0x130); PRINT shows the text
+        # only when it is not empty and records (now, text, ms); CLEAR empties it.
+        def objective_set(b, s, r):
+            text = read_script_text(s[0]) or ""
+            w.objective_text = text.encode("utf-8")[:511].decode("utf-8", "ignore")
+
+        def objective_print(b, s, r):
+            if w.objective_text:
+                w.objectives_shown.append((b.clock_ms, w.objective_text, slot_int(s[0])))
+                b.log("INFO", "mock", f"objective shown: {w.objective_text} ({slot_int(s[0])} ms)")
+
+        def busyspinner_text(b, s, r):  # _BUSYSPINNER_SET_TEXT ('S>n'): the String read the game's way
+            b.log("INFO", "mock", f"busyspinner: {read_script_string(s[0])}")
+
+        def objective_clear(b, s, r):
+            if w.objective_text:
+                b.log("INFO", "mock", "objective cleared")
+            w.objective_text = ""
 
         def set_max_wanted(b, s, r):
             w.max_wanted_level = slot_int(s[0])
@@ -455,6 +511,8 @@ class MockBackend(Backend):
             0xABC532F9098BFD9D: wanted_level,
             0x4E4B996C928C7AA6: clear_wanted,
             0xD04CFAD1E2B7984A: max_wanted,
+            0xE3A0EFAFF3DFE27B: registered_scenario_point,  # _GET_REGISTERED_SCENARIO_POINT ('u>h')
+            0x841475AC96E794D1: scenario_point_exists,      # DOES_SCENARIO_POINT_EXIST ('h>b')
             0x28A4BD2CEE236E19: set_max_wanted,
             0x4CD38C78BD19A497: delete_entity,      # DELETE_ENTITY
             0xCC0EF140F99365C5: delete_entity,      # DELETE_PED
@@ -464,6 +522,10 @@ class MockBackend(Backend):
             0x2595DD4236549CE3: no_longer_needed,   # SET_PED_AS_NO_LONGER_NEEDED
             0x629BFA74418D6239: no_longer_needed,   # SET_VEHICLE_AS_NO_LONGER_NEEDED
             0x3AE22DEB5BA5A3E6: no_longer_needed,   # SET_OBJECT_AS_NO_LONGER_NEEDED
+            0x0CB5D1E14473D8A5: objective_set,      # _UILOG_SET_CACHED_OBJECTIVE ('T>n')
+            0xE9990552DEC71600: objective_print,    # _UILOG_PRINT_CACHED_OBJECTIVE ('q>n')
+            0xDFF0D417277B41F8: objective_clear,    # _UILOG_CLEAR_CACHED_OBJECTIVE ('>n')
+            0x7F78CD75CC4539E4: busyspinner_text,   # _BUSYSPINNER_SET_TEXT ('S>n')
         }.items():
             self.register(h, fn)
 

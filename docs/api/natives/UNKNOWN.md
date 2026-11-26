@@ -4,7 +4,7 @@
 
 [API index](../index.md) · [ABI and marshalling](../abi.md)
 
-2996 natives in re-db namespace `UNKNOWN`: 31 named, 2965 unnamed. Confidence: low 27, medium 4, none 2965.
+2994 natives in re-db namespace `UNKNOWN`: 42 named, 2952 unnamed. Confidence: high 10, low 27, medium 5, none 2952.
 
 Unnamed natives have no cross-title name. The bindings expose them as `N.RAW.N_<hash>` (C `G6_N_<hash>`), and the namespace shown here is the re-db namespace, inferred from handler clustering where the provenance says `cluster:`. Their parameters are synthesised from the observed slot reads (`Any` = an untyped 8-byte slot, `float` where a 32-bit float load was seen).
 
@@ -220,11 +220,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_00EC3D9ACAA483E5
 
-`0x00EC3D9ACAA483E5` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E87800`
+`0x00EC3D9ACAA483E5` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E87800`
 
-- C: `int32_t G6_N_00EC3D9ACAA483E5(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_00EC3D9ACAA483E5(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_00EC3D9ACAA483E5(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_00EC3D9ACAA483E5(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_00EC3D9ACAA483E5(p0: str | None) -> int`
+- Luau: `N.RAW.N_00EC3D9ACAA483E5(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e8781a, slot load 0x143e87812, depth 0); script-vm.string_params.json (G-120)
 
 ### N_00F3AEC4B2D736E9
 
@@ -780,11 +781,11 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_06A37804DFE3762D
 
-`0x06A37804DFE3762D` · sig `ii>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x4464D10`
+`0x06A37804DFE3762D` · sig `i>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x4464D10`
 
-- C: `void G6_N_06A37804DFE3762D(const g6_host_api* api, int32_t p0, int32_t p1)`
-- Python: `N.RAW.N_06A37804DFE3762D(p0: int, p1: int) -> None`
-- Luau: `N.RAW.N_06A37804DFE3762D(p0: number, p1: number): ()`
+- C: `void G6_N_06A37804DFE3762D(const g6_host_api* api, int32_t p0)`
+- Python: `N.RAW.N_06A37804DFE3762D(p0: int) -> None`
+- Luau: `N.RAW.N_06A37804DFE3762D(p0: number): ()`
 
 ### N_06AC5DB43B613663
 
@@ -1140,11 +1141,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_09E03FF52C8102E0
 
-`0x09E03FF52C8102E0` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E879B0`
+`0x09E03FF52C8102E0` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E879B0`
 
-- C: `int32_t G6_N_09E03FF52C8102E0(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_09E03FF52C8102E0(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_09E03FF52C8102E0(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_09E03FF52C8102E0(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_09E03FF52C8102E0(p0: str | None) -> int`
+- Luau: `N.RAW.N_09E03FF52C8102E0(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e879ca, slot load 0x143e879c2, depth 0); script-vm.string_params.json (G-120)
 
 ### N_09FF7F9F5E9A4FF8
 
@@ -1292,11 +1294,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_0BC0AE8892AF9BF6
 
-`0x0BC0AE8892AF9BF6` · sig `ii>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x44BC6E0`
+`0x0BC0AE8892AF9BF6` · sig `iT>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x44BC6E0`
 
-- C: `void G6_N_0BC0AE8892AF9BF6(const g6_host_api* api, int32_t p0, int32_t p1)`
-- Python: `N.RAW.N_0BC0AE8892AF9BF6(p0: int, p1: int) -> None`
-- Luau: `N.RAW.N_0BC0AE8892AF9BF6(p0: number, p1: number): ()`
+- C: `void G6_N_0BC0AE8892AF9BF6(const g6_host_api* api, int32_t p0, const char* p1)`
+- Python: `N.RAW.N_0BC0AE8892AF9BF6(p0: int, p1: str | None) -> None`
+- Luau: `N.RAW.N_0BC0AE8892AF9BF6(p0: number, p1: string?): ()`
+- provenance: ; param 1 typed ScriptText (was Any): slot 1 read as a script text object (0x1444f85fd, slot load 0x1444bc708, depth 1); script-vm.string_params.json (G-120)
 
 ### N_0BD3ED4788E613E0
 
@@ -2289,14 +2292,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `void G6_N_165A57B408F81D3F(const g6_host_api* api, int32_t p0, int32_t p1)`
 - Python: `N.RAW.N_165A57B408F81D3F(p0: int, p1: int) -> None`
 - Luau: `N.RAW.N_165A57B408F81D3F(p0: number, p1: number): ()`
-
-### N_1660AC5AAF47CE2E
-
-`0x1660AC5AAF47CE2E` · sig `i>w` · params 1, argc_inferred 1, arg slots 1 · returns `Vector3` · name: unnamed · confidence **none** · status observed · handler RVA `0x44676D0`
-
-- C: `g6_vec3 G6_N_1660AC5AAF47CE2E(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_1660AC5AAF47CE2E(p0: int) -> Vector3`
-- Luau: `N.RAW.N_1660AC5AAF47CE2E(p0: number): vector`
 
 ### N_166E399945FF1BB4
 
@@ -4058,14 +4053,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - Python: `N.RAW.N_294294407C97F3E7(p0: int, p1: int) -> int`
 - Luau: `N.RAW.N_294294407C97F3E7(p0: number, p1: number): number`
 
-### N_29454F052443C9EB
-
-`0x29454F052443C9EB` · sig `i>w` · params 1, argc_inferred 1, arg slots 1 · returns `Vector3` · name: unnamed · confidence **none** · status observed · handler RVA `0x44675B0`
-
-- C: `g6_vec3 G6_N_29454F052443C9EB(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_29454F052443C9EB(p0: int) -> Vector3`
-- Luau: `N.RAW.N_29454F052443C9EB(p0: number): vector`
-
 ### N_294D2633D63AB450
 
 `0x294D2633D63AB450` · sig `>i` · params 0, argc_inferred 0, arg slots 0 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x44FBA80`
@@ -4193,14 +4180,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `void G6_N_2A5D835A51C3A227(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, float p3, int32_t p4, int32_t p5, int32_t p6, int32_t p7, int32_t p8)`
 - Python: `N.RAW.N_2A5D835A51C3A227(p0: int, p1: int, p2: int, p3: float, p4: int, p5: int, p6: int, p7: int, p8: int) -> None`
 - Luau: `N.RAW.N_2A5D835A51C3A227(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number): ()`
-
-### N_2A73138A3AA3F3CC
-
-`0x2A73138A3AA3F3CC` · sig `ifffffiiii>n` · params 10, argc_inferred 10, arg slots 10 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x3C07A00`
-
-- C: `void G6_N_2A73138A3AA3F3CC(const g6_host_api* api, int32_t p0, float p1, float p2, float p3, float p4, float p5, int32_t p6, int32_t p7, int32_t p8, int32_t p9)`
-- Python: `N.RAW.N_2A73138A3AA3F3CC(p0: int, p1: float, p2: float, p3: float, p4: float, p5: float, p6: int, p7: int, p8: int, p9: int) -> None`
-- Luau: `N.RAW.N_2A73138A3AA3F3CC(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number): ()`
 
 ### N_2A7FC9D6107F126F
 
@@ -4380,11 +4359,11 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_2C46751A8C631EBB
 
-`0x2C46751A8C631EBB` · sig `ii>i` · params 2, argc_inferred 2, arg slots 2 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x4460710`
+`0x2C46751A8C631EBB` · sig `i>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x4460710`
 
-- C: `int32_t G6_N_2C46751A8C631EBB(const g6_host_api* api, int32_t p0, int32_t p1)`
-- Python: `N.RAW.N_2C46751A8C631EBB(p0: int, p1: int) -> int`
-- Luau: `N.RAW.N_2C46751A8C631EBB(p0: number, p1: number): number`
+- C: `int32_t G6_N_2C46751A8C631EBB(const g6_host_api* api, int32_t p0)`
+- Python: `N.RAW.N_2C46751A8C631EBB(p0: int) -> int`
+- Luau: `N.RAW.N_2C46751A8C631EBB(p0: number): number`
 
 ### N_2C59D9FFB05C56E7
 
@@ -4660,11 +4639,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_2FB80A1ACD48AA71
 
-`0x2FB80A1ACD48AA71` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E87940`
+`0x2FB80A1ACD48AA71` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E87940`
 
-- C: `int32_t G6_N_2FB80A1ACD48AA71(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_2FB80A1ACD48AA71(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_2FB80A1ACD48AA71(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_2FB80A1ACD48AA71(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_2FB80A1ACD48AA71(p0: str | None) -> int`
+- Luau: `N.RAW.N_2FB80A1ACD48AA71(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e8795a, slot load 0x143e87952, depth 0); script-vm.string_params.json (G-120)
 
 ### N_2FBFDB5B34923C73
 
@@ -5586,14 +5566,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - Python: `N.RAW.N_3867B3D147BA369B(p0: int, p1: int) -> int`
 - Luau: `N.RAW.N_3867B3D147BA369B(p0: number, p1: number): number`
 
-### N_387E306529592436
-
-`0x387E306529592436` · sig `ii>i` · params 2, argc_inferred 2, arg slots 2 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x4BC66A0`
-
-- C: `int32_t G6_N_387E306529592436(const g6_host_api* api, int32_t p0, int32_t p1)`
-- Python: `N.RAW.N_387E306529592436(p0: int, p1: int) -> int`
-- Luau: `N.RAW.N_387E306529592436(p0: number, p1: number): number`
-
 ### N_387FBEF0A7D31A05
 
 `0x387FBEF0A7D31A05` · sig `iiiifii>n` · params 7, argc_inferred 7, arg slots 7 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x3CD5AA0`
@@ -5644,11 +5616,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_38EC5EF6207A8B00
 
-`0x38EC5EF6207A8B00` · sig `i>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x29CC670`
+`0x38EC5EF6207A8B00` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x29CC670`
 
-- C: `int32_t G6_N_38EC5EF6207A8B00(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_38EC5EF6207A8B00(p0: int) -> int`
-- Luau: `N.RAW.N_38EC5EF6207A8B00(p0: number): number`
+- C: `int32_t G6_N_38EC5EF6207A8B00(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_38EC5EF6207A8B00(p0: str | None) -> int`
+- Luau: `N.RAW.N_38EC5EF6207A8B00(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x1419af437, slot load 0x1429cc69f, depth 2); script-vm.string_params.json (G-120)
 
 ### N_38F680479573DDC2
 
@@ -7236,11 +7209,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_486C38BC8E7DB9B8
 
-`0x486C38BC8E7DB9B8` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E87870`
+`0x486C38BC8E7DB9B8` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E87870`
 
-- C: `int32_t G6_N_486C38BC8E7DB9B8(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_486C38BC8E7DB9B8(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_486C38BC8E7DB9B8(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_486C38BC8E7DB9B8(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_486C38BC8E7DB9B8(p0: str | None) -> int`
+- Luau: `N.RAW.N_486C38BC8E7DB9B8(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e8788a, slot load 0x143e87882, depth 0); script-vm.string_params.json (G-120)
 
 ### N_4876D4E9911E18DF
 
@@ -7618,14 +7592,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - Python: `N.RAW.N_4CE3F709E914A238() -> int`
 - Luau: `N.RAW.N_4CE3F709E914A238(): number`
 
-### N_4CF27CB4CA538E0D
-
-`0x4CF27CB4CA538E0D` · sig `i>w` · params 1, argc_inferred 1, arg slots 1 · returns `Vector3` · name: unnamed · confidence **none** · status observed · handler RVA `0x4467430`
-
-- C: `g6_vec3 G6_N_4CF27CB4CA538E0D(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_4CF27CB4CA538E0D(p0: int) -> Vector3`
-- Luau: `N.RAW.N_4CF27CB4CA538E0D(p0: number): vector`
-
 ### N_4CF81C224D584BF0
 
 `0x4CF81C224D584BF0` · sig `ii>i` · params 2, argc_inferred 2, arg slots 2 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x4A874A0`
@@ -7900,11 +7866,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_4F7A956B8416A2A0
 
-`0x4F7A956B8416A2A0` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E88020`
+`0x4F7A956B8416A2A0` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E88020`
 
-- C: `int32_t G6_N_4F7A956B8416A2A0(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_4F7A956B8416A2A0(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_4F7A956B8416A2A0(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_4F7A956B8416A2A0(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_4F7A956B8416A2A0(p0: str | None) -> int`
+- Luau: `N.RAW.N_4F7A956B8416A2A0(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e8803a, slot load 0x143e88032, depth 0); script-vm.string_params.json (G-120)
 
 ### N_4FC25A49CC17FE88
 
@@ -8578,14 +8545,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - Python: `N.RAW.N_589B11ABC0F78DDA(p0: int, p1: int) -> Vector3`
 - Luau: `N.RAW.N_589B11ABC0F78DDA(p0: number, p1: number): vector`
 
-### N_58B552E6A5652281
-
-`0x58B552E6A5652281` · sig `i>w` · params 1, argc_inferred 1, arg slots 1 · returns `Vector3` · name: unnamed · confidence **none** · status observed · handler RVA `0x4467A60`
-
-- C: `g6_vec3 G6_N_58B552E6A5652281(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_58B552E6A5652281(p0: int) -> Vector3`
-- Luau: `N.RAW.N_58B552E6A5652281(p0: number): vector`
-
 ### N_59163917F2B388C4
 
 `0x59163917F2B388C4` · sig `ii>i` · params 2, argc_inferred 2, arg slots 2 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x4BF7320`
@@ -8945,14 +8904,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `int32_t G6_N_5E0B759BC7C9C4B1(const g6_host_api* api)`
 - Python: `N.RAW.N_5E0B759BC7C9C4B1() -> int`
 - Luau: `N.RAW.N_5E0B759BC7C9C4B1(): number`
-
-### N_5E355622C5AF21D1
-
-`0x5E355622C5AF21D1` · sig `i>w` · params 1, argc_inferred 1, arg slots 1 · returns `Vector3` · name: unnamed · confidence **none** · status observed · handler RVA `0x44674F0`
-
-- C: `g6_vec3 G6_N_5E355622C5AF21D1(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_5E355622C5AF21D1(p0: int) -> Vector3`
-- Luau: `N.RAW.N_5E355622C5AF21D1(p0: number): vector`
 
 ### N_5E3D24E85C0B92CB
 
@@ -9924,11 +9875,11 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_69738C86A5A24F24
 
-`0x69738C86A5A24F24` · sig `ii>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x4464D70`
+`0x69738C86A5A24F24` · sig `i>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x4464D70`
 
-- C: `void G6_N_69738C86A5A24F24(const g6_host_api* api, int32_t p0, int32_t p1)`
-- Python: `N.RAW.N_69738C86A5A24F24(p0: int, p1: int) -> None`
-- Luau: `N.RAW.N_69738C86A5A24F24(p0: number, p1: number): ()`
+- C: `void G6_N_69738C86A5A24F24(const g6_host_api* api, int32_t p0)`
+- Python: `N.RAW.N_69738C86A5A24F24(p0: int) -> None`
+- Luau: `N.RAW.N_69738C86A5A24F24(p0: number): ()`
 
 ### N_69A709271D5918D1
 
@@ -10060,11 +10011,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_6B5AF9674CD77786
 
-`0x6B5AF9674CD77786` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E865E0`
+`0x6B5AF9674CD77786` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E865E0`
 
-- C: `int32_t G6_N_6B5AF9674CD77786(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_6B5AF9674CD77786(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_6B5AF9674CD77786(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_6B5AF9674CD77786(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_6B5AF9674CD77786(p0: str | None) -> int`
+- Luau: `N.RAW.N_6B5AF9674CD77786(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e865fa, slot load 0x143e865f2, depth 0); script-vm.string_params.json (G-120)
 
 ### N_6B6899C888CD05E8
 
@@ -10388,11 +10340,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_6F6B5227476428CE
 
-`0x6F6B5227476428CE` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E86860`
+`0x6F6B5227476428CE` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E86860`
 
-- C: `int32_t G6_N_6F6B5227476428CE(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_6F6B5227476428CE(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_6F6B5227476428CE(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_6F6B5227476428CE(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_6F6B5227476428CE(p0: str | None) -> int`
+- Luau: `N.RAW.N_6F6B5227476428CE(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e8687a, slot load 0x143e86872, depth 0); script-vm.string_params.json (G-120)
 
 ### N_6F7064B840FA1D10
 
@@ -10873,14 +10826,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `void G6_N_755E575FC831FB39(const g6_host_api* api, int32_t p0)`
 - Python: `N.RAW.N_755E575FC831FB39(p0: int) -> None`
 - Luau: `N.RAW.N_755E575FC831FB39(p0: number): ()`
-
-### N_756CD37D14B03371
-
-`0x756CD37D14B03371` · sig `i>w` · params 1, argc_inferred 1, arg slots 1 · returns `Vector3` · name: unnamed · confidence **none** · status observed · handler RVA `0x4467B80`
-
-- C: `g6_vec3 G6_N_756CD37D14B03371(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_756CD37D14B03371(p0: int) -> Vector3`
-- Luau: `N.RAW.N_756CD37D14B03371(p0: number): vector`
 
 ### N_758D07DCA8872069
 
@@ -11396,11 +11341,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_7B1F1CD17F391E0E
 
-`0x7B1F1CD17F391E0E` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E86710`
+`0x7B1F1CD17F391E0E` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E86710`
 
-- C: `int32_t G6_N_7B1F1CD17F391E0E(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_7B1F1CD17F391E0E(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_7B1F1CD17F391E0E(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_7B1F1CD17F391E0E(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_7B1F1CD17F391E0E(p0: str | None) -> int`
+- Luau: `N.RAW.N_7B1F1CD17F391E0E(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e86729, slot load 0x143e86721, depth 0); script-vm.string_params.json (G-120)
 
 ### N_7B57E958218FD8DC
 
@@ -11804,11 +11750,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_7F30BD2DE6CDDBB3
 
-`0x7F30BD2DE6CDDBB3` · sig `iiii>n` · params 4, argc_inferred 4, arg slots 4 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x45071F0`
+`0x7F30BD2DE6CDDBB3` · sig `iTii>n` · params 4, argc_inferred 4, arg slots 4 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x45071F0`
 
-- C: `void G6_N_7F30BD2DE6CDDBB3(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3)`
-- Python: `N.RAW.N_7F30BD2DE6CDDBB3(p0: int, p1: int, p2: int, p3: int) -> None`
-- Luau: `N.RAW.N_7F30BD2DE6CDDBB3(p0: number, p1: number, p2: number, p3: number): ()`
+- C: `void G6_N_7F30BD2DE6CDDBB3(const g6_host_api* api, int32_t p0, const char* p1, int32_t p2, int32_t p3)`
+- Python: `N.RAW.N_7F30BD2DE6CDDBB3(p0: int, p1: str | None, p2: int, p3: int) -> None`
+- Luau: `N.RAW.N_7F30BD2DE6CDDBB3(p0: number, p1: string?, p2: number, p3: number): ()`
+- provenance: ; param 1 typed ScriptText (was Any): slot 1 read as a script text object (0x1445118da, slot load 0x144507218, depth 1); script-vm.string_params.json (G-120)
 
 ### N_7F3ADF5CECD6C834
 
@@ -12460,11 +12407,11 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_871071723BD19ED0
 
-`0x871071723BD19ED0` · sig `iiiiii>n` · params 6, argc_inferred 6, arg slots 6 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x3182A60`
+`0x871071723BD19ED0` · sig `iii>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x3182A60`
 
-- C: `void G6_N_871071723BD19ED0(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_871071723BD19ED0(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> None`
-- Luau: `N.RAW.N_871071723BD19ED0(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): ()`
+- C: `void G6_N_871071723BD19ED0(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2)`
+- Python: `N.RAW.N_871071723BD19ED0(p0: int, p1: int, p2: int) -> None`
+- Luau: `N.RAW.N_871071723BD19ED0(p0: number, p1: number, p2: number): ()`
 
 ### N_871F1F3C1277BE71
 
@@ -13708,11 +13655,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_9523474FB5C713EB
 
-`0x9523474FB5C713EB` · sig `iiiiiii>n` · params 7, argc_inferred 7, arg slots 7 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x44FC760`
+`0x9523474FB5C713EB` · sig `iiiiiiT>n` · params 7, argc_inferred 7, arg slots 7 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x44FC760`
 
-- C: `void G6_N_9523474FB5C713EB(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5, int32_t p6)`
-- Python: `N.RAW.N_9523474FB5C713EB(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int, p6: int) -> None`
-- Luau: `N.RAW.N_9523474FB5C713EB(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number, p6: number): ()`
+- C: `void G6_N_9523474FB5C713EB(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5, const char* p6)`
+- Python: `N.RAW.N_9523474FB5C713EB(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int, p6: str | None) -> None`
+- Luau: `N.RAW.N_9523474FB5C713EB(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number, p6: string?): ()`
+- provenance: ; param 6 typed ScriptText (was Any): slot 6 read as a script text object (0x14451c6fe, slot load 0x1444fc788, depth 1); script-vm.string_params.json (G-120)
 
 ### N_953387E2BAFFB776
 
@@ -14500,11 +14448,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_9D402CF762F7D48A
 
-`0x9D402CF762F7D48A` · sig `ii>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x45073F0`
+`0x9D402CF762F7D48A` · sig `iT>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x45073F0`
 
-- C: `void G6_N_9D402CF762F7D48A(const g6_host_api* api, int32_t p0, int32_t p1)`
-- Python: `N.RAW.N_9D402CF762F7D48A(p0: int, p1: int) -> None`
-- Luau: `N.RAW.N_9D402CF762F7D48A(p0: number, p1: number): ()`
+- C: `void G6_N_9D402CF762F7D48A(const g6_host_api* api, int32_t p0, const char* p1)`
+- Python: `N.RAW.N_9D402CF762F7D48A(p0: int, p1: str | None) -> None`
+- Luau: `N.RAW.N_9D402CF762F7D48A(p0: number, p1: string?): ()`
+- provenance: ; param 1 typed ScriptText (was Any): slot 1 read as a script text object (0x1445116f0, slot load 0x144507418, depth 1); script-vm.string_params.json (G-120)
 
 ### N_9D551D37342CE048
 
@@ -14532,11 +14481,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_9D776F91C48793F2
 
-`0x9D776F91C48793F2` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E87FC0`
+`0x9D776F91C48793F2` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E87FC0`
 
-- C: `int32_t G6_N_9D776F91C48793F2(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_9D776F91C48793F2(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_9D776F91C48793F2(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_9D776F91C48793F2(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_9D776F91C48793F2(p0: str | None) -> int`
+- Luau: `N.RAW.N_9D776F91C48793F2(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e87fda, slot load 0x143e87fd2, depth 0); script-vm.string_params.json (G-120)
 
 ### N_9D7B0F897303B4EB
 
@@ -14604,11 +14554,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_9E6C51040D9B1925
 
-`0x9E6C51040D9B1925` · sig `iiiiiiiiiii>i` · params 11, argc_inferred 11, arg slots 11 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3C0B8C0`
+`0x9E6C51040D9B1925` · sig `iiiiiS>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3C0B8C0`
 
-- C: `int32_t G6_N_9E6C51040D9B1925(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5, int32_t p6, int32_t p7, int32_t p8, int32_t p9, int32_t p10)`
-- Python: `N.RAW.N_9E6C51040D9B1925(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int, p6: int, p7: int, p8: int, p9: int, p10: int) -> int`
-- Luau: `N.RAW.N_9E6C51040D9B1925(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number): number`
+- C: `int32_t G6_N_9E6C51040D9B1925(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, const char* p5)`
+- Python: `N.RAW.N_9E6C51040D9B1925(p0: int, p1: int, p2: int, p3: int, p4: int, p5: str | None) -> int`
+- Luau: `N.RAW.N_9E6C51040D9B1925(p0: number, p1: number, p2: number, p3: number, p4: number, p5: string?): number`
+- provenance: ; param 5 typed ScriptString (was Any): slot 5 read as a script string object (0x143c0b8e6, slot load 0x143c0b8dd, depth 0); script-vm.string_params.json (G-120)
 
 ### N_9E9DFA86197D2532
 
@@ -14932,11 +14883,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_A142A0686AC1C28B
 
-`0xA142A0686AC1C28B` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E85310`
+`0xA142A0686AC1C28B` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E85310`
 
-- C: `int32_t G6_N_A142A0686AC1C28B(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_A142A0686AC1C28B(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_A142A0686AC1C28B(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_A142A0686AC1C28B(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_A142A0686AC1C28B(p0: str | None) -> int`
+- Luau: `N.RAW.N_A142A0686AC1C28B(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e8532a, slot load 0x143e85322, depth 0); script-vm.string_params.json (G-120)
 
 ### N_A15003EA9D511DDF
 
@@ -15092,11 +15044,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_A29F6781190A10CA
 
-`0xA29F6781190A10CA` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E84C20`
+`0xA29F6781190A10CA` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E84C20`
 
-- C: `int32_t G6_N_A29F6781190A10CA(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_A29F6781190A10CA(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_A29F6781190A10CA(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_A29F6781190A10CA(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_A29F6781190A10CA(p0: str | None) -> int`
+- Luau: `N.RAW.N_A29F6781190A10CA(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e84c39, slot load 0x143e84c31, depth 0); script-vm.string_params.json (G-120)
 
 ### N_A2A2DC7EC163F5E9
 
@@ -15484,11 +15437,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_A5D10228BD1EAF15
 
-`0xA5D10228BD1EAF15` · sig `i>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x44CD910`
+`0xA5D10228BD1EAF15` · sig `T>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x44CD910`
 
-- C: `void G6_N_A5D10228BD1EAF15(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_A5D10228BD1EAF15(p0: int) -> None`
-- Luau: `N.RAW.N_A5D10228BD1EAF15(p0: number): ()`
+- C: `void G6_N_A5D10228BD1EAF15(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_A5D10228BD1EAF15(p0: str | None) -> None`
+- Luau: `N.RAW.N_A5D10228BD1EAF15(p0: string?): ()`
+- provenance: ; param 0 typed ScriptText (was Any): slot 0 read as a script text object (0x1444cf371, slot load 0x1444cd931, depth 1); script-vm.string_params.json (G-120)
 
 ### N_A5D7A7CBDA008398
 
@@ -15796,11 +15750,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_A8BE1E4686331DD8
 
-`0xA8BE1E4686331DD8` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E88090`
+`0xA8BE1E4686331DD8` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E88090`
 
-- C: `int32_t G6_N_A8BE1E4686331DD8(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_A8BE1E4686331DD8(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_A8BE1E4686331DD8(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_A8BE1E4686331DD8(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_A8BE1E4686331DD8(p0: str | None) -> int`
+- Luau: `N.RAW.N_A8BE1E4686331DD8(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e880aa, slot load 0x143e880a2, depth 0); script-vm.string_params.json (G-120)
 
 ### N_A8C4A2FECAB6A595
 
@@ -16076,11 +16031,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_ACCF7352A8221B35
 
-`0xACCF7352A8221B35` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E877A0`
+`0xACCF7352A8221B35` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E877A0`
 
-- C: `int32_t G6_N_ACCF7352A8221B35(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_ACCF7352A8221B35(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_ACCF7352A8221B35(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_ACCF7352A8221B35(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_ACCF7352A8221B35(p0: str | None) -> int`
+- Luau: `N.RAW.N_ACCF7352A8221B35(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e877ba, slot load 0x143e877b2, depth 0); script-vm.string_params.json (G-120)
 
 ### N_ACD01953CCD65D06
 
@@ -17436,11 +17392,11 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_BC2A9603180C1728
 
-`0xBC2A9603180C1728` · sig `iiii>n` · params 4, argc_inferred 4, arg slots 4 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x45070E0`
+`0xBC2A9603180C1728` · sig `ii>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x45070E0`
 
-- C: `void G6_N_BC2A9603180C1728(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3)`
-- Python: `N.RAW.N_BC2A9603180C1728(p0: int, p1: int, p2: int, p3: int) -> None`
-- Luau: `N.RAW.N_BC2A9603180C1728(p0: number, p1: number, p2: number, p3: number): ()`
+- C: `void G6_N_BC2A9603180C1728(const g6_host_api* api, int32_t p0, int32_t p1)`
+- Python: `N.RAW.N_BC2A9603180C1728(p0: int, p1: int) -> None`
+- Luau: `N.RAW.N_BC2A9603180C1728(p0: number, p1: number): ()`
 
 ### N_BC3917EE15627955
 
@@ -17537,14 +17493,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `void G6_N_BD39D455144066A0(const g6_host_api* api, int32_t p0)`
 - Python: `N.RAW.N_BD39D455144066A0(p0: int) -> None`
 - Luau: `N.RAW.N_BD39D455144066A0(p0: number): ()`
-
-### N_BD3BAFF6D642EFC4
-
-`0xBD3BAFF6D642EFC4` · sig `i>w` · params 1, argc_inferred 1, arg slots 1 · returns `Vector3` · name: unnamed · confidence **none** · status observed · handler RVA `0x4467490`
-
-- C: `g6_vec3 G6_N_BD3BAFF6D642EFC4(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_BD3BAFF6D642EFC4(p0: int) -> Vector3`
-- Luau: `N.RAW.N_BD3BAFF6D642EFC4(p0: number): vector`
 
 ### N_BD6A2F05D87A4C04
 
@@ -18340,11 +18288,11 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_C5B3C1951BD5F701
 
-`0xC5B3C1951BD5F701` · sig `ii>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x4460DC0`
+`0xC5B3C1951BD5F701` · sig `i>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x4460DC0`
 
-- C: `void G6_N_C5B3C1951BD5F701(const g6_host_api* api, int32_t p0, int32_t p1)`
-- Python: `N.RAW.N_C5B3C1951BD5F701(p0: int, p1: int) -> None`
-- Luau: `N.RAW.N_C5B3C1951BD5F701(p0: number, p1: number): ()`
+- C: `void G6_N_C5B3C1951BD5F701(const g6_host_api* api, int32_t p0)`
+- Python: `N.RAW.N_C5B3C1951BD5F701(p0: int) -> None`
+- Luau: `N.RAW.N_C5B3C1951BD5F701(p0: number): ()`
 
 ### N_C5BE2C5465957A94
 
@@ -18521,14 +18469,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `void G6_N_C815F0654CE2020D(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3)`
 - Python: `N.RAW.N_C815F0654CE2020D(p0: int, p1: int, p2: int, p3: int) -> None`
 - Luau: `N.RAW.N_C815F0654CE2020D(p0: number, p1: number, p2: number, p3: number): ()`
-
-### N_C827D3A0773681A1
-
-`0xC827D3A0773681A1` · sig `iii>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E91DB0`
-
-- C: `void G6_N_C827D3A0773681A1(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2)`
-- Python: `N.RAW.N_C827D3A0773681A1(p0: int, p1: int, p2: int) -> None`
-- Luau: `N.RAW.N_C827D3A0773681A1(p0: number, p1: number, p2: number): ()`
 
 ### N_C837C5FF3C57FE70
 
@@ -19444,11 +19384,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_D2494BFF58ADDC94
 
-`0xD2494BFF58ADDC94` · sig `iiiiiii>n` · params 7, argc_inferred 7, arg slots 7 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x44FC690`
+`0xD2494BFF58ADDC94` · sig `iiiiiiT>n` · params 7, argc_inferred 7, arg slots 7 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x44FC690`
 
-- C: `void G6_N_D2494BFF58ADDC94(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5, int32_t p6)`
-- Python: `N.RAW.N_D2494BFF58ADDC94(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int, p6: int) -> None`
-- Luau: `N.RAW.N_D2494BFF58ADDC94(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number, p6: number): ()`
+- C: `void G6_N_D2494BFF58ADDC94(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5, const char* p6)`
+- Python: `N.RAW.N_D2494BFF58ADDC94(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int, p6: str | None) -> None`
+- Luau: `N.RAW.N_D2494BFF58ADDC94(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number, p6: string?): ()`
+- provenance: ; param 6 typed ScriptText (was Any): slot 6 read as a script text object (0x14451c7de, slot load 0x1444fc6b8, depth 1); script-vm.string_params.json (G-120)
 
 ### N_D25D4FF4A9733824
 
@@ -19737,14 +19678,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `int32_t G6_N_D4D5733260F6AAB4(const g6_host_api* api)`
 - Python: `N.RAW.N_D4D5733260F6AAB4() -> int`
 - Luau: `N.RAW.N_D4D5733260F6AAB4(): number`
-
-### N_D4DC75D4B87334BA
-
-`0xD4DC75D4B87334BA` · sig `i>w` · params 1, argc_inferred 1, arg slots 1 · returns `Vector3` · name: unnamed · confidence **none** · status observed · handler RVA `0x4467D00`
-
-- C: `g6_vec3 G6_N_D4DC75D4B87334BA(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_D4DC75D4B87334BA(p0: int) -> Vector3`
-- Luau: `N.RAW.N_D4DC75D4B87334BA(p0: number): vector`
 
 ### N_D4F675F269EF40D0
 
@@ -20218,14 +20151,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - Python: `N.RAW.N_D9443B4D2ED4A819(p0: int, p1: int) -> int`
 - Luau: `N.RAW.N_D9443B4D2ED4A819(p0: number, p1: number): number`
 
-### N_D9711FCEA997E8F7
-
-`0xD9711FCEA997E8F7` · sig `i>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x4467C40`
-
-- C: `int32_t G6_N_D9711FCEA997E8F7(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_D9711FCEA997E8F7(p0: int) -> int`
-- Luau: `N.RAW.N_D9711FCEA997E8F7(p0: number): number`
-
 ### N_D99A636FF6A18E12
 
 `0xD99A636FF6A18E12` · sig `ii>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x45074B0`
@@ -20436,11 +20361,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_DB92D657E8C74A03
 
-`0xDB92D657E8C74A03` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E86640`
+`0xDB92D657E8C74A03` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E86640`
 
-- C: `int32_t G6_N_DB92D657E8C74A03(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_DB92D657E8C74A03(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_DB92D657E8C74A03(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_DB92D657E8C74A03(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_DB92D657E8C74A03(p0: str | None) -> int`
+- Luau: `N.RAW.N_DB92D657E8C74A03(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e8665e, slot load 0x143e86652, depth 0); script-vm.string_params.json (G-120)
 
 ### N_DB96E6B4329EFC14
 
@@ -20932,11 +20858,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_E1C4D0AC3CFE0FDA
 
-`0xE1C4D0AC3CFE0FDA` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E878E0`
+`0xE1C4D0AC3CFE0FDA` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **none** · status observed · handler RVA `0x3E878E0`
 
-- C: `int32_t G6_N_E1C4D0AC3CFE0FDA(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_E1C4D0AC3CFE0FDA(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_E1C4D0AC3CFE0FDA(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
+- C: `int32_t G6_N_E1C4D0AC3CFE0FDA(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_E1C4D0AC3CFE0FDA(p0: str | None) -> int`
+- Luau: `N.RAW.N_E1C4D0AC3CFE0FDA(p0: string?): number`
+- provenance: ; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e878fa, slot load 0x143e878f2, depth 0); script-vm.string_params.json (G-120)
 
 ### N_E1CF0330D00E8D81
 
@@ -21169,14 +21096,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `int32_t G6_N_E395E07CFEABA6CB(const g6_host_api* api, int32_t p0, int32_t p1)`
 - Python: `N.RAW.N_E395E07CFEABA6CB(p0: int, p1: int) -> int`
 - Luau: `N.RAW.N_E395E07CFEABA6CB(p0: number, p1: number): number`
-
-### N_E3A0EFAFF3DFE27B
-
-`0xE3A0EFAFF3DFE27B` · sig `i>w` · params 1, argc_inferred 1, arg slots 1 · returns `Vector3` · name: unnamed · confidence **none** · status observed · handler RVA `0x44677F0`
-
-- C: `g6_vec3 G6_N_E3A0EFAFF3DFE27B(const g6_host_api* api, int32_t p0)`
-- Python: `N.RAW.N_E3A0EFAFF3DFE27B(p0: int) -> Vector3`
-- Luau: `N.RAW.N_E3A0EFAFF3DFE27B(p0: number): vector`
 
 ### N_E3A444D9C297FDC9
 
@@ -22284,11 +22203,11 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_EEF28027DA54D8A9
 
-`0xEEF28027DA54D8A9` · sig `iiiiii>n` · params 6, argc_inferred 6, arg slots 6 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x3182AB0`
+`0xEEF28027DA54D8A9` · sig `iii>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: unnamed · confidence **none** · status observed · handler RVA `0x3182AB0`
 
-- C: `void G6_N_EEF28027DA54D8A9(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_EEF28027DA54D8A9(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> None`
-- Luau: `N.RAW.N_EEF28027DA54D8A9(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): ()`
+- C: `void G6_N_EEF28027DA54D8A9(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2)`
+- Python: `N.RAW.N_EEF28027DA54D8A9(p0: int, p1: int, p2: int) -> None`
+- Luau: `N.RAW.N_EEF28027DA54D8A9(p0: number, p1: number, p2: number): ()`
 
 ### N_EF347A7AAF577C9C
 
@@ -24041,3 +23960,113 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - Python: `N.UNKNOWN.SET_VEHICLE_FIXED(vehicle: int) -> None`
 - Luau: `N.UNKNOWN.SET_VEHICLE_FIXED(vehicle: buffer | number): ()`
 - provenance: identical-wrapper-body+same-callee:0x144A93300; arity matches source body
+
+### _DRAW_RECT
+
+`0x2A73138A3AA3F3CC` · sig `ifffffiiii>n` · params 10, argc_inferred 10, arg slots 10 · returns `void` · name: behaviour-descriptive (not a nativedb name) · confidence **medium** · status observed · handler RVA `0x3C07A00`
+
+- nativedb form: `void _DRAW_RECT(int p0, float x, float y, float width, float height, float heading, int red, int green, int blue, int alpha)`
+- C: `void G6_UNKNOWN__DRAW_RECT(const g6_host_api* api, int32_t p0, float x, float y, float width, float height, float heading, int32_t red, int32_t green, int32_t blue, int32_t alpha)`
+- Python: `N.UNKNOWN._DRAW_RECT(p0: int, x: float, y: float, width: float, height: float, heading: float, red: int, green: int, blue: int, alpha: int) -> None`
+- Luau: `N.UNKNOWN._DRAW_RECT(p0: number, x: number, y: number, width: number, height: number, heading: number, red: number, green: number, blue: number, alpha: number): ()`
+- provenance: method=observed-behaviour; no texture (rcx 0), centre x/y (slots 1-2), width/height (slots 3-4; the builder stores x +- w/2, y +- h/2), slot 5 stored at item +0x1c (the slot DRAW_SPRITE's nativedb list calls heading), slots 6-9 clamped to 0..255 and packed slot9<<24\|slot8<<16\|slot7<<8\|slot6, UVs (0,0)-(1,1); slot 0 is mapped through an 8-entry table (0x140dc57f0, -1 -> 0) and stored at +0x3c when non-zero [meaning unknown]; the item carries the current render target and draw order; chain 0x143c07a00 -> 0x143c34cc0 -> 0x143c34710 -> 0x1429e2e70; call sites: 1 in 1 programs; findings/phase5/34_natives_round2.md
+
+### _GET_REGISTERED_PED
+
+`0x4CF27CB4CA538E0D` · sig `u>e` · params 1, argc_inferred 1, arg slots 1 · returns `Ped` · name: behaviour-descriptive (not a nativedb name) · confidence **high** · status observed · handler RVA `0x4467430`
+
+- nativedb form: `Ped _GET_REGISTERED_PED(Hash id)`
+- C: `g6_entity G6_UNKNOWN__GET_REGISTERED_PED(const g6_host_api* api, uint32_t id)`
+- Python: `N.UNKNOWN._GET_REGISTERED_PED(id: int | str) -> int`
+- Luau: `N.UNKNOWN._GET_REGISTERED_PED(id: number | string): buffer`
+- provenance: method=observed-behaviour; registry member of type ped -> its ped handle; of type perschar -> the perschar's ped; chain 0x144467430 -> 0x140aedbf0 -> 0x140aede00 -> 0x140c14430 -> 0x140c14570 -> 0x142a06470; call sites: 123713 in 605 programs, 33484 of 33538 typed result uses go to Entity/Ped parameters; findings/phase5/32_native_naming.md
+
+### _GET_REGISTERED_PERSCHAR
+
+`0xBD3BAFF6D642EFC4` · sig `u>e` · params 1, argc_inferred 1, arg slots 1 · returns `PersChar` · name: behaviour-descriptive (not a nativedb name) · confidence **high** · status observed · handler RVA `0x4467490`
+
+- nativedb form: `PersChar _GET_REGISTERED_PERSCHAR(Hash id)`
+- C: `g6_entity G6_UNKNOWN__GET_REGISTERED_PERSCHAR(const g6_host_api* api, uint32_t id)`
+- Python: `N.UNKNOWN._GET_REGISTERED_PERSCHAR(id: int | str) -> int`
+- Luau: `N.UNKNOWN._GET_REGISTERED_PERSCHAR(id: number | string): buffer`
+- provenance: method=observed-behaviour; perschar member -> its perschar handle (entry +0x8 of the perschar store); chain 0x144467490 -> 0x1444733c0 -> 0x142a09ee0 -> 0x142a09e60; call sites: 547 in 158 programs, 274 of 274 typed result uses go to PersChar parameters; findings/phase5/32_native_naming.md
+
+### _GET_REGISTERED_PERSCHAR_PED
+
+`0x5E355622C5AF21D1` · sig `u>e` · params 1, argc_inferred 1, arg slots 1 · returns `Ped` · name: behaviour-descriptive (not a nativedb name) · confidence **high** · status observed · handler RVA `0x44674F0`
+
+- nativedb form: `Ped _GET_REGISTERED_PERSCHAR_PED(Hash id)`
+- C: `g6_entity G6_UNKNOWN__GET_REGISTERED_PERSCHAR_PED(const g6_host_api* api, uint32_t id)`
+- Python: `N.UNKNOWN._GET_REGISTERED_PERSCHAR_PED(id: int | str) -> int`
+- Luau: `N.UNKNOWN._GET_REGISTERED_PERSCHAR_PED(id: number | string): buffer`
+- provenance: method=observed-behaviour; perschar member -> the ped handle stored with it (the store _GET_REGISTERED_PED uses for perschar); chain 0x1444674f0 -> 0x144473220 -> 0x142a0a5b0 -> 0x142a06470; call sites: 22685 in 286 programs, 5844 of 5856 typed result uses go to Entity/Ped parameters; findings/phase5/32_native_naming.md
+
+### _GET_REGISTERED_PICKUP
+
+`0x29454F052443C9EB` · sig `u>e` · params 1, argc_inferred 1, arg slots 1 · returns `Entity` · name: behaviour-descriptive (not a nativedb name) · confidence **high** · status observed · handler RVA `0x44675B0`
+
+- nativedb form: `Entity _GET_REGISTERED_PICKUP(Hash id)`
+- C: `g6_entity G6_UNKNOWN__GET_REGISTERED_PICKUP(const g6_host_api* api, uint32_t id)`
+- Python: `N.UNKNOWN._GET_REGISTERED_PICKUP(id: int | str) -> int`
+- Luau: `N.UNKNOWN._GET_REGISTERED_PICKUP(id: number | string): buffer`
+- provenance: method=observed-behaviour; registry member of type pickup -> its entity handle; chain 0x1444675b0 -> 0x145c49e60 -> 0x141e466b0 -> 0x145cda650 -> 0x140c14570; call sites: 27 in 7 programs, 1 of 1 typed result uses go to Entity/Object parameters; findings/phase5/32_native_naming.md
+
+### _GET_REGISTERED_PROP
+
+`0x1660AC5AAF47CE2E` · sig `u>e` · params 1, argc_inferred 1, arg slots 1 · returns `Entity` · name: behaviour-descriptive (not a nativedb name) · confidence **high** · status observed · handler RVA `0x44676D0`
+
+- nativedb form: `Entity _GET_REGISTERED_PROP(Hash id)`
+- C: `g6_entity G6_UNKNOWN__GET_REGISTERED_PROP(const g6_host_api* api, uint32_t id)`
+- Python: `N.UNKNOWN._GET_REGISTERED_PROP(id: int | str) -> int`
+- Luau: `N.UNKNOWN._GET_REGISTERED_PROP(id: number | string): buffer`
+- provenance: method=observed-behaviour; registry member of type prop -> its entity handle; chain 0x1444676d0 -> 0x141b21cc0 -> 0x141b21e60 -> 0x141fbce60 -> 0x140c14570; call sites: 7695 in 452 programs, 1142 of 1142 typed result uses go to Entity/Object parameters; findings/phase5/32_native_naming.md
+
+### _GET_REGISTERED_SCENARIO_POINT
+
+`0xE3A0EFAFF3DFE27B` · sig `u>h` · params 1, argc_inferred 1, arg slots 1 · returns `ScenarioPoint` · name: behaviour-descriptive (not a nativedb name) · confidence **high** · status observed · handler RVA `0x44677F0`
+
+- nativedb form: `ScenarioPoint _GET_REGISTERED_SCENARIO_POINT(Hash id)`
+- C: `g6_handle16 G6_UNKNOWN__GET_REGISTERED_SCENARIO_POINT(const g6_host_api* api, uint32_t id)`
+- Python: `N.UNKNOWN._GET_REGISTERED_SCENARIO_POINT(id: int | str) -> int`
+- Luau: `N.UNKNOWN._GET_REGISTERED_SCENARIO_POINT(id: number | string): buffer`
+- provenance: method=observed-behaviour; scenario-point member -> its 16-byte scenario-point handle (store +0x130a0); chain 0x1444677f0 -> 0x141cf5520 -> 0x141cf56c0 -> 0x141fbc6c0; call sites: 2581 in 235 programs, 1320 of 1320 typed result uses go to ScenarioPoint parameters; findings/phase5/32_native_naming.md
+
+### _GET_REGISTERED_TRAIN
+
+`0x58B552E6A5652281` · sig `u>e` · params 1, argc_inferred 1, arg slots 1 · returns `Vehicle` · name: behaviour-descriptive (not a nativedb name) · confidence **high** · status observed · handler RVA `0x4467A60`
+
+- nativedb form: `Vehicle _GET_REGISTERED_TRAIN(Hash id)`
+- C: `g6_entity G6_UNKNOWN__GET_REGISTERED_TRAIN(const g6_host_api* api, uint32_t id)`
+- Python: `N.UNKNOWN._GET_REGISTERED_TRAIN(id: int | str) -> int`
+- Luau: `N.UNKNOWN._GET_REGISTERED_TRAIN(id: number | string): buffer`
+- provenance: method=observed-behaviour; registry member of type train -> its vehicle handle; chain 0x144467a60 -> 0x1444720f0 -> 0x142a06110 -> 0x142a06100 -> 0x140c14570; call sites: 20 in 6 programs, 1 of 1 typed result uses go to Entity/Vehicle parameters; findings/phase5/32_native_naming.md
+
+### _GET_REGISTERED_VEHICLE
+
+`0x756CD37D14B03371` · sig `u>e` · params 1, argc_inferred 1, arg slots 1 · returns `Vehicle` · name: behaviour-descriptive (not a nativedb name) · confidence **high** · status observed · handler RVA `0x4467B80`
+
+- nativedb form: `Vehicle _GET_REGISTERED_VEHICLE(Hash id)`
+- C: `g6_entity G6_UNKNOWN__GET_REGISTERED_VEHICLE(const g6_host_api* api, uint32_t id)`
+- Python: `N.UNKNOWN._GET_REGISTERED_VEHICLE(id: int | str) -> int`
+- Luau: `N.UNKNOWN._GET_REGISTERED_VEHICLE(id: number | string): buffer`
+- provenance: method=observed-behaviour; registry member of type vehicle -> its vehicle handle; chain 0x144467b80 -> 0x14196aef0 -> 0x14196b090 -> 0x141fbca90 -> 0x140c14570; call sites: 36077 in 439 programs, 11780 of 11788 typed result uses go to Entity/Vehicle parameters; findings/phase5/32_native_naming.md
+
+### _GET_REGISTERED_VOLUME
+
+`0xD9711FCEA997E8F7` · sig `u>i` · params 1, argc_inferred 1, arg slots 1 · returns `Volume` · name: behaviour-descriptive (not a nativedb name) · confidence **high** · status observed · handler RVA `0x4467C40`
+
+- nativedb form: `Volume _GET_REGISTERED_VOLUME(Hash id)`
+- C: `int32_t G6_UNKNOWN__GET_REGISTERED_VOLUME(const g6_host_api* api, uint32_t id)`
+- Python: `N.UNKNOWN._GET_REGISTERED_VOLUME(id: int | str) -> int`
+- Luau: `N.UNKNOWN._GET_REGISTERED_VOLUME(id: number | string): number`
+- provenance: method=observed-behaviour; volume member -> its volume handle (store +0x13080, entry +0x4, -1 when absent); chain 0x144467c40 -> 0x1419b3170 -> 0x1419b3310 -> 0x141fbcec0; call sites: 15943 in 531 programs, 3995 of 3995 typed result uses go to Volume parameters; findings/phase5/32_native_naming.md
+
+### _GET_REGISTERED_WEAPON_PICKUP
+
+`0xD4DC75D4B87334BA` · sig `u>e` · params 1, argc_inferred 1, arg slots 1 · returns `Entity` · name: behaviour-descriptive (not a nativedb name) · confidence **high** · status observed · handler RVA `0x4467D00`
+
+- nativedb form: `Entity _GET_REGISTERED_WEAPON_PICKUP(Hash id)`
+- C: `g6_entity G6_UNKNOWN__GET_REGISTERED_WEAPON_PICKUP(const g6_host_api* api, uint32_t id)`
+- Python: `N.UNKNOWN._GET_REGISTERED_WEAPON_PICKUP(id: int | str) -> int`
+- Luau: `N.UNKNOWN._GET_REGISTERED_WEAPON_PICKUP(id: number | string): buffer`
+- provenance: method=observed-behaviour; registry member of type weaponpickup -> its entity handle; chain 0x144467d00 -> 0x141cebc10 -> 0x141cebdb0 -> 0x141fbcc40 -> 0x140c14570; call sites: 387 in 66 programs, 49 of 49 typed result uses go to Entity/Object parameters; findings/phase5/32_native_naming.md

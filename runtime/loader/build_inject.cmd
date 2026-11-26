@@ -39,8 +39,8 @@ if errorlevel 1 echo note: x86 g6inject_target32.exe not built; arch-mismatch ca
 if errorlevel 1 echo note: x86 g6inject_marker32.dll not built; the x86 --dll case will be skipped
 
 echo built: %OUT%\g6inject.exe
-if /i "%~1"=="test" (
-  "%TOUT%\inject_test.exe" "%OUT%\g6inject.exe"
-  if errorlevel 1 exit /b 1
-)
+rem Top-level test step: an "exit /b 1" from a ( ) block with more commands after it exits 0 under cmd /c.
+if /i not "%~1"=="test" exit /b 0
+"%TOUT%\inject_test.exe" "%OUT%\g6inject.exe"
+if errorlevel 1 (echo TEST FAILED: inject_test.exe & exit /b 1)
 exit /b 0

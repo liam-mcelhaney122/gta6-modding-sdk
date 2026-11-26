@@ -21,21 +21,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### ASSISTED_MOVEMENT_SET_ROUTE_PROPERTIES
 
-`0xD5002D78B7162E1B` · sig `si>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A7ED80`
+`0xD5002D78B7162E1B` · sig `ui>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A7ED80`
 
-- nativedb form: `void ASSISTED_MOVEMENT_SET_ROUTE_PROPERTIES(const char* route, int props)`
-- C: `void G6_TASK_ASSISTED_MOVEMENT_SET_ROUTE_PROPERTIES(const g6_host_api* api, const char* route, int32_t props)`
-- Python: `N.TASK.ASSISTED_MOVEMENT_SET_ROUTE_PROPERTIES(route: str | None, props: int) -> None`
-- Luau: `N.TASK.ASSISTED_MOVEMENT_SET_ROUTE_PROPERTIES(route: string?, props: number): ()`
+- nativedb form: `void ASSISTED_MOVEMENT_SET_ROUTE_PROPERTIES(Hash route, int props)`
+- C: `void G6_TASK_ASSISTED_MOVEMENT_SET_ROUTE_PROPERTIES(const g6_host_api* api, uint32_t route, int32_t props)`
+- Python: `N.TASK.ASSISTED_MOVEMENT_SET_ROUTE_PROPERTIES(route: int | str, props: int) -> None`
+- Luau: `N.TASK.ASSISTED_MOVEMENT_SET_ROUTE_PROPERTIES(route: number | string, props: number): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144a7eda1), compared as a 32-bit key (0x144abd437); script-vm.param_types.observed.json (G-114)
 
 ### CAN_START_ITEM_INTERACTION
 
-`0x2D19BC4DF626CBE7` · sig `euui>b` · params 4, argc_inferred 3, arg slots 5 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44BCD60`
+`0x2D19BC4DF626CBE7` · sig `eq>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44BCD60`
 
-- nativedb form: `BOOL CAN_START_ITEM_INTERACTION(Ped ped, Hash itemHash, Hash interactionAnimHash, int p3)`
-- C: `int G6_TASK_CAN_START_ITEM_INTERACTION(const g6_host_api* api, g6_entity ped, uint32_t itemHash, uint32_t interactionAnimHash, int32_t p3)`
-- Python: `N.TASK.CAN_START_ITEM_INTERACTION(ped: int, itemHash: int | str, interactionAnimHash: int | str, p3: int) -> bool`
-- Luau: `N.TASK.CAN_START_ITEM_INTERACTION(ped: buffer | number, itemHash: number | string, interactionAnimHash: number | string, p3: number): boolean`
+- nativedb form: `BOOL CAN_START_ITEM_INTERACTION(Ped ped, uint64_t ref1)`
+- C: `int G6_TASK_CAN_START_ITEM_INTERACTION(const g6_host_api* api, g6_entity ped, uint64_t ref1)`
+- Python: `N.TASK.CAN_START_ITEM_INTERACTION(ped: int, ref1: int) -> bool`
+- Luau: `N.TASK.CAN_START_ITEM_INTERACTION(ped: buffer | number, ref1: number?): boolean`
+- provenance: nativedb hash match (rdr3); GTA VI prototype from handler and call-site evidence: all 6 call sites (4 programs) pass 3 slots and the handler reads 3; nativedb params not taken: itemHash, interactionAnimHash, p3; ref1 (uint64_t, slot 2): 8-byte value dereferenced as a struct (fields +0x0:4, +0x4:4, +0xc:4, +0x34:4, +0x3e:1, +0x3f:1, +0x40:1, +0x41:1, +0x42:1); no nativedb parameter fits; script-vm.prototypes.observed.json (G-118)
 
 ### CLEAR_PED_SECONDARY_TASK
 
@@ -84,14 +86,15 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### CREATE_SCENARIO_POINT_HASH
 
-`0x94B745CE41DB58A1` · sig `uffffiibq>i` · params 9, argc_inferred 9, arg slots 9 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445D190`
+`0x94B745CE41DB58A1` · sig `uffffiibq>h` · params 9, argc_inferred 9, arg slots 9 · returns `ScenarioPoint` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445D190`
 
 - vector params: **layout unconfirmed**. The nativedb float slots are kept, but no handler evidence shows whether the game reads them as three floats or as one packed 16-byte vector. Check the handler's argument loads before relying on the parameters after the vector.
 
-- nativedb form: `int CREATE_SCENARIO_POINT_HASH(Hash scenarioHash, float x, float y, float z, float heading, Any p5, Any p6, BOOL p7)`
-- C: `int32_t G6_TASK_CREATE_SCENARIO_POINT_HASH(const g6_host_api* api, uint32_t scenarioHash, float x, float y, float z, float heading, int32_t p5, int32_t p6, int p7, uint64_t a8)`
+- nativedb form: `ScenarioPoint CREATE_SCENARIO_POINT_HASH(Hash scenarioHash, float x, float y, float z, float heading, Any p5, Any p6, BOOL p7)`
+- C: `g6_handle16 G6_TASK_CREATE_SCENARIO_POINT_HASH(const g6_host_api* api, uint32_t scenarioHash, float x, float y, float z, float heading, int32_t p5, int32_t p6, int p7, uint64_t a8)`
 - Python: `N.TASK.CREATE_SCENARIO_POINT_HASH(scenarioHash: int | str, x: float, y: float, z: float, heading: float, p5: int, p6: int, p7: bool, a8: int = 0) -> int`
-- Luau: `N.TASK.CREATE_SCENARIO_POINT_HASH(scenarioHash: number | string, x: number, y: number, z: number, heading: number, p5: number, p6: number, p7: boolean, a8: number?): number`
+- Luau: `N.TASK.CREATE_SCENARIO_POINT_HASH(scenarioHash: number | string, x: number, y: number, z: number, heading: number, p5: number, p6: number, p7: boolean, a8: number?): buffer`
+- provenance: nativedb hash match (rdr3); return typed ScenarioPoint (nativedb int) from handler evidence: 16-byte result, 2 direct result uses all go to proven scenario-point parameters; script-vm.param_types.observed.json (G-099)
 
 ### CREATE_SCENARIO_POINT_HASH_ATTACHED_TO_ENTITY
 
@@ -106,12 +109,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### DOES_SCENARIO_POINT_EXIST
 
-`0x841475AC96E794D1` · sig `i>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4461EF0`
+`0x841475AC96E794D1` · sig `h>b` · params 1, argc_inferred 1, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4461EF0`
 
-- nativedb form: `BOOL DOES_SCENARIO_POINT_EXIST(int scenario)`
-- C: `int G6_TASK_DOES_SCENARIO_POINT_EXIST(const g6_host_api* api, int32_t scenario)`
+- nativedb form: `BOOL DOES_SCENARIO_POINT_EXIST(ScenarioPoint scenario)`
+- C: `int G6_TASK_DOES_SCENARIO_POINT_EXIST(const g6_host_api* api, g6_handle16 scenario)`
 - Python: `N.TASK.DOES_SCENARIO_POINT_EXIST(scenario: int) -> bool`
-- Luau: `N.TASK.DOES_SCENARIO_POINT_EXIST(scenario: number): boolean`
+- Luau: `N.TASK.DOES_SCENARIO_POINT_EXIST(scenario: buffer): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb int) from handler evidence: slot 0 qword (0x144461f11) is the key of the scenario-point map lookup 0x14074a300 (call 0x14074a2e4); scripts pass slots 0-1 (both slots of one 16-byte native result); script-vm.param_types.observed.json (G-099)
 
 ### FIND_SCENARIO_OF_TYPE_HASH
 
@@ -153,12 +157,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### GET_IS_WAYPOINT_RECORDING_LOADED
 
-`0xCB4E8BE8A0063C5D` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A83BF0`
+`0xCB4E8BE8A0063C5D` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A83BF0`
 
-- nativedb form: `BOOL GET_IS_WAYPOINT_RECORDING_LOADED(const char* waypointRecording)`
-- C: `int G6_TASK_GET_IS_WAYPOINT_RECORDING_LOADED(const g6_host_api* api, const char* waypointRecording)`
-- Python: `N.TASK.GET_IS_WAYPOINT_RECORDING_LOADED(waypointRecording: str | None) -> bool`
-- Luau: `N.TASK.GET_IS_WAYPOINT_RECORDING_LOADED(waypointRecording: string?): boolean`
+- nativedb form: `BOOL GET_IS_WAYPOINT_RECORDING_LOADED(Hash waypointRecording)`
+- C: `int G6_TASK_GET_IS_WAYPOINT_RECORDING_LOADED(const g6_host_api* api, uint32_t waypointRecording)`
+- Python: `N.TASK.GET_IS_WAYPOINT_RECORDING_LOADED(waypointRecording: int | str) -> bool`
+- Luau: `N.TASK.GET_IS_WAYPOINT_RECORDING_LOADED(waypointRecording: number | string): boolean`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144a83c11), compared as a 32-bit key (0x14294ef89); script-vm.param_types.observed.json (G-114)
 
 ### GET_ITEM_INTERACTION_ITEM_ID
 
@@ -272,12 +277,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### GET_WAYPOINT_DISTANCE_ALONG_ROUTE
 
-`0xA5B769058763E497` · sig `si>f` · params 2, argc_inferred 2, arg slots 2 · returns `float` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A87A10`
+`0xA5B769058763E497` · sig `ui>f` · params 2, argc_inferred 2, arg slots 2 · returns `float` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A87A10`
 
-- nativedb form: `float GET_WAYPOINT_DISTANCE_ALONG_ROUTE(const char* waypointRecording, int p1)`
-- C: `float G6_TASK_GET_WAYPOINT_DISTANCE_ALONG_ROUTE(const g6_host_api* api, const char* waypointRecording, int32_t p1)`
-- Python: `N.TASK.GET_WAYPOINT_DISTANCE_ALONG_ROUTE(waypointRecording: str | None, p1: int) -> float`
-- Luau: `N.TASK.GET_WAYPOINT_DISTANCE_ALONG_ROUTE(waypointRecording: string?, p1: number): number`
+- nativedb form: `float GET_WAYPOINT_DISTANCE_ALONG_ROUTE(Hash waypointRecording, int p1)`
+- C: `float G6_TASK_GET_WAYPOINT_DISTANCE_ALONG_ROUTE(const g6_host_api* api, uint32_t waypointRecording, int32_t p1)`
+- Python: `N.TASK.GET_WAYPOINT_DISTANCE_ALONG_ROUTE(waypointRecording: int | str, p1: int) -> float`
+- Luau: `N.TASK.GET_WAYPOINT_DISTANCE_ALONG_ROUTE(waypointRecording: number | string, p1: number): number`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144a87a31), compared as a 32-bit key (0x14294ef89); script-vm.param_types.observed.json (G-114)
 
 ### IS_MOVE_BLEND_RATIO_RUNNING
 
@@ -417,12 +423,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### IS_WAYPOINT_PLAYBACK_GOING_ON_FOR_PED
 
-`0xE03B3F2D3DC59B64` · sig `es>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A8ACF0`
+`0xE03B3F2D3DC59B64` · sig `eu>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A8ACF0`
 
-- nativedb form: `BOOL IS_WAYPOINT_PLAYBACK_GOING_ON_FOR_PED(Ped ped, const char* waypointRecording)`
-- C: `int G6_TASK_IS_WAYPOINT_PLAYBACK_GOING_ON_FOR_PED(const g6_host_api* api, g6_entity ped, const char* waypointRecording)`
-- Python: `N.TASK.IS_WAYPOINT_PLAYBACK_GOING_ON_FOR_PED(ped: int, waypointRecording: str | None) -> bool`
-- Luau: `N.TASK.IS_WAYPOINT_PLAYBACK_GOING_ON_FOR_PED(ped: buffer | number, waypointRecording: string?): boolean`
+- nativedb form: `BOOL IS_WAYPOINT_PLAYBACK_GOING_ON_FOR_PED(Ped ped, Hash waypointRecording)`
+- C: `int G6_TASK_IS_WAYPOINT_PLAYBACK_GOING_ON_FOR_PED(const g6_host_api* api, g6_entity ped, uint32_t waypointRecording)`
+- Python: `N.TASK.IS_WAYPOINT_PLAYBACK_GOING_ON_FOR_PED(ped: int, waypointRecording: int | str) -> bool`
+- Luau: `N.TASK.IS_WAYPOINT_PLAYBACK_GOING_ON_FOR_PED(ped: buffer | number, waypointRecording: number | string): boolean`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144a8ad0e), compared as a 32-bit key (0x14294ef89); script-vm.param_types.observed.json (G-114)
 
 ### IS_WAYPOINT_PLAYBACK_GOING_ON_FOR_VEHICLE
 
@@ -1902,21 +1909,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### REMOVE_WAYPOINT_RECORDING
 
-`0xFF1B8B4AA1C25DC8` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A8D380`
+`0xFF1B8B4AA1C25DC8` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A8D380`
 
-- nativedb form: `void REMOVE_WAYPOINT_RECORDING(const char* waypointRecording)`
-- C: `void G6_TASK_REMOVE_WAYPOINT_RECORDING(const g6_host_api* api, const char* waypointRecording)`
-- Python: `N.TASK.REMOVE_WAYPOINT_RECORDING(waypointRecording: str | None) -> None`
-- Luau: `N.TASK.REMOVE_WAYPOINT_RECORDING(waypointRecording: string?): ()`
+- nativedb form: `void REMOVE_WAYPOINT_RECORDING(Hash waypointRecording)`
+- C: `void G6_TASK_REMOVE_WAYPOINT_RECORDING(const g6_host_api* api, uint32_t waypointRecording)`
+- Python: `N.TASK.REMOVE_WAYPOINT_RECORDING(waypointRecording: int | str) -> None`
+- Luau: `N.TASK.REMOVE_WAYPOINT_RECORDING(waypointRecording: number | string): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144a8d3a1), compared as a 32-bit key (0x14294ef89); script-vm.param_types.observed.json (G-114)
 
 ### REQUEST_WAYPOINT_RECORDING
 
-`0x9EEFB62EB27B5792` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A8D750`
+`0x9EEFB62EB27B5792` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A8D750`
 
-- nativedb form: `void REQUEST_WAYPOINT_RECORDING(const char* waypointRecording)`
-- C: `void G6_TASK_REQUEST_WAYPOINT_RECORDING(const g6_host_api* api, const char* waypointRecording)`
-- Python: `N.TASK.REQUEST_WAYPOINT_RECORDING(waypointRecording: str | None) -> None`
-- Luau: `N.TASK.REQUEST_WAYPOINT_RECORDING(waypointRecording: string?): ()`
+- nativedb form: `void REQUEST_WAYPOINT_RECORDING(Hash waypointRecording)`
+- C: `void G6_TASK_REQUEST_WAYPOINT_RECORDING(const g6_host_api* api, uint32_t waypointRecording)`
+- Python: `N.TASK.REQUEST_WAYPOINT_RECORDING(waypointRecording: int | str) -> None`
+- Luau: `N.TASK.REQUEST_WAYPOINT_RECORDING(waypointRecording: number | string): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144a8d771), compared as a 32-bit key (0x14294ef89); script-vm.param_types.observed.json (G-114)
 
 ### SET_DRIVE_TASK_CRUISE_SPEED
 
@@ -1947,14 +1956,15 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### SET_MOUNTED_WEAPON_TARGET
 
-`0xCCD892192C6D2BB9` · sig `eeewib>n` · params 6, argc_inferred 8, arg slots 10 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF8D10`
+`0xCCD892192C6D2BB9` · sig `eeew>n` · params 4, argc_inferred 8, arg slots 8 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF8D10`
 
 - vector params: packed 16-byte Vector3 (`w`, 2 slots), measured in the handler: `coords` = nativedb x, y, z
 
-- nativedb form: `void SET_MOUNTED_WEAPON_TARGET(Ped shootingPed, Ped targetPed, Vehicle targetVehicle, float x, float y, float z, int taskMode, BOOL ignoreTargetVehDeadCheck)`
-- C: `void G6_TASK_SET_MOUNTED_WEAPON_TARGET(const g6_host_api* api, g6_entity shootingPed, g6_entity targetPed, g6_entity targetVehicle, g6_vec3 coords, int32_t taskMode, int ignoreTargetVehDeadCheck)`
-- Python: `N.TASK.SET_MOUNTED_WEAPON_TARGET(shootingPed: int, targetPed: int, targetVehicle: int, coords: Vector3, taskMode: int, ignoreTargetVehDeadCheck: bool) -> None`
-- Luau: `N.TASK.SET_MOUNTED_WEAPON_TARGET(shootingPed: buffer | number, targetPed: buffer | number, targetVehicle: buffer | number, coords: vector, taskMode: number, ignoreTargetVehDeadCheck: boolean): ()`
+- nativedb form: `void SET_MOUNTED_WEAPON_TARGET(Ped shootingPed, Ped targetPed, Vehicle targetVehicle, float x, float y, float z)`
+- C: `void G6_TASK_SET_MOUNTED_WEAPON_TARGET(const g6_host_api* api, g6_entity shootingPed, g6_entity targetPed, g6_entity targetVehicle, g6_vec3 coords)`
+- Python: `N.TASK.SET_MOUNTED_WEAPON_TARGET(shootingPed: int, targetPed: int, targetVehicle: int, coords: Vector3) -> None`
+- Luau: `N.TASK.SET_MOUNTED_WEAPON_TARGET(shootingPed: buffer | number, targetPed: buffer | number, targetVehicle: buffer | number, coords: vector): ()`
+- provenance: nativedb hash match (gta5_gen9+gta5); GTA VI prototype from handler and call-site evidence: all 47 call sites (12 programs) pass 8 slots and the handler reads 8; nativedb params not taken: taskMode, ignoreTargetVehDeadCheck; script-vm.prototypes.observed.json (G-118)
 
 ### SET_PED_DESIRED_MOVE_BLEND_RATIO
 
@@ -2003,12 +2013,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### STOP_ANIM_TASK
 
-`0x97FF36A1D40EA00A` · sig `essf>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x44C41A0`
+`0x97FF36A1D40EA00A` · sig `euuf>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x44C41A0`
 
-- nativedb form: `void STOP_ANIM_TASK(Ped ped, const char* animDictionary, const char* animationName, float p3)`
-- C: `void G6_TASK_STOP_ANIM_TASK(const g6_host_api* api, g6_entity ped, const char* animDictionary, const char* animationName, float p3)`
-- Python: `N.TASK.STOP_ANIM_TASK(ped: int, animDictionary: str | None, animationName: str | None, p3: float) -> None`
-- Luau: `N.TASK.STOP_ANIM_TASK(ped: buffer | number, animDictionary: string?, animationName: string?, p3: number): ()`
+- nativedb form: `void STOP_ANIM_TASK(Ped ped, Hash animDictionary, Hash animationName, float p3)`
+- C: `void G6_TASK_STOP_ANIM_TASK(const g6_host_api* api, g6_entity ped, uint32_t animDictionary, uint32_t animationName, float p3)`
+- Python: `N.TASK.STOP_ANIM_TASK(ped: int, animDictionary: int | str, animationName: int | str, p3: float) -> None`
+- Luau: `N.TASK.STOP_ANIM_TASK(ped: buffer | number, animDictionary: number | string, animationName: number | string, p3: number): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x1444c41d3), compared as a 32-bit key (0x140311390); param 2 typed Hash (nativedb const char*) from handler evidence: slot 3 read as 32 bits (0x1444c41cf), compared as a 32-bit key (0x140385539); script-vm.param_types.observed.json (G-114)
 
 ### TASK_ACHIEVE_HEADING
 
@@ -2158,12 +2169,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### TASK_COWER
 
-`0x3EB1FE9E8E908E15` · sig `eies>n` · params 4, argc_inferred 6, arg slots 6 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x44C4A80`
+`0x3EB1FE9E8E908E15` · sig `eieu>n` · params 4, argc_inferred 6, arg slots 6 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x44C4A80`
 
-- nativedb form: `void TASK_COWER(Ped ped, int duration, Ped pedToCowerFrom, const char* p3)`
-- C: `void G6_TASK_TASK_COWER(const g6_host_api* api, g6_entity ped, int32_t duration, g6_entity pedToCowerFrom, const char* p3)`
-- Python: `N.TASK.TASK_COWER(ped: int, duration: int, pedToCowerFrom: int, p3: str | None) -> None`
-- Luau: `N.TASK.TASK_COWER(ped: buffer | number, duration: number, pedToCowerFrom: buffer | number, p3: string?): ()`
+- nativedb form: `void TASK_COWER(Ped ped, int duration, Ped pedToCowerFrom, Hash p3)`
+- C: `void G6_TASK_TASK_COWER(const g6_host_api* api, g6_entity ped, int32_t duration, g6_entity pedToCowerFrom, uint32_t p3)`
+- Python: `N.TASK.TASK_COWER(ped: int, duration: int, pedToCowerFrom: int, p3: int | str) -> None`
+- Luau: `N.TASK.TASK_COWER(ped: buffer | number, duration: number, pedToCowerFrom: buffer | number, p3: number | string): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 3 typed Hash (nativedb const char*) from handler evidence: slot 5 read as 32 bits (0x1444c4ab0), compared as a 32-bit key (0x1419e6284); script-vm.param_types.observed.json (G-114)
 
 ### TASK_DRIVE_BY
 
@@ -2187,12 +2199,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### TASK_ENTER_ANIM_SCENE
 
-`0xC2329B0206426644` · sig `eissfbiif>n` · params 9, argc_inferred 3, arg slots 10 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44C4C90`
+`0xC2329B0206426644` · sig `eq>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44C4C90`
 
-- nativedb form: `void TASK_ENTER_ANIM_SCENE(Ped ped, AnimScene animScene, const char* entityName, const char* playbackListName, float enterSpeed, BOOL bAutoStart, int flag, int p7, float p8)`
-- C: `void G6_TASK_TASK_ENTER_ANIM_SCENE(const g6_host_api* api, g6_entity ped, int32_t animScene, const char* entityName, const char* playbackListName, float enterSpeed, int bAutoStart, int32_t flag, int32_t p7, float p8)`
-- Python: `N.TASK.TASK_ENTER_ANIM_SCENE(ped: int, animScene: int, entityName: str | None, playbackListName: str | None, enterSpeed: float, bAutoStart: bool, flag: int, p7: int, p8: float) -> None`
-- Luau: `N.TASK.TASK_ENTER_ANIM_SCENE(ped: buffer | number, animScene: number, entityName: string?, playbackListName: string?, enterSpeed: number, bAutoStart: boolean, flag: number, p7: number, p8: number): ()`
+- nativedb form: `void TASK_ENTER_ANIM_SCENE(Ped ped, uint64_t ref1)`
+- C: `void G6_TASK_TASK_ENTER_ANIM_SCENE(const g6_host_api* api, g6_entity ped, uint64_t ref1)`
+- Python: `N.TASK.TASK_ENTER_ANIM_SCENE(ped: int, ref1: int) -> None`
+- Luau: `N.TASK.TASK_ENTER_ANIM_SCENE(ped: buffer | number, ref1: number?): ()`
+- provenance: nativedb hash match (rdr3); GTA VI prototype from handler and call-site evidence: all 1293 call sites (265 programs) pass 3 slots and the handler reads 3; nativedb params not taken: animScene, entityName, playbackListName, enterSpeed, bAutoStart, flag, p7, p8; ref1 (uint64_t, slot 2): 8-byte value dereferenced as a struct (fields +0x8:16, +0x18:4, +0x1c:4, +0x20:8, +0x28:4, +0x2c:4, +0x30:4, +0x34:4, +0x38:4); no nativedb parameter fits; script-vm.prototypes.observed.json (G-118)
 
 ### TASK_ENTER_VEHICLE
 
@@ -2441,12 +2454,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### TASK_GO_TO_COORD_ANY_MEANS_EXTRA_PARAMS_WITH_CRUISE_SPEED
 
-`0xB8ECD61F531A7B02` · sig `eiiiiiiiiiiiiiiqqqqq>n` · params 20, argc_inferred 21, arg slots 21 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x44C5D00`
+`0xB8ECD61F531A7B02` · sig `eiiiiiiiiiiiiiS>n` · params 15, argc_inferred 16, arg slots 16 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x44C5D00`
 
-- nativedb form: `void TASK_GO_TO_COORD_ANY_MEANS_EXTRA_PARAMS_WITH_CRUISE_SPEED(Ped ped, Any p1, Any p2, Any p3, Any p4, Any p5, Any p6, Any p7, Any p8, Any p9, Any p10, Any p11, Any p12, Any p13, Any p14)`
-- C: `void G6_TASK_TASK_GO_TO_COORD_ANY_MEANS_EXTRA_PARAMS_WITH_CRUISE_SPEED(const g6_host_api* api, g6_entity ped, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5, int32_t p6, int32_t p7, int32_t p8, int32_t p9, int32_t p10, int32_t p11, int32_t p12, int32_t p13, int32_t p14, uint64_t a16, uint64_t a17, uint64_t a18, uint64_t a19, uint64_t a20)`
-- Python: `N.TASK.TASK_GO_TO_COORD_ANY_MEANS_EXTRA_PARAMS_WITH_CRUISE_SPEED(ped: int, p1: int, p2: int, p3: int, p4: int, p5: int, p6: int, p7: int, p8: int, p9: int, p10: int, p11: int, p12: int, p13: int, p14: int, a16: int = 0, a17: int = 0, a18: int = 0, a19: int = 0, a20: int = 0) -> None`
-- Luau: `N.TASK.TASK_GO_TO_COORD_ANY_MEANS_EXTRA_PARAMS_WITH_CRUISE_SPEED(ped: buffer | number, p1: number, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number, p11: number, p12: number, p13: number, p14: number, a16: number?, a17: number?, a18: number?, a19: number?, a20: number?): ()`
+- nativedb form: `void TASK_GO_TO_COORD_ANY_MEANS_EXTRA_PARAMS_WITH_CRUISE_SPEED(Ped ped, Any p1, Any p2, Any p3, Any p4, Any p5, Any p6, Any p7, Any p8, Any p9, Any p10, Any p11, Any p12, Any p13, ScriptString p14)`
+- C: `void G6_TASK_TASK_GO_TO_COORD_ANY_MEANS_EXTRA_PARAMS_WITH_CRUISE_SPEED(const g6_host_api* api, g6_entity ped, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5, int32_t p6, int32_t p7, int32_t p8, int32_t p9, int32_t p10, int32_t p11, int32_t p12, int32_t p13, const char* p14)`
+- Python: `N.TASK.TASK_GO_TO_COORD_ANY_MEANS_EXTRA_PARAMS_WITH_CRUISE_SPEED(ped: int, p1: int, p2: int, p3: int, p4: int, p5: int, p6: int, p7: int, p8: int, p9: int, p10: int, p11: int, p12: int, p13: int, p14: str | None) -> None`
+- Luau: `N.TASK.TASK_GO_TO_COORD_ANY_MEANS_EXTRA_PARAMS_WITH_CRUISE_SPEED(ped: buffer | number, p1: number, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number, p11: number, p12: number, p13: number, p14: string?): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 14 typed ScriptString (was Any): slot 15 read as a script string object (0x1444c5d3f, slot load 0x1444c5d36, depth 0); script-vm.string_params.json (G-120)
 
 ### TASK_GO_TO_COORD_WHILE_AIMING_AT_COORD
 
@@ -2819,14 +2833,15 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### TASK_START_SCENARIO_AT_POSITION
 
-`0x4D1F61FC34AF3CD1` · sig `euwfibbsfb>n` · params 10, argc_inferred 12, arg slots 12 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44C8540`
+`0x4D1F61FC34AF3CD1` · sig `euwfibbufb>n` · params 10, argc_inferred 12, arg slots 12 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44C8540`
 
 - vector params: packed 16-byte Vector3 (`w`, 2 slots), measured in the handler: `coords` = nativedb x, y, z
 
-- nativedb form: `void TASK_START_SCENARIO_AT_POSITION(Ped ped, Hash scenarioHash, float x, float y, float z, float heading, int duration, BOOL sittingScenario, BOOL teleport, const char* p9, float p10, BOOL p11)`
-- C: `void G6_TASK_TASK_START_SCENARIO_AT_POSITION(const g6_host_api* api, g6_entity ped, uint32_t scenarioHash, g6_vec3 coords, float heading, int32_t duration, int sittingScenario, int teleport, const char* p9, float p10, int p11)`
-- Python: `N.TASK.TASK_START_SCENARIO_AT_POSITION(ped: int, scenarioHash: int | str, coords: Vector3, heading: float, duration: int, sittingScenario: bool, teleport: bool, p9: str | None, p10: float, p11: bool) -> None`
-- Luau: `N.TASK.TASK_START_SCENARIO_AT_POSITION(ped: buffer | number, scenarioHash: number | string, coords: vector, heading: number, duration: number, sittingScenario: boolean, teleport: boolean, p9: string?, p10: number, p11: boolean): ()`
+- nativedb form: `void TASK_START_SCENARIO_AT_POSITION(Ped ped, Hash scenarioHash, float x, float y, float z, float heading, int duration, BOOL sittingScenario, BOOL teleport, Hash p9, float p10, BOOL p11)`
+- C: `void G6_TASK_TASK_START_SCENARIO_AT_POSITION(const g6_host_api* api, g6_entity ped, uint32_t scenarioHash, g6_vec3 coords, float heading, int32_t duration, int sittingScenario, int teleport, uint32_t p9, float p10, int p11)`
+- Python: `N.TASK.TASK_START_SCENARIO_AT_POSITION(ped: int, scenarioHash: int | str, coords: Vector3, heading: float, duration: int, sittingScenario: bool, teleport: bool, p9: int | str, p10: float, p11: bool) -> None`
+- Luau: `N.TASK.TASK_START_SCENARIO_AT_POSITION(ped: buffer | number, scenarioHash: number | string, coords: vector, heading: number, duration: number, sittingScenario: boolean, teleport: boolean, p9: number | string, p10: number, p11: boolean): ()`
+- provenance: nativedb hash match (rdr3); param 9 typed Hash (nativedb const char*) from traced consumer: slot 9 read as 32 bits (0x1444c8582), compared as a 32-bit key (0x141c87041); script-vm.param_types.observed.json (G-117)
 
 ### TASK_START_SCENARIO_IN_PLACE_HASH
 
@@ -2901,12 +2916,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### TASK_USE_SCENARIO_POINT
 
-`0xCCDAE6324B6A821C` · sig `eisibbubfbqq>n` · params 12, argc_inferred 13, arg slots 13 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44C8B70`
+`0xCCDAE6324B6A821C` · sig `ehuibbubfbq>n` · params 11, argc_inferred 13, arg slots 13 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44C8B70`
 
-- nativedb form: `void TASK_USE_SCENARIO_POINT(Ped ped, int scenario, const char* conditionalAnim, int p3, BOOL p4, BOOL p5, Hash p6, BOOL p7, float p8, BOOL p9)`
-- C: `void G6_TASK_TASK_USE_SCENARIO_POINT(const g6_host_api* api, g6_entity ped, int32_t scenario, const char* conditionalAnim, int32_t p3, int p4, int p5, uint32_t p6, int p7, float p8, int p9, uint64_t a11, uint64_t a12)`
-- Python: `N.TASK.TASK_USE_SCENARIO_POINT(ped: int, scenario: int, conditionalAnim: str | None, p3: int, p4: bool, p5: bool, p6: int | str, p7: bool, p8: float, p9: bool, a11: int = 0, a12: int = 0) -> None`
-- Luau: `N.TASK.TASK_USE_SCENARIO_POINT(ped: buffer | number, scenario: number, conditionalAnim: string?, p3: number, p4: boolean, p5: boolean, p6: number | string, p7: boolean, p8: number, p9: boolean, a11: number?, a12: number?): ()`
+- nativedb form: `void TASK_USE_SCENARIO_POINT(Ped ped, ScenarioPoint scenario, Hash conditionalAnim, int p3, BOOL p4, BOOL p5, Hash p6, BOOL p7, float p8, BOOL p9)`
+- C: `void G6_TASK_TASK_USE_SCENARIO_POINT(const g6_host_api* api, g6_entity ped, g6_handle16 scenario, uint32_t conditionalAnim, int32_t p3, int p4, int p5, uint32_t p6, int p7, float p8, int p9, uint64_t a12)`
+- Python: `N.TASK.TASK_USE_SCENARIO_POINT(ped: int, scenario: int, conditionalAnim: int | str, p3: int, p4: bool, p5: bool, p6: int | str, p7: bool, p8: float, p9: bool, a12: int = 0) -> None`
+- Luau: `N.TASK.TASK_USE_SCENARIO_POINT(ped: buffer | number, scenario: buffer, conditionalAnim: number | string, p3: number, p4: boolean, p5: boolean, p6: number | string, p7: boolean, p8: number, p9: boolean, a12: number?): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed ScenarioPoint (nativedb int) from handler evidence: slot 2 qword (0x1444c8bc4) is the key of the scenario-point map lookup 0x141930a50 (call 0x1444dc8c2); scripts pass slots 2-3 (both slots of one 16-byte native result); param 2 typed Hash (nativedb const char*) from handler evidence: slot 4 read as 32 bits (0x1444c8bc0), compared as a 32-bit key (0x141c87041); script-vm.param_types.observed.json (G-099/G-114)
 
 ### TASK_VEHICLE_AIM_AT_COORD
 
@@ -2999,12 +3015,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### TASK_VEHICLE_FOLLOW_WAYPOINT_RECORDING
 
-`0x3123FAA6DB1CF7ED` · sig `eesiiiifbfiqfqqqqqfqff>n` · params 22, argc_inferred 24, arg slots 24 · returns `void` · name: nativedb hash match (rdr3+gta5) · confidence **high** · status observed · handler RVA `0x4A95DE0`
+`0x3123FAA6DB1CF7ED` · sig `eeuiiiifbfiqfqqqqqfqff>n` · params 22, argc_inferred 24, arg slots 24 · returns `void` · name: nativedb hash match (rdr3+gta5) · confidence **high** · status observed · handler RVA `0x4A95DE0`
 
-- nativedb form: `void TASK_VEHICLE_FOLLOW_WAYPOINT_RECORDING(Ped ped, Vehicle vehicle, const char* waypointRecording, int drivingMode, Any p4, int eWaypoint, int flag, float p7, BOOL p8, float stoppingDist, Any p10)`
-- C: `void G6_TASK_TASK_VEHICLE_FOLLOW_WAYPOINT_RECORDING(const g6_host_api* api, g6_entity ped, g6_entity vehicle, const char* waypointRecording, int32_t drivingMode, int32_t p4, int32_t eWaypoint, int32_t flag, float p7, int p8, float stoppingDist, int32_t p10, uint64_t a13, float a14, uint64_t a15, uint64_t a16, uint64_t a17, uint64_t a18, uint64_t a19, float a20, uint64_t a21, float a22, float a23)`
-- Python: `N.TASK.TASK_VEHICLE_FOLLOW_WAYPOINT_RECORDING(ped: int, vehicle: int, waypointRecording: str | None, drivingMode: int, p4: int, eWaypoint: int, flag: int, p7: float, p8: bool, stoppingDist: float, p10: int, a13: int = 0, a14: float = 0.0, a15: int = 0, a16: int = 0, a17: int = 0, a18: int = 0, a19: int = 0, a20: float = 0.0, a21: int = 0, a22: float = 0.0, a23: float = 0.0) -> None`
-- Luau: `N.TASK.TASK_VEHICLE_FOLLOW_WAYPOINT_RECORDING(ped: buffer | number, vehicle: buffer | number, waypointRecording: string?, drivingMode: number, p4: number, eWaypoint: number, flag: number, p7: number, p8: boolean, stoppingDist: number, p10: number, a13: number?, a14: number?, a15: number?, a16: number?, a17: number?, a18: number?, a19: number?, a20: number?, a21: number?, a22: number?, a23: number?): ()`
+- nativedb form: `void TASK_VEHICLE_FOLLOW_WAYPOINT_RECORDING(Ped ped, Vehicle vehicle, Hash waypointRecording, int drivingMode, Any p4, int eWaypoint, int flag, float p7, BOOL p8, float stoppingDist, Any p10)`
+- C: `void G6_TASK_TASK_VEHICLE_FOLLOW_WAYPOINT_RECORDING(const g6_host_api* api, g6_entity ped, g6_entity vehicle, uint32_t waypointRecording, int32_t drivingMode, int32_t p4, int32_t eWaypoint, int32_t flag, float p7, int p8, float stoppingDist, int32_t p10, uint64_t a13, float a14, uint64_t a15, uint64_t a16, uint64_t a17, uint64_t a18, uint64_t a19, float a20, uint64_t a21, float a22, float a23)`
+- Python: `N.TASK.TASK_VEHICLE_FOLLOW_WAYPOINT_RECORDING(ped: int, vehicle: int, waypointRecording: int | str, drivingMode: int, p4: int, eWaypoint: int, flag: int, p7: float, p8: bool, stoppingDist: float, p10: int, a13: int = 0, a14: float = 0.0, a15: int = 0, a16: int = 0, a17: int = 0, a18: int = 0, a19: int = 0, a20: float = 0.0, a21: int = 0, a22: float = 0.0, a23: float = 0.0) -> None`
+- Luau: `N.TASK.TASK_VEHICLE_FOLLOW_WAYPOINT_RECORDING(ped: buffer | number, vehicle: buffer | number, waypointRecording: number | string, drivingMode: number, p4: number, eWaypoint: number, flag: number, p7: number, p8: boolean, stoppingDist: number, p10: number, a13: number?, a14: number?, a15: number?, a16: number?, a17: number?, a18: number?, a19: number?, a20: number?, a21: number?, a22: number?, a23: number?): ()`
+- provenance: nativedb hash match (rdr3+gta5); param 2 typed Hash (nativedb const char*) from handler evidence: slot 4 read as 32 bits (0x144a95e99), compared as a 32-bit key (0x14294ef89); script-vm.param_types.observed.json (G-114)
 
 ### TASK_VEHICLE_GOTO_NAVMESH
 
@@ -3181,12 +3198,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### USE_WAYPOINT_RECORDING_AS_ASSISTED_MOVEMENT_ROUTE
 
-`0x5A353B8E6B1095B5` · sig `sbffbqq>n` · params 7, argc_inferred 7, arg slots 7 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A96CE0`
+`0x5A353B8E6B1095B5` · sig `ubffbqq>n` · params 7, argc_inferred 7, arg slots 7 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A96CE0`
 
-- nativedb form: `void USE_WAYPOINT_RECORDING_AS_ASSISTED_MOVEMENT_ROUTE(const char* waypointRecording, BOOL p1, float p2, float p3, BOOL p4)`
-- C: `void G6_TASK_USE_WAYPOINT_RECORDING_AS_ASSISTED_MOVEMENT_ROUTE(const g6_host_api* api, const char* waypointRecording, int p1, float p2, float p3, int p4, uint64_t a5, uint64_t a6)`
-- Python: `N.TASK.USE_WAYPOINT_RECORDING_AS_ASSISTED_MOVEMENT_ROUTE(waypointRecording: str | None, p1: bool, p2: float, p3: float, p4: bool, a5: int = 0, a6: int = 0) -> None`
-- Luau: `N.TASK.USE_WAYPOINT_RECORDING_AS_ASSISTED_MOVEMENT_ROUTE(waypointRecording: string?, p1: boolean, p2: number, p3: number, p4: boolean, a5: number?, a6: number?): ()`
+- nativedb form: `void USE_WAYPOINT_RECORDING_AS_ASSISTED_MOVEMENT_ROUTE(Hash waypointRecording, BOOL p1, float p2, float p3, BOOL p4)`
+- C: `void G6_TASK_USE_WAYPOINT_RECORDING_AS_ASSISTED_MOVEMENT_ROUTE(const g6_host_api* api, uint32_t waypointRecording, int p1, float p2, float p3, int p4, uint64_t a5, uint64_t a6)`
+- Python: `N.TASK.USE_WAYPOINT_RECORDING_AS_ASSISTED_MOVEMENT_ROUTE(waypointRecording: int | str, p1: bool, p2: float, p3: float, p4: bool, a5: int = 0, a6: int = 0) -> None`
+- Luau: `N.TASK.USE_WAYPOINT_RECORDING_AS_ASSISTED_MOVEMENT_ROUTE(waypointRecording: number | string, p1: boolean, p2: number, p3: number, p4: boolean, a5: number?, a6: number?): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144a96d17), compared as a 32-bit key (0x14294ef89); script-vm.param_types.observed.json (G-114)
 
 ### VEHICLE_WAYPOINT_PLAYBACK_GET_IS_PAUSED
 
@@ -3325,41 +3343,45 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### WAYPOINT_RECORDING_GET_CLOSEST_WAYPOINT
 
-`0xB629A298081F876F` · sig `swIqq>b` · params 5, argc_inferred 6, arg slots 6 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A978F0`
+`0xB629A298081F876F` · sig `uwIqq>b` · params 5, argc_inferred 6, arg slots 6 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A978F0`
 
 - vector params: packed 16-byte Vector3 (`w`, 2 slots), measured in the handler: `coords` = nativedb x, y, z
 
-- nativedb form: `BOOL WAYPOINT_RECORDING_GET_CLOSEST_WAYPOINT(const char* waypointRecording, float x, float y, float z, int* point)`
-- C: `int G6_TASK_WAYPOINT_RECORDING_GET_CLOSEST_WAYPOINT(const g6_host_api* api, const char* waypointRecording, g6_vec3 coords, int64_t* point, uint64_t a4, uint64_t a5)`
-- Python: `N.TASK.WAYPOINT_RECORDING_GET_CLOSEST_WAYPOINT(waypointRecording: str | None, coords: Vector3, a4: int = 0, a5: int = 0) -> tuple[bool, int]`
-- Luau: `N.TASK.WAYPOINT_RECORDING_GET_CLOSEST_WAYPOINT(waypointRecording: string?, coords: vector, a4: number?, a5: number?): (boolean, number)`
+- nativedb form: `BOOL WAYPOINT_RECORDING_GET_CLOSEST_WAYPOINT(Hash waypointRecording, float x, float y, float z, int* point)`
+- C: `int G6_TASK_WAYPOINT_RECORDING_GET_CLOSEST_WAYPOINT(const g6_host_api* api, uint32_t waypointRecording, g6_vec3 coords, int64_t* point, uint64_t a4, uint64_t a5)`
+- Python: `N.TASK.WAYPOINT_RECORDING_GET_CLOSEST_WAYPOINT(waypointRecording: int | str, coords: Vector3, a4: int = 0, a5: int = 0) -> tuple[bool, int]`
+- Luau: `N.TASK.WAYPOINT_RECORDING_GET_CLOSEST_WAYPOINT(waypointRecording: number | string, coords: vector, a4: number?, a5: number?): (boolean, number)`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144a9792b), compared as a 32-bit key (0x14294ef89); script-vm.param_types.observed.json (G-114)
 
 ### WAYPOINT_RECORDING_GET_COORD
 
-`0x2FB897405C90B361` · sig `siV>b` · params 3, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A97970`
+`0x2FB897405C90B361` · sig `uiV>b` · params 3, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A97970`
 
-- nativedb form: `BOOL WAYPOINT_RECORDING_GET_COORD(const char* waypointRecording, int point, Vector3* coord)`
-- C: `int G6_TASK_WAYPOINT_RECORDING_GET_COORD(const g6_host_api* api, const char* waypointRecording, int32_t point, g6_vec3_packed* coord)`
-- Python: `N.TASK.WAYPOINT_RECORDING_GET_COORD(waypointRecording: str | None, point: int) -> tuple[bool, Vector3]`
-- Luau: `N.TASK.WAYPOINT_RECORDING_GET_COORD(waypointRecording: string?, point: number): (boolean, vector)`
+- nativedb form: `BOOL WAYPOINT_RECORDING_GET_COORD(Hash waypointRecording, int point, Vector3* coord)`
+- C: `int G6_TASK_WAYPOINT_RECORDING_GET_COORD(const g6_host_api* api, uint32_t waypointRecording, int32_t point, g6_vec3_packed* coord)`
+- Python: `N.TASK.WAYPOINT_RECORDING_GET_COORD(waypointRecording: int | str, point: int) -> tuple[bool, Vector3]`
+- Luau: `N.TASK.WAYPOINT_RECORDING_GET_COORD(waypointRecording: number | string, point: number): (boolean, vector)`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144a97995), compared as a 32-bit key (0x14294ef89); script-vm.param_types.observed.json (G-114)
 
 ### WAYPOINT_RECORDING_GET_NUM_POINTS
 
-`0x5343532C01A07234` · sig `sI>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A979D0`
+`0x5343532C01A07234` · sig `uI>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A979D0`
 
-- nativedb form: `BOOL WAYPOINT_RECORDING_GET_NUM_POINTS(const char* waypointRecording, int* points)`
-- C: `int G6_TASK_WAYPOINT_RECORDING_GET_NUM_POINTS(const g6_host_api* api, const char* waypointRecording, int64_t* points)`
-- Python: `N.TASK.WAYPOINT_RECORDING_GET_NUM_POINTS(waypointRecording: str | None) -> tuple[bool, int]`
-- Luau: `N.TASK.WAYPOINT_RECORDING_GET_NUM_POINTS(waypointRecording: string?): (boolean, number)`
+- nativedb form: `BOOL WAYPOINT_RECORDING_GET_NUM_POINTS(Hash waypointRecording, int* points)`
+- C: `int G6_TASK_WAYPOINT_RECORDING_GET_NUM_POINTS(const g6_host_api* api, uint32_t waypointRecording, int64_t* points)`
+- Python: `N.TASK.WAYPOINT_RECORDING_GET_NUM_POINTS(waypointRecording: int | str) -> tuple[bool, int]`
+- Luau: `N.TASK.WAYPOINT_RECORDING_GET_NUM_POINTS(waypointRecording: number | string): (boolean, number)`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144a979f5), compared as a 32-bit key (0x14294ef89); script-vm.param_types.observed.json (G-114)
 
 ### WAYPOINT_RECORDING_GET_SPEED_AT_POINT
 
-`0x005622AEBC33ACA9` · sig `si>f` · params 2, argc_inferred 2, arg slots 2 · returns `float` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A97A30`
+`0x005622AEBC33ACA9` · sig `ui>f` · params 2, argc_inferred 2, arg slots 2 · returns `float` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4A97A30`
 
-- nativedb form: `float WAYPOINT_RECORDING_GET_SPEED_AT_POINT(const char* waypointRecording, int point)`
-- C: `float G6_TASK_WAYPOINT_RECORDING_GET_SPEED_AT_POINT(const g6_host_api* api, const char* waypointRecording, int32_t point)`
-- Python: `N.TASK.WAYPOINT_RECORDING_GET_SPEED_AT_POINT(waypointRecording: str | None, point: int) -> float`
-- Luau: `N.TASK.WAYPOINT_RECORDING_GET_SPEED_AT_POINT(waypointRecording: string?, point: number): number`
+- nativedb form: `float WAYPOINT_RECORDING_GET_SPEED_AT_POINT(Hash waypointRecording, int point)`
+- C: `float G6_TASK_WAYPOINT_RECORDING_GET_SPEED_AT_POINT(const g6_host_api* api, uint32_t waypointRecording, int32_t point)`
+- Python: `N.TASK.WAYPOINT_RECORDING_GET_SPEED_AT_POINT(waypointRecording: int | str, point: int) -> float`
+- Luau: `N.TASK.WAYPOINT_RECORDING_GET_SPEED_AT_POINT(waypointRecording: number | string, point: number): number`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144a97a51), compared as a 32-bit key (0x14294ef89); script-vm.param_types.observed.json (G-114)
 
 ### _0x1A7D63CB1B0BB223
 
@@ -3471,21 +3493,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0xA7479FB665361EDB
 
-`0xA7479FB665361EDB` · sig `iiq>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44628E0`
+`0xA7479FB665361EDB` · sig `hi>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44628E0`
 
-- nativedb form: `void _0xA7479FB665361EDB(Any p0, Any p1)`
-- C: `void G6_TASK__0xA7479FB665361EDB(const g6_host_api* api, int32_t p0, int32_t p1, uint64_t a2)`
-- Python: `N.TASK._0xA7479FB665361EDB(p0: int, p1: int, a2: int = 0) -> None`
-- Luau: `N.TASK._0xA7479FB665361EDB(p0: number, p1: number, a2: number?): ()`
+- nativedb form: `void _0xA7479FB665361EDB(ScenarioPoint p0, Any p1)`
+- C: `void G6_TASK__0xA7479FB665361EDB(const g6_host_api* api, g6_handle16 p0, int32_t p1)`
+- Python: `N.TASK._0xA7479FB665361EDB(p0: int, p1: int) -> None`
+- Luau: `N.TASK._0xA7479FB665361EDB(p0: buffer, p1: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb Any) from handler evidence: slot 0 qword (0x144462905) is the key of the scenario-point map lookup 0x141930a50 (call 0x14447ebb7); scripts pass slots 0-1 (every site passes 3 slots, the nativedb list with this parameter as a 2-slot handle); script-vm.param_types.observed.json (G-099)
 
 ### _0xADC45010BC17AF0E
 
-`0xADC45010BC17AF0E` · sig `iiq>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4462890`
+`0xADC45010BC17AF0E` · sig `hi>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4462890`
 
-- nativedb form: `void _0xADC45010BC17AF0E(Any p0, Any p1)`
-- C: `void G6_TASK__0xADC45010BC17AF0E(const g6_host_api* api, int32_t p0, int32_t p1, uint64_t a2)`
-- Python: `N.TASK._0xADC45010BC17AF0E(p0: int, p1: int, a2: int = 0) -> None`
-- Luau: `N.TASK._0xADC45010BC17AF0E(p0: number, p1: number, a2: number?): ()`
+- nativedb form: `void _0xADC45010BC17AF0E(ScenarioPoint p0, Any p1)`
+- C: `void G6_TASK__0xADC45010BC17AF0E(const g6_host_api* api, g6_handle16 p0, int32_t p1)`
+- Python: `N.TASK._0xADC45010BC17AF0E(p0: int, p1: int) -> None`
+- Luau: `N.TASK._0xADC45010BC17AF0E(p0: buffer, p1: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb Any) from handler evidence: slot 0 qword (0x1444628b5) is the key of the scenario-point map lookup 0x141930a50 (call 0x14447ec17); scripts pass slots 0-1 (every site passes 3 slots, the nativedb list with this parameter as a 2-slot handle); script-vm.param_types.observed.json (G-099)
 
 ### _0xB8E213D02F37947D
 
@@ -3516,12 +3540,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0xE69FDA40AAC3EFC0
 
-`0xE69FDA40AAC3EFC0` · sig `iiq>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44627F0`
+`0xE69FDA40AAC3EFC0` · sig `hi>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44627F0`
 
-- nativedb form: `void _0xE69FDA40AAC3EFC0(Any p0, Any p1)`
-- C: `void G6_TASK__0xE69FDA40AAC3EFC0(const g6_host_api* api, int32_t p0, int32_t p1, uint64_t a2)`
-- Python: `N.TASK._0xE69FDA40AAC3EFC0(p0: int, p1: int, a2: int = 0) -> None`
-- Luau: `N.TASK._0xE69FDA40AAC3EFC0(p0: number, p1: number, a2: number?): ()`
+- nativedb form: `void _0xE69FDA40AAC3EFC0(ScenarioPoint p0, Any p1)`
+- C: `void G6_TASK__0xE69FDA40AAC3EFC0(const g6_host_api* api, g6_handle16 p0, int32_t p1)`
+- Python: `N.TASK._0xE69FDA40AAC3EFC0(p0: int, p1: int) -> None`
+- Luau: `N.TASK._0xE69FDA40AAC3EFC0(p0: buffer, p1: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb Any) from handler evidence: slot 0 qword (0x144462815) is the key of the scenario-point map lookup 0x141930a50 (call 0x14447ec57); scripts pass slots 0-1 (every site passes 3 slots, the nativedb list with this parameter as a 2-slot handle); script-vm.param_types.observed.json (G-099)
 
 ### _0xFDECCA06E8B81346
 
@@ -3608,57 +3633,63 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _GET_PED_USING_SCENARIO_POINT
 
-`0x5BA659955369B0E2` · sig `i>e` · params 1, argc_inferred 1, arg slots 1 · returns `Ped` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445E6D0`
+`0x5BA659955369B0E2` · sig `h>e` · params 1, argc_inferred 1, arg slots 2 · returns `Ped` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445E6D0`
 
-- nativedb form: `Ped _GET_PED_USING_SCENARIO_POINT(int scenario)`
-- C: `g6_entity G6_TASK__GET_PED_USING_SCENARIO_POINT(const g6_host_api* api, int32_t scenario)`
+- nativedb form: `Ped _GET_PED_USING_SCENARIO_POINT(ScenarioPoint scenario)`
+- C: `g6_entity G6_TASK__GET_PED_USING_SCENARIO_POINT(const g6_host_api* api, g6_handle16 scenario)`
 - Python: `N.TASK._GET_PED_USING_SCENARIO_POINT(scenario: int) -> int`
-- Luau: `N.TASK._GET_PED_USING_SCENARIO_POINT(scenario: number): buffer`
+- Luau: `N.TASK._GET_PED_USING_SCENARIO_POINT(scenario: buffer): buffer`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb int) from handler evidence: slot 0 qword (0x14445e6fa) is the key of the scenario-point map lookup 0x14074a300 (call 0x144483f7d); scripts pass slots 0-1 (every site passes 2 slots, the nativedb list with this parameter as a 2-slot handle); script-vm.param_types.observed.json (G-099)
 
 ### _GET_SCENARIO_POINT_COORDS
 
-`0xA8452DD321607029` · sig `ibq>w` · params 3, argc_inferred 3, arg slots 3 · returns `Vector3` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4461E80`
+`0xA8452DD321607029` · sig `hb>w` · params 2, argc_inferred 3, arg slots 3 · returns `Vector3` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4461E80`
 
-- nativedb form: `Vector3 _GET_SCENARIO_POINT_COORDS(int scenario, BOOL p1)`
-- C: `g6_vec3 G6_TASK__GET_SCENARIO_POINT_COORDS(const g6_host_api* api, int32_t scenario, int p1, uint64_t a2)`
-- Python: `N.TASK._GET_SCENARIO_POINT_COORDS(scenario: int, p1: bool, a2: int = 0) -> Vector3`
-- Luau: `N.TASK._GET_SCENARIO_POINT_COORDS(scenario: number, p1: boolean, a2: number?): vector`
+- nativedb form: `Vector3 _GET_SCENARIO_POINT_COORDS(ScenarioPoint scenario, BOOL p1)`
+- C: `g6_vec3 G6_TASK__GET_SCENARIO_POINT_COORDS(const g6_host_api* api, g6_handle16 scenario, int p1)`
+- Python: `N.TASK._GET_SCENARIO_POINT_COORDS(scenario: int, p1: bool) -> Vector3`
+- Luau: `N.TASK._GET_SCENARIO_POINT_COORDS(scenario: buffer, p1: boolean): vector`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb int) from handler evidence: slot 0 qword (0x144461eae) is the key of the scenario-point map lookup 0x14074a300 (call 0x1420f312c); scripts pass slots 0-1 (both slots of one 16-byte native result); script-vm.param_types.observed.json (G-099)
 
 ### _GET_SCENARIO_POINT_ENTITY
 
-`0x7467165EE97D3C68` · sig `i>e` · params 1, argc_inferred 1, arg slots 1 · returns `Entity` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445F020`
+`0x7467165EE97D3C68` · sig `h>e` · params 1, argc_inferred 1, arg slots 2 · returns `Entity` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445F020`
 
-- nativedb form: `Entity _GET_SCENARIO_POINT_ENTITY(int scenario)`
-- C: `g6_entity G6_TASK__GET_SCENARIO_POINT_ENTITY(const g6_host_api* api, int32_t scenario)`
+- nativedb form: `Entity _GET_SCENARIO_POINT_ENTITY(ScenarioPoint scenario)`
+- C: `g6_entity G6_TASK__GET_SCENARIO_POINT_ENTITY(const g6_host_api* api, g6_handle16 scenario)`
 - Python: `N.TASK._GET_SCENARIO_POINT_ENTITY(scenario: int) -> int`
-- Luau: `N.TASK._GET_SCENARIO_POINT_ENTITY(scenario: number): buffer`
+- Luau: `N.TASK._GET_SCENARIO_POINT_ENTITY(scenario: buffer): buffer`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb int) from handler evidence: slot 0 qword (0x14445f04a) is the key of the scenario-point map lookup 0x14074a300 (call 0x145e524d0); scripts pass slots 0-1 (both slots of one 16-byte native result); script-vm.param_types.observed.json (G-099)
 
 ### _GET_SCENARIO_POINT_HEADING
 
-`0xB93EA7184BAA85C3` · sig `ibq>f` · params 3, argc_inferred 3, arg slots 3 · returns `float` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445EFB0`
+`0xB93EA7184BAA85C3` · sig `hb>f` · params 2, argc_inferred 3, arg slots 3 · returns `float` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445EFB0`
 
-- nativedb form: `float _GET_SCENARIO_POINT_HEADING(int scenario, BOOL p1)`
-- C: `float G6_TASK__GET_SCENARIO_POINT_HEADING(const g6_host_api* api, int32_t scenario, int p1, uint64_t a2)`
-- Python: `N.TASK._GET_SCENARIO_POINT_HEADING(scenario: int, p1: bool, a2: int = 0) -> float`
-- Luau: `N.TASK._GET_SCENARIO_POINT_HEADING(scenario: number, p1: boolean, a2: number?): number`
+- nativedb form: `float _GET_SCENARIO_POINT_HEADING(ScenarioPoint scenario, BOOL p1)`
+- C: `float G6_TASK__GET_SCENARIO_POINT_HEADING(const g6_host_api* api, g6_handle16 scenario, int p1)`
+- Python: `N.TASK._GET_SCENARIO_POINT_HEADING(scenario: int, p1: bool) -> float`
+- Luau: `N.TASK._GET_SCENARIO_POINT_HEADING(scenario: buffer, p1: boolean): number`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb int) from handler evidence: slot 0 qword (0x14445efd5) is the key of the scenario-point map lookup 0x14074a300 (call 0x1420f3407); scripts pass slots 0-1 (both slots of one 16-byte native result); script-vm.param_types.observed.json (G-099)
 
 ### _GET_SCENARIO_POINT_PED_IS_USING
 
-`0xDF7993356F52359A` · sig `eb>i` · params 2, argc_inferred 3, arg slots 3 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445F080`
+`0xDF7993356F52359A` · sig `eb>h` · params 2, argc_inferred 3, arg slots 3 · returns `ScenarioPoint` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445F080`
 
-- nativedb form: `int _GET_SCENARIO_POINT_PED_IS_USING(Ped ped, BOOL p1)`
-- C: `int32_t G6_TASK__GET_SCENARIO_POINT_PED_IS_USING(const g6_host_api* api, g6_entity ped, int p1)`
+- nativedb form: `ScenarioPoint _GET_SCENARIO_POINT_PED_IS_USING(Ped ped, BOOL p1)`
+- C: `g6_handle16 G6_TASK__GET_SCENARIO_POINT_PED_IS_USING(const g6_host_api* api, g6_entity ped, int p1)`
 - Python: `N.TASK._GET_SCENARIO_POINT_PED_IS_USING(ped: int, p1: bool) -> int`
-- Luau: `N.TASK._GET_SCENARIO_POINT_PED_IS_USING(ped: buffer | number, p1: boolean): number`
+- Luau: `N.TASK._GET_SCENARIO_POINT_PED_IS_USING(ped: buffer | number, p1: boolean): buffer`
+- provenance: nativedb hash match (rdr3); return typed ScenarioPoint (nativedb int) from handler evidence: 16-byte result, 2 direct result uses all go to proven scenario-point parameters; script-vm.param_types.observed.json (G-099)
 
 ### _GET_SCENARIO_POINT_TYPE
 
-`0xA92450B5AE687AAF` · sig `i>u` · params 1, argc_inferred 1, arg slots 1 · returns `Hash` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445F260`
+`0xA92450B5AE687AAF` · sig `h>u` · params 1, argc_inferred 1, arg slots 2 · returns `Hash` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445F260`
 
-- nativedb form: `Hash _GET_SCENARIO_POINT_TYPE(int scenario)`
-- C: `uint32_t G6_TASK__GET_SCENARIO_POINT_TYPE(const g6_host_api* api, int32_t scenario)`
+- nativedb form: `Hash _GET_SCENARIO_POINT_TYPE(ScenarioPoint scenario)`
+- C: `uint32_t G6_TASK__GET_SCENARIO_POINT_TYPE(const g6_host_api* api, g6_handle16 scenario)`
 - Python: `N.TASK._GET_SCENARIO_POINT_TYPE(scenario: int) -> int`
-- Luau: `N.TASK._GET_SCENARIO_POINT_TYPE(scenario: number): number`
+- Luau: `N.TASK._GET_SCENARIO_POINT_TYPE(scenario: buffer): number`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb int) from handler evidence: slot 0 qword (0x14445f281) is the key of the scenario-point map lookup 0x14074a300 (call 0x145b55114); scripts pass slots 0-1 (both slots of one 16-byte native result); script-vm.param_types.observed.json (G-099)
 
 ### _GET_SCENARIO_POINT_TYPE_PED_IS_USING
 
@@ -3718,21 +3749,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _IS_SCENARIO_POINT_ACTIVE
 
-`0x0CC36D4156006509` · sig `i>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4460290`
+`0x0CC36D4156006509` · sig `h>b` · params 1, argc_inferred 1, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4460290`
 
-- nativedb form: `BOOL _IS_SCENARIO_POINT_ACTIVE(int scenario)`
-- C: `int G6_TASK__IS_SCENARIO_POINT_ACTIVE(const g6_host_api* api, int32_t scenario)`
+- nativedb form: `BOOL _IS_SCENARIO_POINT_ACTIVE(ScenarioPoint scenario)`
+- C: `int G6_TASK__IS_SCENARIO_POINT_ACTIVE(const g6_host_api* api, g6_handle16 scenario)`
 - Python: `N.TASK._IS_SCENARIO_POINT_ACTIVE(scenario: int) -> bool`
-- Luau: `N.TASK._IS_SCENARIO_POINT_ACTIVE(scenario: number): boolean`
+- Luau: `N.TASK._IS_SCENARIO_POINT_ACTIVE(scenario: buffer): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb int) from handler evidence: slot 0 qword (0x1444602b1) is the key of the scenario-point map lookup 0x14074a300 (call 0x1420f3205); scripts pass slots 0-1 (every site passes 2 slots, the nativedb list with this parameter as a 2-slot handle); script-vm.param_types.observed.json (G-099)
 
 ### _IS_SCENARIO_POINT_FLAG_SET
 
-`0x8569C38D2FB80650` · sig `iiq>b` · params 3, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44602F0`
+`0x8569C38D2FB80650` · sig `hi>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44602F0`
 
-- nativedb form: `BOOL _IS_SCENARIO_POINT_FLAG_SET(int scenario, int flag)`
-- C: `int G6_TASK__IS_SCENARIO_POINT_FLAG_SET(const g6_host_api* api, int32_t scenario, int32_t flag, uint64_t a2)`
-- Python: `N.TASK._IS_SCENARIO_POINT_FLAG_SET(scenario: int, flag: int, a2: int = 0) -> bool`
-- Luau: `N.TASK._IS_SCENARIO_POINT_FLAG_SET(scenario: number, flag: number, a2: number?): boolean`
+- nativedb form: `BOOL _IS_SCENARIO_POINT_FLAG_SET(ScenarioPoint scenario, int flag)`
+- C: `int G6_TASK__IS_SCENARIO_POINT_FLAG_SET(const g6_host_api* api, g6_handle16 scenario, int32_t flag)`
+- Python: `N.TASK._IS_SCENARIO_POINT_FLAG_SET(scenario: int, flag: int) -> bool`
+- Luau: `N.TASK._IS_SCENARIO_POINT_FLAG_SET(scenario: buffer, flag: number): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb int) from handler evidence: slot 0 qword (0x144460314) is the key of the scenario-point map lookup 0x14074a300 (call 0x1444826b7); scripts pass slots 0-1 (every site passes 3 slots, the nativedb list with this parameter as a 2-slot handle); script-vm.param_types.observed.json (G-099)
 
 ### _PED_IS_IN_SCENARIO_BASE
 
@@ -3754,12 +3787,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _SET_FISHING_BAIT
 
-`0x9B0C7FA063E67629` · sig `esbb>n` · params 4, argc_inferred 4, arg slots 5 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4A8F470`
+`0x9B0C7FA063E67629` · sig `eubb>n` · params 4, argc_inferred 4, arg slots 5 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4A8F470`
 
-- nativedb form: `void _SET_FISHING_BAIT(Ped ped, const char* bait, BOOL withoutBuoy, BOOL instantly)`
-- C: `void G6_TASK__SET_FISHING_BAIT(const g6_host_api* api, g6_entity ped, const char* bait, int withoutBuoy, int instantly)`
-- Python: `N.TASK._SET_FISHING_BAIT(ped: int, bait: str | None, withoutBuoy: bool, instantly: bool) -> None`
-- Luau: `N.TASK._SET_FISHING_BAIT(ped: buffer | number, bait: string?, withoutBuoy: boolean, instantly: boolean): ()`
+- nativedb form: `void _SET_FISHING_BAIT(Ped ped, Hash bait, BOOL withoutBuoy, BOOL instantly)`
+- C: `void G6_TASK__SET_FISHING_BAIT(const g6_host_api* api, g6_entity ped, uint32_t bait, int withoutBuoy, int instantly)`
+- Python: `N.TASK._SET_FISHING_BAIT(ped: int, bait: int | str, withoutBuoy: bool, instantly: bool) -> None`
+- Luau: `N.TASK._SET_FISHING_BAIT(ped: buffer | number, bait: number | string, withoutBuoy: boolean, instantly: boolean): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144a8f49e), compared as a 32-bit key (0x14255504d); script-vm.param_types.observed.json (G-114)
 
 ### _SET_ITEM_INTERACTION_STATE
 
@@ -3781,21 +3815,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _SET_SCENARIO_POINT_ACTIVE
 
-`0xEEE4829304F93EEE` · sig `ibq>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4462840`
+`0xEEE4829304F93EEE` · sig `hb>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4462840`
 
-- nativedb form: `void _SET_SCENARIO_POINT_ACTIVE(int scenario, BOOL active)`
-- C: `void G6_TASK__SET_SCENARIO_POINT_ACTIVE(const g6_host_api* api, int32_t scenario, int active, uint64_t a2)`
-- Python: `N.TASK._SET_SCENARIO_POINT_ACTIVE(scenario: int, active: bool, a2: int = 0) -> None`
-- Luau: `N.TASK._SET_SCENARIO_POINT_ACTIVE(scenario: number, active: boolean, a2: number?): ()`
+- nativedb form: `void _SET_SCENARIO_POINT_ACTIVE(ScenarioPoint scenario, BOOL active)`
+- C: `void G6_TASK__SET_SCENARIO_POINT_ACTIVE(const g6_host_api* api, g6_handle16 scenario, int active)`
+- Python: `N.TASK._SET_SCENARIO_POINT_ACTIVE(scenario: int, active: bool) -> None`
+- Luau: `N.TASK._SET_SCENARIO_POINT_ACTIVE(scenario: buffer, active: boolean): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb int) from handler evidence: slot 0 qword (0x144462865) is the key of the scenario-point map lookup 0x141930a50 (call 0x145e51c67); scripts pass slots 0-1 (both slots of one 16-byte native result); script-vm.param_types.observed.json (G-099)
 
 ### _SET_SCENARIO_POINT_FLAG
 
-`0x5AF19B6CC2115D34` · sig `iibq>n` · params 4, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44689E0`
+`0x5AF19B6CC2115D34` · sig `hib>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44689E0`
 
-- nativedb form: `void _SET_SCENARIO_POINT_FLAG(int scenario, int flag, BOOL value)`
-- C: `void G6_TASK__SET_SCENARIO_POINT_FLAG(const g6_host_api* api, int32_t scenario, int32_t flag, int value, uint64_t a3)`
-- Python: `N.TASK._SET_SCENARIO_POINT_FLAG(scenario: int, flag: int, value: bool, a3: int = 0) -> None`
-- Luau: `N.TASK._SET_SCENARIO_POINT_FLAG(scenario: number, flag: number, value: boolean, a3: number?): ()`
+- nativedb form: `void _SET_SCENARIO_POINT_FLAG(ScenarioPoint scenario, int flag, BOOL value)`
+- C: `void G6_TASK__SET_SCENARIO_POINT_FLAG(const g6_host_api* api, g6_handle16 scenario, int32_t flag, int value)`
+- Python: `N.TASK._SET_SCENARIO_POINT_FLAG(scenario: int, flag: int, value: bool) -> None`
+- Luau: `N.TASK._SET_SCENARIO_POINT_FLAG(scenario: buffer, flag: number, value: boolean): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed ScenarioPoint (nativedb int) from handler evidence: slot 0 qword (0x144468a08) is the key of the scenario-point map lookup 0x141930a50 (call 0x141930a0b); scripts pass slots 0-1 (both slots of one 16-byte native result); script-vm.param_types.observed.json (G-099)
 
 ### _TASK_BOARD_VEHICLE
 
@@ -3895,12 +3931,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _TASK_START_SCENARIO_IN_PLACE_2
 
-`0xA917E39F2CEFD215` · sig `eisibfbqq>n` · params 9, argc_inferred 10, arg slots 10 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44C8680`
+`0xA917E39F2CEFD215` · sig `ehSibfb>n` · params 7, argc_inferred 9, arg slots 9 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44C8680`
 
-- nativedb form: `void _TASK_START_SCENARIO_IN_PLACE_2(Ped ped, Any p1, const char* p2, int p3, BOOL p4, float p5, BOOL p6)`
-- C: `void G6_TASK__TASK_START_SCENARIO_IN_PLACE_2(const g6_host_api* api, g6_entity ped, int32_t p1, const char* p2, int32_t p3, int p4, float p5, int p6, uint64_t a8, uint64_t a9)`
-- Python: `N.TASK._TASK_START_SCENARIO_IN_PLACE_2(ped: int, p1: int, p2: str | None, p3: int, p4: bool, p5: float, p6: bool, a8: int = 0, a9: int = 0) -> None`
-- Luau: `N.TASK._TASK_START_SCENARIO_IN_PLACE_2(ped: buffer | number, p1: number, p2: string?, p3: number, p4: boolean, p5: number, p6: boolean, a8: number?, a9: number?): ()`
+- nativedb form: `void _TASK_START_SCENARIO_IN_PLACE_2(Ped ped, ScenarioPoint p1, ScriptString p2, int p3, BOOL p4, float p5, BOOL p6)`
+- C: `void G6_TASK__TASK_START_SCENARIO_IN_PLACE_2(const g6_host_api* api, g6_entity ped, g6_handle16 p1, const char* p2, int32_t p3, int p4, float p5, int p6)`
+- Python: `N.TASK._TASK_START_SCENARIO_IN_PLACE_2(ped: int, p1: int, p2: str | None, p3: int, p4: bool, p5: float, p6: bool) -> None`
+- Luau: `N.TASK._TASK_START_SCENARIO_IN_PLACE_2(ped: buffer | number, p1: buffer, p2: string?, p3: number, p4: boolean, p5: number, p6: boolean): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed ScenarioPoint (nativedb Any) from handler evidence: slot 2 qword (0x1444c86cc) is the key of the scenario-point map lookup 0x141930a50 (call 0x1444dd86e); scripts pass slots 2-3 (both slots of one 16-byte native result); script-vm.param_types.observed.json (G-099); param 2 typed ScriptString (was const char*): slot 4 read as a script string object (0x1444c86b6, slot load 0x1444c86ad, depth 0); script-vm.string_params.json (G-120)
 
 ### _TASK_USE_NEAREST_SCENARIO_TO_COORD
 

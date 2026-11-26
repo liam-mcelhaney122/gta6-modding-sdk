@@ -162,6 +162,27 @@ class TestHelpers(unittest.TestCase):
         player.clear_wanted()
         self.assertEqual(player.wanted_level(), 0)
 
+    def test_wanted_helpers_pass_the_player_ped(self):
+        """G-090: GET/CLEAR_PLAYER_WANTED_LEVEL get the player ped's two handle slots, not the player index."""
+        from gta6mod.runtime.marshal import entity_slots
+        get, clear = 0xABC532F9098BFD9D, 0x4E4B996C928C7AA6
+        self.assertEqual((N.BY_HASH[get][2], N.BY_HASH[clear][2]), ("e>i", "e>n"))
+        self.mock.set_wanted(3)
+        self.assertEqual(player.wanted_level(), 3)
+        player.clear_wanted()
+        ped = entity_slots(self.mock.player_ped)
+        sent = [(h, s) for h, s in self.mock.calls if h in (get, clear)]
+        self.assertEqual(sent, [(get, ped), (clear, ped)])
+        self.assertEqual(self.mock.world.wanted_level, 0)
+
+    def test_wanted_natives_ignore_a_non_player_argument(self):
+        """The mock follows the game: a null or non-player ped reads 0 and clears nothing (as the old id() call did)."""
+        self.mock.set_wanted(2)
+        self.assertEqual(names.player.get_wanted_level(0), 0)            # player index 0 as a handle: null ped
+        names.player.clear_wanted_level(0)
+        self.assertEqual(self.mock.world.wanted_level, 2)
+        self.assertEqual(names.player.get_wanted_level(self.mock.player_ped), 2)
+
     def test_models_hash(self):
         self.assertEqual(models.hash_of("adder"), 0xB779A091)
         self.assertEqual(models.hash_of(0x1_B779A091), 0xB779A091)

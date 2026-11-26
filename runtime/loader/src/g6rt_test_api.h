@@ -67,6 +67,25 @@ typedef struct g6rt_test_api {
        rest on this thread, unload all. Returns 1 if the stop script was queued, 0 if not, -1 on bad input. */
     int (*plugin_stop_run)(const g6_plugin_stop_fn* stops, const g6_plugin_unload_fn* unloads, size_t n, int tick,
                            uint64_t now_ms);
+    /* G-093: the scrThread fields as the Run hook reads them (+0x2b8 u32 name hash, +0x344 u8 state, +0x348 u32 id) */
+    void (*thread_fields)(const uint8_t* thread, uint32_t* name, uint32_t* state, uint32_t* id);
+    /* G-095: a fresh script-thread binder (binder.hpp). mode 0 stable, 1 hash, 2 observe; 0 ms = default.
+       binder_run is one Run observation: returns 1 if that call may tick; gen and bound receive the generation and bound id
+       after it. binder_counts: binds, unbinds, forgotten threads, tracked threads. */
+    void* (*binder_create)(int mode, uint32_t hash, uint32_t observe_ms, uint32_t absent_ms);
+    int (*binder_run)(void* b, uint32_t id, uint32_t name, uint8_t state, uint64_t now_ms, uint32_t* gen, uint32_t* bound);
+    void (*binder_counts)(void* b, uint32_t* binds, uint32_t* unbinds, uint32_t* gone, uint32_t* tracked);
+    void (*binder_destroy)(void* b);
+    /* G-120 script objects. objects_resolve: anchors over an image laid out at its RVAs -> the String type and
+       element record RVAs and whether the text path checks out; 1 if both kinds are available. objects_call:
+       configure the store with these records (unconfigured afterwards), convert call's string_slots/text_slots,
+       run fn(call, user) on the converted call, restore; returns the g6_status of the conversion.
+       objects_stats: interned objects so far. */
+    int (*objects_resolve)(const uint8_t* base, size_t size, uint32_t* type_rva, uint32_t* elem_rva, int* text_ok,
+                           char* report, size_t cap);
+    int (*objects_call)(const void* type, const void* elem, int text_ok, g6_native_call* call,
+                        void (*fn)(g6_native_call*, void*), void* user);
+    void (*objects_stats)(uint32_t* strings, uint32_t* texts, uint32_t* temporaries, size_t* bytes);
 } g6rt_test_api;
 
 typedef const g6rt_test_api* (G6_CALL *g6rt_get_test_api_fn)(void);

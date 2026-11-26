@@ -176,12 +176,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _BUSYSPINNER_SET_TEXT
 
-`0x7F78CD75CC4539E4` · sig `sqqqqq>n` · params 6, argc_inferred 6, arg slots 6 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44BCD00`
+`0x7F78CD75CC4539E4` · sig `S>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44BCD00`
 
-- nativedb form: `void _BUSYSPINNER_SET_TEXT(const char* text)`
-- C: `void G6_HUD__BUSYSPINNER_SET_TEXT(const g6_host_api* api, const char* text, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5)`
-- Python: `N.HUD._BUSYSPINNER_SET_TEXT(text: str | None, a1: int = 0, a2: int = 0, a3: int = 0, a4: int = 0, a5: int = 0) -> None`
-- Luau: `N.HUD._BUSYSPINNER_SET_TEXT(text: string?, a1: number?, a2: number?, a3: number?, a4: number?, a5: number?): ()`
+- nativedb form: `void _BUSYSPINNER_SET_TEXT(ScriptString text)`
+- C: `void G6_HUD__BUSYSPINNER_SET_TEXT(const g6_host_api* api, const char* text)`
+- Python: `N.HUD._BUSYSPINNER_SET_TEXT(text: str | None) -> None`
+- Luau: `N.HUD._BUSYSPINNER_SET_TEXT(text: string?): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed ScriptString (was const char*): slot 0 read as a script string object (0x1444bcd25, slot load 0x1444bcd1d, depth 0); script-vm.string_params.json (G-120)
 
 ### _GET_COLOR_FROM_NAME
 

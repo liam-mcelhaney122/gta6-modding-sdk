@@ -11,6 +11,7 @@ Build offline mods and tooling with the `gta6mod` Python package. This documenta
 - [Native API index](../api/index.md): generated native signatures, hashes and confidence information.
 - [Native signatures](../native-signatures.md): argument and return marshalling.
 - [Script layer design](../script_layer.md): implementation details, mock semantics and known gaps.
+- [In-game Python host](../python_host.md): `g6_python.dll`, which runs these mods inside the game process (verified offline only).
 - [Examples](../../examples/python): complete sample mods.
 
 For dump inspection and pattern verification commands, see the [SDK README](../../README.md). The [runtime loader README](../../runtime/loader/README.md) describes the separate in-process runtime and its current limitations.

@@ -17,6 +17,7 @@ enum class N : int {
     player_ped_id, get_player_index, get_entity_coords, get_entity_heading, get_entity_health,
     get_entity_max_health, is_ped_in_any_vehicle, get_vehicle_ped_is_using, get_player_wanted_level,
     get_game_timer, get_frame_count, get_clock_hours, get_clock_minutes,
+    get_players_last_vehicle, get_closest_vehicle, get_closest_ped,
     set_entity_coords, set_entity_health, clear_player_wanted_level, add_to_clock_time,
     count
 };
@@ -41,17 +42,28 @@ inline constexpr NativeSpec kNatives[] = {
     { N::get_entity_max_health,     "GET_ENTITY_MAX_HEALTH",     0x15D757606D170C3Cull, "eb>i",      false },
     { N::is_ped_in_any_vehicle,     "IS_PED_IN_ANY_VEHICLE",     0x997ABD671D25CA0Bull, "ebqq>b",    false },
     { N::get_vehicle_ped_is_using,  "GET_VEHICLE_PED_IS_USING",  0x6094AD011A2EA87Dull, "eq>e",      false },
-    { N::get_player_wanted_level,   "GET_PLAYER_WANTED_LEVEL",   0xABC532F9098BFD9Dull, "iq>i",      false },
+    { N::get_player_wanted_level,   "GET_PLAYER_WANTED_LEVEL",   0xABC532F9098BFD9Dull, "e>i",       false },
     { N::get_game_timer,            "GET_GAME_TIMER_F667",       0x4F67E8ECA7D3F667ull, ">i",        false },
     { N::get_frame_count,           "GET_FRAME_COUNT",           0x77DFA958FCF100C1ull, ">i",        false },
     { N::get_clock_hours,           "GET_CLOCK_HOURS",           0xC82CF208C2B19199ull, ">i",        false },
     { N::get_clock_minutes,         "GET_CLOCK_MINUTES",         0x4E162231B823DBBFull, ">i",        false },
+    // Second entities for G-003 (read-only). Argument layouts from the handlers in the 1.0.2.1 image, see
+    // probe_layout.hpp namespace nearby: re-db natives/script-vm.vector_params.json raw_reads plus disassembly.
+    { N::get_players_last_vehicle,  "GET_PLAYERS_LAST_VEHICLE",  0x2F96E7720B0B19EAull, ">e",        false },
+    { N::get_closest_vehicle,       "GET_CLOSEST_VEHICLE",       0x52F45D033645181Bull, "wfui>e",    false },
+    { N::get_closest_ped,           "GET_CLOSEST_PED",           0xC33AB876A77F8164ull, "wfbbEbbbi>b", false },
     { N::set_entity_coords,         "SET_ENTITY_COORDS",         0x06843DA7060A026Bull, "ewbbbbf>n", true  },
     { N::set_entity_health,         "SET_ENTITY_HEALTH",         0xAC2767ED8BDFAB15ull, "eieqq>n",   true  },
-    { N::clear_player_wanted_level, "CLEAR_PLAYER_WANTED_LEVEL", 0x4E4B996C928C7AA6ull, "iq>n",      true  },
+    { N::clear_player_wanted_level, "CLEAR_PLAYER_WANTED_LEVEL", 0x4E4B996C928C7AA6ull, "e>n",       true  },
     { N::add_to_clock_time,         "ADD_TO_CLOCK_TIME",         0xAB7C251C7701D336ull, "iii>n",     true  },
 };
 static_assert(sizeof(kNatives) / sizeof(kNatives[0]) == static_cast<std::size_t>(N::count), "one spec per N");
+constexpr bool specs_in_enum_order() noexcept {
+    for (std::size_t i = 0; i < sizeof(kNatives) / sizeof(kNatives[0]); ++i)
+        if (static_cast<std::size_t>(kNatives[i].id) != i) return false;
+    return true;
+}
+static_assert(specs_in_enum_order(), "spec() indexes kNatives by N: keep both in the same order");
 
 inline const NativeSpec& spec(N id) noexcept { return kNatives[static_cast<int>(id)]; }
 

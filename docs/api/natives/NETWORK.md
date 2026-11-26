@@ -135,12 +135,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### NETWORK_HANDLE_FROM_MEMBER_ID
 
-`0xA0FD21BED61E5C4C` · sig `sIiqqq>n` · params 6, argc_inferred 6, arg slots 6 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4C14D40`
+`0xA0FD21BED61E5C4C` · sig `SIi>n` · params 3, argc_inferred 2, arg slots 3 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4C14D40`
 
-- nativedb form: `void NETWORK_HANDLE_FROM_MEMBER_ID(const char* memberId, Any* gamerHandle, int gamerHandleSize)`
-- C: `void G6_NETWORK_NETWORK_HANDLE_FROM_MEMBER_ID(const g6_host_api* api, const char* memberId, int64_t* gamerHandle, int32_t gamerHandleSize, uint64_t a3, uint64_t a4, uint64_t a5)`
-- Python: `N.NETWORK.NETWORK_HANDLE_FROM_MEMBER_ID(memberId: str | None, gamerHandleSize: int, a3: int = 0, a4: int = 0, a5: int = 0) -> tuple[int]`
-- Luau: `N.NETWORK.NETWORK_HANDLE_FROM_MEMBER_ID(memberId: string?, gamerHandleSize: number, a3: number?, a4: number?, a5: number?): number`
+- nativedb form: `void NETWORK_HANDLE_FROM_MEMBER_ID(ScriptString memberId, Any* gamerHandle, int gamerHandleSize)`
+- C: `void G6_NETWORK_NETWORK_HANDLE_FROM_MEMBER_ID(const g6_host_api* api, const char* memberId, int64_t* gamerHandle, int32_t gamerHandleSize)`
+- Python: `N.NETWORK.NETWORK_HANDLE_FROM_MEMBER_ID(memberId: str | None, gamerHandleSize: int) -> tuple[int]`
+- Luau: `N.NETWORK.NETWORK_HANDLE_FROM_MEMBER_ID(memberId: string?, gamerHandleSize: number): number`
+- provenance: nativedb hash match (gta5_gen9+gta5); param 0 typed ScriptString (was const char*): slot 0 read as a script string object (0x144c14d69, slot load 0x144c14d5d, depth 0); script-vm.string_params.json (G-120)
 
 ### NETWORK_HANDLE_FROM_PLAYER
 
@@ -153,12 +154,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### NETWORK_HANDLE_FROM_USER_ID
 
-`0xDCD51DD8F87AEC5C` · sig `sIiqqq>n` · params 6, argc_inferred 6, arg slots 6 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4C14E70`
+`0xDCD51DD8F87AEC5C` · sig `SIi>n` · params 3, argc_inferred 2, arg slots 3 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4C14E70`
 
-- nativedb form: `void NETWORK_HANDLE_FROM_USER_ID(const char* userId, Any* gamerHandle, int gamerHandleSize)`
-- C: `void G6_NETWORK_NETWORK_HANDLE_FROM_USER_ID(const g6_host_api* api, const char* userId, int64_t* gamerHandle, int32_t gamerHandleSize, uint64_t a3, uint64_t a4, uint64_t a5)`
-- Python: `N.NETWORK.NETWORK_HANDLE_FROM_USER_ID(userId: str | None, gamerHandleSize: int, a3: int = 0, a4: int = 0, a5: int = 0) -> tuple[int]`
-- Luau: `N.NETWORK.NETWORK_HANDLE_FROM_USER_ID(userId: string?, gamerHandleSize: number, a3: number?, a4: number?, a5: number?): number`
+- nativedb form: `void NETWORK_HANDLE_FROM_USER_ID(ScriptString userId, Any* gamerHandle, int gamerHandleSize)`
+- C: `void G6_NETWORK_NETWORK_HANDLE_FROM_USER_ID(const g6_host_api* api, const char* userId, int64_t* gamerHandle, int32_t gamerHandleSize)`
+- Python: `N.NETWORK.NETWORK_HANDLE_FROM_USER_ID(userId: str | None, gamerHandleSize: int) -> tuple[int]`
+- Luau: `N.NETWORK.NETWORK_HANDLE_FROM_USER_ID(userId: string?, gamerHandleSize: number): number`
+- provenance: nativedb hash match (gta5_gen9+gta5); param 0 typed ScriptString (was const char*): slot 0 read as a script string object (0x144c14e99, slot load 0x144c14e8d, depth 0); script-vm.string_params.json (G-120)
 
 ### NETWORK_HASH_FROM_GAMER_HANDLE
 
@@ -346,12 +348,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_10727BBBE9098C08
 
-`0x10727BBBE9098C08` · sig `iiiiii>n` · params 6, argc_inferred 6, arg slots 6 · returns `void` · name: unnamed · confidence **low** · status observed · handler RVA `0x4C14E00`
+`0x10727BBBE9098C08` · sig `Si>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **low** · status observed · handler RVA `0x4C14E00`
 
-- C: `void G6_N_10727BBBE9098C08(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_10727BBBE9098C08(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> None`
-- Luau: `N.RAW.N_10727BBBE9098C08(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): ()`
-- provenance: cluster:3nn_unanimous
+- C: `void G6_N_10727BBBE9098C08(const g6_host_api* api, const char* p0, int32_t p1)`
+- Python: `N.RAW.N_10727BBBE9098C08(p0: str | None, p1: int) -> None`
+- Luau: `N.RAW.N_10727BBBE9098C08(p0: string?, p1: number): ()`
+- provenance: cluster:3nn_unanimous; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x144c14e29, slot load 0x144c14e1d, depth 0); script-vm.string_params.json (G-120)
 
 ### N_15A87C7CF84BEB3E
 

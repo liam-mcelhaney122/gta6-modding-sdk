@@ -3,6 +3,8 @@
 #include "gta6mod/gta6mod.h"
 #include "gta6mod/patterns.hpp"
 
+#include "binder.hpp"
+#include "g6ui.h"
 #include "build_consts.hpp"
 #include "g6rt_test_api.h"
 #include "game_clock.hpp"
@@ -14,6 +16,8 @@
 #include "natives.hpp"
 #include "pattern_scan.hpp"
 #include "scheduler.hpp"
+#include "script_objects.hpp"
+#include "ui_retained.h"
 #include "vfs.hpp"
 #include "x64_decode.hpp"
 
@@ -25,6 +29,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cwchar>
+#include <new>
 #include <vector>
 
 #define G6RT_VERSION "0.2.0"
@@ -37,8 +42,10 @@ namespace bc = g6rt::build;
 
 // ------------------------------------------------------------------ config
 enum class Mode : int { readonly = 0, observe = 1, full = 2 };
-// Which script thread plugin scripts tick on (design §4). observe = never tick, log only.
-enum class Bind : int { first = 0, hash = 1, observe = 2 };
+// Which script thread plugin scripts tick on (design §4, G-095): bind::Mode, see binder.hpp.
+// stable (alias first) = the alive thread with the longest continuous presence; hash = the same among
+// threads with host_script_hash; observe = never tick, log only.
+using Bind = bind::Mode;
 
 struct Config {
     Mode mode = Mode::readonly;
@@ -47,7 +54,9 @@ struct Config {
     wchar_t exe_path[1024] = {};
     std::uint32_t wait_for_game_ms = 120000;
     std::uint32_t host_script_hash = 0;
-    Bind bind = Bind::first;
+    Bind bind = Bind::stable;
+    std::uint32_t bind_observe_ms = 3000;      // [script] bind_observe_ms
+    std::uint32_t rebind_absent_ms = 3000;     // [script] rebind_absent_ms
     bool clock_system = false;                 // [clock] source=system: never use the game timer
     vfs::Config vfs;
     char vfs_root[520] = {};                   // [vfs] root: overlay queued by the runtime itself
@@ -55,6 +64,9 @@ struct Config {
     std::uint32_t fiber_stack_kb = 1024;
     bool offline_attested = false;             // [guard] offline_attested=1 (design §7 input 1)
     std::uint32_t guard_interval_ms = 5000;    // [guard] scan_interval_ms (design §7 input 2)
+    bool ui_overlay = false;                   // [ui] overlay=1: load g6ui.dll (needs mode=full)
+    std::uint32_t ui_toggle_vk = 0x2D;         // [ui] toggle_key: virtual-key code, default VK_INSERT
+    std::uint32_t ui_queue = G6UI_QUEUE_AUTO;  // [ui] queue=auto|ecl
     log::Level level = log::Level::info;
 };
 
@@ -82,8 +94,13 @@ void read_config() noexcept {
     GetPrivateProfileStringW(L"script", L"bind", L"", v, 1024, ini);
     if (_wcsicmp(v, L"observe") == 0) g_cfg.bind = Bind::observe;
     else if (_wcsicmp(v, L"hash") == 0) g_cfg.bind = Bind::hash;
-    else if (_wcsicmp(v, L"first") == 0) g_cfg.bind = Bind::first;
-    else g_cfg.bind = g_cfg.host_script_hash ? Bind::hash : Bind::first;   // key absent: round-1 behaviour
+    else if (_wcsicmp(v, L"stable") == 0 || _wcsicmp(v, L"first") == 0) g_cfg.bind = Bind::stable;
+    else g_cfg.bind = g_cfg.host_script_hash ? Bind::hash : Bind::stable;   // key absent: round-1 behaviour
+    g_cfg.bind_observe_ms = GetPrivateProfileIntW(L"script", L"bind_observe_ms", 3000, ini);
+    if (g_cfg.bind_observe_ms > 60000) g_cfg.bind_observe_ms = 60000;
+    g_cfg.rebind_absent_ms = GetPrivateProfileIntW(L"script", L"rebind_absent_ms", 3000, ini);
+    if (g_cfg.rebind_absent_ms < 500) g_cfg.rebind_absent_ms = 500;
+    if (g_cfg.rebind_absent_ms > 60000) g_cfg.rebind_absent_ms = 60000;
     GetPrivateProfileStringW(L"clock", L"source", L"auto", v, 1024, ini);
     g_cfg.clock_system = _wcsicmp(v, L"system") == 0;
     GetPrivateProfileStringW(L"vfs", L"mode", L"off", v, 1024, ini);
@@ -97,6 +114,12 @@ void read_config() noexcept {
     g_cfg.guard_interval_ms = GetPrivateProfileIntW(L"guard", L"scan_interval_ms", 5000, ini);
     if (g_cfg.guard_interval_ms < 1000) g_cfg.guard_interval_ms = 1000;
     if (g_cfg.guard_interval_ms > 10000) g_cfg.guard_interval_ms = 10000;   // must stay well under Gate::kStaleMs
+    g_cfg.ui_overlay = GetPrivateProfileIntW(L"ui", L"overlay", 0, ini) == 1;
+    GetPrivateProfileStringW(L"ui", L"toggle_key", L"0x2D", v, 1024, ini);
+    g_cfg.ui_toggle_vk = static_cast<std::uint32_t>(std::wcstoul(v, nullptr, 0));
+    if (g_cfg.ui_toggle_vk == 0 || g_cfg.ui_toggle_vk > 0xFE) g_cfg.ui_toggle_vk = 0x2D;
+    GetPrivateProfileStringW(L"ui", L"queue", L"auto", v, 1024, ini);
+    g_cfg.ui_queue = _wcsicmp(v, L"ecl") == 0 ? G6UI_QUEUE_ECL : G6UI_QUEUE_AUTO;
     GetPrivateProfileStringW(L"log", L"level", L"info", v, 1024, ini);
     if (_wcsicmp(v, L"debug") == 0) g_cfg.level = log::Level::debug;
     else if (_wcsicmp(v, L"warn") == 0) g_cfg.level = log::Level::warn;
@@ -106,7 +129,7 @@ void read_config() noexcept {
 const char* mode_str(Mode md) noexcept {
     return md == Mode::full ? "full" : md == Mode::observe ? "observe" : "readonly";
 }
-const char* bind_str(Bind b) noexcept { return b == Bind::hash ? "hash" : b == Bind::observe ? "observe" : "first"; }
+const char* bind_str(Bind b) noexcept { return b == Bind::hash ? "hash" : b == Bind::observe ? "observe" : "stable"; }
 
 // ------------------------------------------------------------------ state
 std::atomic<int> g_init_status{ G6_E_UNSUPPORTED_BUILD };   // result of init (G6_OK when identity+patterns passed)
@@ -321,6 +344,43 @@ bool resolve_all(const std::uint8_t* base, std::size_t size, std::vector<AnchorR
     return ok;
 }
 
+// G-120: what the runtime needs to build script String / text objects (script_objects.hpp), from the anchors.
+// String: both records read from the opcode 52 handler and equal to the two data anchors. Text: the accessor reads
+// +0x18 and calls the dispatcher, whose body is the virtual +0x18 tail call. Writes a one-line report to `why`.
+struct ObjectSetup { const void* type = nullptr; const void* elem = nullptr; bool text_ok = false; };
+ObjectSetup derive_objects(const std::vector<AnchorResult>& v, const std::uint8_t* lo, const std::uint8_t* hi,
+                           const std::uint8_t* base, char* why, std::size_t cap) noexcept {
+    auto get = [&](const char* n) -> const std::uint8_t* {
+        const AnchorResult* r = find_result(v, n);
+        return r && r->count == 1 ? r->addr : nullptr;
+    };
+    ObjectSetup o;
+    why[0] = 0;
+    const std::uint8_t* op = get("script.string.literal_op");
+    const void* t = nullptr;
+    const void* e = nullptr;
+    if (!op) {
+        appendf(why, cap, "String: script.string.literal_op not resolved");
+    } else if (!objects::literal_op_records(op, lo, hi, &t, &e)) {
+        appendf(why, cap, "String: opcode 52 handler bytes differ");
+    } else if (t != get("script.string.type_record") || e != get("script.string.literal_elem_record")) {
+        appendf(why, cap, "String: records from opcode 52 disagree with the data anchors");
+    } else {
+        o.type = t;
+        o.elem = e;
+        appendf(why, cap, "String: type record rva 0x%llx, element record rva 0x%llx",
+                static_cast<long long>(static_cast<const std::uint8_t*>(t) - base),
+                static_cast<long long>(static_cast<const std::uint8_t*>(e) - base));
+    }
+    const std::uint8_t* tg = get("script.text.get");
+    const std::uint8_t* ng = get("script.text.native_get");
+    o.text_ok = tg && ng && objects::text_path_ok(tg, ng, lo, hi);
+    appendf(why, cap, "; text: %s", o.text_ok ? "accessor and dispatcher check out"
+                                              : !tg || !ng ? "script.text.get / native_get not resolved"
+                                                           : "accessor or dispatcher bytes differ");
+    return o;
+}
+
 vfs::Anchors vfs_anchors(const std::vector<AnchorResult>& v) noexcept {
     auto get = [&](const char* n) -> const std::uint8_t* {
         const AnchorResult* r = find_result(v, n);
@@ -531,8 +591,7 @@ std::uint32_t g_nnames = 0, g_name_logs = 0;
 SRWLOCK g_seen_lock = SRWLOCK_INIT;
 std::atomic<std::uint64_t> g_run_calls{ 0 };
 ULONGLONG g_last_stats = 0;
-std::uint32_t g_bound_id = 0;
-ULONGLONG g_bound_seen = 0;
+bind::Binder g_binder;
 ULONGLONG g_last_tick_ms = 0;
 
 void note_name(std::uint32_t id, std::uint32_t name, std::uint32_t state) noexcept {
@@ -567,26 +626,37 @@ void observe(std::uint32_t id, std::uint32_t name, std::uint32_t state, void* ct
     if (now - g_last_stats >= 10000) {
         G6LOG_I("Run calls so far: %llu; distinct script threads: %u, names: %u; bind=%s bound thread id: %u; game_time_ms=%llu "
                 "(%s; game timer reads %u)", static_cast<unsigned long long>(g_run_calls.load()), g_nseen, g_nnames,
-                bind_str(g_cfg.bind), g_bound_id, static_cast<unsigned long long>(g_game_ms.load()), clock_state_str(),
+                bind_str(g_cfg.bind), g_binder.bound_id(), static_cast<unsigned long long>(g_game_ms.load()), clock_state_str(),
                 g_clock_ptr ? *g_clock_ptr : 0u);
         g_last_stats = now;
     }
     ReleaseSRWLockExclusive(&g_seen_lock);
 }
 
-// bind=first: the first running thread, rebound after 5 s of absence. bind=hash: the same, among
-// threads whose name hash is host_script_hash. bind=observe: never.
-bool bind_matches(std::uint32_t id, std::uint32_t name) noexcept {
-    if (g_cfg.bind == Bind::observe) return false;
-    if (g_cfg.bind == Bind::hash && name != g_cfg.host_script_hash) return false;
-    const ULONGLONG now = GetTickCount64();
-    if (g_bound_id == 0 || (g_bound_id != id && now - g_bound_seen > 5000)) {
-        G6LOG_I("binding plugin scripts to script thread id=%u name_hash=0x%08X (bind=%s)", id, name, bind_str(g_cfg.bind));
-        g_bound_id = id;
+void log_bind_events(const bind::Decision& d) noexcept {
+    for (std::uint32_t i = 0; i < d.nev; ++i) {
+        const bind::Event& e = d.ev[i];
+        if (e.kind == bind::Event::bound)
+            G6LOG_I("binding plugin scripts to script thread id=%u name_hash=0x%08X state=%u (bind=%s, generation %u: %s, "
+                    "%llu ms continuous, %llu alive Run calls)", e.id, e.name, e.state, bind_str(g_cfg.bind), e.generation,
+                    e.why, static_cast<unsigned long long>(e.presence_ms), static_cast<unsigned long long>(e.runs));
+        else if (e.kind == bind::Event::unbound)
+            G6LOG_I("unbinding plugin scripts from script thread id=%u name_hash=0x%08X state=%u (generation %u): %s",
+                    e.id, e.name, e.state, e.generation, e.why);
+        else if (e.kind == bind::Event::gone)
+            G6LOG_D("script thread gone: id=%u name_hash=0x%08X last state=%u, seen for %llu ms, %llu Run calls",
+                    e.id, e.name, e.state, static_cast<unsigned long long>(e.presence_ms), static_cast<unsigned long long>(e.runs));
     }
-    if (id != g_bound_id) return false;
-    g_bound_seen = now;
-    return true;
+}
+
+// The fields the runtime reads from a scrThread (build_consts.hpp). The state is one byte (G-093).
+struct ThreadFields { std::uint32_t name, id; std::uint8_t state; };
+ThreadFields read_thread_fields(const std::uint8_t* thread) noexcept {
+    ThreadFields f{};
+    std::memcpy(&f.name, thread + bc::kThreadNameHash, sizeof f.name);
+    std::memcpy(&f.state, thread + bc::kThreadState, sizeof f.state);
+    std::memcpy(&f.id, thread + bc::kThreadId, sizeof f.id);
+    return f;
 }
 
 void** g_pending_slot = nullptr;
@@ -597,11 +667,11 @@ void after_run(void* ctx) {
     if (g_tick_tid.load(std::memory_order_relaxed) == tid) return;   // Run re-entered from our own tick
     std::uint8_t* thread = *reinterpret_cast<std::uint8_t**>(static_cast<std::uint8_t*>(ctx) + bc::kCtxThread);
     if (!thread) return;
-    std::uint32_t name, state, id;
-    std::memcpy(&name, thread + bc::kThreadNameHash, 4);
-    std::memcpy(&state, thread + bc::kThreadState, 4);
-    std::memcpy(&id, thread + bc::kThreadId, 4);
+    const ThreadFields tf = read_thread_fields(thread);
+    const std::uint32_t name = tf.name, id = tf.id, state = tf.state;
     observe(id, name, state, ctx, thread);
+    const bind::Decision bd = g_binder.on_run(id, name, tf.state, GetTickCount64());
+    if (bd.nev) log_bind_events(bd);
     vfs::dump_once("first Run call");   // read-only; scripts run, so the game's own mounts exist
     const ULONGLONG now = GetTickCount64();
     if (now - g_last_clock_sample >= 50) {
@@ -609,7 +679,7 @@ void after_run(void* ctx) {
         clock_update();                  // observe mode validates the game clock too
     }
     if (g_cfg.mode != Mode::full || !g_ticks_enabled.load(std::memory_order_relaxed)) return;
-    if (state != 1 || !bind_matches(id, name)) return;
+    if (!bd.tick) return;   // only the bound thread, in state 2 or 3 (binder.hpp)
     if (g_cfg.min_tick_interval_ms && now - g_last_tick_ms < g_cfg.min_tick_interval_ms) return;
     g_last_tick_ms = now;
     void** slot = tls_active_ctx_slot();
@@ -620,6 +690,10 @@ void after_run(void* ctx) {
     }
     DWORD idle = 0;
     if (!g_tick_tid.compare_exchange_strong(idle, tid)) return;   // another OS thread is ticking
+    if (g_binder.generation() != bd.generation || g_binder.bound_id() != id) {   // rebound since the decision
+        g_tick_tid.store(0);
+        return;
+    }
     clock_update();
     g_pending_prev = *slot;
     g_pending_slot = slot;
@@ -666,6 +740,7 @@ Plugin g_plugins[32];
 std::size_t g_nplugins = 0;
 void* g_loading_plugin = nullptr;
 const g6_host_api* host_api() noexcept;
+void ui_unregister_owner(void* owner) noexcept;   // UI overlay section below
 
 template <class Fn> Fn proc(HMODULE mod, const char* name) noexcept {
     return reinterpret_cast<Fn>(reinterpret_cast<void*>(GetProcAddress(mod, name)));
@@ -704,6 +779,7 @@ void load_plugins() noexcept {
         g_loading_plugin = nullptr;
         if (st != G6_OK) {
             sched::unregister_owner(&p);
+            ui_unregister_owner(&p);
             G6LOG_W("plugin '%s' (%ls) g6_plugin_load returned %d; its scripts were removed, module left loaded", p.name,
                     fd.cFileName, static_cast<int>(st));
             continue;
@@ -713,6 +789,106 @@ void load_plugins() noexcept {
     } while (FindNextFileW(f, &fd));
     FindClose(f);
 }
+
+// ------------------------------------------------------------------ UI overlay (g6ui.dll)
+// Loaded only with [ui] overlay=1 and mode=full, from the runtime's folder (never from plugins\), and pinned.
+// Plugins get g_ui_table: g6ui.dll's g6_ui_api with frame_register replaced, so each registration carries the
+// registering plugin (unregistered with it). Without the overlay they get g_ui_stub (G6_E_NOT_IMPLEMENTED).
+using UiStartFn = g6_status(G6_CALL*)(const g6ui_config*);
+using UiStopFn = void(G6_CALL*)(void);
+using UiApiFn = const g6_ui_api*(G6_CALL*)(void);
+using UiOwnedFn = g6_status(G6_CALL*)(const g6_ui_frame_desc*, void*, g6_ui_id*);
+using UiUnownFn = void(G6_CALL*)(void*);
+UiStopFn g_ui_stop = nullptr;
+UiOwnedFn g_ui_register_owned = nullptr;
+UiUnownFn g_ui_unregister_owner = nullptr;
+g6_ui_api g_ui_table{};
+std::atomic<bool> g_ui_running{ false };
+
+g6_status G6_CALL stub_frame_register(const g6_ui_frame_desc*, g6_ui_id* out) { if (out) *out = 0; return G6_E_NOT_IMPLEMENTED; }
+g6_status G6_CALL stub_frame_unregister(g6_ui_id) { return G6_E_INVALID_ARG; }
+g6_status G6_CALL stub_imgui_info(g6_ui_imgui_info*) { return G6_E_NOT_IMPLEMENTED; }
+std::int32_t G6_CALL stub_begin(const char*, std::int32_t*, std::uint32_t) { return 0; }
+void G6_CALL stub_void(void) {}
+void G6_CALL stub_pos(float, float, std::uint32_t) {}
+void G6_CALL stub_text(const char*) {}
+void G6_CALL stub_text_colored(float, float, float, float, const char*) {}
+std::int32_t G6_CALL stub_label(const char*) { return 0; }
+std::int32_t G6_CALL stub_checkbox(const char*, std::int32_t*) { return 0; }
+std::int32_t G6_CALL stub_slider_int(const char*, std::int32_t*, std::int32_t, std::int32_t) { return 0; }
+std::int32_t G6_CALL stub_slider_float(const char*, float*, float, float, const char*) { return 0; }
+std::int32_t G6_CALL stub_input_text(const char*, char*, std::size_t) { return 0; }
+std::int32_t G6_CALL stub_combo(const char*, std::int32_t*, const char* const*, std::int32_t) { return 0; }
+std::int32_t G6_CALL stub_color(const char*, float*, std::uint32_t) { return 0; }
+void G6_CALL stub_plot(const char*, const float*, std::int32_t, const char*, float, float, float, float) {}
+const g6_ui_api g_ui_stub = {
+    sizeof(g6_ui_api), G6_UI_ABI_MAJOR, G6_UI_ABI_MINOR,
+    stub_frame_register, stub_frame_unregister, stub_imgui_info,
+    stub_begin, stub_void, stub_pos, stub_pos, stub_text, stub_text_colored, stub_label, stub_checkbox,
+    stub_slider_int, stub_slider_float, stub_input_text, stub_combo, stub_void, stub_void,
+    stub_label, stub_void, stub_label, stub_void, stub_label, stub_void, stub_color, stub_plot,
+};
+
+g6_status G6_CALL ui_frame_register(const g6_ui_frame_desc* desc, g6_ui_id* out) {
+    void* owner = sched::current_owner();
+    if (!owner) owner = g_loading_plugin;
+    return g_ui_register_owned(desc, owner, out);
+}
+
+void ui_unregister_owner(void* owner) noexcept {
+    if (g_ui_running.load() && g_ui_unregister_owner) g_ui_unregister_owner(owner);
+}
+
+void ui_log(int level, const char* message) {
+    log::write(static_cast<log::Level>(level < 0 ? 0 : level > 3 ? 3 : level), "ui", "%s", message ? message : "");
+}
+// Mods' frame callbacks run only while the single-player guard is open (the overlay itself still draws).
+int ui_gate(char* why, std::size_t cap) {
+    if (guard_open()) return 1;
+    std::snprintf(why, cap, "%s", g_gate.why(GetTickCount64()));
+    return 0;
+}
+
+void load_ui() noexcept {
+    wchar_t path[1100];
+    std::swprintf(path, 1100, L"%ls\\g6ui.dll", g_dir);
+    HMODULE mod = LoadLibraryExW(path, nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
+    if (!mod) { G6LOG_E("ui: [ui] overlay=1 but %ls did not load (%lu); no overlay", path, GetLastError()); return; }
+    auto start = reinterpret_cast<UiStartFn>(reinterpret_cast<void*>(GetProcAddress(mod, "g6ui_start")));
+    auto stop = reinterpret_cast<UiStopFn>(reinterpret_cast<void*>(GetProcAddress(mod, "g6ui_stop")));
+    auto api = reinterpret_cast<UiApiFn>(reinterpret_cast<void*>(GetProcAddress(mod, "g6ui_api")));
+    auto owned = reinterpret_cast<UiOwnedFn>(reinterpret_cast<void*>(GetProcAddress(mod, "g6ui_frame_register_owned")));
+    auto unown = reinterpret_cast<UiUnownFn>(reinterpret_cast<void*>(GetProcAddress(mod, "g6ui_unregister_owner")));
+    const g6_ui_api* t = api ? api() : nullptr;
+    if (!start || !stop || !owned || !unown || !t || t->size < sizeof(g6_ui_api) || t->abi_major != G6_UI_ABI_MAJOR) {
+        G6LOG_E("ui: %ls lacks the g6ui exports or has UI ABI %u (runtime %u); no overlay", path, t ? t->abi_major : 0u,
+                static_cast<unsigned>(G6_UI_ABI_MAJOR));
+        return;   // left loaded: it pins itself
+    }
+    g6ui_config c{};
+    c.size = sizeof c;
+    c.toggle_vk = g_cfg.ui_toggle_vk;
+    c.queue_source = g_cfg.ui_queue;
+    c.log = ui_log;
+    c.gate = ui_gate;
+    c.test_fail_hook = -1;
+    const g6_status st = start(&c);
+    if (st != G6_OK) {
+        G6LOG_E("ui: overlay not started (%d); see the ui lines above. Plugins get G6_E_NOT_IMPLEMENTED from frame_register",
+                static_cast<int>(st));
+        return;
+    }
+    g_ui_table = *t;
+    g_ui_table.frame_register = ui_frame_register;
+    g_ui_register_owned = owned;
+    g_ui_unregister_owner = unown;
+    g_ui_stop = stop;
+    g_ui_running.store(true);
+    G6LOG_I("ui: overlay started (g6ui.dll, Dear ImGui %s, toggle VK 0x%02X, queue=%s); mods' UI runs while the guard is open",
+            G6_UI_IMGUI_VERSION, g_cfg.ui_toggle_vk, g_cfg.ui_queue == G6UI_QUEUE_ECL ? "ecl" : "auto");
+}
+
+const g6_ui_api* G6_CALL api_ui(void) { return g_ui_running.load() ? &g_ui_table : &g_ui_stub; }
 
 // ------------------------------------------------------------------ host API
 std::uint8_t g_handle_tokens[sizeof(m::kNatives) / sizeof(m::kNatives[0])];
@@ -753,7 +929,7 @@ g6_status G6_CALL api_native_resolve(std::uint64_t hash, g6_native_handle* out) 
 std::atomic<std::uint32_t> g_refused_online_logs{ 0 };
 
 g6_status G6_CALL api_native_invoke(g6_native_handle h, g6_native_call* call) {
-    if (!h || !call || call->size < sizeof(g6_native_call)) return G6_E_INVALID_ARG;
+    if (!h || !call || call->size < G6_NATIVE_CALL_V3_SIZE) return G6_E_INVALID_ARG;
     const std::ptrdiff_t i = index_of(h);
     if (i < 0) return G6_E_INVALID_ARG;
     if (g_tick_tid.load(std::memory_order_relaxed) != GetCurrentThreadId() || !sched::in_script_fiber())
@@ -809,6 +985,7 @@ const g6_host_api g_api = {
     api_script_register, api_script_unregister, api_script_wait,
     api_anchor_address, api_vfs_add_overlay,
     api_game_time_ms,
+    api_ui,
 };
 const g6_host_api* host_api() noexcept { return &g_api; }
 
@@ -857,6 +1034,7 @@ void stop_and_unload_plugins(std::size_t first) noexcept {
     for (std::size_t i = first; i < g_nplugins; ++i) {
         if (g_plugins[i].loaded && g_plugins[i].unload) g_plugins[i].unload();
         g_plugins[i].loaded = false;
+        ui_unregister_owner(&g_plugins[i]);   // frames the plugin did not unregister itself
     }
 }
 
@@ -880,6 +1058,10 @@ void teardown(const char* why) noexcept {
     if (g_run_hook.enabled()) {
         if (g_run_hook.disable(err, sizeof err)) G6LOG_I("Run hook removed (original bytes restored; trampoline kept allocated)");
         else G6LOG_E("Run hook removal failed: %s (left installed, inert)", err);
+    }
+    if (g_ui_running.exchange(false)) {   // no frame callback runs after g6ui_stop returns: plugins can unload
+        g_ui_stop();
+        G6LOG_I("ui: overlay stopped (hooks removed, window procedure restored; g6ui.dll stays loaded)");
     }
     stop_and_unload_plugins(0);
     if (g_tick_tid.load() == 0) sched::delete_all();
@@ -979,6 +1161,14 @@ g6_status run_init() {
             okn, natives::table_size(), bad);
     g_identity_ok.store(true);
 
+    // 4a. script String / text arguments (G-120): refused unless their anchors check out
+    {
+        char why[400];
+        const ObjectSetup os = derive_objects(g_anchors, g_text_lo, g_text_hi, gm.base, why, sizeof why);
+        objects::configure(os.type, os.elem, os.text_ok);
+        G6LOG_I("script objects: %s", why);
+    }
+
     // 4b. game clock block (read-only: decodes three handler bodies)
     {
         char why[700];
@@ -1028,8 +1218,20 @@ g6_status run_init() {
         G6LOG_W("[script] bind=hash without host_script_hash: treated as bind=observe (no plugin ticks)");
         g_cfg.bind = Bind::observe;
     }
-    G6LOG_I("script binding: bind=%s host_script_hash=0x%08X", bind_str(g_cfg.bind), g_cfg.host_script_hash);
+    {
+        bind::Config bc_cfg;
+        bc_cfg.mode = g_cfg.bind;
+        bc_cfg.hash = g_cfg.host_script_hash;
+        bc_cfg.observe_ms = g_cfg.bind_observe_ms;
+        bc_cfg.absent_ms = g_cfg.rebind_absent_ms;
+        g_binder.configure(bc_cfg);
+        G6LOG_I("script binding: bind=%s host_script_hash=0x%08X bind_observe_ms=%u rebind_absent_ms=%u gap_ms=%u "
+                "(eligible: scrThread state byte 2 or 3)", bind_str(g_cfg.bind), g_cfg.host_script_hash, bc_cfg.observe_ms,
+                bc_cfg.absent_ms, bc_cfg.gap_ms);
+    }
 
+    if (g_cfg.ui_overlay && g_cfg.mode != Mode::full)
+        G6LOG_W("ui: [ui] overlay=1 is ignored in mode=%s: the overlay is loaded only with [runtime] mode=full", mode_str(g_cfg.mode));
     if (g_cfg.mode == Mode::readonly) {
         G6LOG_I("mode=readonly: Run hook NOT installed, plugins NOT loaded. Set [runtime] mode=observe for the next step.");
         return G6_OK;
@@ -1072,6 +1274,11 @@ g6_status run_init() {
     else G6LOG_W("plugin ticks stay disabled: TLS publish site not understood");
     if (g_cfg.bind == Bind::observe) G6LOG_W("[script] bind=observe: plugins load but their scripts never tick");
     if (g_cfg.vfs.enabled && g_cfg.vfs_root[0]) vfs::request(g_cfg.vfs_root, 0);
+    if (g_cfg.ui_overlay) load_ui();   // before the plugins, so they can register frames in g6_plugin_load
+    else G6LOG_I("ui: [ui] overlay=0 (the default): no overlay; frame_register returns G6_E_NOT_IMPLEMENTED");
+    // Retained UI for hosts that must not run on the render thread (g6_python: exports g6_ui_retained_*,
+    // runtime/src/ui_retained.h). Its frames are registered through this table, so they carry the calling plugin.
+    g6uiret::bind(&g_api);
     load_plugins();
     G6LOG_I("init complete: %zu plugin module(s), %zu active script(s)", g_nplugins, sched::active_count());
     return G6_OK;
@@ -1262,6 +1469,46 @@ int t_resolve_engine(const std::uint8_t* base, std::size_t size, char* report, s
         return blk && ok ? 1 : 0;
     } catch (...) { return -2; }
 }
+int t_objects_resolve(const std::uint8_t* base, std::size_t size, std::uint32_t* type_rva, std::uint32_t* elem_rva,
+                      int* text_ok, char* report, std::size_t cap) {
+    try {
+        if (type_rva) *type_rva = 0;
+        if (elem_rva) *elem_rva = 0;
+        if (text_ok) *text_ok = 0;
+        identity::Report ir;
+        identity::check_headers(base, size, ir);
+        if (!ir.headers_ok) { std::snprintf(report, cap, "headers mismatch: %s", ir.detail); return 0; }
+        std::vector<AnchorResult> res;
+        AnchorSummary s;
+        resolve_all(base, size, res, s, false, 0);
+        const ObjectSetup o = derive_objects(res, s.text_lo, s.text_hi, base, report, cap);
+        if (type_rva && o.type) *type_rva = static_cast<std::uint32_t>(static_cast<const std::uint8_t*>(o.type) - base);
+        if (elem_rva && o.elem) *elem_rva = static_cast<std::uint32_t>(static_cast<const std::uint8_t*>(o.elem) - base);
+        if (text_ok) *text_ok = o.text_ok ? 1 : 0;
+        return o.type && o.text_ok ? 1 : 0;
+    } catch (...) { return -2; }
+}
+// Configures the object store (unconfigured again afterwards: only for the offline self-test), converts `call`
+// and passes it to fn.
+int t_objects_call(const void* type, const void* elem, int text_ok, g6_native_call* call,
+                   void (*fn)(g6_native_call*, void*), void* user) {
+    objects::configure(type, elem, text_ok != 0);
+    g6_status st;
+    {
+        objects::CallObjects o;
+        st = o.prepare(call);
+        if (st == G6_OK && fn) fn(call, user);
+    }
+    objects::configure(nullptr, nullptr, false);
+    return static_cast<int>(st);
+}
+void t_objects_stats(std::uint32_t* strings, std::uint32_t* texts, std::uint32_t* temporaries, std::size_t* bytes) {
+    const objects::Stats st = objects::stats();
+    if (strings) *strings = st.strings;
+    if (texts) *texts = st.texts;
+    if (temporaries) *temporaries = st.temporaries;
+    if (bytes) *bytes = st.bytes;
+}
 int t_vfs_map_path(const char* host, const char* map, char* out, std::size_t cap) {
     const char* why = "";
     return vfs::map_path(host, map, out, cap, &why) ? 1 : 0;
@@ -1331,12 +1578,50 @@ int t_plugin_stop_run(const g6_plugin_stop_fn* stops, const g6_plugin_unload_fn*
     return queued;
 }
 
+void t_thread_fields(const std::uint8_t* thread, std::uint32_t* name, std::uint32_t* state, std::uint32_t* id) {
+    const ThreadFields f = read_thread_fields(thread);
+    if (name) *name = f.name;
+    if (state) *state = f.state;
+    if (id) *id = f.id;
+}
+void* t_binder_create(int mode, std::uint32_t hash, std::uint32_t observe_ms, std::uint32_t absent_ms) {
+    if (mode < 0 || mode > 2) return nullptr;
+    auto* b = new (std::nothrow) bind::Binder();
+    if (!b) return nullptr;
+    bind::Config c;
+    c.mode = static_cast<bind::Mode>(mode);
+    c.hash = hash;
+    if (observe_ms) c.observe_ms = observe_ms;
+    if (absent_ms) c.absent_ms = absent_ms;
+    b->configure(c);
+    return b;
+}
+int t_binder_run(void* b, std::uint32_t id, std::uint32_t name, std::uint8_t state, std::uint64_t now_ms, std::uint32_t* gen,
+                 std::uint32_t* bound) {
+    auto* x = static_cast<bind::Binder*>(b);
+    const bind::Decision d = x->on_run(id, name, state, now_ms);
+    if (gen) *gen = d.generation;
+    if (bound) *bound = x->bound_id();
+    return d.tick ? 1 : 0;
+}
+void t_binder_counts(void* b, std::uint32_t* binds, std::uint32_t* unbinds, std::uint32_t* gone, std::uint32_t* tracked) {
+    const auto* x = static_cast<bind::Binder*>(b);
+    const bind::Binder::Counts c = x->counts();
+    if (binds) *binds = c.binds;
+    if (unbinds) *unbinds = c.unbinds;
+    if (gone) *gone = c.gone;
+    if (tracked) *tracked = x->tracked();
+}
+void t_binder_destroy(void* b) { delete static_cast<bind::Binder*>(b); }
+
 const g6rt_test_api g_test_api = {
     sizeof(g6rt_test_api), t_decode, t_scan, t_build, t_hook_create, t_hook_enable, t_hook_disable, t_hook_destroy,
     t_hook_info, t_verify_selfid, t_check_image, t_resolve_anchors, t_verify_handlers, t_sched_tick,
     t_clock_find_load, t_clock_mix, t_resolve_engine, t_vfs_map_path, t_vfs_mount_fake,
     t_guard_classify, t_guard_trips, t_guard_gate_run, t_guard_scan_self,
     t_rip_in_range, t_guarded_len, t_hook_freeze_info, t_plugin_stop_run,
+    t_thread_fields, t_binder_create, t_binder_run, t_binder_counts, t_binder_destroy,
+    t_objects_resolve, t_objects_call, t_objects_stats,
 };
 
 } // namespace
@@ -1366,6 +1651,14 @@ G6_EXPORT const char* G6_CALL g6_status_str(g6_status s) {
 // The mock-only entry points exist in the shared header; the real runtime rejects them.
 G6_EXPORT g6_status G6_CALL g6_mock_register_native(uint64_t, g6_mock_native_fn, void*) { return G6_E_NOT_IMPLEMENTED; }
 G6_EXPORT g6_status G6_CALL g6_mock_step(uint32_t) { return G6_E_NOT_IMPLEMENTED; }
+G6_EXPORT int32_t G6_CALL g6_mock_ui_frame(void) { return -1; }
+G6_EXPORT const char* G6_CALL g6_mock_ui_transcript(void) { return ""; }
+G6_EXPORT g6_status G6_CALL g6_mock_ui_click(const char*) { return G6_E_NOT_IMPLEMENTED; }
+G6_EXPORT g6_status G6_CALL g6_mock_ui_set(const char*, const char*) { return G6_E_NOT_IMPLEMENTED; }
+G6_EXPORT void G6_CALL g6_mock_ui_set_menu_open(int32_t) {}
+G6_EXPORT int32_t G6_CALL g6_mock_ui_pending(void) { return 0; }
+G6_EXPORT int32_t G6_CALL g6_mock_ui_errors(void) { return 0; }
+G6_EXPORT int32_t G6_CALL g6_mock_ui_registered(void) { return 0; }
 
 // Result of the background init (G6_OK, G6_E_UNSUPPORTED_BUILD, ...).
 __declspec(dllexport) g6_status G6_CALL g6rt_init_status(void) { return static_cast<g6_status>(g6rt::g_init_status.load()); }

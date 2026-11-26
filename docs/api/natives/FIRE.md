@@ -145,14 +145,15 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### START_SCRIPT_FIRE
 
-`0x6B83617E04503888` · sig `wifbsfiq>i` · params 8, argc_inferred 9, arg slots 9 · returns `FireId` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x3C170A0`
+`0x6B83617E04503888` · sig `wfSfi>i` · params 5, argc_inferred 6, arg slots 6 · returns `FireId` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x3C170A0`
 
 - vector params: packed 16-byte Vector3 (`w`, 2 slots), measured in the handler: `coords` = nativedb x, y, z
 
-- nativedb form: `FireId START_SCRIPT_FIRE(float x, float y, float z, int p3, float p4, BOOL p5, const char* soundsetName, float p7, int p8)`
-- C: `int32_t G6_FIRE_START_SCRIPT_FIRE(const g6_host_api* api, g6_vec3 coords, int32_t p3, float p4, int p5, const char* soundsetName, float p7, int32_t p8, uint64_t a8)`
-- Python: `N.FIRE.START_SCRIPT_FIRE(coords: Vector3, p3: int, p4: float, p5: bool, soundsetName: str | None, p7: float, p8: int, a8: int = 0) -> int`
-- Luau: `N.FIRE.START_SCRIPT_FIRE(coords: vector, p3: number, p4: number, p5: boolean, soundsetName: string?, p7: number, p8: number, a8: number?): number`
+- nativedb form: `FireId START_SCRIPT_FIRE(float x, float y, float z, float p4, ScriptString soundsetName, float p7, int p8)`
+- C: `int32_t G6_FIRE_START_SCRIPT_FIRE(const g6_host_api* api, g6_vec3 coords, float p4, const char* soundsetName, float p7, int32_t p8)`
+- Python: `N.FIRE.START_SCRIPT_FIRE(coords: Vector3, p4: float, soundsetName: str | None, p7: float, p8: int) -> int`
+- Luau: `N.FIRE.START_SCRIPT_FIRE(coords: vector, p4: number, soundsetName: string?, p7: number, p8: number): number`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); GTA VI prototype from handler and call-site evidence: all 3 call sites (2 programs) pass 6 slots and the handler reads 6; nativedb params not taken: p3, p5; script-vm.prototypes.observed.json (G-118); param 4 typed ScriptString (was const char*): slot 3 read as a script string object (0x143c170ce, slot load 0x143c170c5, depth 0); script-vm.string_params.json (G-120)
 
 ### STOP_ENTITY_FIRE
 

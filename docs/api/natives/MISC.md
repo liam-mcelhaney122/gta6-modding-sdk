@@ -432,12 +432,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_2715E4E9C92BF409
 
-`0x2715E4E9C92BF409` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **low** · status observed · handler RVA `0x3E85A60`
+`0x2715E4E9C92BF409` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **low** · status observed · handler RVA `0x3E85A60`
 
-- C: `int32_t G6_N_2715E4E9C92BF409(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_2715E4E9C92BF409(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_2715E4E9C92BF409(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
-- provenance: cluster:3nn_unanimous
+- C: `int32_t G6_N_2715E4E9C92BF409(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_2715E4E9C92BF409(p0: str | None) -> int`
+- Luau: `N.RAW.N_2715E4E9C92BF409(p0: string?): number`
+- provenance: cluster:3nn_unanimous; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e85a79, slot load 0x143e85a71, depth 0); script-vm.string_params.json (G-120)
 
 ### N_2AD440915F57D22A
 
@@ -918,12 +918,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_EB2C1BDA8186B9F6
 
-`0xEB2C1BDA8186B9F6` · sig `iiiiii>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: unnamed · confidence **low** · status observed · handler RVA `0x3E87C30`
+`0xEB2C1BDA8186B9F6` · sig `S>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: unnamed · confidence **low** · status observed · handler RVA `0x3E87C30`
 
-- C: `int32_t G6_N_EB2C1BDA8186B9F6(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)`
-- Python: `N.RAW.N_EB2C1BDA8186B9F6(p0: int, p1: int, p2: int, p3: int, p4: int, p5: int) -> int`
-- Luau: `N.RAW.N_EB2C1BDA8186B9F6(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number): number`
-- provenance: cluster:3nn_unanimous
+- C: `int32_t G6_N_EB2C1BDA8186B9F6(const g6_host_api* api, const char* p0)`
+- Python: `N.RAW.N_EB2C1BDA8186B9F6(p0: str | None) -> int`
+- Luau: `N.RAW.N_EB2C1BDA8186B9F6(p0: string?): number`
+- provenance: cluster:3nn_unanimous; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e87c4a, slot load 0x143e87c42, depth 0); script-vm.string_params.json (G-120)
 
 ### N_EE7605DBE929E42D
 

@@ -36,7 +36,19 @@ tools/inject/inject_core.hpp g6inject argument parsing, name matching, exit code
 build_inject.cmd             builds g6inject.exe and the injector test binaries into build\ and build\inject_test\
 tests/inject/*.cpp           injector test: stand-in target, image-named dummy DLL, marker DLL, driver
 plugins/g6probe/             g6probe.dll: live probe plugin (mode=full) writing JSONL; see tools/live/stages/README.md
-build_probe.cmd              builds build\probe\g6probe.dll and its tests into build\probe_testtests/probe/*.cpp            g6probe unit test, mock-world test (gta6mod_mock.dll + fake title image)
+build_probe.cmd              builds build\probe\g6probe.dll and its tests into build\probe_test
+tests/probe/*.cpp            g6probe unit test, mock-world test (gta6mod_mock.dll + fake title image)
+ui/g6ui.cpp, ui/g6ui.h       g6ui.dll: Dear ImGui overlay on the host's D3D12 swap chain ("UI overlay" below)
+ui/ui_logic.hpp              its pure decisions: queue match, window-message handling, mouse scale (tested offline)
+plugins/g6trainer/           g6trainer.dll: C++ example plugin with a menu (gta6mod/ui.hpp)
+build_ui.cmd                 builds build\g6ui.dll, build\trainer\g6trainer.dll and the UI tests into build\ui_test
+tests/ui/ui_test.cpp         overlay test on its own D3D12 device + swap chain (hidden window); ui_test_plugin.cpp
+                             draws with its own ImGui copy on the shared context; trainer_mock_test.cpp
+../../third_party/imgui/     Dear ImGui v1.91.9b, vendored unchanged (G6_VENDOR.txt: source, commit, sha256)
+../../python/host/           g6_python.dll: the in-game Python host plugin (see "Python plugin" below); its build.cmd
+                             is called by build.cmd and writes build\python\ and build\python_test\
+../src/ui_retained.{h,cpp}   retained UI for hosts that must not run on the render thread (g6_ui_retained_* exports;
+                             docs/python_host.md "Python UI"); compiled into gta6mod_runtime.dll
 ```
 
 ## Build
@@ -44,17 +56,29 @@ build_probe.cmd              builds build\probe\g6probe.dll and its tests into b
 ```bat
 sdk\runtime\loader\build.cmd test
 ```
-`build.cmd` builds the runtime, the self-test, `g6inject.exe` and the `g6probe` plugin; `test` runs the
-self-test, the injector test and the two g6probe tests, and the script exits non-zero if any fails. (Before 2026-11-25 `build.cmd test`
+`build.cmd` builds the runtime, the self-test, `g6inject.exe`, the `g6probe` plugin, the UI overlay (`g6ui.dll`,
+`g6trainer.dll`) and the `g6_python` plugin; `test` runs the self-test, the injector test, the two g6probe tests, the
+UI tests (`ui_test.exe` on the default adapter and on WARP, `trainer_mock_test.exe`) and `g6_python_test.exe`, and
+the script exits non-zero if any fails.
+`g6_python` needs CPython 3.12 headers and libs (`G6_PYTHON_HOME`, else `%LOCALAPPDATA%\Programs\Python\Python312`);
+without them the plugin and its test print `SKIPPED` and the rest still builds and runs. (Before 2026-11-25 `build.cmd test`
 returned the errorlevel from before the self-test ran, so a failing self-test still exited 0.)
 ```powershell
 .\sdk\runtime\loader\build.ps1 -Test -Dump "<DUMP>"
+.\sdk\runtime\loader\build.ps1 -Test -Low    # the whole build and test tree at idle priority
 ```
+`build.ps1` exits 0 only if every build step and test passed, else the failing step's code (it names the step).
+For a low-priority run use `-Low`, not `cmd /c "start /low /wait /b powershell -File build.ps1 ..."`: a `cmd /c`
+whose only command is `start` exits 0 whatever the started process returned. Before 2026-11-25 `build.ps1` also
+ran with `$ErrorActionPreference = "Stop"`, so a caller that redirected stderr aborted it on the first compiler
+diagnostic instead of on an exit code.
 
 The build uses `C:\Program Files\LLVM\bin\clang-cl.exe` (or `clang-cl` on PATH), linked with
 lld-link. clang-cl finds the MSVC 14.52 BuildTools and Windows SDK 10.0.28000 on its own, so
 no vcvars is needed. The flags are `/std:c++20 /O2 /W4 /WX /EHsc /MT`. No warning is suppressed.
 The output in `build\` has these imports only: `KERNEL32.dll`, `bcrypt.dll` and `IPHLPAPI.DLL`.
+`build\g6ui.dll` (the optional overlay) also imports `d3d12`, `dxgi`, `d3dcompiler_47`, `user32`, `gdi32`, `dwmapi`;
+it is loaded only with `[ui] overlay=1` and `mode=full`.
 
 Self-test (late-load round, offline): **344 passed** without `G6_DUMP`, **355 passed** with it
 (round 3 was 308 / 319; the 36 new checks are the late-load patch-safety tests below). The
@@ -98,9 +122,8 @@ re-implementation against pefile and against the manifest.
      - `script.native.lock_fn`.
    - Those four are re-resolved through `resolve_anchor` and must agree with the scanner.
      The self-test checks every 25th signed anchor the same way.
-   - `strict_patterns=1` refuses on any non-exact anchor. The default is off, because under
-     the HLE host a few signatures that pin a `gs:[0x58]` load cannot match (see the
-     unverified list).
+   - `strict_patterns=1` refuses on any non-exact anchor. The default is off, so an anchor the
+     runtime does not need cannot stop it on a host that differs from the simulated one.
 4. **Natives (static, read-only).** For each of the 6,829 manifest handlers, the runtime:
    - walks the prologue with the length decoder to `cmp dword [rcx+0x10],0` and the `js` after it;
    - follows the `js` and reads the `movabs` id;
@@ -150,7 +173,8 @@ re-implementation against pefile and against the manifest.
      - every hooked mode: logs each new script thread (id, name hash at `thread+0x2b8`, state at
        `+0x344`), each distinct name hash the first time it is seen and each new state per name
        hash; samples the game clock every 50 ms; dumps the mount table once (first Run call);
-     - full: if `[script] bind` selects this thread and `state==1`, it sets the TLS active-context
+     - full: if `[script] bind` selects this thread (the binder, `src/binder.hpp`: one bound thread at a
+       time, chosen under a lock; only state byte 2 or 3, see G-093/G-095), it sets the TLS active-context
        slot to this ctx, evaluates the guard, mounts queued overlays (single-player only), runs
        the fiber scheduler, and restores the slot. Faults turn the hook into a pass-through.
 8. **Plugins** (`mode=full`): every `plugins\*.dll` next to the runtime that exports
@@ -259,7 +283,9 @@ corroborates instead.
 
 | key | values (default first) | effect |
 |---|---|---|
-| `[script] bind` | *(empty)*, `first`, `hash`, `observe` | Empty means `hash` if `host_script_hash` is set, else `first`. `hash` without a hash falls back to `observe`. `observe` never ticks plugin scripts. |
+| `[script] bind` | *(empty)*, `stable` (alias `first`), `hash`, `observe` | `stable`: the thread in state 2 or 3 with the longest continuous presence after `bind_observe_ms`; it is replaced when it finishes (state >= 4) or is absent for `rebind_absent_ms` while other threads run. Empty means `hash` if `host_script_hash` is set, else `stable`. `hash` without a hash falls back to `observe`. `observe` never ticks plugin scripts. |
+| `[script] bind_observe_ms` | `3000` | Continuous presence a thread needs before it can be bound. |
+| `[script] rebind_absent_ms` | `3000` (500..60000) | Absence of the bound thread, while other threads run, that triggers a rebind. |
 | `[clock] source` | `auto`, `system` | `auto` uses the game timer once validated. `system` uses QPC only. |
 | `[vfs] mode` | `off`, `overlay` | The overlay also needs `[runtime] mode=full` and an open guard. |
 | `[guard] offline_attested` | `0`, `1` | Operator attestation that the host blocks the game's network. `0` keeps the guard closed. |
@@ -314,7 +340,7 @@ Expected refusal lines, each naming its cause:
                GET_FRAME_TIME rva 0x3e85740 -> core 0x738420; block rva 0xabbef40 in .data (writable, not executable); current value … ms
    vfs: engine ABI checks passed (Relative ctor …, Init …, MountAs …, MountGlobal …, sizeof(Relative) 0x118); [vfs] mode=off
    mount table (init): N entries, capacity …        (N may be 0 this early)
-   script binding: bind=first host_script_hash=0x00000000
+   script binding: bind=stable host_script_hash=0x00000000 bind_observe_ms=3000 rebind_absent_ms=3000 gap_ms=2000 (eligible: scrThread state byte 2 or 3)
    ```
 4. Next run: set `mode=observe` (and `[script] bind=observe` to be explicit). Get the game to
    a state where scripts run; the menu has none (finding 30). Look for these lines:
@@ -413,6 +439,25 @@ Exit codes (`tools/inject/inject_core.hpp`):
   arbitrary-code-guard policy on `victory.exe`);
 - how many threads the title process has, and how long the freeze takes (logged on install).
 
+## Python plugin (`g6_python.dll`)
+
+`sdk/python/host/g6_python.cpp` is an ordinary plugin (query/load/stop/unload, API 0.2) that embeds CPython 3.12
+and runs `gta6mod` Python mods; the design, config keys and contracts are in `sdk/docs/python_host.md`.
+What it means for the runtime:
+
+- **Off by default.** It reads `plugins\g6_python.ini`; without `[python] enable=1` `g6_plugin_load` logs one
+  line, returns `G6_OK` and registers nothing. `python312.dll` is delay-loaded, so it is never loaded then.
+- It registers one script, `python-host`. Python starts on that script's first tick (script thread, inside the
+  runtime fiber), after a `GET_GAME_TIMER` probe: `G6_E_ONLINE_SESSION` (guard closed) keeps Python from
+  starting. Every later native goes through `native_resolve`/`native_invoke` and the guard as usual.
+- It never calls `script_wait`: Python mods are generators the host resumes from its own tick, like the Luau
+  host. `g6_plugin_stop` runs the mods' stop handlers (natives work there when the runtime calls it from a
+  script fiber); `g6_plugin_unload` runs them if the stop event did not.
+- Once Python started, `python312.dll` and `g6_python.dll` are pinned and the interpreter is never finalised
+  (`Py_FinalizeEx` would join mod threads during shutdown; see python_host.md "Lifetime").
+- Offline: `g6_python_test.exe` (17 scenarios, run by `build.cmd test` / `build.ps1 -Test`) loads it against
+  `gta6mod_mock.dll`; nothing of it has run in game.
+
 ## Design changes from `docs/runtime_design.md`
 
 - **§3 identity probe: not done by calling.** All 6,813 wrappers, after writing their id for
@@ -472,13 +517,118 @@ key or field exists in the runtime or `gta6mod.h`. The old `[guard] session_nati
   debugger or telemetry connection). If one shows up as a remote, the guard trips. Report the
   logged remote rather than whitelisting it.
 
+## UI overlay (`g6ui.dll`, `[ui] overlay=1`)
+
+An in-game menu layer for mods: Dear ImGui (v1.91.9b, `sdk/third_party/imgui`) drawn on the host's own
+D3D12 swap chain, with the toggle key (default Insert) showing the menu and giving it the mouse and keyboard.
+Mods use one C ABI, `g6_ui_api` in `gta6mod.h` ("UI layer"), reached through `g6_host_api.ui` (API 0.3):
+C/C++ (`gta6mod/ui.hpp`; `gta6mod/ui_imgui.hpp` to draw with ImGui directly on the shared context), Luau
+(`@gta6/ui`, `sdk/luau/types/ui.luau`) and Python (`gta6mod.ui`, backend-agnostic: it calls `backend.ui`; in game
+through `g6_python.dll`, whose frame functions run on the script thread and are replayed here by the runtime's
+`g6_ui_retained_*` exports, docs/python_host.md "Python UI").
+**Nothing of it has run under DexNom.** What is verified is offline (below).
+
+**Design choice: a separate `g6ui.dll` next to the runtime, loaded by the runtime itself (not from `plugins\`).**
+The runtime keeps its import table (`KERNEL32`, `bcrypt`, `IPHLPAPI`) and its readonly/observe behaviour exactly
+as before: nothing of D3D12, DXGI, user32, d3dcompiler or ImGui is mapped unless `[ui] overlay=1` and
+`[runtime] mode=full`. The runtime still owns the gate (ini, mode, single-player guard), loads the overlay
+before the plugins (so `g6_plugin_load` can register menus) and stops it before they unload; and the overlay is
+testable on its own (`ui_test.exe` loads it into a process with its own swap chain). It uses the runtime's
+inline-hook code (`src/hook.cpp`, `src/x64_decode.cpp`, compiled into it), and it pins itself.
+
+Enable: copy `build\g6ui.dll` next to `gta6mod_runtime.dll` and set
+```ini
+[runtime]
+mode=full
+[ui]
+overlay=1          ; default 0
+toggle_key=0x2D    ; virtual-key code (Insert)
+queue=auto         ; or ecl
+```
+Expected log lines (`ui:` source): `entry points (dummy device on default adapter): Present …, ResizeBuffers … in
+dxgi.dll; ExecuteCommandLists … in D3D12Core.dll`, three `… hook installed at …` lines, `overlay active`,
+`ui: overlay started …`, then on the first Present `input: window … subclassed` and `overlay bound: swap chain …,
+window …, <w>x<h> format <n>, <n> buffers, queue … (<source>)`.
+
+How it works:
+1. **Entry points.** A dummy D3D12 device (default adapter, else WARP), DIRECT queue and flip-model swap chain on
+   a hidden 64x64 window give the vtables: `IDXGISwapChain` slot 8 `Present`, 13 `ResizeBuffers`,
+   `ID3D12CommandQueue` slot 10 `ExecuteCommandLists` (COM ABI slots). The targets must lie in `dxgi.dll` and in a
+   module named `d3d12*` (D3D12Core.dll here); a vtable pointing elsewhere (another overlay replaced it) is refused.
+   The dummy objects and window are destroyed before any hook is written.
+2. **Hooks.** Three `hook::InlineHook`s (relocating trampoline, all other threads suspended and checked, original
+   bytes saved). They are published (`g_active`) only after all three are written; a failure rolls back the ones
+   already written, newest first. `g6ui_stop` (runtime teardown) clears `g_active`, waits for a frame in
+   progress, restores the window procedure (only if nobody subclassed after us; otherwise ours stays as a
+   pass-through), releases the GPU objects and the ImGui context, and restores the bytes. Trampolines and the
+   DLL stay (a thread may still return through them).
+3. **Queue.** The overlay must submit on the queue the swap chain presents on (else its draw races the host's).
+   `queue=auto` first asks `IDXGISwapChain::GetDevice(ID3D12CommandQueue)`; on Windows 11 build 26300 that query
+   returned no queue (both offline runs), so the overlay falls back to the `ExecuteCommandLists` match: the DIRECT
+   queues on the swap chain's device that executed since the previous Present (references held while candidates);
+   one left wins; several: the one that executed on the presenting thread; otherwise it waits (logs
+   `several DIRECT queues …`) and never guesses (`ui_logic.hpp choose_queue`). DexNom @ `2e01ab4` (source read,
+   `crates/victory-gpu/src/host.rs`): one DIRECT queue (`create()`), the swap chain made on it
+   (`CreateSwapChainForHwnd(&self.queue, …)`, FLIP_DISCARD, 2 buffers) and `present()` executes its copy on that
+   queue right before `Present(0, 0)` on the same thread, so exactly one candidate is expected.
+4. **Drawing** (on the host's presenting thread, inside our Present detour, before the original Present): bind once
+   per swap chain (our RTV heap, one shader-visible SRV slot for the font, 3 allocators, a list, a fence), then per
+   frame: wait (≤ 250 ms, else skip the frame) for the allocator slot used 3 frames ago, ImGui new frame
+   (DisplaySize = back-buffer size; mouse positions scaled from client to back-buffer pixels), mods' callbacks,
+   record barrier PRESENT→RT, draw, RT→PRESENT on the current back buffer (fetched per frame, never held, so
+   `ResizeBuffers` needs nothing from us but a wait for our fence), execute on the host queue, signal our fence.
+   Nothing is recorded when the menu is hidden and no `G6_UI_FRAME_ALWAYS` frame is registered. A size change is
+   followed per frame; a format change re-creates the ImGui DX12 backend; a new swap chain on the same window
+   rebinds at once (another window: after the bound one is silent 2 s); a removed device detaches without waiting.
+5. **Input.** The swap chain's window (`GetHwnd`) is subclassed (`SetWindowLongPtrW`). Hidden: everything goes to
+   the host except the toggle key (swallowed). Shown: mouse and keyboard go to ImGui only (system keys to both, so
+   Alt+Tab/Alt+F4 work; `WM_INPUT` swallowed with `DefWindowProc` cleanup); ImGui draws its own cursor. Focus loss
+   (`WM_KILLFOCUS`, `WM_ACTIVATEAPP(0)`, `WM_ACTIVATE(WA_INACTIVE)`) and hiding release ImGui's keys/buttons and the
+   mouse capture; focus loss also hides the menu.
+6. **Mods.** Each frame callback runs inside `PushID`, between `ErrorRecoveryStoreState` and
+   `ErrorRecoveryTryToRecoverState` (unbalanced Begin/End/Tree/Tab is repaired and logged) and under SEH (a faulting
+   callback is unregistered and logged). Callbacks run only while the single-player guard is open (the overlay's
+   status window says why when it is closed); natives are refused there (`G6_E_NOT_ON_SCRIPT_THREAD`: not the
+   script thread). A plugin's frames are unregistered with it.
+
+**Verified offline** (`build.ps1 -Test`, `build_ui.cmd test`): `ui_test.exe` 80 checks on the hardware adapter and
+80 on WARP: hook rollback after a forced failure of hook 2 and of hook 3 (all bytes back), install, queue bound
+via `ExecuteCommandLists` (and via `queue=auto`), WndProc subclassed, nothing drawn while hidden, Insert through
+`SendMessage` shows/hides and is not passed on, pixels read back from the back buffer right after the overlay drew
+(a plugin's red rectangle at (120,220), the host's blue elsewhere), an ImGui button clicked through `WM_MOUSEMOVE`
+/`WM_LBUTTONDOWN`/`UP` while the host sees no mouse message, the host gets input back when hidden, a HUD frame
+drawn while hidden, focus loss hides, the gate skips callbacks, error recovery and SEH containment,
+`ResizeBuffers` to 800x600 (bottom-right pixel, click with client→back-buffer scaling), to BGRA (backend
+re-created, pixel still right), swap chain re-created on the same window, owner unregistration, stop (bytes and
+WndProc restored, no detour calls afterwards), restart. A second DLL (`ui_test_plugin.dll`) draws with its own
+ImGui copy through `gta6mod/ui_imgui.hpp`. `trainer_mock_test.exe` (18 checks) runs `g6trainer.dll` on the mock.
+`loader_selftest` checks the runtime's stub table without the overlay. All of it with MSVC (CMake, `/W4 /WX`)
+and with clang-cl (`build.cmd`).
+
+**Verify live** (unknown until the first session; read `gta6mod_runtime.log`):
+- that the three entry points resolve and hook inside `victory.exe` (another overlay such as Steam, Discord or
+  RTSS may have hooked `Present` first: the log names the module or the undecodable byte), and how long the
+  thread freeze takes (logged per hook; 0.05–5.3 s per hook on the dev machine, ~6,000 system threads);
+- that DexNom's swap chain is the one bound (`overlay bound: … queue … (ExecuteCommandLists match)`) and no
+  `several DIRECT queues` line appears;
+- the back-buffer format DexNom presents (`swap_format`; HDR/float formats draw ImGui's colours as linear values);
+- frame pacing: the overlay adds one small command list per frame and waits only when its 3-frame ring is busy;
+  watch for `frames_skipped` symptoms (menu flicker) at low fps, and compare frame times with the menu shown/hidden;
+- input focus: whether DexNom's window (or the one it creates) receives `WM_MOUSEMOVE`/`WM_KEYDOWN` while the game
+  runs, and whether the menu's mouse lines up (client→back-buffer scale). **Keyboard keys still reach the game
+  while the menu is open:** DexNom's GameInput HLE polls `GetAsyncKeyState` and XInput while its window is
+  focused (`crates/victory-hle/src/modules/gameinput.rs`), which window messages cannot block. Mouse buttons are
+  not mapped by that HLE (found in source, not observed);
+- that mods' menus appear only with the guard open, and that `teardown` (runtime shutdown) restores the window
+  procedure and bytes without a hitch.
+
 ## Unverified / unknown (live)
 
 - Whether the host's TLS thunk returns `&TlsArray[index]` in `rax` as research/03 describes.
   The runtime calls it as `void** (*)()` on the script thread.
 - Whether the import descriptors survive the host's patching (imphash path).
 - That Run is the per-slice entry for every script thread, and how often it runs per frame.
-  The binding policy is `[script] bind=first|hash|observe`.
+  The binding policy is `[script] bind=stable|hash|observe`.
 - Fibers on the game thread: FLS is per fiber, and the game CRT's per-thread data on a new
   fiber has not been observed. The thread is converted to a fiber and back each tick.
 - Natives: running natives on our tick has not been tried. Faults are caught and the native
@@ -486,8 +636,9 @@ key or field exists in the runtime or `gta6mod.h`. The old `[guard] session_nati
 - Game clock: that block +0 advances in game ms while playing, stops on pause, and stays
   monotonic across loads. The mixer tolerates resets, but whether a load resets it is
   unobserved. Compare `game timer reads` in two 10-second summaries with the wall time.
-- Signatures that pin a `gs:[0x58]` load stop matching under the host. In the simulated
-  rewrite, that is an archive-decoder helper (not required by the runtime).
+- Signatures that pin a `gs:[0x58]` load stop matching under the host. None does since G-091:
+  `gen_patterns.py` and the anchor merge reject them, and the `-Dump` self-test resolves every
+  anchor again after the DexNom TLS rewrite (`simulated host`, 0 missing required).
 - mods/ overlay. Verify these live, in this order:
   1. In an observe-mode dump, find how the game names host files. Look for Relative roots
      in the `mount table` lines, or check which drive/path ztrx maps the install folder to

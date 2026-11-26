@@ -4,7 +4,7 @@
 
 [API index](index.md)
 
-85 types and 867 fields (from 873 recorded field readings; a slot recorded twice keeps its highest-confidence name, as in `classes.hpp`). Offsets are bytes from the start of the object. Sizes without a recorded size are the gap to the next field, capped at 8.
+89 types and 896 fields (from 902 recorded field readings; a slot recorded twice keeps its highest-confidence name, as in `classes.hpp`). Offsets are bytes from the start of the object. Sizes without a recorded size are the gap to the next field, capped at 8.
 
 | Type | C++ struct | Size | Fields | Source part |
 |---|---|---|---|---|
@@ -18,22 +18,26 @@
 | [CDynamicEntity](#cdynamicentity) | `CDynamicEntity` | ? | 7 | entity-types.json |
 | [CEcsArchetypeRecord](#cecsarchetyperecord) | `CEcsArchetypeRecord` | 0x238 | 5 | gameplay-fields.json |
 | [CEcsColumn](#cecscolumn) | `CEcsColumn` | 0x10 | 2 | gameplay-fields.json |
+| [CEcsComp_sel40](#cecscomp_sel40) | `CEcsComp_sel40` | ? | 6 | gameplay-fields.json |
 | [CEcsComp_sel4d](#cecscomp_sel4d) | `CEcsComp_sel4d` | 0x8B0 | 3 | gameplay-fields.json |
 | [CEcsComp_sel4f](#cecscomp_sel4f) | `CEcsComp_sel4f` | 0x28 | 1 | gameplay-fields.json |
 | [CEcsComp_sel57](#cecscomp_sel57) | `CEcsComp_sel57` | 0x38 | 1 | gameplay-fields.json |
+| [CEcsComp_sel5e](#cecscomp_sel5e) | `CEcsComp_sel5e` | 0x1D0 | 4 | gameplay-fields.json |
 | [CEcsComp_sel61](#cecscomp_sel61) | `CEcsComp_sel61` | 0x30 | 3 | gameplay-fields.json |
 | [CEcsComp_sel77](#cecscomp_sel77) | `CEcsComp_sel77` | 0xF88 | 2 | gameplay-fields.json |
 | [CEntity](#centity) | `CEntity` | ? | 14 | entity-types.json |
+| [CEventGiveTask_7d](#ceventgivetask_7d) | `CEventGiveTask_7d` | 0x1F0 | 9 | gameplay-fields.json |
 | [CHealthData](#chealthdata) | `CHealthData` | ? | 9 | gameplay-fields.json |
 | [CHealthHost](#chealthhost) | `CHealthHost` | ? | 2 | gameplay-fields.json |
 | [CObject](#cobject) | `CObject` | 0x110 | 14 | entity-types.json |
 | [CPed](#cped) | `CPed` | 0x100 | 10 | entity-types.json |
-| [CPedComp_col02](#cpedcomp_col02) | `CPedComp_col02` | 0x32A0 | 1 | gameplay-fields.json |
-| [CPedComp_col0f](#cpedcomp_col0f) | `CPedComp_col0f` | 0x1D30 | 1 | gameplay-fields.json |
+| [CPedComp_col02](#cpedcomp_col02) | `CPedComp_col02` | 0x32A0 | 3 | gameplay-fields.json |
+| [CPedComp_col0f](#cpedcomp_col0f) | `CPedComp_col0f` | 0x1D30 | 3 | gameplay-fields.json |
 | [CPedComp_col12](#cpedcomp_col12) | `CPedComp_col12` | 0x190 | 3 | gameplay-fields.json |
 | [CPedComp_col1a](#cpedcomp_col1a) | `CPedComp_col1a` | 0x69B0 | 8 | gameplay-fields.json |
 | [CPedComp_col20](#cpedcomp_col20) | `CPedComp_col20` | 0x3C0 | 7 | gameplay-fields.json |
 | [CPedComp_col26](#cpedcomp_col26) | `CPedComp_col26` | 0xB0 | 1 | gameplay-fields.json |
+| [CPedComp_col2f](#cpedcomp_col2f) | `CPedComp_col2f` | 0x1730 | 3 | gameplay-fields.json |
 | [CPedComp_col30](#cpedcomp_col30) | `CPedComp_col30` | 0x50 | 3 | gameplay-fields.json |
 | [CPedComp_col32](#cpedcomp_col32) | `CPedComp_col32` | 0xB80 | 2 | gameplay-fields.json |
 | [CPedComp_col40](#cpedcomp_col40) | `CPedComp_col40` | 0x2B8 | 2 | gameplay-fields.json |
@@ -53,7 +57,7 @@
 | [CUnk_e56f1d67](#cunk_e56f1d67) | `CUnk_e56f1d67` | ? | 1 | entity-types.json |
 | [CUnk_f34de615](#cunk_f34de615) | `CUnk_f34de615` | ? | 1 | entity-types.json |
 | [CVehicle](#cvehicle) | `CVehicle` | 0x100 | 10 | entity-types.json |
-| [CVehicleComp_col01](#cvehiclecomp_col01) | `CVehicleComp_col01` | ? | 6 | gameplay-fields.json |
+| [CVehicleComp_col01](#cvehiclecomp_col01) | `CVehicleComp_col01` | 0x5E0 | 9 | gameplay-fields.json |
 | [CVehicleComp_col0d](#cvehiclecomp_col0d) | `CVehicleComp_col0d` | 0x700 | 2 | gameplay-fields.json |
 | [CVehicleComp_col16](#cvehiclecomp_col16) | `CVehicleComp_col16` | 0xE0 | 2 | gameplay-fields.json |
 | [EntityPoolId (17-bit pools)](#entitypoolid_17_bit_pools) | `EntityPoolId_17_bit_pools` | 0x4 | 1 | streaming-pools.json |
@@ -221,6 +225,21 @@ Note: 0x10: column c at cols + c*16 (shl r8d,4 at 0x144e7dad6)
 | `0x0` | `0x8` | `base` | high | insn 0x144e7dae0 fn 0x144e7da80 handler 0x143c09f50 access r (+1 more) (1 handler(s)) |
 | `0x8` | `0x8` | `stride` | high | insn 0x144e7dada fn 0x144e7da80 handler 0x143c09f50 access r (+1 more) (1 handler(s)) |
 
+## CEcsComp_sel40
+
+re-db name `CEcsComp_sel40` · size unknown · source `gameplay-fields.json`
+
+Note: per archetype: ped 0xa40, vehicle 0x2c0, archetype 4 0x2e0 (pool element sizes of the aliased static columns, types_ecs_columns.py); no single size, so none is recorded
+
+| Offset | Size | Field | Confidence | Provenance |
+|---|---|---|---|---|
+| `0x8` | `0x8` | `owner_entity` | medium | insn 0x1416b88ea fn 0x1416b88e0 access r |
+| `0x30` | `0x8` | `source_30` | low | insn 0x1416b891f fn 0x1416b88e0 access r (+2 more) |
+| `0x70` | `0x8` | `ptr_70` | low | insn 0x144c4294a fn 0x144c428d0 access r (+1 more) |
+| `0x88` | `0x8` | `resolved_88` | low | insn 0x1416b890d fn 0x1416b88e0 access r (+1 more) |
+| `0x108` | `0x4` | `callback_id` | low | insn 0x1416b894c fn 0x1416b88e0 access r (+1 more) (1 handler(s)) |
+| `0x1B0` | `0x8` | `ptr_1b0` | low | insn 0x1403804bc fn 0x140380460 access r (+1 more) |
+
 ## CEcsComp_sel4d
 
 re-db name `CEcsComp_sel4d` · size `0x8B0` · source `gameplay-fields.json`
@@ -252,6 +271,19 @@ Note: 0x38: pool element size of generic_arch3 type 0x1f (descriptor 0x1499aaed8
 | Offset | Size | Field | Confidence | Provenance |
 |---|---|---|---|---|
 | `0x10` | `0x8` | `health_data` | high | insn 0x1402ba526 fn 0x1402ba4e0 handler 0x143c09f50 access r (+1 more) (2 handler(s)) |
+
+## CEcsComp_sel5e
+
+re-db name `CEcsComp_sel5e` · size `0x1D0` · source `gameplay-fields.json`
+
+Note: 0x1d0: pool element size of generic_arch3 type 0x26 (descriptor 0x14a024608 built by 0x145b101f0, `mov r8d, 0x1d0` at 0x145b10244 before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x14993a508 vfunc[3] 0x145f00150 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: runtime column stride
+
+| Offset | Size | Field | Confidence | Provenance |
+|---|---|---|---|---|
+| `0x8` | `0x8` | `owner_entity` | medium | insn 0x14121c7fe fn 0x14121c7c0 access r |
+| `0x20` | `0x4` | `group_count` | medium | insn 0x14121ccfc fn 0x14121cce0 handler 0x143c046a0 access r (+2 more) (2 handler(s)) |
+| `0x24` | `0x4` | `element_count` | low | insn 0x14121cd15 fn 0x14121cce0 access r |
+| `0x30` | `0x8` | `groups` | medium | insn 0x14121cd2b fn 0x14121cce0 access r (+2 more) (1 handler(s)) |
 
 ## CEcsComp_sel61
 
@@ -296,6 +328,24 @@ re-db name `CEntity` · size unknown · class_hash `0xb1389614` · vtable `0x146
 | `0xB0` | `0x4` | `set_entity_disable_fire` | low | handler 0x143c13800 fn 0x144ef4040 insn 0x144ef4044 (+4 more) (3 handler(s)) |
 | `0xC0` | `0x2` | `set_entity_lockon_point_offset` | low | handler 0x143c15740 fn 0x1441186a0 insn 0x1441186d9 (1 handler(s)) |
 | `0xF8` | `0x8` | `get_vehicle_model_number_of_seats` | low | handler 0x144a86cf0 fn 0x145e8be60 insn 0x145e8be84 (1 handler(s)) |
+
+## CEventGiveTask_7d
+
+re-db name `CEventGiveTask_7d` · size `0x1F0` · source `gameplay-fields.json`
+
+Note: 0x1f0 = slot size of the shared event pool (0x145ada400: `mov r8d, 0x1f0` at 0x145ada46c before the pool constructor 0x145540ef0); every event type shares it, so it is an upper bound
+
+| Offset | Size | Field | Confidence | Provenance |
+|---|---|---|---|---|
+| `0x0` | `0x8` | `vtable` | high | insn 0x141391ad3 fn 0x141391aa0 access w |
+| `0x10` | `0x4` | `event_type` | high | insn 0x141391b1c fn 0x141391aa0 access w (+1 more) (1 handler(s)) |
+| `0xA0` | `0x4` | `kind_a0` | low | insn 0x141391ad6 fn 0x141391aa0 access w (+1 more) |
+| `0xA8` | `0x8` | `task` | high | insn 0x141391adc fn 0x141391aa0 access w (+1 more) (1 handler(s)) |
+| `0xB0` | `0x1` | `flag_b0` | low | insn 0x141391afd fn 0x141391aa0 access w (+1 more) |
+| `0xB1` | `0x1` | `flag_b1` | low | insn 0x141391b03 fn 0x141391aa0 access w (+1 more) |
+| `0xB2` | `0x1` | `flag_b2` | low | insn 0x141391b0a fn 0x141391aa0 access w (+1 more) |
+| `0xB4` | `0x4` | `time_b4` | low | insn 0x141a5f92c fn 0x141a5f680 handler 0x144bfa020 access w (+1 more) (1 handler(s)) |
+| `0xB8` | `0x4` | `time_b8` | low | insn 0x141a5f936 fn 0x141a5f680 handler 0x144bfa020 access w (1 handler(s)) |
 
 ## CHealthData
 
@@ -377,6 +427,8 @@ Note: 0x32a0: pool element size of ped_static column 0x2 (descriptor 0x1499ab058
 | Offset | Size | Field | Confidence | Provenance |
 |---|---|---|---|---|
 | `0x2F0` | `0x4` | `interaction_personality` | high | insn 0x144be0db4 fn 0x144be0d90 handler 0x144bd94e0 access w (+1 more) (2 handler(s)) |
+| `0x5B1` | `0x1` | `flags_5b1` | low | insn 0x144f3aab3 fn 0x144f3aa30 access r (+1 more) |
+| `0x5BC` | `0x10` | `forced_flag_mask` | low | insn 0x1411ca582 fn 0x1411ca580 handler 0x144bdc4c0 access rw (+1 more) (1 handler(s)) |
 
 ## CPedComp_col0f
 
@@ -386,6 +438,8 @@ Note: 0x1d30: pool element size of ped_static column 0xf (descriptor 0x1499ab220
 
 | Offset | Size | Field | Confidence | Provenance |
 |---|---|---|---|---|
+| `0x1040` | `0x4` | `target_tag_1040` | low | insn 0x140c44725 fn 0x140c44620 handler 0x143cd5b20 access r (1 handler(s)) |
+| `0x1058` | `0x4` | `target_tag_1058` | low | insn 0x140c44733 fn 0x140c44620 handler 0x143cd5b20 access r (1 handler(s)) |
 | `0x15D4` | `0x4` | `infinite_ammo_clip_bit11` | medium | insn 0x144aa0862 fn 0x144aa0800 handler 0x144a90c30 access r (+1 more) (1 handler(s)) |
 
 ## CPedComp_col12
@@ -409,7 +463,7 @@ Note: 0x69b0: pool element size of ped_static column 0x1a (descriptor 0x149c3b73
 | Offset | Size | Field | Confidence | Provenance |
 |---|---|---|---|---|
 | `0x8` | `0x8` | `owner_entity` | high | insn 0x144bebe19 fn 0x144bebde0 handler 0x144bca690 access r (+1 more) (1 handler(s)) |
-| `0x10` | `0x4` | `block_non_temporary_events_bit4` | high | insn 0x1404dfa80 fn 0x1404dfa80 handler 0x144bd5cb0 access r (+4 more) (3 handler(s)) |
+| `0x10` | `0x4` | `block_non_temporary_events_bit4` | high | insn 0x1404dfa80 fn 0x1404dfa80 handler 0x144bd5cb0 access r (+7 more) (3 handler(s)) |
 | `0x1B8` | `0x100` | `event_slots` | low | insn 0x141a5f888 fn 0x141a5f680 handler 0x144bfa020 access r (1 handler(s)) |
 | `0x2B8` | `0x2` | `event_free_head` | low | insn 0x141a5fb2f fn 0x141a5f680 handler 0x144bfa020 access r (+1 more) (1 handler(s)) |
 | `0x2BA` | `0x20` | `event_free_next` | low | insn 0x141a5fb37 fn 0x141a5f680 handler 0x144bfa020 access w (1 handler(s)) |
@@ -442,6 +496,18 @@ Note: 0xb0: pool element size of ped_static column 0x26 (descriptor 0x1499ab150 
 | Offset | Size | Field | Confidence | Provenance |
 |---|---|---|---|---|
 | `0x18` | `0x8` | `weapon_data` | high | insn 0x1404dd47e fn 0x1404dd470 handler 0x144a90c30 access r (+1 more) (2 handler(s)) |
+
+## CPedComp_col2f
+
+re-db name `CPedComp_col2f` · size `0x1730` · source `gameplay-fields.json`
+
+Note: 0x1730: pool element size of ped_static column 0x2f (descriptor 0x1499ab188 built by 0x145b0bb10, `mov r8d, 0x1730` at 0x145b0bb64 before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x14994ed28 vfunc[3] 0x145ae8100 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: runtime column stride
+
+| Offset | Size | Field | Confidence | Provenance |
+|---|---|---|---|---|
+| `0x1658` | `0x1` | `state_1658` | low | insn 0x140de57ad fn 0x140de5770 access r (+1 more) |
+| `0x1660` | `0x1` | `flags_1660` | low | insn 0x142d32294 fn 0x142d32280 access rw (+1 more) |
+| `0x1664` | `0x4` | `linked_handle_1664` | low | insn 0x145b931ca fn 0x145b93120 handler 0x144bf0ae0 access w (+1 more) (1 handler(s)) |
 
 ## CPedComp_col30
 
@@ -665,9 +731,9 @@ Note: pool item size (findings/phase2/14) + ctor runs on the pool slot
 
 ## CVehicleComp_col01
 
-re-db name `CVehicleComp_col01` · size unknown · source `gameplay-fields.json`
+re-db name `CVehicleComp_col01` · size `0x5E0` · source `gameplay-fields.json`
 
-Note: no pool (tag column); lower bound > 0x584 (byte or at 0x140fdd175)
+Note: 0x5e0: pool element size of vehicle_static column 0x0 (descriptor 0x1499aad98 built by 0x145b1a910, `mov r8d, 0x5e0` at 0x145b1a97c before pool.ctor_idx17 0x1416cbe00 (fwBasePool ctor); column object 0x1499552e0 vfunc[3] 0x145ae6940 copies it into the column stride). tools/phase5/types_ecs_columns.py; round 1: column 0x00 and column 0x01 share one pool: see note (0x145ae6940, 0x1407cbbff/0x1407cbc06)
 
 | Offset | Size | Field | Confidence | Provenance |
 |---|---|---|---|---|
@@ -677,6 +743,9 @@ Note: no pool (tag column); lower bound > 0x584 (byte or at 0x140fdd175)
 | `0x44C` | `0x4` | `forward_speed_request` | medium | insn 0x14213b8a7 fn 0x14213b820 handler 0x144a933c0 access w (+1 more) (1 handler(s)) |
 | `0x460` | `0x4` | `top_speed_modifier` | medium | insn 0x143d52930 fn 0x143d52930 handler 0x144a8be20 access r (+1 more) (1 handler(s)) |
 | `0x4A8` | `0x8` | `halt_request` | high | insn 0x143d556de fn 0x143d55610 handler 0x144a7f340 access w (+2 more) (3 handler(s)) |
+| `0x5D0` | `0x8` | `ctor_5d0` | low | insn 0x1407cbca7 fn 0x1407cbc90 access w |
+| `0x5D8` | `0x4` | `ctor_5d8` | low | insn 0x1407cbcb2 fn 0x1407cbc90 access w |
+| `0x5DC` | `0x1` | `ctor_5dc` | low | insn 0x1407cbcbc fn 0x1407cbc90 access w |
 
 ## CVehicleComp_col0d
 

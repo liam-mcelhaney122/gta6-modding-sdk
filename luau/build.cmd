@@ -61,18 +61,18 @@ if not exist "%LUAULIB%" (
 
 rem Our files: /W4 /WX.
 set FLAGS=/nologo /std:c++17 /O2 /W4 /WX /EHsc /MT /D_CRT_SECURE_NO_WARNINGS
-set INCS=/I"%SDK%\include" /I"%HERE%host" /I"%LUAU%\VM\include" /I"%LUAU%\Compiler\include"
+set INCS=/I"%SDK%\include" /I"%HERE%host" /I"%SDK%\runtime\src" /I"%LUAU%\VM\include" /I"%LUAU%\Compiler\include"
 
 "%CXX%" /nologo /O2 /W4 /WX /std:c11 /MT /I"%SDK%\include" /LD "%SDK%\runtime\src\mock_backend.c" /Fo"%OBJ%\host\\" /Fe"%OUT%\gta6mod_mock.dll" -fuse-ld=lld
 if errorlevel 1 (echo BUILD FAILED: gta6mod_mock.dll & exit /b 1)
 
-"%CXX%" %FLAGS% %INCS% /c "%HERE%host\g6_luau.cpp" "%HERE%host\g6_luau_plugin.cpp" "%HERE%host\g6_luau_runner.cpp" /Fo"%OBJ%\host\\"
+"%CXX%" %FLAGS% %INCS% /c "%HERE%host\g6_luau.cpp" "%HERE%host\g6_luau_plugin.cpp" "%HERE%host\g6_luau_runner.cpp" "%SDK%\runtime\src\mock_world.cpp" /Fo"%OBJ%\host\\"
 if errorlevel 1 (echo BUILD FAILED: luau host & exit /b 1)
 
 "%CXX%" /nologo /MT /LD "%OBJ%\host\g6_luau_plugin.obj" "%OBJ%\host\g6_luau.obj" "%LUAULIB%" /Fe"%OUT%\g6_luau.dll" -fuse-ld=lld
 if errorlevel 1 (echo BUILD FAILED: g6_luau.dll & exit /b 1)
 
-"%CXX%" /nologo /MT "%OBJ%\host\g6_luau_runner.obj" "%OBJ%\host\g6_luau.obj" "%LUAULIB%" "%OUT%\gta6mod_mock.lib" /Fe"%OUT%\g6_luau_runner.exe" -fuse-ld=lld
+"%CXX%" /nologo /MT "%OBJ%\host\g6_luau_runner.obj" "%OBJ%\host\mock_world.obj" "%OBJ%\host\g6_luau.obj" "%LUAULIB%" "%OUT%\gta6mod_mock.lib" /Fe"%OUT%\g6_luau_runner.exe" -fuse-ld=lld
 if errorlevel 1 (echo BUILD FAILED: g6_luau_runner.exe & exit /b 1)
 
 "%CXX%" %FLAGS% /I"%SDK%\include" "%HERE%tests\plugin_check.cpp" "%OUT%\gta6mod_mock.lib" /Fo"%OBJ%\host\\" /Fe"%OUT%\plugin_check.exe" -fuse-ld=lld
@@ -95,6 +95,9 @@ if errorlevel 1 (echo FAILED: waypoint_teleport example & exit /b 1)
 if errorlevel 1 (echo FAILED: vehicle_spawner example & exit /b 1)
 "%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%examples\time_control\init.luau" 3000 --press INPUT_MULTIPLAYER_INFO@496 --press INPUT_MULTIPLAYER_INFO@1008 --press INPUT_SPECIAL_ABILITY@1504 --press INPUT_MULTIPLAYER_INFO@1600+1200 --expect-clean --expect-log "time scale 0.50" --expect-log "time scale 0.20" --expect-log "clock 13:00" --expect-log "time scale reset to 1.00"
 if errorlevel 1 (echo FAILED: time_control example & exit /b 1)
+echo --- UI example: trainer_menu (mock UI: clicks drive the menu)
+"%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%examples\trainer_menu\init.luau" 3000 --damage 30@240 --ui-click "God mode@496" --damage 50@1008 --ui-click "Never wanted@1504" --wanted 3@2000 --ui-click Heal@2496 --expect-clean --expect-log "god mode ON" --expect-log "never wanted ON (max wanted level was 5)" --expect-log "cleared wanted level 3" --expect-log "healed" --expect-ui "text Player: -1000.0 -2000.0 15.0" --expect-ui "checkbox God mode = 1" --expect-ui-log "%SDK%\tests\ui\trainer_menu.ui.txt"
+if errorlevel 1 (echo FAILED: trainer_menu example & exit /b 1)
 echo --- stop event (g6_luau_stop at 1504 ms): god_mode switched off, every script cancelled
 "%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%examples\god_mode\init.luau" 3008 --press INPUT_DETONATE@496 --unload-at 1504 --damage 50@2000 --expect-clean --expect-log "god mode ON" --expect-log "god mode OFF" --expect-live 0
 if errorlevel 1 (echo FAILED: stop event & exit /b 1)
@@ -102,6 +105,12 @@ echo --- tests
 echo --- scenario: hotkeys_hold (held presses)
 "%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%tests\scenarios\hotkeys_hold.luau" 2000 --press INPUT_CONTEXT@96 --press INPUT_CONTEXT@400+800 --press INPUT_SPRINT@1504+300 --press INPUT_CONTEXT@1520+100 --press INPUT_JUMP@0+600 --expect-clean --expect-log "PASS hotkeys_hold"
 if errorlevel 1 (echo FAILED: hotkeys_hold scenario & exit /b 1)
+echo --- scenario: objective (script String / text arguments, ui.objective)
+"%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%tests\scenarios\objective.luau" 1500 --expect-clean --expect-log "busyspinner: Saving..." --expect-log "objective shown: Lose the cops (500 ms)" --expect-log "objective shown: Second (-1 ms)" --expect-log "objective cleared" --expect-log "PASS objective"
+if errorlevel 1 (echo FAILED: objective scenario & exit /b 1)
+echo --- scenario: ui_widgets (every @gta6/ui widget through mock interactions)
+"%OUT%\g6_luau_runner.exe" "%HERE%lib" "%HERE%tests\scenarios\ui_widgets.luau" 1500 --ui-click Heal@96 --ui-click "God mode@96" --ui-set Wanted=4@96 --ui-set Speed=2.5@96 --ui-set Name=Jason@96 --ui-set Weather=Fog@96 --ui-click Advanced@96 --ui-click Second@96 --ui-set Tint=0.1,0.2,0.3,0.4@96 --ui-menu 0@496 --ui-menu 1@800 --expect-clean --expect-ui "checkbox God mode = 1" --expect-ui "tab_item Second (selected)" --expect-log "PASS ui_widgets" --expect-ui-log "%SDK%\tests\ui\ui_widgets.ui.txt"
+if errorlevel 1 (echo FAILED: ui_widgets scenario & exit /b 1)
 for %%T in ("%HERE%tests\*.luau") do (
   "%OUT%\g6_luau_runner.exe" "%HERE%lib" "%%~fT" 3000 --press 51@480 --expect-clean --expect-log "PASS %%~nT"
   if errorlevel 1 (echo FAILED: %%~nxT & exit /b 1)

@@ -102,7 +102,8 @@ if(G6_WITH_LUAU)
   g6_strict(g6_luau_plugin)
 
   # offline runner, linked against gta6mod_mock.dll like build.cmd
-  add_executable(g6_luau_runner luau/host/g6_luau_runner.cpp)
+  add_executable(g6_luau_runner luau/host/g6_luau_runner.cpp runtime/src/mock_world.cpp)
+  target_include_directories(g6_luau_runner PRIVATE runtime/src)
   target_compile_definitions(g6_luau_runner PRIVATE _CRT_SECURE_NO_WARNINGS)
   target_link_libraries(g6_luau_runner PRIVATE g6_luau gta6mod_mock)
   g6_strict(g6_luau_runner)
@@ -136,6 +137,17 @@ if(G6_WITH_LUAU)
   add_test(NAME luau_example_time_control
            COMMAND g6_luau_runner "${_g6_luau_lib}" "${CMAKE_CURRENT_SOURCE_DIR}/luau/examples/time_control/init.luau"
                    3000 --press INPUT_MULTIPLAYER_INFO@496 --press INPUT_MULTIPLAYER_INFO@1008 --press INPUT_SPECIAL_ABILITY@1504 --press INPUT_MULTIPLAYER_INFO@1600+1200 --expect-clean --expect-log "time scale 0.50" --expect-log "time scale 0.20" --expect-log "clock 13:00" --expect-log "time scale reset to 1.00")
+  add_test(NAME luau_example_trainer_menu
+           COMMAND g6_luau_runner "${_g6_luau_lib}" "${CMAKE_CURRENT_SOURCE_DIR}/luau/examples/trainer_menu/init.luau"
+                   3000 --damage 30@240 --ui-click "God mode@496" --damage 50@1008 --ui-click "Never wanted@1504" --wanted 3@2000 --ui-click Heal@2496 --expect-clean --expect-log "god mode ON" --expect-log "never wanted ON (max wanted level was 5)" --expect-log "cleared wanted level 3" --expect-log "healed" --expect-ui "text Player: -1000.0 -2000.0 15.0" --expect-ui "checkbox God mode = 1"
+                   --expect-ui-log "${CMAKE_CURRENT_SOURCE_DIR}/tests/ui/trainer_menu.ui.txt")
+  add_test(NAME luau_scenario_ui_widgets
+           COMMAND g6_luau_runner "${_g6_luau_lib}" "${CMAKE_CURRENT_SOURCE_DIR}/luau/tests/scenarios/ui_widgets.luau"
+                   1500 --ui-click Heal@96 --ui-click "God mode@96" --ui-set Wanted=4@96 --ui-set Speed=2.5@96 --ui-set Name=Jason@96 --ui-set Weather=Fog@96 --ui-click Advanced@96 --ui-click Second@96 --ui-set Tint=0.1,0.2,0.3,0.4@96 --ui-menu 0@496 --ui-menu 1@800 --expect-clean --expect-ui "checkbox God mode = 1" --expect-ui "tab_item Second (selected)" --expect-log "PASS ui_widgets"
+                   --expect-ui-log "${CMAKE_CURRENT_SOURCE_DIR}/tests/ui/ui_widgets.ui.txt")
+  add_test(NAME luau_scenario_objective
+           COMMAND g6_luau_runner "${_g6_luau_lib}" "${CMAKE_CURRENT_SOURCE_DIR}/luau/tests/scenarios/objective.luau"
+                   1500 --expect-clean --expect-log "busyspinner: Saving..." --expect-log "objective shown: Lose the cops (500 ms)" --expect-log "objective shown: Second (-1 ms)" --expect-log "objective cleared" --expect-log "PASS objective")
   add_test(NAME luau_scenario_hotkeys_hold
            COMMAND g6_luau_runner "${_g6_luau_lib}" "${CMAKE_CURRENT_SOURCE_DIR}/luau/tests/scenarios/hotkeys_hold.luau"
                    2000 --press INPUT_CONTEXT@96 --press INPUT_CONTEXT@400+800 --press INPUT_SPRINT@1504+300 --press INPUT_CONTEXT@1520+100 --press INPUT_JUMP@0+600 --expect-clean --expect-log "PASS hotkeys_hold")
@@ -172,6 +184,63 @@ if(G6_WITH_LUAU)
   endif()
 endif()
 
+# ---------------------------------------------------------------- in-game Python host (optional)
+# sdk/python/host: g6_python.dll, a runtime plugin embedding CPython 3.12 (sdk/docs/python_host.md), and
+# g6_python_test, which runs it against gta6mod_mock and the shared mock world. Mirrors sdk/python/host/build.cmd.
+option(G6_WITH_PYTHON_HOST "Build g6_python.dll and g6_python_test (Windows x64, CPython 3.12 headers and libs)" OFF)
+if(G6_WITH_PYTHON_HOST)
+  if(NOT WIN32 OR NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message(FATAL_ERROR "G6_WITH_PYTHON_HOST needs a Windows x64 toolchain")
+  endif()
+  set(G6_PYTHON_HOME "" CACHE PATH "CPython 3.12 home (include/Python.h, libs/python312.lib, python312.dll); empty = %LOCALAPPDATA%/Programs/Python/Python312")
+  set(_g6_py_home "${G6_PYTHON_HOME}")
+  if(NOT _g6_py_home)
+    file(TO_CMAKE_PATH "$ENV{LOCALAPPDATA}/Programs/Python/Python312" _g6_py_home)
+  endif()
+  foreach(_f include/Python.h libs/python312.lib python312.dll)
+    if(NOT EXISTS "${_g6_py_home}/${_f}")
+      message(FATAL_ERROR "G6_WITH_PYTHON_HOST: ${_g6_py_home}/${_f} not found; set G6_PYTHON_HOME to a CPython 3.12 install")
+    endif()
+  endforeach()
+  message(STATUS "g6_python: CPython 3.12 from ${_g6_py_home}")
+
+  add_library(g6_python SHARED python/host/g6_python.cpp)
+  set_target_properties(g6_python PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON
+                        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/python")
+  target_include_directories(g6_python PRIVATE include)
+  target_include_directories(g6_python SYSTEM PRIVATE "${_g6_py_home}/include")
+  target_compile_definitions(g6_python PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX UNICODE _UNICODE NDEBUG)
+  g6_strict(g6_python)
+  if(MSVC)
+    target_compile_options(g6_python PRIVATE /EHsc /GS)
+  endif()
+  # python312.dll is delay-loaded: the plugin loads without Python and LoadLibraryExW's [python] home first.
+  target_link_directories(g6_python PRIVATE "${_g6_py_home}/libs")
+  target_link_libraries(g6_python PRIVATE python312 delayimp kernel32)
+  target_link_options(g6_python PRIVATE /DELAYLOAD:python312.dll)
+  if(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/python/g6_python.ini")
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/python/host/g6_python.ini" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/python")
+  endif()
+
+  set(_g6_py_test_dir "${CMAKE_CURRENT_BINARY_DIR}/python_test")
+  add_executable(g6_python_test python/host/tests/g6_python_test.cpp runtime/src/mock_world.cpp runtime/src/ui_retained.cpp)
+  set_target_properties(g6_python_test PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON
+                        RUNTIME_OUTPUT_DIRECTORY "${_g6_py_test_dir}")
+  target_include_directories(g6_python_test PRIVATE include runtime/src)
+  target_compile_definitions(g6_python_test PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX UNICODE _UNICODE)
+  target_link_libraries(g6_python_test PRIVATE gta6mod_mock)
+  g6_strict(g6_python_test)
+  if(MSVC)
+    target_compile_options(g6_python_test PRIVATE /EHsc)
+  endif()
+  add_dependencies(g6_python_test g6_python)
+  add_custom_command(TARGET g6_python_test POST_BUILD
+                     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:gta6mod_mock> "${_g6_py_test_dir}")
+  add_test(NAME g6_python_test
+           COMMAND g6_python_test $<TARGET_FILE:g6_python> "${CMAKE_CURRENT_SOURCE_DIR}" "${_g6_py_home}"
+                   "${_g6_py_test_dir}/work")
+endif()
+
 # ---------------------------------------------------------------- in-game runtime (optional)
 # sdk/runtime/loader: gta6mod_runtime.dll for GTA VI 1.0.2.1 under a VIctory-style host.
 # Mirrors sdk/runtime/loader/build.cmd (clang-cl, C++20, /W4 /WX, static CRT, PDB).
@@ -184,10 +253,11 @@ if(G6_WITH_RUNTIME_LOADER)
     runtime/loader/src/runtime.cpp runtime/loader/src/hook.cpp runtime/loader/src/x64_decode.cpp
     runtime/loader/src/pattern_scan.cpp runtime/loader/src/identity.cpp runtime/loader/src/natives.cpp
     runtime/loader/src/scheduler.cpp runtime/loader/src/log.cpp runtime/loader/src/game_clock.cpp
-    runtime/loader/src/vfs.cpp runtime/loader/src/guard.cpp)
+    runtime/loader/src/vfs.cpp runtime/loader/src/guard.cpp runtime/loader/src/binder.cpp
+    runtime/src/ui_retained.cpp)
   add_library(gta6mod_runtime SHARED ${G6_LOADER_SRC})
   set_target_properties(gta6mod_runtime PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON)
-  target_include_directories(gta6mod_runtime PRIVATE include runtime/loader/src)
+  target_include_directories(gta6mod_runtime PRIVATE include runtime/loader/src runtime/loader/ui runtime/src)
   target_compile_definitions(gta6mod_runtime PRIVATE G6_BUILDING_RUNTIME=1 WIN32_LEAN_AND_MEAN NOMINMAX UNICODE _UNICODE)
   g6_strict(gta6mod_runtime)
   if(MSVC)
@@ -282,6 +352,52 @@ if(G6_WITH_RUNTIME_LOADER)
   endforeach()
   add_dependencies(g6probe_mock_test g6probe g6probe_fake_title gta6mod_mock)
   add_test(NAME g6probe_test COMMAND g6probe_test)
+
+  # UI overlay (build_ui.cmd): g6ui.dll beside the runtime (loaded with [ui] overlay=1), its D3D12 test, and the
+  # C++ trainer example plugin with its mock-world test. Dear ImGui (third_party/imgui, v1.91.9b) is built with
+  # the same /W4 /WX and gta6mod/imgui_config.h as its user config (the scripts force-include the same header).
+  set(_g6_imgui "${CMAKE_CURRENT_SOURCE_DIR}/third_party/imgui")
+  add_library(g6_imgui_core STATIC ${_g6_imgui}/imgui.cpp ${_g6_imgui}/imgui_draw.cpp ${_g6_imgui}/imgui_tables.cpp
+              ${_g6_imgui}/imgui_widgets.cpp)
+  target_include_directories(g6_imgui_core PUBLIC ${_g6_imgui} include)
+  target_compile_definitions(g6_imgui_core PUBLIC "IMGUI_USER_CONFIG=\"gta6mod/imgui_config.h\"")
+  add_library(g6_imgui_win_dx12 STATIC ${_g6_imgui}/backends/imgui_impl_dx12.cpp ${_g6_imgui}/backends/imgui_impl_win32.cpp)
+  target_compile_definitions(g6_imgui_win_dx12 PRIVATE IMGUI_IMPL_WIN32_DISABLE_GAMEPAD)
+  target_link_libraries(g6_imgui_win_dx12 PUBLIC g6_imgui_core)
+  foreach(_t g6_imgui_core g6_imgui_win_dx12)
+    g6_loader_tool(${_t})
+  endforeach()
+
+  add_library(g6ui SHARED runtime/loader/ui/g6ui.cpp runtime/loader/src/hook.cpp runtime/loader/src/x64_decode.cpp)
+  g6_loader_tool(g6ui)
+  target_include_directories(g6ui PRIVATE include runtime/loader/src runtime/loader/ui)
+  target_link_libraries(g6ui PRIVATE g6_imgui_win_dx12 d3d12 dxgi d3dcompiler user32 gdi32 dwmapi kernel32)
+
+  set(_g6_ui_dir "${CMAKE_CURRENT_BINARY_DIR}/ui_test")
+  add_executable(g6ui_test runtime/loader/tests/ui/ui_test.cpp)
+  set_target_properties(g6ui_test PROPERTIES OUTPUT_NAME ui_test)
+  target_include_directories(g6ui_test PRIVATE include runtime/loader/ui)
+  target_link_libraries(g6ui_test PRIVATE d3d12 dxgi user32)
+  add_library(g6ui_test_plugin SHARED runtime/loader/tests/ui/ui_test_plugin.cpp)
+  set_target_properties(g6ui_test_plugin PROPERTIES OUTPUT_NAME ui_test_plugin)
+  target_link_libraries(g6ui_test_plugin PRIVATE g6_imgui_core user32)
+  add_library(g6trainer SHARED runtime/loader/plugins/g6trainer/g6trainer.cpp)
+  set_target_properties(g6trainer PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/trainer")
+  target_include_directories(g6trainer PRIVATE include)
+  add_executable(g6trainer_mock_test runtime/loader/tests/ui/trainer_mock_test.cpp)
+  set_target_properties(g6trainer_mock_test PROPERTIES OUTPUT_NAME trainer_mock_test)
+  target_include_directories(g6trainer_mock_test PRIVATE include)
+  foreach(_t g6ui_test g6ui_test_plugin g6trainer g6trainer_mock_test)
+    g6_loader_tool(${_t})
+  endforeach()
+  foreach(_t g6ui_test g6ui_test_plugin g6trainer_mock_test)
+    set_target_properties(${_t} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${_g6_ui_dir}")
+  endforeach()
+  add_dependencies(g6ui_test g6ui g6ui_test_plugin)
+  add_dependencies(g6trainer_mock_test g6trainer gta6mod_mock)
+  add_test(NAME ui_test COMMAND g6ui_test $<TARGET_FILE:g6ui> $<TARGET_FILE:g6ui_test_plugin>)
+  add_test(NAME ui_test_warp COMMAND g6ui_test $<TARGET_FILE:g6ui> $<TARGET_FILE:g6ui_test_plugin> --warp)
+  add_test(NAME trainer_mock_test COMMAND g6trainer_mock_test $<TARGET_FILE:gta6mod_mock> $<TARGET_FILE:g6trainer>)
   add_test(NAME probe_mock_test
            COMMAND g6probe_mock_test $<TARGET_FILE:gta6mod_mock> $<TARGET_FILE:g6probe>
                    $<TARGET_FILE:g6probe_fake_title> "${_g6_probe_dir}/work")

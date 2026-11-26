@@ -13,6 +13,7 @@
   python -m gta6mod natives  [--status unverified|verified]
   python -m gta6mod run      <mod.py> [--ms 5000] [--backend mock|cabi:<dll>] [--press INPUT_CONTEXT@1000[+HOLD]]
                              [--damage N@MS] [--wanted N@MS] [--waypoint X,Y,Z@MS]   (scenario.py)
+                             [--ui-click LABEL@MS] [--ui-set LABEL=VALUE@MS] [--ui-menu 0|1@MS] [--print-ui]
 """
 from __future__ import annotations
 
@@ -184,7 +185,12 @@ def cmd_run(a) -> int:
     events = [scenario.parse(kind, spec) for kind in scenario.KINDS for spec in getattr(a, kind) or []]
     backend = rt.backend
     needs = {"press": "press_control", "damage": "damage_player", "wanted": "set_wanted", "waypoint": "set_waypoint"}
-    unsupported = sorted({e.kind for e in events if not hasattr(backend, needs[e.kind])})
+
+    def supported(kind: str) -> bool:
+        if kind.startswith("ui_"):
+            return backend.ui is not None and getattr(backend.ui, "is_mock", True)
+        return hasattr(backend, needs[kind])
+    unsupported = sorted({e.kind for e in events if not supported(e.kind)})
     if unsupported:
         print(f"note: backend {a.backend} ignores scenario events: {', '.join(unsupported)}", file=sys.stderr)
         events = [e for e in events if e.kind not in unsupported]
@@ -194,6 +200,9 @@ def cmd_run(a) -> int:
     alive = [s.name for s in sched.scripts if not s.done]
     errors = [s.name for s in sched.scripts if s.error]
     print(f"ran {t} ms; {rt.call_count} native calls; live scripts: {alive}; errored: {errors}")
+    if a.print_ui and backend.ui is not None and hasattr(backend.ui, "transcript"):
+        print("last UI frame:")
+        print(backend.ui.transcript, end="")
     stop_errors = sched.stop()  # unload: the stop event switches toggles off and cancels the scripts
     print(f"stop event: {len(stop_errors)} cleanup error(s)")
     return 1 if errors or stop_errors else 0
@@ -220,6 +229,10 @@ def main(argv=None) -> int:
     p.add_argument("--damage", action="append", help="N@MS: hurt the player ped and its vehicle (mock only)")
     p.add_argument("--wanted", action="append", help="N@MS: set the wanted level (mock only)")
     p.add_argument("--waypoint", action="append", help="X,Y,Z@MS: set the map waypoint (mock only)")
+    p.add_argument("--ui-click", dest="ui_click", action="append", help="LABEL@MS: click the widget LABEL (mock UI)")
+    p.add_argument("--ui-set", dest="ui_set", action="append", help="LABEL=VALUE@MS: set the widget LABEL (mock UI)")
+    p.add_argument("--ui-menu", dest="ui_menu", action="append", help="0|1@MS: hide/show the menu (mock UI)")
+    p.add_argument("--print-ui", dest="print_ui", action="store_true", help="print the last UI frame's transcript")
     p.set_defaults(fn=cmd_run)
     a = ap.parse_args(argv)
     return a.fn(a)

@@ -30,30 +30,33 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### DOES_ANIM_DICT_EXIST
 
-`0x537F44CB0D7F150D` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4468BB0`
+`0x537F44CB0D7F150D` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4468BB0`
 
-- nativedb form: `BOOL DOES_ANIM_DICT_EXIST(const char* animDict)`
-- C: `int G6_STREAMING_DOES_ANIM_DICT_EXIST(const g6_host_api* api, const char* animDict)`
-- Python: `N.STREAMING.DOES_ANIM_DICT_EXIST(animDict: str | None) -> bool`
-- Luau: `N.STREAMING.DOES_ANIM_DICT_EXIST(animDict: string?): boolean`
+- nativedb form: `BOOL DOES_ANIM_DICT_EXIST(Hash animDict)`
+- C: `int G6_STREAMING_DOES_ANIM_DICT_EXIST(const g6_host_api* api, uint32_t animDict)`
+- Python: `N.STREAMING.DOES_ANIM_DICT_EXIST(animDict: int | str) -> bool`
+- Luau: `N.STREAMING.DOES_ANIM_DICT_EXIST(animDict: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144468bd1), compared as a 32-bit key (0x140311390); script-vm.param_types.observed.json (G-114)
 
 ### HAS_ANIM_DICT_LOADED
 
-`0x27FF6FE8009B40CA` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4469400`
+`0x27FF6FE8009B40CA` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4469400`
 
-- nativedb form: `BOOL HAS_ANIM_DICT_LOADED(const char* animDict)`
-- C: `int G6_STREAMING_HAS_ANIM_DICT_LOADED(const g6_host_api* api, const char* animDict)`
-- Python: `N.STREAMING.HAS_ANIM_DICT_LOADED(animDict: str | None) -> bool`
-- Luau: `N.STREAMING.HAS_ANIM_DICT_LOADED(animDict: string?): boolean`
+- nativedb form: `BOOL HAS_ANIM_DICT_LOADED(Hash animDict)`
+- C: `int G6_STREAMING_HAS_ANIM_DICT_LOADED(const g6_host_api* api, uint32_t animDict)`
+- Python: `N.STREAMING.HAS_ANIM_DICT_LOADED(animDict: int | str) -> bool`
+- Luau: `N.STREAMING.HAS_ANIM_DICT_LOADED(animDict: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144469421), compared as a 32-bit key (0x140311390); script-vm.param_types.observed.json (G-114)
 
 ### HAS_CLIP_SET_LOADED
 
-`0x1F23D6B6DA1CC3B2` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44694C0`
+`0x1F23D6B6DA1CC3B2` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44694C0`
 
-- nativedb form: `BOOL HAS_CLIP_SET_LOADED(const char* clipSet)`
-- C: `int G6_STREAMING_HAS_CLIP_SET_LOADED(const g6_host_api* api, const char* clipSet)`
-- Python: `N.STREAMING.HAS_CLIP_SET_LOADED(clipSet: str | None) -> bool`
-- Luau: `N.STREAMING.HAS_CLIP_SET_LOADED(clipSet: string?): boolean`
+- nativedb form: `BOOL HAS_CLIP_SET_LOADED(Hash clipSet)`
+- C: `int G6_STREAMING_HAS_CLIP_SET_LOADED(const g6_host_api* api, uint32_t clipSet)`
+- Python: `N.STREAMING.HAS_CLIP_SET_LOADED(clipSet: int | str) -> bool`
+- Luau: `N.STREAMING.HAS_CLIP_SET_LOADED(clipSet: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x1444694e1), compared as a 32-bit key (0x14446cbfe); script-vm.param_types.observed.json (G-114)
 
 ### HAS_MODEL_LOADED **unverified**
 
@@ -295,21 +298,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### REMOVE_ANIM_DICT
 
-`0x4763145053A33D46` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4469C50`
+`0x4763145053A33D46` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4469C50`
 
-- nativedb form: `void REMOVE_ANIM_DICT(const char* animDict)`
-- C: `void G6_STREAMING_REMOVE_ANIM_DICT(const g6_host_api* api, const char* animDict)`
-- Python: `N.STREAMING.REMOVE_ANIM_DICT(animDict: str | None) -> None`
-- Luau: `N.STREAMING.REMOVE_ANIM_DICT(animDict: string?): ()`
+- nativedb form: `void REMOVE_ANIM_DICT(Hash animDict)`
+- C: `void G6_STREAMING_REMOVE_ANIM_DICT(const g6_host_api* api, uint32_t animDict)`
+- Python: `N.STREAMING.REMOVE_ANIM_DICT(animDict: int | str) -> None`
+- Luau: `N.STREAMING.REMOVE_ANIM_DICT(animDict: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144469c71), compared as a 32-bit key (0x140311390); script-vm.param_types.observed.json (G-114)
 
 ### REMOVE_CLIP_SET
 
-`0x817FA1B1EE7CD6F0` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4469CA0`
+`0x817FA1B1EE7CD6F0` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4469CA0`
 
-- nativedb form: `void REMOVE_CLIP_SET(const char* clipSet)`
-- C: `void G6_STREAMING_REMOVE_CLIP_SET(const g6_host_api* api, const char* clipSet)`
-- Python: `N.STREAMING.REMOVE_CLIP_SET(clipSet: str | None) -> None`
-- Luau: `N.STREAMING.REMOVE_CLIP_SET(clipSet: string?): ()`
+- nativedb form: `void REMOVE_CLIP_SET(Hash clipSet)`
+- C: `void G6_STREAMING_REMOVE_CLIP_SET(const g6_host_api* api, uint32_t clipSet)`
+- Python: `N.STREAMING.REMOVE_CLIP_SET(clipSet: int | str) -> None`
+- Luau: `N.STREAMING.REMOVE_CLIP_SET(clipSet: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144469cc1), compared as a 32-bit key (0x14446c0be); script-vm.param_types.observed.json (G-114)
 
 ### REMOVE_IPL_HASH
 
@@ -342,21 +347,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### REQUEST_ANIM_DICT
 
-`0xA862A2AD321F94B4` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4469DE0`
+`0xA862A2AD321F94B4` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4469DE0`
 
-- nativedb form: `void REQUEST_ANIM_DICT(const char* animDict)`
-- C: `void G6_STREAMING_REQUEST_ANIM_DICT(const g6_host_api* api, const char* animDict)`
-- Python: `N.STREAMING.REQUEST_ANIM_DICT(animDict: str | None) -> None`
-- Luau: `N.STREAMING.REQUEST_ANIM_DICT(animDict: string?): ()`
+- nativedb form: `void REQUEST_ANIM_DICT(Hash animDict)`
+- C: `void G6_STREAMING_REQUEST_ANIM_DICT(const g6_host_api* api, uint32_t animDict)`
+- Python: `N.STREAMING.REQUEST_ANIM_DICT(animDict: int | str) -> None`
+- Luau: `N.STREAMING.REQUEST_ANIM_DICT(animDict: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144469e01), compared as a 32-bit key (0x140311390); script-vm.param_types.observed.json (G-114)
 
 ### REQUEST_CLIP_SET
 
-`0xEF7611B57A820126` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4469E30`
+`0xEF7611B57A820126` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4469E30`
 
-- nativedb form: `void REQUEST_CLIP_SET(const char* clipSet)`
-- C: `void G6_STREAMING_REQUEST_CLIP_SET(const g6_host_api* api, const char* clipSet)`
-- Python: `N.STREAMING.REQUEST_CLIP_SET(clipSet: str | None) -> None`
-- Luau: `N.STREAMING.REQUEST_CLIP_SET(clipSet: string?): ()`
+- nativedb form: `void REQUEST_CLIP_SET(Hash clipSet)`
+- C: `void G6_STREAMING_REQUEST_CLIP_SET(const g6_host_api* api, uint32_t clipSet)`
+- Python: `N.STREAMING.REQUEST_CLIP_SET(clipSet: int | str) -> None`
+- Luau: `N.STREAMING.REQUEST_CLIP_SET(clipSet: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144469e51), compared as a 32-bit key (0x14446bd7f); script-vm.param_types.observed.json (G-114)
 
 ### REQUEST_COLLISION_AT_COORD
 

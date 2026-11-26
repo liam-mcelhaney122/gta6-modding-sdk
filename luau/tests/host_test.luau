@@ -1,8 +1,8 @@
 --!strict
 -- Luau host test against the mock runtime (g6_luau_runner fake world, see g6_luau_runner.cpp).
 -- Run: g6_luau_runner sdk\luau\lib sdk\luau\tests\host_test.luau 3000 --press 51@480 --expect-clean --expect-log "PASS host_test"
--- Covers: 16-byte entity buffer round trip, packed Vector3 return and parameter ('w': one 16-byte
--- block in two slots), the 16-byte aligned Vector3* out-param, wait() scheduling, one-tick control
+-- Covers: 16-byte entity buffer round trip, 16-byte scenario-point handles ('h'), packed Vector3 return and
+-- parameter ('w': one 16-byte block in two slots), the 16-byte aligned Vector3* out-param, wait() scheduling, one-tick control
 -- presses, and the error paths of native.call.
 
 local script = require("@gta6/script")
@@ -37,6 +37,22 @@ assert(N.ENTITY.DOES_ENTITY_EXIST(forged) == true, "same 16 bytes as the player 
 expectError("short buffer", "must be 16 bytes", function() N.ENTITY.DOES_ENTITY_EXIST(buffer.create(8)) end)
 expectError("not a native", "expected a native handle", function() native.call(buffer.create(16) :: any) end)
 expectError("unregistered native", "not present in this game build", function() N.ENTITY.GET_ENTITY_ALPHA(ped) end)
+
+-- ------------------------------------------------------------------ 16-byte non-entity handles ('h', G-099)
+-- _GET_REGISTERED_SCENARIO_POINT is 'u>h', DOES_SCENARIO_POINT_EXIST 'h>b'. The runner's point for id 7 is
+-- lo = 0x5C00000000000007, hi = 0x5C5C; its exists-check needs both halves, so the hi slot must reach it.
+local sp = N.UNKNOWN._GET_REGISTERED_SCENARIO_POINT(7)
+assert(typeof(sp) == "buffer" and buffer.len(sp) == 16, "a scenario point is a 16-byte buffer")
+assert(buffer.readu32(sp, 0) == 7 and buffer.readu32(sp, 4) == 0x5C000000 and u64hi(sp) == 0x5C5C, "scenario point lo/hi")
+assert(N.TASK.DOES_SCENARIO_POINT_EXIST(sp) == true, "scenario point round trip")
+local spForged = buffer.create(16)
+buffer.copy(spForged, 0, sp, 0, 8)
+assert(N.TASK.DOES_SCENARIO_POINT_EXIST(spForged) == false, "hi half must reach the handler")
+local none = N.UNKNOWN._GET_REGISTERED_SCENARIO_POINT(0)
+assert(u64lo(none) == 0 and u64hi(none) == 0, "id 0: 16 zero bytes")
+expectError("number for a 16-byte handle", "expected a 16-byte handle buffer",
+	function() N.TASK.DOES_SCENARIO_POINT_EXIST(7 :: any) end)
+expectError("short 16-byte handle", "must be 16 bytes", function() N.TASK.DOES_SCENARIO_POINT_EXIST(buffer.create(8)) end)
 
 -- ------------------------------------------------------------------ packed Vector3 return and parameter
 local p = N.ENTITY.GET_ENTITY_COORDS(ped, true)

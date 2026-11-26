@@ -1,0 +1,30 @@
+Dear ImGui, vendored for the gta6mod SDK UI layer (g6ui.dll overlay, plugins that draw with ImGui).
+
+source   https://github.com/ocornut/imgui
+tag      v1.91.9b  (IMGUI_VERSION "1.91.9b", IMGUI_VERSION_NUM 19191)
+commit   f5befd2d29e66809cd1110a152e375a7f1981f06  (git ls-remote --tags, 2026-11-26)
+license  MIT, LICENSE.txt in this folder
+changes  none: the files below are byte-identical to the tag (.gitattributes keeps them -text).
+         Build options live outside: sdk/include/gta6mod/imgui_config.h via IMGUI_USER_CONFIG.
+
+Pinned in sdk/include/gta6mod/gta6mod.h as G6_UI_IMGUI_VERSION / G6_UI_IMGUI_VERSION_NUM. A plugin that
+draws with ImGui directly must compile exactly these files with the same IMGUI_USER_CONFIG; the runtime
+compares the version and the data-layout sizes before sharing its context (gta6mod/ui_imgui.hpp).
+
+Files (sha256 of the upstream bytes):
+55e058cc5899e6077a819ad1005d6d1f4528f65ae100795c9692f9fa6525a8ce LICENSE.txt
+70168aa870848d800f143234a528d845e8e7ad84512a20b56e99cadce5dca128 backends/imgui_impl_dx12.cpp
+6abe557b577d04d50e618415eb8777ec730b4be7151e258ad3011c6e2a73bf2e backends/imgui_impl_dx12.h
+83c50d42936fc5fc6c4a5890e6c26ad7f9b61e71f37177646cab2861b530be38 backends/imgui_impl_win32.cpp
+9e19241514035268764253b39384e02bc267ebe4fd6de31c5b0c3b3d576bd410 backends/imgui_impl_win32.h
+3199868d7f47b42752da5685d8fd3be59bea0814e9f3505cd26a9c20c3aff0a0 imconfig.h
+53c75988381cb52158ea6704d3e3060647258e9ed389780fb1f58b17bea14500 imgui.cpp
+7f074c70232dfdacc7e48d65cebdbf91b78d7b33f4a8a60753fd151426b14189 imgui.h
+80a782512e64590e6f6d960bc4b174e182b7b3f42b61c1e2f6e5deb83e98261a imgui_demo.cpp
+98043978cc3102ac03f1f1997865a89fa0b2e0466896271653f8f3443626f5ce imgui_draw.cpp
+bad81a4c711209101420ee519c47c33ffed3c5b85e0976d7dac80a7ef0002215 imgui_internal.h
+b8a82cf385a5189ed2fa6d6172b79cfb56ec4a9490eaccb095faa9006d3ba72e imgui_tables.cpp
+09f78c5cdbe0772be94a45646209319629e00790a047e50cb5b1fd4e0ad7ab41 imgui_widgets.cpp
+bb53504995e983d54b1ae06ea727f0b39647e5e205b4bf7da01343953974951c imstb_rectpack.h
+d9deebe52c76276c42ca030e4ab92ea145552d2aa7e92fd7dea27ffc64eb7166 imstb_textedit.h
+941a95c9f36771aab45062e977596785aa9cfaa508a523f6c34ace84b5916780 imstb_truetype.h

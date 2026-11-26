@@ -257,8 +257,9 @@ void read_natives(Snap& s, Json& calls, bool full) {
             if (v.ok()) { s.vehicle_ok = true; s.veh_lo = v.ret[0]; s.veh_hi = v.ret[1]; }
         }
     }
-    if (s.player_ok) {
-        const std::uint64_t a_w[2] = { static_cast<std::uint64_t>(static_cast<std::int64_t>(s.player)), 0 };
+    if (s.ped_ok) {
+        // the player ped, not the player index: the handler resolves both slots as a ped (G-090)
+        const std::uint64_t a_w[2] = { s.lo, s.hi };
         const CallOut w = call(calls, N::get_player_wanted_level, a_w, 2);
         if (w.ok()) { s.wanted_ok = true; s.wanted = ret_i32(w); }
     }
@@ -580,6 +581,146 @@ void read_ped_memory(Json& j, EcsFields& ef) {
     j.end_obj();
 }
 
+// ------------------------------------------------------------------ second entities (G-003)
+// Other entities' handles next to what the anchors give for them, so the handle halves can be compared
+// across entities. Only the player's last vehicle has an object path (the player's column 0x47, below);
+// a handle from GET_CLOSEST_* has none without calling a game function, which the probe never does.
+constexpr const char* kNoObjectPath =
+    "gated: no anchor maps a handle to its object, and the probe calls no game function (script.handle.to_entity would)";
+
+// Handle, identity against the player and the vehicle in use, and GET_ENTITY_COORDS of it.
+void json_handle_info(Json& j, Json& calls, std::uint64_t lo, std::uint64_t hi, const Snap& s) {
+    const bool valid = !handle_null(lo, hi);
+    j.key("lo").hex(lo).key("hi").hex(hi).key("valid").boolean(valid);
+    if (!valid) return;
+    j.key("same_as_player").boolean(s.ped_ok && lo == s.lo && hi == s.hi);
+    if (s.vehicle_ok) j.key("same_as_vehicle_using").boolean(lo == s.veh_lo && hi == s.veh_hi);
+    const std::uint64_t a[4] = { lo, hi, 1, 0 };   // as for the player (read_natives)
+    const CallOut c = call(calls, N::get_entity_coords, a, 4);
+    j.key("coords").obj();
+    if (c.ok()) {
+        const Vec3 v = slots_vec3(c.ret);
+        const Check ck = check_coords(v, g_cfg.max_abs_coord);
+        j.key("ok").boolean(ck.ok).key("v");
+        json_vec(j, v);
+        if (!ck.ok) j.key("why").str(ck.why);
+        j.end_obj();
+        if (ck.ok && s.coords_ok) j.key("dist_m").f64(distance(v, s.coords));
+    } else {
+        j.key("ok").boolean(false).key("why").str("call failed").end_obj();
+    }
+}
+
+// The pointer GET_PLAYERS_LAST_VEHICLE's core picks (probe_layout.hpp ecs::kPedCol47), its entity kind and ECS id.
+void read_last_vehicle_mem(Json& j) {
+    j.key("last_vehicle_mem").obj();
+    std::string why;
+    std::uintptr_t ped = 0;
+    std::uint32_t raw_id = 0;
+    const AnchorState* pa = ok_anchor(L::kPlayerPedLocal);
+    if (!pa) {
+        why = "gated: player.ped.local is not available";
+    } else if (!rd(pa->addr, ped) || !ped) {
+        why = "player ped pointer unreadable or null";
+    } else if (!rd(ped + L::entity::kEcsIdOff, raw_id)) {
+        why = "player ECS id unreadable";
+    } else if (decode_ecs_id(raw_id).arch != E::kPedArch) {
+        why = "player ECS archetype is not 3 (ped)";
+    } else {
+        Store st;
+        std::uintptr_t c = 0;
+        std::uint8_t flags = 0;
+        std::uintptr_t at_a = 0, at_b = 0;
+        if (!load_static(st, decode_ecs_id(raw_id).row)) {
+            why = st.why;
+        } else if (!comp_addr(st, E::kPedCol47, c, why)) {
+            // why set by comp_addr
+        } else if (!rd(c + E::kCol47Flags, flags) || !rd(c + E::kCol47VehicleA, at_a) || !rd(c + E::kCol47VehicleB, at_b)) {
+            why = "column 0x47 fields unreadable";
+        } else {
+            const LastVehiclePick pk = pick_last_vehicle(flags, at_a, at_b);
+            j.key("ok").boolean(true).key("comp").hex(c).key("flags10").u64(flags).key("at_898").hex(at_a).key("at_8a8").hex(at_b)
+                .key("field");
+            if (pk.field) j.hex32(pk.field); else j.null();
+            j.key("ptr").hex(pk.ptr);
+            if (pk.ptr) {
+                std::uint8_t type = 0;
+                std::uint32_t vid = 0;
+                if (rd(pk.ptr + L::entity::kTypeOff, type) && rd(pk.ptr + L::entity::kEcsIdOff, vid)) {
+                    const EcsId v = decode_ecs_id(vid);
+                    j.key("type").u64(type).key("ecs_id").hex32(vid).key("arch").u64(v.arch).key("row").u64(v.row);
+                    if (type != L::entity_kind::kVehicle) j.key("note").str("entity_type is not 2 (vehicle)");
+                    else if (v.arch != E::kVehicleArch) j.key("note").str("ECS archetype is not 2 (vehicle)");
+                } else {
+                    j.key("why").str("vehicle entity unreadable");
+                }
+            }
+            j.end_obj();
+            return;
+        }
+    }
+    j.key("ok").boolean(false).key("why").str(why).end_obj();
+}
+
+void read_near(Json& j, Json& calls, const Snap& s) {
+    namespace NR = L::nearby;  // not "near": windows.h defines near as a macro
+    j.key("near").obj();
+    j.key("last_vehicle").obj();
+    {
+        const CallOut c = call(calls, N::get_players_last_vehicle, nullptr, 0);
+        j.key("rc").i64(c.rc);
+        if (c.ok()) json_handle_info(j, calls, c.ret[0], c.ret[1], s);
+    }
+    j.end_obj();
+    read_last_vehicle_mem(j);
+    j.key("radius_m").f64(g_cfg.near_radius_m);
+    if (!s.coords_ok) {
+        j.key("closest_why").str("no plausible player coordinates this sample").end_obj();
+        return;
+    }
+    std::uint64_t pos[2] = {};
+    vec3_slots(s.coords, pos);
+    const std::uint64_t radius = float_slot(static_cast<float>(g_cfg.near_radius_m));
+
+    j.key("closest_vehicle").obj();
+    {
+        const std::uint64_t a[5] = { pos[0], pos[1], radius, NR::kClosestVehicleModelAny, NR::kClosestVehicleFlags };
+        const CallOut c = call(calls, N::get_closest_vehicle, a, 5);
+        j.key("rc").i64(c.rc);
+        if (c.ok()) {
+            json_handle_info(j, calls, c.ret[0], c.ret[1], s);
+            if (!handle_null(c.ret[0], c.ret[1])) j.key("ptr_why").str(kNoObjectPath);
+        }
+    }
+    j.end_obj();
+
+    j.key("closest_ped").obj();
+    {
+        // The core writes exactly 16 bytes to the slot-5 pointer; the two sentinel qwords after them must survive.
+        constexpr std::uint64_t kSentinel = 0x5AFE5AFE5AFE5AFEull;
+        static_assert(NR::kClosestPedOutBytes == 16, "two qwords of handle");
+        alignas(16) std::uint64_t out[4] = { kSentinel, kSentinel, kSentinel, kSentinel };
+        const std::uint64_t a[10] = { pos[0], pos[1], radius,
+                                      static_cast<std::uint64_t>(NR::kClosestPedFlag3), static_cast<std::uint64_t>(NR::kClosestPedFlag4),
+                                      static_cast<std::uint64_t>(reinterpret_cast<std::uintptr_t>(out)),
+                                      static_cast<std::uint64_t>(NR::kClosestPedFlag6), static_cast<std::uint64_t>(NR::kClosestPedFlag7),
+                                      static_cast<std::uint64_t>(NR::kClosestPedFlag8), static_cast<std::uint64_t>(NR::kClosestPedSlot9) };
+        const CallOut c = call(calls, N::get_closest_ped, a, 10);
+        j.key("rc").i64(c.rc);
+        if (c.ok()) {
+            const bool written = !(out[0] == kSentinel && out[1] == kSentinel);
+            j.key("found").boolean((c.ret[0] & 0xFF) != 0).key("out_written").boolean(written)
+                .key("out_tail_intact").boolean(out[2] == kSentinel && out[3] == kSentinel);
+            if (written) {
+                json_handle_info(j, calls, out[0], out[1], s);
+                if (!handle_null(out[0], out[1])) j.key("ptr_why").str(kNoObjectPath);
+            }
+        }
+    }
+    j.end_obj();
+    j.end_obj();
+}
+
 // ------------------------------------------------------------------ records
 std::uint64_t clock_now() {
     return g_cfg.rate_clock_game ? g_api->game_time_ms() : static_cast<std::uint64_t>(GetTickCount64());
@@ -603,6 +744,7 @@ void sample() {
     read_gravity(j);
     EcsFields ef;
     read_ped_memory(j, ef);
+    read_near(j, calls, s);
     calls.end_arr();
     j.key("calls").raw(calls.str());
     j.end_obj();
@@ -703,9 +845,9 @@ void run_write(WriteProbe w, const char* source) {
         break;
     }
     case WriteProbe::wanted_clear:
-        if (!before.player_ok || !before.wanted_ok) return refuse_write(w, before, calls, "player index or wanted level not readable before the write");
-        args[0] = static_cast<std::uint64_t>(static_cast<std::int64_t>(before.player));
-        args[1] = 0;
+        if (!before.ped_ok || !before.wanted_ok) return refuse_write(w, before, calls, "player ped or wanted level not readable before the write");
+        args[0] = before.lo;
+        args[1] = before.hi;
         argc = 2;
         break;
     case WriteProbe::clock_add:
@@ -953,6 +1095,7 @@ g6_status load(const g6_host_api* api) {
         .key("stage").i64(g_cfg.stage)
         .key("config").obj().key("rate_hz").f64(g_cfg.rate_hz).key("rate_clock").str(g_cfg.rate_clock_game ? "game" : "wall")
         .key("max_abs_coord").f64(g_cfg.max_abs_coord).key("anchor_rva_check").boolean(g_cfg.anchor_rva_check)
+        .key("near_radius_m").f64(g_cfg.near_radius_m)
         .key("up_axis");
     if (g_cfg.up.axis != Axis::unset) m.str(axis_name(g_cfg.up)); else m.null();
     m.key("up_delta_m").f64(g_cfg.up_delta).key("health_delta").i64(g_cfg.health_delta).key("hotkey_vk").u64(g_cfg.hotkey_vk)
@@ -975,7 +1118,9 @@ g6_status load(const g6_host_api* api) {
         m.end_obj();
     }
     m.end_arr().key("gated").arr()
-        .str("vehicle ECS rows: no anchor for the vehicle entity pointer; the vehicle handle from GET_VEHICLE_PED_IS_USING is logged instead")
+        .str("vehicle ECS rows: not read; the vehicle handle from GET_VEHICLE_PED_IS_USING is logged, and the last vehicle's "
+             "pointer and ECS id come from the player's static column 0x47 (near.last_vehicle_mem)")
+        .str(std::string("near.closest_ped / closest_vehicle object pointer and ECS id: ") + kNoObjectPath)
         .end_arr().end_obj();
     emit(m);
 
