@@ -4,7 +4,7 @@
 
 [API index](../index.md) · [ABI and marshalling](../abi.md)
 
-142 natives in re-db namespace `GRAPHICS`: 79 named, 63 unnamed. Confidence: high 77, low 63, medium 2.
+142 natives in re-db namespace `GRAPHICS`: 80 named, 62 unnamed. Confidence: high 77, low 62, medium 3.
 
 Unnamed natives have no cross-title name. The bindings expose them as `N.RAW.N_<hash>` (C `G6_N_<hash>`), and the namespace shown here is the re-db namespace, inferred from handler clustering where the provenance says `cluster:`. Their parameters are synthesised from the observed slot reads (`Any` = an untyped 8-byte slot, `float` where a 32-bit float load was seen).
 
@@ -442,15 +442,6 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - Luau: `N.RAW.N_5A5228082A027FA6(p0: number): number`
 - provenance: cluster:3nn_unanimous
 
-### N_5D318F9A72B2464F
-
-`0x5D318F9A72B2464F` · sig `iifffffiiiiffff>n` · params 15, argc_inferred 15, arg slots 15 · returns `void` · name: unnamed · confidence **low** · status observed · handler RVA `0x3C07D40`
-
-- C: `void G6_N_5D318F9A72B2464F(const g6_host_api* api, int32_t p0, int32_t p1, float p2, float p3, float p4, float p5, float p6, int32_t p7, int32_t p8, int32_t p9, int32_t p10, float p11, float p12, float p13, float p14)`
-- Python: `N.RAW.N_5D318F9A72B2464F(p0: int, p1: int, p2: float, p3: float, p4: float, p5: float, p6: float, p7: int, p8: int, p9: int, p10: int, p11: float, p12: float, p13: float, p14: float) -> None`
-- Luau: `N.RAW.N_5D318F9A72B2464F(p0: number, p1: number, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number, p11: number, p12: number, p13: number, p14: number): ()`
-- provenance: cluster:3nn_unanimous
-
 ### N_617DB80DC5BB40C4
 
 `0x617DB80DC5BB40C4` · sig `ii>i` · params 2, argc_inferred 2, arg slots 2 · returns `int` · name: unnamed · confidence **low** · status observed · handler RVA `0x3C17280`
@@ -853,12 +844,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### RESET_PARTICLE_FX_OVERRIDE
 
-`0x274B3DABF7E72DEF` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C11E80`
+`0x274B3DABF7E72DEF` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C11E80`
 
-- nativedb form: `void RESET_PARTICLE_FX_OVERRIDE(const char* name)`
-- C: `void G6_GRAPHICS_RESET_PARTICLE_FX_OVERRIDE(const g6_host_api* api, const char* name)`
-- Python: `N.GRAPHICS.RESET_PARTICLE_FX_OVERRIDE(name: str | None) -> None`
-- Luau: `N.GRAPHICS.RESET_PARTICLE_FX_OVERRIDE(name: string?): ()`
+- nativedb form: `void RESET_PARTICLE_FX_OVERRIDE(Hash name)`
+- C: `void G6_GRAPHICS_RESET_PARTICLE_FX_OVERRIDE(const g6_host_api* api, uint32_t name)`
+- Python: `N.GRAPHICS.RESET_PARTICLE_FX_OVERRIDE(name: int | str) -> None`
+- Luau: `N.GRAPHICS.RESET_PARTICLE_FX_OVERRIDE(name: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143c11ea1), compared as a 32-bit key (0x1429845ce); script-vm.param_types.observed.json (G-114)
 
 ### SAVE_HIGH_QUALITY_PHOTO
 
@@ -898,12 +890,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### SET_PARTICLE_FX_LOOPED_EVOLUTION
 
-`0x3674F389B0FACD80` · sig `isfb>n` · params 4, argc_inferred 3, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C18130`
+`0x3674F389B0FACD80` · sig `iufb>n` · params 4, argc_inferred 3, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C18130`
 
-- nativedb form: `void SET_PARTICLE_FX_LOOPED_EVOLUTION(int ptfxHandle, const char* propertyName, float amount, BOOL noNetwork)`
-- C: `void G6_GRAPHICS_SET_PARTICLE_FX_LOOPED_EVOLUTION(const g6_host_api* api, int32_t ptfxHandle, const char* propertyName, float amount, int noNetwork)`
-- Python: `N.GRAPHICS.SET_PARTICLE_FX_LOOPED_EVOLUTION(ptfxHandle: int, propertyName: str | None, amount: float, noNetwork: bool) -> None`
-- Luau: `N.GRAPHICS.SET_PARTICLE_FX_LOOPED_EVOLUTION(ptfxHandle: number, propertyName: string?, amount: number, noNetwork: boolean): ()`
+- nativedb form: `void SET_PARTICLE_FX_LOOPED_EVOLUTION(int ptfxHandle, Hash propertyName, float amount, BOOL noNetwork)`
+- C: `void G6_GRAPHICS_SET_PARTICLE_FX_LOOPED_EVOLUTION(const g6_host_api* api, int32_t ptfxHandle, uint32_t propertyName, float amount, int noNetwork)`
+- Python: `N.GRAPHICS.SET_PARTICLE_FX_LOOPED_EVOLUTION(ptfxHandle: int, propertyName: int | str, amount: float, noNetwork: bool) -> None`
+- Luau: `N.GRAPHICS.SET_PARTICLE_FX_LOOPED_EVOLUTION(ptfxHandle: number, propertyName: number | string, amount: number, noNetwork: boolean): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 1 read as 32 bits (0x143c18158), compared as a 32-bit key (0x144e90450); script-vm.param_types.observed.json (G-114)
 
 ### SET_PARTICLE_FX_LOOPED_FAR_CLIP_DIST
 
@@ -954,12 +947,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### SET_PARTICLE_FX_OVERRIDE
 
-`0xBE711A169E9C7E95` · sig `ss>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C15A00`
+`0xBE711A169E9C7E95` · sig `uu>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C15A00`
 
-- nativedb form: `void SET_PARTICLE_FX_OVERRIDE(const char* oldAsset, const char* newAsset)`
-- C: `void G6_GRAPHICS_SET_PARTICLE_FX_OVERRIDE(const g6_host_api* api, const char* oldAsset, const char* newAsset)`
-- Python: `N.GRAPHICS.SET_PARTICLE_FX_OVERRIDE(oldAsset: str | None, newAsset: str | None) -> None`
-- Luau: `N.GRAPHICS.SET_PARTICLE_FX_OVERRIDE(oldAsset: string?, newAsset: string?): ()`
+- nativedb form: `void SET_PARTICLE_FX_OVERRIDE(Hash oldAsset, Hash newAsset)`
+- C: `void G6_GRAPHICS_SET_PARTICLE_FX_OVERRIDE(const g6_host_api* api, uint32_t oldAsset, uint32_t newAsset)`
+- Python: `N.GRAPHICS.SET_PARTICLE_FX_OVERRIDE(oldAsset: int | str, newAsset: int | str) -> None`
+- Luau: `N.GRAPHICS.SET_PARTICLE_FX_OVERRIDE(oldAsset: number | string, newAsset: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from traced consumer: slot 0 read as 32 bits (0x143c15a21), compared as a 32-bit key (0x142983e0a); param 1 typed Hash (nativedb const char*) from traced consumer: slot 1 read as 32 bits (0x143c15a23), compared as a 32-bit key (0x142983c0c); script-vm.param_types.observed.json (G-117)
 
 ### SET_SCRIPT_GFX_DRAW_ORDER
 
@@ -972,13 +966,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### SET_TIMECYCLE_MODIFIER
 
-`0x143D077E2094E760` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: manual · confidence **medium** · status observed · handler RVA `0x3C16530`
+`0x143D077E2094E760` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: manual · confidence **medium** · status observed · handler RVA `0x3C16530`
 
-- nativedb form: `void SET_TIMECYCLE_MODIFIER(const char* modifierName)`
-- C: `void G6_GRAPHICS_SET_TIMECYCLE_MODIFIER(const g6_host_api* api, const char* modifierName)`
-- Python: `N.GRAPHICS.SET_TIMECYCLE_MODIFIER(modifierName: str | None) -> None`
-- Luau: `N.GRAPHICS.SET_TIMECYCLE_MODIFIER(modifierName: string?): ()`
-- provenance: method=manual:shared-global-pair; core 0x143c23680 looks the u32 arg up in the timecycle-modifier store 0x14ab468c0 (0x140682040) and stores the index to 0x14ab4bb04, resets 0x14ab4bb0c=-1; CLEAR_TIMECYCLE_MODIFIER (0x143c066f0 -> 0x143c35f40) writes 0x14ab4bb04=-1 and strength 0x14ab4bb08=1.0; SET_TIMECYCLE_MODIFIER_STRENGTH (0x143c16580 -> 0x143c23670) writes 0x14ab4bb08. GTA VI passes the modifier name as a 32-bit hash, nativedb declares const char*.
+- nativedb form: `void SET_TIMECYCLE_MODIFIER(Hash modifierName)`
+- C: `void G6_GRAPHICS_SET_TIMECYCLE_MODIFIER(const g6_host_api* api, uint32_t modifierName)`
+- Python: `N.GRAPHICS.SET_TIMECYCLE_MODIFIER(modifierName: int | str) -> None`
+- Luau: `N.GRAPHICS.SET_TIMECYCLE_MODIFIER(modifierName: number | string): ()`
+- provenance: method=manual:shared-global-pair; core 0x143c23680 looks the u32 arg up in the timecycle-modifier store 0x14ab468c0 (0x140682040) and stores the index to 0x14ab4bb04, resets 0x14ab4bb0c=-1; CLEAR_TIMECYCLE_MODIFIER (0x143c066f0 -> 0x143c35f40) writes 0x14ab4bb04=-1 and strength 0x14ab4bb08=1.0; SET_TIMECYCLE_MODIFIER_STRENGTH (0x143c16580 -> 0x143c23670) writes 0x14ab4bb08. GTA VI passes the modifier name as a 32-bit hash, nativedb declares const char*.; param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143c16551), compared as a 32-bit key (0x140494d35); script-vm.param_types.observed.json (G-114)
 
 ### SET_TIMECYCLE_MODIFIER_STRENGTH
 
@@ -1011,12 +1005,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### SET_TRANSITION_TIMECYCLE_MODIFIER
 
-`0xFF927A09F481D80C` · sig `sf>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C16820`
+`0xFF927A09F481D80C` · sig `uf>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C16820`
 
-- nativedb form: `void SET_TRANSITION_TIMECYCLE_MODIFIER(const char* modifierName, float transitionBlend)`
-- C: `void G6_GRAPHICS_SET_TRANSITION_TIMECYCLE_MODIFIER(const g6_host_api* api, const char* modifierName, float transitionBlend)`
-- Python: `N.GRAPHICS.SET_TRANSITION_TIMECYCLE_MODIFIER(modifierName: str | None, transitionBlend: float) -> None`
-- Luau: `N.GRAPHICS.SET_TRANSITION_TIMECYCLE_MODIFIER(modifierName: string?, transitionBlend: number): ()`
+- nativedb form: `void SET_TRANSITION_TIMECYCLE_MODIFIER(Hash modifierName, float transitionBlend)`
+- C: `void G6_GRAPHICS_SET_TRANSITION_TIMECYCLE_MODIFIER(const g6_host_api* api, uint32_t modifierName, float transitionBlend)`
+- Python: `N.GRAPHICS.SET_TRANSITION_TIMECYCLE_MODIFIER(modifierName: int | str, transitionBlend: float) -> None`
+- Luau: `N.GRAPHICS.SET_TRANSITION_TIMECYCLE_MODIFIER(modifierName: number | string, transitionBlend: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143c16846), compared as a 32-bit key (0x140494d35); script-vm.param_types.observed.json (G-114)
 
 ### START_PETROL_TRAIL_DECALS
 
@@ -1168,12 +1163,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _ANIMPOSTFX_GET_STACKHASH
 
-`0x842CCC9491FFCD9B` · sig `s>u` · params 1, argc_inferred 1, arg slots 1 · returns `Hash` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C056B0`
+`0x842CCC9491FFCD9B` · sig `u>u` · params 1, argc_inferred 1, arg slots 1 · returns `Hash` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C056B0`
 
-- nativedb form: `Hash _ANIMPOSTFX_GET_STACKHASH(const char* effectName)`
-- C: `uint32_t G6_GRAPHICS__ANIMPOSTFX_GET_STACKHASH(const g6_host_api* api, const char* effectName)`
-- Python: `N.GRAPHICS._ANIMPOSTFX_GET_STACKHASH(effectName: str | None) -> int`
-- Luau: `N.GRAPHICS._ANIMPOSTFX_GET_STACKHASH(effectName: string?): number`
+- nativedb form: `Hash _ANIMPOSTFX_GET_STACKHASH(Hash effectName)`
+- C: `uint32_t G6_GRAPHICS__ANIMPOSTFX_GET_STACKHASH(const g6_host_api* api, uint32_t effectName)`
+- Python: `N.GRAPHICS._ANIMPOSTFX_GET_STACKHASH(effectName: int | str) -> int`
+- Luau: `N.GRAPHICS._ANIMPOSTFX_GET_STACKHASH(effectName: number | string): number`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143c056d1), compared as a 32-bit key (0x141c130dc); script-vm.param_types.observed.json (G-114)
 
 ### _ANIMPOSTFX_IS_STACKHASH_PLAYING
 
@@ -1204,21 +1200,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _ANIMPOSTFX_SET_POTENCY
 
-`0xF972F0AB16DC5260` · sig `sif>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C12660`
+`0xF972F0AB16DC5260` · sig `uif>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C12660`
 
-- nativedb form: `void _ANIMPOSTFX_SET_POTENCY(const char* effectName, int p1, float potency)`
-- C: `void G6_GRAPHICS__ANIMPOSTFX_SET_POTENCY(const g6_host_api* api, const char* effectName, int32_t p1, float potency)`
-- Python: `N.GRAPHICS._ANIMPOSTFX_SET_POTENCY(effectName: str | None, p1: int, potency: float) -> None`
-- Luau: `N.GRAPHICS._ANIMPOSTFX_SET_POTENCY(effectName: string?, p1: number, potency: number): ()`
+- nativedb form: `void _ANIMPOSTFX_SET_POTENCY(Hash effectName, int p1, float potency)`
+- C: `void G6_GRAPHICS__ANIMPOSTFX_SET_POTENCY(const g6_host_api* api, uint32_t effectName, int32_t p1, float potency)`
+- Python: `N.GRAPHICS._ANIMPOSTFX_SET_POTENCY(effectName: int | str, p1: int, potency: float) -> None`
+- Luau: `N.GRAPHICS._ANIMPOSTFX_SET_POTENCY(effectName: number | string, p1: number, potency: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143c12686), compared as a 32-bit key (0x1428dfd9e); script-vm.param_types.observed.json (G-114)
 
 ### _ANIMPOSTFX_SET_STRENGTH
 
-`0xCAB4DD2D5B2B7246` · sig `sf>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C12590`
+`0xCAB4DD2D5B2B7246` · sig `uf>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C12590`
 
-- nativedb form: `void _ANIMPOSTFX_SET_STRENGTH(const char* effectName, float strength)`
-- C: `void G6_GRAPHICS__ANIMPOSTFX_SET_STRENGTH(const g6_host_api* api, const char* effectName, float strength)`
-- Python: `N.GRAPHICS._ANIMPOSTFX_SET_STRENGTH(effectName: str | None, strength: float) -> None`
-- Luau: `N.GRAPHICS._ANIMPOSTFX_SET_STRENGTH(effectName: string?, strength: number): ()`
+- nativedb form: `void _ANIMPOSTFX_SET_STRENGTH(Hash effectName, float strength)`
+- C: `void G6_GRAPHICS__ANIMPOSTFX_SET_STRENGTH(const g6_host_api* api, uint32_t effectName, float strength)`
+- Python: `N.GRAPHICS._ANIMPOSTFX_SET_STRENGTH(effectName: int | str, strength: float) -> None`
+- Luau: `N.GRAPHICS._ANIMPOSTFX_SET_STRENGTH(effectName: number | string, strength: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143c125b6), compared as a 32-bit key (0x1428dfd9e); script-vm.param_types.observed.json (G-114)
 
 ### _ANIMPOSTFX_STOP_STACKHASH_POSTFX
 
@@ -1255,6 +1253,16 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `void G6_GRAPHICS__DISABLE_FAR_ARTIFICIAL_LIGHTS(const g6_host_api* api, int disable)`
 - Python: `N.GRAPHICS._DISABLE_FAR_ARTIFICIAL_LIGHTS(disable: bool) -> None`
 - Luau: `N.GRAPHICS._DISABLE_FAR_ARTIFICIAL_LIGHTS(disable: boolean): ()`
+
+### _DRAW_SPRITE_WITH_UV
+
+`0x5D318F9A72B2464F` · sig `qqfffffiiiiffff>n` · params 15, argc_inferred 15, arg slots 15 · returns `void` · name: behaviour-descriptive (not a nativedb name) · confidence **medium** · status observed · handler RVA `0x3C07D40`
+
+- nativedb form: `void _DRAW_SPRITE_WITH_UV(uint64_t textureDict, uint64_t textureName, float x, float y, float width, float height, float heading, int red, int green, int blue, int alpha, float u1, float v1, float u2, float v2)`
+- C: `void G6_GRAPHICS__DRAW_SPRITE_WITH_UV(const g6_host_api* api, uint64_t textureDict, uint64_t textureName, float x, float y, float width, float height, float heading, int32_t red, int32_t green, int32_t blue, int32_t alpha, float u1, float v1, float u2, float v2)`
+- Python: `N.GRAPHICS._DRAW_SPRITE_WITH_UV(textureDict: int, textureName: int, x: float, y: float, width: float, height: float, heading: float, red: int, green: int, blue: int, alpha: int, u1: float, v1: float, u2: float, v2: float) -> None`
+- Luau: `N.GRAPHICS._DRAW_SPRITE_WITH_UV(textureDict: number?, textureName: number?, x: number, y: number, width: number, height: number, heading: number, red: number, green: number, blue: number, alpha: number, u1: number, v1: number, u2: number, v2: number): ()`
+- provenance: method=observed-behaviour; texture looked up from the two 64-bit arguments (0x1444fb010, slot 1 checked by 0x1444f1730; nothing is drawn when either fails), centre x/y (slots 2-3), width/height (slots 4-5), slot 6 stored at item +0x1c (DRAW_SPRITE's nativedb heading position), slots 7-10 clamped to 0..255 and packed into one colour, UV pairs (slots 11-12) and (slots 13-14); the form of the two texture arguments (string object or 64-bit key) is not established; chain 0x143c07d40 -> 0x143c345d0 -> 0x143c34710 -> 0x1429e2e70; call sites: 3 in 2 programs; findings/phase5/34_natives_round2.md
 
 ### _GET_CURRENT_NUMBER_OF_LOCAL_PHOTOS
 

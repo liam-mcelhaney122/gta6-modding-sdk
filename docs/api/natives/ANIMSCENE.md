@@ -19,9 +19,10 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _SET_BREAKOUT_ARCHETYPE
 
-`0x99B2A2E3655DEAF1` · sig `es>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD5D90`
+`0x99B2A2E3655DEAF1` · sig `eu>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD5D90`
 
-- nativedb form: `void _SET_BREAKOUT_ARCHETYPE(Ped ped, const char* archetype)`
-- C: `void G6_ANIMSCENE__SET_BREAKOUT_ARCHETYPE(const g6_host_api* api, g6_entity ped, const char* archetype)`
-- Python: `N.ANIMSCENE._SET_BREAKOUT_ARCHETYPE(ped: int, archetype: str | None) -> None`
-- Luau: `N.ANIMSCENE._SET_BREAKOUT_ARCHETYPE(ped: buffer | number, archetype: string?): ()`
+- nativedb form: `void _SET_BREAKOUT_ARCHETYPE(Ped ped, Hash archetype)`
+- C: `void G6_ANIMSCENE__SET_BREAKOUT_ARCHETYPE(const g6_host_api* api, g6_entity ped, uint32_t archetype)`
+- Python: `N.ANIMSCENE._SET_BREAKOUT_ARCHETYPE(ped: int, archetype: int | str) -> None`
+- Luau: `N.ANIMSCENE._SET_BREAKOUT_ARCHETYPE(ped: buffer | number, archetype: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd5dba), compared as a 32-bit key (0x1431a330b); script-vm.param_types.observed.json (G-114)

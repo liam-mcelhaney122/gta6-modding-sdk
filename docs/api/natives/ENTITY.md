@@ -116,12 +116,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### DOES_ENTITY_BELONG_TO_THIS_SCRIPT
 
-`0x622B1980CBE13332` · sig `eb>b` · params 2, argc_inferred 2, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C074B0`
+`0x622B1980CBE13332` · sig `e>b` · params 1, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C074B0`
 
-- nativedb form: `BOOL DOES_ENTITY_BELONG_TO_THIS_SCRIPT(Entity entity, BOOL p1)`
-- C: `int G6_ENTITY_DOES_ENTITY_BELONG_TO_THIS_SCRIPT(const g6_host_api* api, g6_entity entity, int p1)`
-- Python: `N.ENTITY.DOES_ENTITY_BELONG_TO_THIS_SCRIPT(entity: int, p1: bool) -> bool`
-- Luau: `N.ENTITY.DOES_ENTITY_BELONG_TO_THIS_SCRIPT(entity: buffer | number, p1: boolean): boolean`
+- nativedb form: `BOOL DOES_ENTITY_BELONG_TO_THIS_SCRIPT(Entity entity)`
+- C: `int G6_ENTITY_DOES_ENTITY_BELONG_TO_THIS_SCRIPT(const g6_host_api* api, g6_entity entity)`
+- Python: `N.ENTITY.DOES_ENTITY_BELONG_TO_THIS_SCRIPT(entity: int) -> bool`
+- Luau: `N.ENTITY.DOES_ENTITY_BELONG_TO_THIS_SCRIPT(entity: buffer | number): boolean`
+- provenance: nativedb hash match (rdr3); GTA VI prototype from handler and call-site evidence: all 51 call sites (26 programs) pass 2 slots and the handler reads 2; nativedb params not taken: p1; script-vm.prototypes.observed.json (G-118)
 
 ### DOES_ENTITY_EXIST **unverified**
 
@@ -206,12 +207,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### GET_ENTITY_BONE_INDEX_BY_NAME
 
-`0xBACA8FE9C76C124E` · sig `es>i` · params 2, argc_inferred 3, arg slots 3 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C09B00`
+`0xBACA8FE9C76C124E` · sig `eu>i` · params 2, argc_inferred 3, arg slots 3 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C09B00`
 
-- nativedb form: `int GET_ENTITY_BONE_INDEX_BY_NAME(Entity entity, const char* boneName)`
-- C: `int32_t G6_ENTITY_GET_ENTITY_BONE_INDEX_BY_NAME(const g6_host_api* api, g6_entity entity, const char* boneName)`
-- Python: `N.ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(entity: int, boneName: str | None) -> int`
-- Luau: `N.ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(entity: buffer | number, boneName: string?): number`
+- nativedb form: `int GET_ENTITY_BONE_INDEX_BY_NAME(Entity entity, Hash boneName)`
+- C: `int32_t G6_ENTITY_GET_ENTITY_BONE_INDEX_BY_NAME(const g6_host_api* api, g6_entity entity, uint32_t boneName)`
+- Python: `N.ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(entity: int, boneName: int | str) -> int`
+- Luau: `N.ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(entity: buffer | number, boneName: number | string): number`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143c09b2a), compared as a 32-bit key (0x140047df1); script-vm.param_types.observed.json (G-114)
 
 ### GET_ENTITY_COLLISION_DISABLED
 
@@ -415,12 +417,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### GET_MATCHING_ENTITIES
 
-`0x84CCF9A12942C83D` · sig `iiiiusqqqqq>i` · params 11, argc_inferred 11, arg slots 11 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C0B950`
+`0x84CCF9A12942C83D` · sig `iiiiuS>i` · params 6, argc_inferred 6, arg slots 6 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C0B950`
 
-- nativedb form: `int GET_MATCHING_ENTITIES(Volume volume, ItemSet itemSet, int entityType, Any p3, Hash p4, const char* p5)`
-- C: `int32_t G6_ENTITY_GET_MATCHING_ENTITIES(const g6_host_api* api, int32_t volume, int32_t itemSet, int32_t entityType, int32_t p3, uint32_t p4, const char* p5, uint64_t a6, uint64_t a7, uint64_t a8, uint64_t a9, uint64_t a10)`
-- Python: `N.ENTITY.GET_MATCHING_ENTITIES(volume: int, itemSet: int, entityType: int, p3: int, p4: int | str, p5: str | None, a6: int = 0, a7: int = 0, a8: int = 0, a9: int = 0, a10: int = 0) -> int`
-- Luau: `N.ENTITY.GET_MATCHING_ENTITIES(volume: number, itemSet: number, entityType: number, p3: number, p4: number | string, p5: string?, a6: number?, a7: number?, a8: number?, a9: number?, a10: number?): number`
+- nativedb form: `int GET_MATCHING_ENTITIES(Volume volume, ItemSet itemSet, int entityType, Any p3, Hash p4, ScriptString p5)`
+- C: `int32_t G6_ENTITY_GET_MATCHING_ENTITIES(const g6_host_api* api, int32_t volume, int32_t itemSet, int32_t entityType, int32_t p3, uint32_t p4, const char* p5)`
+- Python: `N.ENTITY.GET_MATCHING_ENTITIES(volume: int, itemSet: int, entityType: int, p3: int, p4: int | str, p5: str | None) -> int`
+- Luau: `N.ENTITY.GET_MATCHING_ENTITIES(volume: number, itemSet: number, entityType: number, p3: number, p4: number | string, p5: string?): number`
+- provenance: nativedb hash match (rdr3); param 5 typed ScriptString (was const char*): slot 5 read as a script string object (0x143c0b97b, slot load 0x143c0b96d, depth 0); script-vm.string_params.json (G-120)
 
 ### GET_OFFSET_FROM_ENTITY_GIVEN_WORLD_COORDS
 
@@ -708,12 +711,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### IS_ENTITY_PLAYING_ANIM
 
-`0xDEE49D5CA6C49148` · sig `essi>b` · params 4, argc_inferred 5, arg slots 5 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C0E3E0`
+`0xDEE49D5CA6C49148` · sig `euui>b` · params 4, argc_inferred 5, arg slots 5 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C0E3E0`
 
-- nativedb form: `BOOL IS_ENTITY_PLAYING_ANIM(Entity entity, const char* animDict, const char* animName, int animType)`
-- C: `int G6_ENTITY_IS_ENTITY_PLAYING_ANIM(const g6_host_api* api, g6_entity entity, const char* animDict, const char* animName, int32_t animType)`
-- Python: `N.ENTITY.IS_ENTITY_PLAYING_ANIM(entity: int, animDict: str | None, animName: str | None, animType: int) -> bool`
-- Luau: `N.ENTITY.IS_ENTITY_PLAYING_ANIM(entity: buffer | number, animDict: string?, animName: string?, animType: number): boolean`
+- nativedb form: `BOOL IS_ENTITY_PLAYING_ANIM(Entity entity, Hash animDict, Hash animName, int animType)`
+- C: `int G6_ENTITY_IS_ENTITY_PLAYING_ANIM(const g6_host_api* api, g6_entity entity, uint32_t animDict, uint32_t animName, int32_t animType)`
+- Python: `N.ENTITY.IS_ENTITY_PLAYING_ANIM(entity: int, animDict: int | str, animName: int | str, animType: int) -> bool`
+- Luau: `N.ENTITY.IS_ENTITY_PLAYING_ANIM(entity: buffer | number, animDict: number | string, animName: number | string, animType: number): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143c0e412), compared as a 32-bit key (0x140311390); param 2 typed Hash (nativedb const char*) from handler evidence: slot 3 read as 32 bits (0x143c0e40e), compared as a 32-bit key (0x140385539); script-vm.param_types.observed.json (G-114)
 
 ### IS_ENTITY_STATIC
 
@@ -2040,12 +2044,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### SET_ENTITY_IS_TARGET_PRIORITY
 
-`0x0A5D170C44CB2189` · sig `ebf>n` · params 3, argc_inferred 3, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C14430`
+`0x0A5D170C44CB2189` · sig `eb>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C14430`
 
-- nativedb form: `void SET_ENTITY_IS_TARGET_PRIORITY(Entity entity, BOOL p1, float p2)`
-- C: `void G6_ENTITY_SET_ENTITY_IS_TARGET_PRIORITY(const g6_host_api* api, g6_entity entity, int p1, float p2)`
-- Python: `N.ENTITY.SET_ENTITY_IS_TARGET_PRIORITY(entity: int, p1: bool, p2: float) -> None`
-- Luau: `N.ENTITY.SET_ENTITY_IS_TARGET_PRIORITY(entity: buffer | number, p1: boolean, p2: number): ()`
+- nativedb form: `void SET_ENTITY_IS_TARGET_PRIORITY(Entity entity, BOOL p1)`
+- C: `void G6_ENTITY_SET_ENTITY_IS_TARGET_PRIORITY(const g6_host_api* api, g6_entity entity, int p1)`
+- Python: `N.ENTITY.SET_ENTITY_IS_TARGET_PRIORITY(entity: int, p1: bool) -> None`
+- Luau: `N.ENTITY.SET_ENTITY_IS_TARGET_PRIORITY(entity: buffer | number, p1: boolean): ()`
+- provenance: nativedb hash match (rdr3); GTA VI prototype from handler and call-site evidence: all 204 call sites (45 programs) pass 3 slots and the handler reads 3; nativedb params not taken: p2; script-vm.prototypes.observed.json (G-118)
 
 ### SET_ENTITY_LOAD_COLLISION_FLAG
 
@@ -2188,12 +2193,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### STOP_ENTITY_ANIM
 
-`0x786591D986DE9159` · sig `essf>b` · params 4, argc_inferred 5, arg slots 5 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C17410`
+`0x786591D986DE9159` · sig `euuf>b` · params 4, argc_inferred 5, arg slots 5 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C17410`
 
-- nativedb form: `BOOL STOP_ENTITY_ANIM(Entity entity, const char* animation, const char* animGroup, float p3)`
-- C: `int G6_ENTITY_STOP_ENTITY_ANIM(const g6_host_api* api, g6_entity entity, const char* animation, const char* animGroup, float p3)`
-- Python: `N.ENTITY.STOP_ENTITY_ANIM(entity: int, animation: str | None, animGroup: str | None, p3: float) -> bool`
-- Luau: `N.ENTITY.STOP_ENTITY_ANIM(entity: buffer | number, animation: string?, animGroup: string?, p3: number): boolean`
+- nativedb form: `BOOL STOP_ENTITY_ANIM(Entity entity, Hash animation, Hash animGroup, float p3)`
+- C: `int G6_ENTITY_STOP_ENTITY_ANIM(const g6_host_api* api, g6_entity entity, uint32_t animation, uint32_t animGroup, float p3)`
+- Python: `N.ENTITY.STOP_ENTITY_ANIM(entity: int, animation: int | str, animGroup: int | str, p3: float) -> bool`
+- Luau: `N.ENTITY.STOP_ENTITY_ANIM(entity: buffer | number, animation: number | string, animGroup: number | string, p3: number): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143c17443), compared as a 32-bit key (0x140311390); param 2 typed Hash (nativedb const char*) from handler evidence: slot 3 read as 32 bits (0x143c1743f), compared as a 32-bit key (0x140385539); script-vm.param_types.observed.json (G-114)
 
 ### WOULD_ENTITY_BE_OCCLUDED
 
@@ -2381,12 +2387,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _GET_ENTITY_ANIM_CURRENT_TIME
 
-`0x627520389E288A73` · sig `ess>f` · params 3, argc_inferred 4, arg slots 4 · returns `float` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C09840`
+`0x627520389E288A73` · sig `euu>f` · params 3, argc_inferred 4, arg slots 4 · returns `float` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3C09840`
 
-- nativedb form: `float _GET_ENTITY_ANIM_CURRENT_TIME(Entity entity, const char* animDict, const char* animName)`
-- C: `float G6_ENTITY__GET_ENTITY_ANIM_CURRENT_TIME(const g6_host_api* api, g6_entity entity, const char* animDict, const char* animName)`
-- Python: `N.ENTITY._GET_ENTITY_ANIM_CURRENT_TIME(entity: int, animDict: str | None, animName: str | None) -> float`
-- Luau: `N.ENTITY._GET_ENTITY_ANIM_CURRENT_TIME(entity: buffer | number, animDict: string?, animName: string?): number`
+- nativedb form: `float _GET_ENTITY_ANIM_CURRENT_TIME(Entity entity, Hash animDict, Hash animName)`
+- C: `float G6_ENTITY__GET_ENTITY_ANIM_CURRENT_TIME(const g6_host_api* api, g6_entity entity, uint32_t animDict, uint32_t animName)`
+- Python: `N.ENTITY._GET_ENTITY_ANIM_CURRENT_TIME(entity: int, animDict: int | str, animName: int | str) -> float`
+- Luau: `N.ENTITY._GET_ENTITY_ANIM_CURRENT_TIME(entity: buffer | number, animDict: number | string, animName: number | string): number`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143c0986e), compared as a 32-bit key (0x140311390); param 2 typed Hash (nativedb const char*) from handler evidence: slot 3 read as 32 bits (0x143c0986a), compared as a 32-bit key (0x140385539); script-vm.param_types.observed.json (G-114)
 
 ### _GET_ENTITY_CAN_BE_DAMAGED
 

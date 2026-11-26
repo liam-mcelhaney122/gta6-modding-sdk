@@ -16,6 +16,13 @@
  *                    Cancelling the running script ends it at its next wait (or return).
  *                    onStop(fn): fn runs once when the host raises the stop event
  *                    (g6_luau_stop: plugin stop/unload). @gta6/game mods register m.stop here.
+ *   "@gta6/ui"       in-game menu over the g6_ui_api C ABI (types: sdk/luau/types/ui.luau):
+ *                    onFrame(name, fn, opts) / remove / available / defer, window / beginWindow / endWindow,
+ *                    text, textColored, button, checkbox, sliderInt, sliderFloat, inputText, combo,
+ *                    separator, sameLine, tree / treeNode / treePop, tabBar / tab (+ unscoped begin/end),
+ *                    colorEdit, plotLines. Frame functions run where the host draws (in-game: the
+ *                    render thread) under the VM lock; natives and waits fail there; ui.defer(fn) runs
+ *                    fn on the next tick.
  *   "@gta6/<lib>"    any other [a-z_]+ name: <lib_dir>/<lib>.luau, e.g. "@gta6/names"
  *                    (generated clean names) and "@gta6/game" (helper layer)
  *   "./x"            module x.luau next to the requiring mod's init.luau

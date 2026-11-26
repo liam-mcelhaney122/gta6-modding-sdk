@@ -37,10 +37,10 @@ if errorlevel 1 (echo BUILD FAILED: fake_title.dll & exit /b 1)
 if errorlevel 1 (echo BUILD FAILED: probe_mock_test.exe & exit /b 1)
 
 echo built: %POUT%\g6probe.dll
-if /i "%~1"=="test" (
-  "%TOUT%\g6probe_test.exe"
-  if errorlevel 1 exit /b 1
-  "%TOUT%\probe_mock_test.exe" "%TOUT%\gta6mod_mock.dll" "%POUT%\g6probe.dll" "%TOUT%\fake_title.dll" "%TOUT%\work"
-  if errorlevel 1 exit /b 1
-)
+rem Top-level test steps: an "exit /b 1" from a ( ) block with more commands after it exits 0 under cmd /c.
+if /i not "%~1"=="test" exit /b 0
+"%TOUT%\g6probe_test.exe"
+if errorlevel 1 (echo TEST FAILED: g6probe_test.exe & exit /b 1)
+"%TOUT%\probe_mock_test.exe" "%TOUT%\gta6mod_mock.dll" "%POUT%\g6probe.dll" "%TOUT%\fake_title.dll" "%TOUT%\work"
+if errorlevel 1 (echo TEST FAILED: probe_mock_test.exe & exit /b 1)
 exit /b 0

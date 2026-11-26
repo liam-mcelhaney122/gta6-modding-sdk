@@ -12,12 +12,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### ARE_WITNESSES_ACTIVE
 
-`0x69E181772886F48B` · sig `iq>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E82BD0`
+`0x69E181772886F48B` · sig `e>b` · params 1, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E82BD0`
 
-- nativedb form: `BOOL ARE_WITNESSES_ACTIVE(Player player)`
-- C: `int G6_LAW_ARE_WITNESSES_ACTIVE(const g6_host_api* api, int32_t player, uint64_t a1)`
-- Python: `N.LAW.ARE_WITNESSES_ACTIVE(player: int, a1: int = 0) -> bool`
-- Luau: `N.LAW.ARE_WITNESSES_ACTIVE(player: number, a1: number?): boolean`
+- nativedb form: `BOOL ARE_WITNESSES_ACTIVE(Ped ped)`
+- C: `int G6_LAW_ARE_WITNESSES_ACTIVE(const g6_host_api* api, g6_entity ped)`
+- Python: `N.LAW.ARE_WITNESSES_ACTIVE(ped: int) -> bool`
+- Luau: `N.LAW.ARE_WITNESSES_ACTIVE(ped: buffer | number): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e82bed, 0x143e82bf0) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e82c08); script-vm.param_types.json (G-094)
 
 ### GET_VEHICLE_NODE_IS_SWITCHED_OFF
 
@@ -31,30 +32,33 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### GET_WANTED_SCORE
 
-`0xDD5FD601481F648B` · sig `iq>i` · params 2, argc_inferred 2, arg slots 2 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E88620`
+`0xDD5FD601481F648B` · sig `e>i` · params 1, argc_inferred 2, arg slots 2 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E88620`
 
-- nativedb form: `int GET_WANTED_SCORE(Player player)`
-- C: `int32_t G6_LAW_GET_WANTED_SCORE(const g6_host_api* api, int32_t player, uint64_t a1)`
-- Python: `N.LAW.GET_WANTED_SCORE(player: int, a1: int = 0) -> int`
-- Luau: `N.LAW.GET_WANTED_SCORE(player: number, a1: number?): number`
+- nativedb form: `int GET_WANTED_SCORE(Ped ped)`
+- C: `int32_t G6_LAW_GET_WANTED_SCORE(const g6_host_api* api, g6_entity ped)`
+- Python: `N.LAW.GET_WANTED_SCORE(ped: int) -> int`
+- Luau: `N.LAW.GET_WANTED_SCORE(ped: buffer | number): number`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e8863d, 0x143e88640) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e88658); script-vm.param_types.json (G-094)
 
 ### IS_LAW_INCIDENT_ACTIVE
 
-`0xAD401C63158ACBAA` · sig `iqqq>b` · params 4, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8BD00`
+`0xAD401C63158ACBAA` · sig `eqq>b` · params 3, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8BD00`
 
-- nativedb form: `BOOL IS_LAW_INCIDENT_ACTIVE(Player player)`
-- C: `int G6_LAW_IS_LAW_INCIDENT_ACTIVE(const g6_host_api* api, int32_t player, uint64_t a1, uint64_t a2, uint64_t a3)`
-- Python: `N.LAW.IS_LAW_INCIDENT_ACTIVE(player: int, a1: int = 0, a2: int = 0, a3: int = 0) -> bool`
-- Luau: `N.LAW.IS_LAW_INCIDENT_ACTIVE(player: number, a1: number?, a2: number?, a3: number?): boolean`
+- nativedb form: `BOOL IS_LAW_INCIDENT_ACTIVE(Ped ped)`
+- C: `int G6_LAW_IS_LAW_INCIDENT_ACTIVE(const g6_host_api* api, g6_entity ped, uint64_t a2, uint64_t a3)`
+- Python: `N.LAW.IS_LAW_INCIDENT_ACTIVE(ped: int, a2: int = 0, a3: int = 0) -> bool`
+- Luau: `N.LAW.IS_LAW_INCIDENT_ACTIVE(ped: buffer | number, a2: number?, a3: number?): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e8bd25, 0x143e8bd28) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e8bd40); script-vm.param_types.json (G-094)
 
 ### NUM_CRIMES_SUPPRESSED
 
-`0xC08E804C91F47C80` · sig `iuq>i` · params 3, argc_inferred 3, arg slots 3 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8E710`
+`0xC08E804C91F47C80` · sig `eu>i` · params 2, argc_inferred 3, arg slots 3 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8E710`
 
-- nativedb form: `int NUM_CRIMES_SUPPRESSED(Player player, Hash crimeType)`
-- C: `int32_t G6_LAW_NUM_CRIMES_SUPPRESSED(const g6_host_api* api, int32_t player, uint32_t crimeType, uint64_t a2)`
-- Python: `N.LAW.NUM_CRIMES_SUPPRESSED(player: int, crimeType: int | str, a2: int = 0) -> int`
-- Luau: `N.LAW.NUM_CRIMES_SUPPRESSED(player: number, crimeType: number | string, a2: number?): number`
+- nativedb form: `int NUM_CRIMES_SUPPRESSED(Ped ped, Hash crimeType)`
+- C: `int32_t G6_LAW_NUM_CRIMES_SUPPRESSED(const g6_host_api* api, g6_entity ped, uint32_t crimeType)`
+- Python: `N.LAW.NUM_CRIMES_SUPPRESSED(ped: int, crimeType: int | str) -> int`
+- Luau: `N.LAW.NUM_CRIMES_SUPPRESSED(ped: buffer | number, crimeType: number | string): number`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e8e731, 0x143e8e734) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e8e74c); script-vm.param_types.json (G-094)
 
 ### N_0D99B8A2902EF5FA
 
@@ -94,21 +98,22 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_E8FDEB15FA0CC2A6
 
-`0xE8FDEB15FA0CC2A6` · sig `iii>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: unnamed · confidence **low** · status observed · handler RVA `0x3E926B0`
+`0xE8FDEB15FA0CC2A6` · sig `Sii>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: unnamed · confidence **low** · status observed · handler RVA `0x3E926B0`
 
-- C: `void G6_N_E8FDEB15FA0CC2A6(const g6_host_api* api, int32_t p0, int32_t p1, int32_t p2)`
-- Python: `N.RAW.N_E8FDEB15FA0CC2A6(p0: int, p1: int, p2: int) -> None`
-- Luau: `N.RAW.N_E8FDEB15FA0CC2A6(p0: number, p1: number, p2: number): ()`
-- provenance: cluster:3nn_unanimous
+- C: `void G6_N_E8FDEB15FA0CC2A6(const g6_host_api* api, const char* p0, int32_t p1, int32_t p2)`
+- Python: `N.RAW.N_E8FDEB15FA0CC2A6(p0: str | None, p1: int, p2: int) -> None`
+- Luau: `N.RAW.N_E8FDEB15FA0CC2A6(p0: string?, p1: number, p2: number): ()`
+- provenance: cluster:3nn_unanimous; param 0 typed ScriptString (was Any): slot 0 read as a script string object (0x143e94f97, slot load 0x143e926bd, depth 1); script-vm.string_params.json (G-120)
 
 ### SUPPRESS_CRIME_THIS_FRAME
 
-`0x785177E4D57D7389` · sig `iuiiiq>n` · params 6, argc_inferred 6, arg slots 6 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E926E0`
+`0x785177E4D57D7389` · sig `euiii>n` · params 5, argc_inferred 6, arg slots 6 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E926E0`
 
-- nativedb form: `void SUPPRESS_CRIME_THIS_FRAME(Player player, Hash crimeType, int p2, int p3, int p4)`
-- C: `void G6_LAW_SUPPRESS_CRIME_THIS_FRAME(const g6_host_api* api, int32_t player, uint32_t crimeType, int32_t p2, int32_t p3, int32_t p4, uint64_t a5)`
-- Python: `N.LAW.SUPPRESS_CRIME_THIS_FRAME(player: int, crimeType: int | str, p2: int, p3: int, p4: int, a5: int = 0) -> None`
-- Luau: `N.LAW.SUPPRESS_CRIME_THIS_FRAME(player: number, crimeType: number | string, p2: number, p3: number, p4: number, a5: number?): ()`
+- nativedb form: `void SUPPRESS_CRIME_THIS_FRAME(Ped ped, Hash crimeType, int p2, int p3, int p4)`
+- C: `void G6_LAW_SUPPRESS_CRIME_THIS_FRAME(const g6_host_api* api, g6_entity ped, uint32_t crimeType, int32_t p2, int32_t p3, int32_t p4)`
+- Python: `N.LAW.SUPPRESS_CRIME_THIS_FRAME(ped: int, crimeType: int | str, p2: int, p3: int, p4: int) -> None`
+- Luau: `N.LAW.SUPPRESS_CRIME_THIS_FRAME(ped: buffer | number, crimeType: number | string, p2: number, p3: number, p4: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e9270c, 0x143e9270f) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e92727); script-vm.param_types.json (G-094)
 
 ### _0x018F30D762E62DF8
 
@@ -132,12 +137,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x0DBACA9C38C9A686
 
-`0x0DBACA9C38C9A686` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD2230`
+`0x0DBACA9C38C9A686` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD2230`
 
-- nativedb form: `BOOL _0x0DBACA9C38C9A686(const char* name)`
-- C: `int G6_LAW__0x0DBACA9C38C9A686(const g6_host_api* api, const char* name)`
-- Python: `N.LAW._0x0DBACA9C38C9A686(name: str | None) -> bool`
-- Luau: `N.LAW._0x0DBACA9C38C9A686(name: string?): boolean`
+- nativedb form: `BOOL _0x0DBACA9C38C9A686(Hash name)`
+- C: `int G6_LAW__0x0DBACA9C38C9A686(const g6_host_api* api, uint32_t name)`
+- Python: `N.LAW._0x0DBACA9C38C9A686(name: int | str) -> bool`
+- Luau: `N.LAW._0x0DBACA9C38C9A686(name: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bd2251), compared as a 32-bit key (0x144be6c79); script-vm.param_types.observed.json (G-114)
 
 ### _0x0EAF918F751F27BA
 
@@ -150,12 +156,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x0F230DE0DDBE3649
 
-`0x0F230DE0DDBE3649` · sig `iqqq>b` · params 4, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E88CB0`
+`0x0F230DE0DDBE3649` · sig `eqq>b` · params 3, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E88CB0`
 
-- nativedb form: `BOOL _0x0F230DE0DDBE3649(Player player)`
-- C: `int G6_LAW__0x0F230DE0DDBE3649(const g6_host_api* api, int32_t player, uint64_t a1, uint64_t a2, uint64_t a3)`
-- Python: `N.LAW._0x0F230DE0DDBE3649(player: int, a1: int = 0, a2: int = 0, a3: int = 0) -> bool`
-- Luau: `N.LAW._0x0F230DE0DDBE3649(player: number, a1: number?, a2: number?, a3: number?): boolean`
+- nativedb form: `BOOL _0x0F230DE0DDBE3649(Ped ped)`
+- C: `int G6_LAW__0x0F230DE0DDBE3649(const g6_host_api* api, g6_entity ped, uint64_t a2, uint64_t a3)`
+- Python: `N.LAW._0x0F230DE0DDBE3649(ped: int, a2: int = 0, a3: int = 0) -> bool`
+- Luau: `N.LAW._0x0F230DE0DDBE3649(ped: buffer | number, a2: number?, a3: number?): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e88cd5, 0x143e88cd8) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e88cf0); script-vm.param_types.json (G-094)
 
 ### _0x21213B833EF4DAE7
 
@@ -168,12 +175,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x26934083D3F2579C
 
-`0x26934083D3F2579C` · sig `iq>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E89090`
+`0x26934083D3F2579C` · sig `e>b` · params 1, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E89090`
 
-- nativedb form: `BOOL _0x26934083D3F2579C(Player player)`
-- C: `int G6_LAW__0x26934083D3F2579C(const g6_host_api* api, int32_t player, uint64_t a1)`
-- Python: `N.LAW._0x26934083D3F2579C(player: int, a1: int = 0) -> bool`
-- Luau: `N.LAW._0x26934083D3F2579C(player: number, a1: number?): boolean`
+- nativedb form: `BOOL _0x26934083D3F2579C(Ped ped)`
+- C: `int G6_LAW__0x26934083D3F2579C(const g6_host_api* api, g6_entity ped)`
+- Python: `N.LAW._0x26934083D3F2579C(ped: int) -> bool`
+- Luau: `N.LAW._0x26934083D3F2579C(ped: buffer | number): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e890ad, 0x143e890b0) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e890c8); script-vm.param_types.json (G-094)
 
 ### _0x40851BCC33ACD9AB
 
@@ -195,21 +203,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x61B98367D93F012F
 
-`0x61B98367D93F012F` · sig `iq>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E83C20`
+`0x61B98367D93F012F` · sig `e>n` · params 1, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E83C20`
 
-- nativedb form: `void _0x61B98367D93F012F(Player player)`
-- C: `void G6_LAW__0x61B98367D93F012F(const g6_host_api* api, int32_t player, uint64_t a1)`
-- Python: `N.LAW._0x61B98367D93F012F(player: int, a1: int = 0) -> None`
-- Luau: `N.LAW._0x61B98367D93F012F(player: number, a1: number?): ()`
+- nativedb form: `void _0x61B98367D93F012F(Ped ped)`
+- C: `void G6_LAW__0x61B98367D93F012F(const g6_host_api* api, g6_entity ped)`
+- Python: `N.LAW._0x61B98367D93F012F(ped: int) -> None`
+- Luau: `N.LAW._0x61B98367D93F012F(ped: buffer | number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e83c3d, 0x143e83c40) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e83c58); script-vm.param_types.json (G-094)
 
 ### _0x6ABC50979655BEE7
 
-`0x6ABC50979655BEE7` · sig `iIiq>n` · params 4, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E84E00`
+`0x6ABC50979655BEE7` · sig `eIi>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E84E00`
 
-- nativedb form: `void _0x6ABC50979655BEE7(Player player, Hash* crimeType, Any p2)`
-- C: `void G6_LAW__0x6ABC50979655BEE7(const g6_host_api* api, int32_t player, int64_t* crimeType, int32_t p2, uint64_t a3)`
-- Python: `N.LAW._0x6ABC50979655BEE7(player: int, p2: int, a3: int = 0) -> tuple[int]`
-- Luau: `N.LAW._0x6ABC50979655BEE7(player: number, p2: number, a3: number?): number`
+- nativedb form: `void _0x6ABC50979655BEE7(Ped ped, Hash* crimeType, Any p2)`
+- C: `void G6_LAW__0x6ABC50979655BEE7(const g6_host_api* api, g6_entity ped, int64_t* crimeType, int32_t p2)`
+- Python: `N.LAW._0x6ABC50979655BEE7(ped: int, p2: int) -> tuple[int]`
+- Luau: `N.LAW._0x6ABC50979655BEE7(ped: buffer | number, p2: number): number`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e84e25, 0x143e84e28) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e84e40); script-vm.param_types.json (G-094)
 
 ### _0x7EF2A2FE38D74456
 
@@ -249,21 +259,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x9C8A2BF37E966464
 
-`0x9C8A2BF37E966464` · sig `iiq>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E85290`
+`0x9C8A2BF37E966464` · sig `ei>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E85290`
 
-- nativedb form: `void _0x9C8A2BF37E966464(Player player, ItemSet itemSet)`
-- C: `void G6_LAW__0x9C8A2BF37E966464(const g6_host_api* api, int32_t player, int32_t itemSet, uint64_t a2)`
-- Python: `N.LAW._0x9C8A2BF37E966464(player: int, itemSet: int, a2: int = 0) -> None`
-- Luau: `N.LAW._0x9C8A2BF37E966464(player: number, itemSet: number, a2: number?): ()`
+- nativedb form: `void _0x9C8A2BF37E966464(Ped ped, ItemSet itemSet)`
+- C: `void G6_LAW__0x9C8A2BF37E966464(const g6_host_api* api, g6_entity ped, int32_t itemSet)`
+- Python: `N.LAW._0x9C8A2BF37E966464(ped: int, itemSet: int) -> None`
+- Luau: `N.LAW._0x9C8A2BF37E966464(ped: buffer | number, itemSet: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e852b0, 0x143e852b3) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e852cb); script-vm.param_types.json (G-094)
 
 ### _0x9D5C9A5A3321B128
 
-`0x9D5C9A5A3321B128` · sig `iq>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E82AF0`
+`0x9D5C9A5A3321B128` · sig `e>b` · params 1, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E82AF0`
 
-- nativedb form: `BOOL _0x9D5C9A5A3321B128(Player player)`
-- C: `int G6_LAW__0x9D5C9A5A3321B128(const g6_host_api* api, int32_t player, uint64_t a1)`
-- Python: `N.LAW._0x9D5C9A5A3321B128(player: int, a1: int = 0) -> bool`
-- Luau: `N.LAW._0x9D5C9A5A3321B128(player: number, a1: number?): boolean`
+- nativedb form: `BOOL _0x9D5C9A5A3321B128(Ped ped)`
+- C: `int G6_LAW__0x9D5C9A5A3321B128(const g6_host_api* api, g6_entity ped)`
+- Python: `N.LAW._0x9D5C9A5A3321B128(ped: int) -> bool`
+- Luau: `N.LAW._0x9D5C9A5A3321B128(ped: buffer | number): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e82b0d, 0x143e82b10) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e82b28); script-vm.param_types.json (G-094)
 
 ### _0x9EF07CFBB19A9733
 
@@ -294,12 +306,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0xD6C0A8C7C0B2F82C
 
-`0xD6C0A8C7C0B2F82C` · sig `ibq>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E901C0`
+`0xD6C0A8C7C0B2F82C` · sig `eb>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E901C0`
 
-- nativedb form: `void _0xD6C0A8C7C0B2F82C(Player player, BOOL p1)`
-- C: `void G6_LAW__0xD6C0A8C7C0B2F82C(const g6_host_api* api, int32_t player, int p1, uint64_t a2)`
-- Python: `N.LAW._0xD6C0A8C7C0B2F82C(player: int, p1: bool, a2: int = 0) -> None`
-- Luau: `N.LAW._0xD6C0A8C7C0B2F82C(player: number, p1: boolean, a2: number?): ()`
+- nativedb form: `void _0xD6C0A8C7C0B2F82C(Ped ped, BOOL p1)`
+- C: `void G6_LAW__0xD6C0A8C7C0B2F82C(const g6_host_api* api, g6_entity ped, int p1)`
+- Python: `N.LAW._0xD6C0A8C7C0B2F82C(ped: int, p1: bool) -> None`
+- Luau: `N.LAW._0xD6C0A8C7C0B2F82C(ped: buffer | number, p1: boolean): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e901e0, 0x143e901e3) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e901fb); script-vm.param_types.json (G-094)
 
 ### _0xFFEBE5AA96BC2E4E
 
@@ -330,14 +343,15 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _CREATE_GUARD_ZONE_FOR_ENTITY
 
-`0x0D4B77E862475ED3` · sig `sefff>b` · params 5, argc_inferred 3, arg slots 6 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BDC6F0`
+`0x0D4B77E862475ED3` · sig `uefff>b` · params 5, argc_inferred 3, arg slots 6 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BDC6F0`
 
 - vector params: **layout unconfirmed**. The nativedb float slots are kept, but no handler evidence shows whether the game reads them as three floats or as one packed 16-byte vector. Check the handler's argument loads before relying on the parameters after the vector.
 
-- nativedb form: `BOOL _CREATE_GUARD_ZONE_FOR_ENTITY(const char* guardZoneName, Entity entity, float x, float y, float z)`
-- C: `int G6_LAW__CREATE_GUARD_ZONE_FOR_ENTITY(const g6_host_api* api, const char* guardZoneName, g6_entity entity, float x, float y, float z)`
-- Python: `N.LAW._CREATE_GUARD_ZONE_FOR_ENTITY(guardZoneName: str | None, entity: int, x: float, y: float, z: float) -> bool`
-- Luau: `N.LAW._CREATE_GUARD_ZONE_FOR_ENTITY(guardZoneName: string?, entity: buffer | number, x: number, y: number, z: number): boolean`
+- nativedb form: `BOOL _CREATE_GUARD_ZONE_FOR_ENTITY(Hash guardZoneName, Entity entity, float x, float y, float z)`
+- C: `int G6_LAW__CREATE_GUARD_ZONE_FOR_ENTITY(const g6_host_api* api, uint32_t guardZoneName, g6_entity entity, float x, float y, float z)`
+- Python: `N.LAW._CREATE_GUARD_ZONE_FOR_ENTITY(guardZoneName: int | str, entity: int, x: float, y: float, z: float) -> bool`
+- Luau: `N.LAW._CREATE_GUARD_ZONE_FOR_ENTITY(guardZoneName: number | string, entity: buffer | number, x: number, y: number, z: number): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bdc71f), compared as a 32-bit key (0x144bddd06); script-vm.param_types.observed.json (G-114)
 
 ### _CREATE_LAW_DISPATCH_RESPONSE_FOR_COORDS
 
@@ -370,12 +384,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _GET_CRIME_DISPATCH_TYPE_FOR_PLAYER
 
-`0x148E7AC8141C9E64` · sig `iqqq>u` · params 4, argc_inferred 4, arg slots 4 · returns `Hash` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E84FA0`
+`0x148E7AC8141C9E64` · sig `eqq>u` · params 3, argc_inferred 4, arg slots 4 · returns `Hash` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E84FA0`
 
-- nativedb form: `Hash _GET_CRIME_DISPATCH_TYPE_FOR_PLAYER(Player player)`
-- C: `uint32_t G6_LAW__GET_CRIME_DISPATCH_TYPE_FOR_PLAYER(const g6_host_api* api, int32_t player, uint64_t a1, uint64_t a2, uint64_t a3)`
-- Python: `N.LAW._GET_CRIME_DISPATCH_TYPE_FOR_PLAYER(player: int, a1: int = 0, a2: int = 0, a3: int = 0) -> int`
-- Luau: `N.LAW._GET_CRIME_DISPATCH_TYPE_FOR_PLAYER(player: number, a1: number?, a2: number?, a3: number?): number`
+- nativedb form: `Hash _GET_CRIME_DISPATCH_TYPE_FOR_PLAYER(Ped ped)`
+- C: `uint32_t G6_LAW__GET_CRIME_DISPATCH_TYPE_FOR_PLAYER(const g6_host_api* api, g6_entity ped, uint64_t a2, uint64_t a3)`
+- Python: `N.LAW._GET_CRIME_DISPATCH_TYPE_FOR_PLAYER(ped: int, a2: int = 0, a3: int = 0) -> int`
+- Luau: `N.LAW._GET_CRIME_DISPATCH_TYPE_FOR_PLAYER(ped: buffer | number, a2: number?, a3: number?): number`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e84fc5, 0x143e84fc8) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e84fe0); script-vm.param_types.json (G-094)
 
 ### _GET_TIME_SINCE_LAST_SEEN_BY_LAW
 
@@ -388,12 +403,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _HAS_PLAYER_BEEN_FOUND_BY_LAW_ACTIVE_SEARCH
 
-`0x9945A3E2528A02E8` · sig `iqqq>b` · params 4, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E88D40`
+`0x9945A3E2528A02E8` · sig `eqq>b` · params 3, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E88D40`
 
-- nativedb form: `BOOL _HAS_PLAYER_BEEN_FOUND_BY_LAW_ACTIVE_SEARCH(Player player)`
-- C: `int G6_LAW__HAS_PLAYER_BEEN_FOUND_BY_LAW_ACTIVE_SEARCH(const g6_host_api* api, int32_t player, uint64_t a1, uint64_t a2, uint64_t a3)`
-- Python: `N.LAW._HAS_PLAYER_BEEN_FOUND_BY_LAW_ACTIVE_SEARCH(player: int, a1: int = 0, a2: int = 0, a3: int = 0) -> bool`
-- Luau: `N.LAW._HAS_PLAYER_BEEN_FOUND_BY_LAW_ACTIVE_SEARCH(player: number, a1: number?, a2: number?, a3: number?): boolean`
+- nativedb form: `BOOL _HAS_PLAYER_BEEN_FOUND_BY_LAW_ACTIVE_SEARCH(Ped ped)`
+- C: `int G6_LAW__HAS_PLAYER_BEEN_FOUND_BY_LAW_ACTIVE_SEARCH(const g6_host_api* api, g6_entity ped, uint64_t a2, uint64_t a3)`
+- Python: `N.LAW._HAS_PLAYER_BEEN_FOUND_BY_LAW_ACTIVE_SEARCH(ped: int, a2: int = 0, a3: int = 0) -> bool`
+- Luau: `N.LAW._HAS_PLAYER_BEEN_FOUND_BY_LAW_ACTIVE_SEARCH(ped: buffer | number, a2: number?, a3: number?): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e88d65, 0x143e88d68) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e88d80); script-vm.param_types.json (G-094)
 
 ### _IS_GUARD_PED_INVESTIGATING
 

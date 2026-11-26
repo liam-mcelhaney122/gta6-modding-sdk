@@ -322,6 +322,25 @@
    "pattern": "48 8D 15 ? ? ? ? C4 E2 78 F7 C1 4C 69 C0 38 02 00 00 41 8B 44 10 14 85 C0 74 2E 4C 01 C2 44 0F B6 42 57",
    "confidence": "high"
   },
+  "ecs.comp.base_sel40": {
+   "rva": "4e688c0",
+   "pattern": null,
+   "confidence": "high",
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 48 85 C0 74 13 4C 8B 08 48 89 C1 4C",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "B8 11 05 00 00 48"
+     }
+    ]
+   }
+  },
   "ecs.comp.damage_sel4d": {
    "rva": "4db7b80",
    "pattern": "B8 11 05 00 00 48 8D 15 ? ? ? ? C4 E2 78 F7 C1 4C 69 C0 38 02 00 00 41 8B 44 10 14 85 C0 74 2E 4C 01 C2 44 0F B6 42 4D",
@@ -348,6 +367,25 @@
    "confidence": "high",
    "chain": {
     "from_signature": "E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 89 F1 49 89 C4 E8 ? ? ? ? 48 85 C0 74",
+    "steps": [
+     {
+      "op": "call_target",
+      "at": 0
+     },
+     {
+      "op": "expect",
+      "at": 0,
+      "signature": "B8 11 05 00 00 48"
+     }
+    ]
+   }
+  },
+  "ecs.comp.tagset_sel5e": {
+   "rva": "6e43d0",
+   "pattern": null,
+   "confidence": "high",
+   "chain": {
+    "from_signature": "E8 ? ? ? ? 48 85 C0 75 07 48 83 C4 38 5F 5E C3 48 89 C1 BA",
     "steps": [
      {
       "op": "call_target",
@@ -1326,6 +1364,16 @@
    "pattern": "56 57 55 53 48 83 EC 28 8B A9 9C 00 00 00 48 89 CF 44 89 C3 89",
    "confidence": "high"
   },
+  "ped.event.give_task.ctor": {
+   "rva": "1391aa0",
+   "pattern": "41 57 41 56 56 57 55 53 48 83 EC 28 40 8A AC 24 88 00 00 00 44 8A BC 24 80 00 00 00 44 89 CB",
+   "confidence": "medium"
+  },
+  "ped.event.pool": {
+   "rva": "ab5d008",
+   "pattern": "48 8B 0D ? ? ? ? 31 F6 49 B8 00 00 00 00 FF FF FF FF 48 8B 41 20 48",
+   "confidence": "medium"
+  },
   "ped.events.set_blocking_non_temporary": {
    "rva": "4dfa80",
    "pattern": "8B 41 10 0F B6 D2 C1 E2 04 83 E0 EF",
@@ -1802,6 +1850,36 @@
    "pattern": "48 8D 05 ? ? ? ? 48 8D 0D ? ? ? ? 48 8D 15 ? ? ? ? C5 F8 57 C0 48 89 05 ? ? ? ? 48 89 15",
    "confidence": "high"
   },
+  "script.string.literal_elem_record": {
+   "rva": "abc4640",
+   "pattern": "4C 8D 05 ? ? ? ? 48 03 81 F0 00",
+   "confidence": "high"
+  },
+  "script.string.literal_op": {
+   "rva": "3de76a7",
+   "pattern": "48 8B 4C 24 50 8B 44 24 30 48 8D 15",
+   "confidence": "high"
+  },
+  "script.string.new": {
+   "rva": "6b19e0",
+   "pattern": "56 57 53 48 83 EC 20 89 D3 8B 05 ? ? ? ? ? ? ? ? ? ? ? ? ? 45",
+   "confidence": "high"
+  },
+  "script.string.type_record": {
+   "rva": "abc3fe0",
+   "pattern": "48 8D 15 ? ? ? ? 4C 8D 05 ? ? ? ? 48 03",
+   "confidence": "high"
+  },
+  "script.text.get": {
+   "rva": "2055010",
+   "pattern": "48 83 EC 28 48 8B 05 ? ? ? ? 48 89 4C 24 20 48 8D 90 FF FF 1F 00 48 39 C8 0F 96 C0 48 39 CA 0F 93 C2 20 C2 80 FA 01 74 14",
+   "confidence": "high"
+  },
+  "script.text.native_get": {
+   "rva": "100b8b0",
+   "pattern": "48 85 C9 74 0C 48 8B 01 B2 01 48 8B 40 18",
+   "confidence": "high"
+  },
   "script.thread.by_id": {
    "rva": "4f61f30",
    "pattern": "56 48 83 EC 20 85 C9 75 08 31 C0 48 83 C4 20 5E C3 89 CE 48",
@@ -2232,6 +2310,16 @@
   "vehicle.delete.queue": {
    "rva": "9ea7e0",
    "pattern": "56 48 83 EC 20 48 89 CE 8B 89 9C 00 00 00 E8 ? ? ? ? 48 85 C0 74 12 F0",
+   "confidence": "medium"
+  },
+  "vehicle.object.add": {
+   "rva": "7cbaa0",
+   "pattern": "41 57 41 56 56 57 53 48 83 EC 20 44 89 C0 4C 89 CB 44 89 C7 48 89 D6 25 00 00 3E 00 3D 00 00 04 00 75 2D",
+   "confidence": "medium"
+  },
+  "vehicle.object.ctor": {
+   "rva": "7cbc90",
+   "pattern": "56 48 83 EC 20 48 89 CE E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 89 06 48 C7 86 D0 05",
    "confidence": "medium"
   },
   "vehicle.seat.driver": {
@@ -3401,6 +3489,11 @@
    "namespace": "DATABINDING",
    "handler_rva": "44bbd50"
   },
+  "0xD942E6168EB81167": {
+   "name": "_DATABINDING_ADD_DATA_BOOL_FROM_PATH",
+   "namespace": "DATABINDING",
+   "handler_rva": "44bbdb0"
+  },
   "0x98BB14345BB68257": {
    "name": "_DATABINDING_ADD_DATA_CONTAINER_BY_HASH",
    "namespace": "DATABINDING",
@@ -3410,6 +3503,11 @@
    "name": "_DATABINDING_ADD_DATA_CONTAINER_FROM_PATH_BY_HASH",
    "namespace": "DATABINDING",
    "handler_rva": "44bbe70"
+  },
+  "0xEEE019373C7A9589": {
+   "name": "_DATABINDING_ADD_DATA_FLOAT_BY_HASH",
+   "namespace": "DATABINDING",
+   "handler_rva": "44bbed0"
   },
   "0x267F9527F4350ADE": {
    "name": "_DATABINDING_ADD_DATA_INT_BY_HASH",
@@ -4995,6 +5093,11 @@
    "name": "_DISABLE_FAR_ARTIFICIAL_LIGHTS",
    "namespace": "GRAPHICS",
    "handler_rva": "3c07380"
+  },
+  "0x5D318F9A72B2464F": {
+   "name": "_DRAW_SPRITE_WITH_UV",
+   "namespace": "GRAPHICS",
+   "handler_rva": "3c07d40"
   },
   "0x78C56B8A7B1D000C": {
    "name": "_GET_CURRENT_NUMBER_OF_LOCAL_PHOTOS",
@@ -7265,6 +7368,11 @@
    "name": "_SIMULATED_ROUTE_EXISTS",
    "namespace": "PATH",
    "handler_rva": "4462c80"
+  },
+  "0x387E306529592436": {
+   "name": "ADD_RELATIONSHIP_GROUP",
+   "namespace": "PED",
+   "handler_rva": "4bc66a0"
   },
   "0x697157CED63F18D4": {
    "name": "APPLY_DAMAGE_TO_PED",
@@ -9661,6 +9769,11 @@
    "namespace": "PLAYER",
    "handler_rva": "4508580"
   },
+  "0xC827D3A0773681A1": {
+   "name": "SET_PLAYER_WANTED_LEVEL",
+   "namespace": "PLAYER",
+   "handler_rva": "3e91db0"
+  },
   "0xFA0C063C422C4355": {
    "name": "SIMULATE_PLAYER_INPUT_GAIT",
    "namespace": "PLAYER",
@@ -11151,11 +11264,6 @@
    "namespace": "RAW",
    "handler_rva": "44bf400"
   },
-  "0x0CB5D1E14473D8A5": {
-   "name": "N_0CB5D1E14473D8A5",
-   "namespace": "RAW",
-   "handler_rva": "44cd4f0"
-  },
   "0x0CCCB533ACF07B47": {
    "name": "N_0CCCB533ACF07B47",
    "namespace": "RAW",
@@ -12030,11 +12138,6 @@
    "name": "N_165D48667E94C00F",
    "namespace": "RAW",
    "handler_rva": "3e8a940"
-  },
-  "0x1660AC5AAF47CE2E": {
-   "name": "N_1660AC5AAF47CE2E",
-   "namespace": "RAW",
-   "handler_rva": "44676d0"
   },
   "0x166B6C6EC20A7BDC": {
    "name": "N_166B6C6EC20A7BDC",
@@ -13836,11 +13939,6 @@
    "namespace": "RAW",
    "handler_rva": "3cd2490"
   },
-  "0x29454F052443C9EB": {
-   "name": "N_29454F052443C9EB",
-   "namespace": "RAW",
-   "handler_rva": "44675b0"
-  },
   "0x2946B45C25EE15CE": {
    "name": "N_2946B45C25EE15CE",
    "namespace": "RAW",
@@ -13960,11 +14058,6 @@
    "name": "N_2A5D835A51C3A227",
    "namespace": "RAW",
    "handler_rva": "2b79510"
-  },
-  "0x2A73138A3AA3F3CC": {
-   "name": "N_2A73138A3AA3F3CC",
-   "namespace": "RAW",
-   "handler_rva": "3c07a00"
   },
   "0x2A797F6E0AA01BB1": {
    "name": "N_2A797F6E0AA01BB1",
@@ -15320,11 +15413,6 @@
    "name": "N_3867B3D147BA369B",
    "namespace": "RAW",
    "handler_rva": "4500b50"
-  },
-  "0x387E306529592436": {
-   "name": "N_387E306529592436",
-   "namespace": "RAW",
-   "handler_rva": "4bc66a0"
   },
   "0x387FBEF0A7D31A05": {
    "name": "N_387FBEF0A7D31A05",
@@ -17276,11 +17364,6 @@
    "namespace": "RAW",
    "handler_rva": "3cd9b90"
   },
-  "0x4CF27CB4CA538E0D": {
-   "name": "N_4CF27CB4CA538E0D",
-   "namespace": "RAW",
-   "handler_rva": "4467430"
-  },
   "0x4CF81C224D584BF0": {
    "name": "N_4CF81C224D584BF0",
    "namespace": "RAW",
@@ -18236,11 +18319,6 @@
    "namespace": "RAW",
    "handler_rva": "4bce3e0"
   },
-  "0x58B552E6A5652281": {
-   "name": "N_58B552E6A5652281",
-   "namespace": "RAW",
-   "handler_rva": "4467a60"
-  },
   "0x58D11568426AFC14": {
    "name": "N_58D11568426AFC14",
    "namespace": "RAW",
@@ -18536,11 +18614,6 @@
    "namespace": "RAW",
    "handler_rva": "3c12760"
   },
-  "0x5D318F9A72B2464F": {
-   "name": "N_5D318F9A72B2464F",
-   "namespace": "RAW",
-   "handler_rva": "3c07d40"
-  },
   "0x5D3AFE1AFE715005": {
    "name": "N_5D3AFE1AFE715005",
    "namespace": "RAW",
@@ -18615,11 +18688,6 @@
    "name": "N_5E2A02812135ACD3",
    "namespace": "RAW",
    "handler_rva": "4bce250"
-  },
-  "0x5E355622C5AF21D1": {
-   "name": "N_5E355622C5AF21D1",
-   "namespace": "RAW",
-   "handler_rva": "44674f0"
   },
   "0x5E3D24E85C0B92CB": {
    "name": "N_5E3D24E85C0B92CB",
@@ -20650,11 +20718,6 @@
    "name": "N_755E575FC831FB39",
    "namespace": "RAW",
    "handler_rva": "4465a10"
-  },
-  "0x756CD37D14B03371": {
-   "name": "N_756CD37D14B03371",
-   "namespace": "RAW",
-   "handler_rva": "4467b80"
   },
   "0x758D07DCA8872069": {
    "name": "N_758D07DCA8872069",
@@ -27096,11 +27159,6 @@
    "namespace": "RAW",
    "handler_rva": "3cce530"
   },
-  "0xBD3BAFF6D642EFC4": {
-   "name": "N_BD3BAFF6D642EFC4",
-   "namespace": "RAW",
-   "handler_rva": "4467490"
-  },
   "0xBD6A2F05D87A4C04": {
    "name": "N_BD6A2F05D87A4C04",
    "namespace": "RAW",
@@ -28110,11 +28168,6 @@
    "name": "N_C81DF2BF487DF512",
    "namespace": "RAW",
    "handler_rva": "4a93f60"
-  },
-  "0xC827D3A0773681A1": {
-   "name": "N_C827D3A0773681A1",
-   "namespace": "RAW",
-   "handler_rva": "3e91db0"
   },
   "0xC837C5FF3C57FE70": {
    "name": "N_C837C5FF3C57FE70",
@@ -29266,11 +29319,6 @@
    "namespace": "RAW",
    "handler_rva": "3c0ecd0"
   },
-  "0xD4DC75D4B87334BA": {
-   "name": "N_D4DC75D4B87334BA",
-   "namespace": "RAW",
-   "handler_rva": "4467d00"
-  },
   "0xD4EE583C9DEDDE2E": {
    "name": "N_D4EE583C9DEDDE2E",
    "namespace": "RAW",
@@ -29686,11 +29734,6 @@
    "namespace": "RAW",
    "handler_rva": "3cd1bb0"
   },
-  "0xD942E6168EB81167": {
-   "name": "N_D942E6168EB81167",
-   "namespace": "RAW",
-   "handler_rva": "44bbdb0"
-  },
   "0xD9443B4D2ED4A819": {
    "name": "N_D9443B4D2ED4A819",
    "namespace": "RAW",
@@ -29700,11 +29743,6 @@
    "name": "N_D952611752E96A09",
    "namespace": "RAW",
    "handler_rva": "4a93d90"
-  },
-  "0xD9711FCEA997E8F7": {
-   "name": "N_D9711FCEA997E8F7",
-   "namespace": "RAW",
-   "handler_rva": "4467c40"
   },
   "0xD972308C26E0E737": {
    "name": "N_D972308C26E0E737",
@@ -30650,11 +30688,6 @@
    "name": "N_E395E07CFEABA6CB",
    "namespace": "RAW",
    "handler_rva": "3e8f0b0"
-  },
-  "0xE3A0EFAFF3DFE27B": {
-   "name": "N_E3A0EFAFF3DFE27B",
-   "namespace": "RAW",
-   "handler_rva": "44677f0"
   },
   "0xE3A444D9C297FDC9": {
    "name": "N_E3A444D9C297FDC9",
@@ -31765,11 +31798,6 @@
    "name": "N_EED200600CFBCF6A",
    "namespace": "RAW",
    "handler_rva": "4bd3de0"
-  },
-  "0xEEE019373C7A9589": {
-   "name": "N_EEE019373C7A9589",
-   "namespace": "RAW",
-   "handler_rva": "44bbed0"
   },
   "0xEEE9B4D94C088E21": {
    "name": "N_EEE9B4D94C088E21",
@@ -35146,6 +35174,11 @@
    "namespace": "UILOG",
    "handler_rva": "44ccca0"
   },
+  "0x0CB5D1E14473D8A5": {
+   "name": "_UILOG_SET_CACHED_OBJECTIVE",
+   "namespace": "UILOG",
+   "handler_rva": "44cd4f0"
+  },
   "0x1AF02E3CB79849DC": {
    "name": "ADD_PETROL_TRAIL_DECAL_INFO",
    "namespace": "UNKNOWN",
@@ -35300,6 +35333,61 @@
    "name": "SET_VEHICLE_FIXED",
    "namespace": "UNKNOWN",
    "handler_rva": "4a8eab0"
+  },
+  "0x2A73138A3AA3F3CC": {
+   "name": "_DRAW_RECT",
+   "namespace": "UNKNOWN",
+   "handler_rva": "3c07a00"
+  },
+  "0x4CF27CB4CA538E0D": {
+   "name": "_GET_REGISTERED_PED",
+   "namespace": "UNKNOWN",
+   "handler_rva": "4467430"
+  },
+  "0xBD3BAFF6D642EFC4": {
+   "name": "_GET_REGISTERED_PERSCHAR",
+   "namespace": "UNKNOWN",
+   "handler_rva": "4467490"
+  },
+  "0x5E355622C5AF21D1": {
+   "name": "_GET_REGISTERED_PERSCHAR_PED",
+   "namespace": "UNKNOWN",
+   "handler_rva": "44674f0"
+  },
+  "0x29454F052443C9EB": {
+   "name": "_GET_REGISTERED_PICKUP",
+   "namespace": "UNKNOWN",
+   "handler_rva": "44675b0"
+  },
+  "0x1660AC5AAF47CE2E": {
+   "name": "_GET_REGISTERED_PROP",
+   "namespace": "UNKNOWN",
+   "handler_rva": "44676d0"
+  },
+  "0xE3A0EFAFF3DFE27B": {
+   "name": "_GET_REGISTERED_SCENARIO_POINT",
+   "namespace": "UNKNOWN",
+   "handler_rva": "44677f0"
+  },
+  "0x58B552E6A5652281": {
+   "name": "_GET_REGISTERED_TRAIN",
+   "namespace": "UNKNOWN",
+   "handler_rva": "4467a60"
+  },
+  "0x756CD37D14B03371": {
+   "name": "_GET_REGISTERED_VEHICLE",
+   "namespace": "UNKNOWN",
+   "handler_rva": "4467b80"
+  },
+  "0xD9711FCEA997E8F7": {
+   "name": "_GET_REGISTERED_VOLUME",
+   "namespace": "UNKNOWN",
+   "handler_rva": "4467c40"
+  },
+  "0xD4DC75D4B87334BA": {
+   "name": "_GET_REGISTERED_WEAPON_PICKUP",
+   "namespace": "UNKNOWN",
+   "handler_rva": "4467d00"
   },
   "0xC4B660C7B6040E75": {
    "name": "UNLOCK_IS_UNLOCKED",
@@ -36548,8 +36636,8 @@
   }
  },
  "counts": {
-  "anchors": 400,
-  "chains": 16,
+  "anchors": 412,
+  "chains": 18,
   "natives": 6829,
   "failed": 0
  },

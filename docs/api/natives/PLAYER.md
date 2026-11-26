@@ -4,7 +4,7 @@
 
 [API index](../index.md) · [ABI and marshalling](../abi.md)
 
-257 natives in re-db namespace `PLAYER`: 73 named, 184 unnamed, 2 **unverified** seed guesses. Confidence: high 71, low 184, none 2.
+258 natives in re-db namespace `PLAYER`: 74 named, 184 unnamed, 2 **unverified** seed guesses. Confidence: high 71, low 184, medium 1, none 2.
 
 Unnamed natives have no cross-title name. The bindings expose them as `N.RAW.N_<hash>` (C `G6_N_<hash>`), and the namespace shown here is the re-db namespace, inferred from handler clustering where the provenance says `cluster:`. Their parameters are synthesised from the observed slot reads (`Any` = an untyped 8-byte slot, `float` where a 32-bit float load was seen).
 
@@ -12,12 +12,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### CLEAR_PLAYER_WANTED_LEVEL
 
-`0x4E4B996C928C7AA6` · sig `iq>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E83400`
+`0x4E4B996C928C7AA6` · sig `e>n` · params 1, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E83400`
 
-- nativedb form: `void CLEAR_PLAYER_WANTED_LEVEL(Player player)`
-- C: `void G6_PLAYER_CLEAR_PLAYER_WANTED_LEVEL(const g6_host_api* api, int32_t player, uint64_t a1)`
-- Python: `N.PLAYER.CLEAR_PLAYER_WANTED_LEVEL(player: int, a1: int = 0) -> None`
-- Luau: `N.PLAYER.CLEAR_PLAYER_WANTED_LEVEL(player: number, a1: number?): ()`
+- nativedb form: `void CLEAR_PLAYER_WANTED_LEVEL(Ped ped)`
+- C: `void G6_PLAYER_CLEAR_PLAYER_WANTED_LEVEL(const g6_host_api* api, g6_entity ped)`
+- Python: `N.PLAYER.CLEAR_PLAYER_WANTED_LEVEL(ped: int) -> None`
+- Luau: `N.PLAYER.CLEAR_PLAYER_WANTED_LEVEL(ped: buffer | number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e8341d, 0x143e83420) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e83438); script-vm.param_types.json (G-090)
 
 ### DISABLE_PLAYER_FIRING
 
@@ -104,12 +105,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### GET_PLAYER_WANTED_LEVEL
 
-`0xABC532F9098BFD9D` · sig `iq>i` · params 2, argc_inferred 2, arg slots 2 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E885A0`
+`0xABC532F9098BFD9D` · sig `e>i` · params 1, argc_inferred 2, arg slots 2 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E885A0`
 
-- nativedb form: `int GET_PLAYER_WANTED_LEVEL(Player player)`
-- C: `int32_t G6_PLAYER_GET_PLAYER_WANTED_LEVEL(const g6_host_api* api, int32_t player, uint64_t a1)`
-- Python: `N.PLAYER.GET_PLAYER_WANTED_LEVEL(player: int, a1: int = 0) -> int`
-- Luau: `N.PLAYER.GET_PLAYER_WANTED_LEVEL(player: number, a1: number?): number`
+- nativedb form: `int GET_PLAYER_WANTED_LEVEL(Ped ped)`
+- C: `int32_t G6_PLAYER_GET_PLAYER_WANTED_LEVEL(const g6_host_api* api, g6_entity ped)`
+- Python: `N.PLAYER.GET_PLAYER_WANTED_LEVEL(ped: int) -> int`
+- Luau: `N.PLAYER.GET_PLAYER_WANTED_LEVEL(ped: buffer | number): number`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e885bd, 0x143e885c0) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e885d8); script-vm.param_types.json (G-090)
 
 ### GET_WANTED_LEVEL_THRESHOLD
 
@@ -122,12 +124,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### IS_PLAYER_BEING_ARRESTED
 
-`0xC8183AE963C58374` · sig `ibq>b` · params 3, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8BB00`
+`0xC8183AE963C58374` · sig `eb>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8BB00`
 
-- nativedb form: `BOOL IS_PLAYER_BEING_ARRESTED(Player player, BOOL atArresting)`
-- C: `int G6_PLAYER_IS_PLAYER_BEING_ARRESTED(const g6_host_api* api, int32_t player, int atArresting, uint64_t a2)`
-- Python: `N.PLAYER.IS_PLAYER_BEING_ARRESTED(player: int, atArresting: bool, a2: int = 0) -> bool`
-- Luau: `N.PLAYER.IS_PLAYER_BEING_ARRESTED(player: number, atArresting: boolean, a2: number?): boolean`
+- nativedb form: `BOOL IS_PLAYER_BEING_ARRESTED(Ped ped, BOOL atArresting)`
+- C: `int G6_PLAYER_IS_PLAYER_BEING_ARRESTED(const g6_host_api* api, g6_entity ped, int atArresting)`
+- Python: `N.PLAYER.IS_PLAYER_BEING_ARRESTED(ped: int, atArresting: bool) -> bool`
+- Luau: `N.PLAYER.IS_PLAYER_BEING_ARRESTED(ped: buffer | number, atArresting: boolean): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e8bb21, 0x143e8bb24) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e8bb3c); script-vm.param_types.json (G-094)
 
 ### IS_PLAYER_DEAD
 
@@ -194,12 +197,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### IS_PLAYER_WANTED_LEVEL_GREATER
 
-`0xE1C0AD4C24324C36` · sig `iiq>b` · params 3, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8C860`
+`0xE1C0AD4C24324C36` · sig `ei>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8C860`
 
-- nativedb form: `BOOL IS_PLAYER_WANTED_LEVEL_GREATER(Player player, int wantedLevel)`
-- C: `int G6_PLAYER_IS_PLAYER_WANTED_LEVEL_GREATER(const g6_host_api* api, int32_t player, int32_t wantedLevel, uint64_t a2)`
-- Python: `N.PLAYER.IS_PLAYER_WANTED_LEVEL_GREATER(player: int, wantedLevel: int, a2: int = 0) -> bool`
-- Luau: `N.PLAYER.IS_PLAYER_WANTED_LEVEL_GREATER(player: number, wantedLevel: number, a2: number?): boolean`
+- nativedb form: `BOOL IS_PLAYER_WANTED_LEVEL_GREATER(Ped ped, int wantedLevel)`
+- C: `int G6_PLAYER_IS_PLAYER_WANTED_LEVEL_GREATER(const g6_host_api* api, g6_entity ped, int32_t wantedLevel)`
+- Python: `N.PLAYER.IS_PLAYER_WANTED_LEVEL_GREATER(ped: int, wantedLevel: int) -> bool`
+- Luau: `N.PLAYER.IS_PLAYER_WANTED_LEVEL_GREATER(ped: buffer | number, wantedLevel: number): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e8c881, 0x143e8c884) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e8c89c); script-vm.param_types.json (G-094)
 
 ### N_0086FC983527B5C8
 
@@ -401,12 +405,12 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### N_16D0AB04256CD351
 
-`0x16D0AB04256CD351` · sig `ii>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **low** · status observed · handler RVA `0x45077B0`
+`0x16D0AB04256CD351` · sig `iT>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: unnamed · confidence **low** · status observed · handler RVA `0x45077B0`
 
-- C: `void G6_N_16D0AB04256CD351(const g6_host_api* api, int32_t p0, int32_t p1)`
-- Python: `N.RAW.N_16D0AB04256CD351(p0: int, p1: int) -> None`
-- Luau: `N.RAW.N_16D0AB04256CD351(p0: number, p1: number): ()`
-- provenance: cluster:3nn_unanimous
+- C: `void G6_N_16D0AB04256CD351(const g6_host_api* api, int32_t p0, const char* p1)`
+- Python: `N.RAW.N_16D0AB04256CD351(p0: int, p1: str | None) -> None`
+- Luau: `N.RAW.N_16D0AB04256CD351(p0: number, p1: string?): ()`
+- provenance: cluster:3nn_unanimous; param 1 typed ScriptText (was Any): slot 1 read as a script text object (0x1445112ca, slot load 0x1445077d8, depth 1); script-vm.string_params.json (G-120)
 
 ### N_18AEAD2C2D85B19E
 
@@ -1887,21 +1891,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### REPORT_POLICE_SPOTTED_PLAYER
 
-`0xCBCCF73FFA69CC6B` · sig `iqq>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8F3C0`
+`0xCBCCF73FFA69CC6B` · sig `eq>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8F3C0`
 
-- nativedb form: `void REPORT_POLICE_SPOTTED_PLAYER(Player player)`
-- C: `void G6_PLAYER_REPORT_POLICE_SPOTTED_PLAYER(const g6_host_api* api, int32_t player, uint64_t a1, uint64_t a2)`
-- Python: `N.PLAYER.REPORT_POLICE_SPOTTED_PLAYER(player: int, a1: int = 0, a2: int = 0) -> None`
-- Luau: `N.PLAYER.REPORT_POLICE_SPOTTED_PLAYER(player: number, a1: number?, a2: number?): ()`
+- nativedb form: `void REPORT_POLICE_SPOTTED_PLAYER(Ped ped)`
+- C: `void G6_PLAYER_REPORT_POLICE_SPOTTED_PLAYER(const g6_host_api* api, g6_entity ped, uint64_t a2)`
+- Python: `N.PLAYER.REPORT_POLICE_SPOTTED_PLAYER(ped: int, a2: int = 0) -> None`
+- Luau: `N.PLAYER.REPORT_POLICE_SPOTTED_PLAYER(ped: buffer | number, a2: number?): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e8f3e0, 0x143e8f3e3) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e8f3fb); script-vm.param_types.json (G-094)
 
 ### RESET_PLAYER_ARREST_STATE
 
-`0x12917931C31F1750` · sig `iq>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8F900`
+`0x12917931C31F1750` · sig `e>n` · params 1, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8F900`
 
-- nativedb form: `void RESET_PLAYER_ARREST_STATE(Player player)`
-- C: `void G6_PLAYER_RESET_PLAYER_ARREST_STATE(const g6_host_api* api, int32_t player, uint64_t a1)`
-- Python: `N.PLAYER.RESET_PLAYER_ARREST_STATE(player: int, a1: int = 0) -> None`
-- Luau: `N.PLAYER.RESET_PLAYER_ARREST_STATE(player: number, a1: number?): ()`
+- nativedb form: `void RESET_PLAYER_ARREST_STATE(Ped ped)`
+- C: `void G6_PLAYER_RESET_PLAYER_ARREST_STATE(const g6_host_api* api, g6_entity ped)`
+- Python: `N.PLAYER.RESET_PLAYER_ARREST_STATE(ped: int) -> None`
+- Luau: `N.PLAYER.RESET_PLAYER_ARREST_STATE(ped: buffer | number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e8f91d, 0x143e8f920) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e8f938); script-vm.param_types.json (G-094)
 
 ### RESET_PLAYER_INPUT_GAIT
 
@@ -1914,12 +1920,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### RESET_WANTED_LEVEL_DIFFICULTY
 
-`0x062D14F18E8B0CAE` · sig `iq>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8FBD0`
+`0x062D14F18E8B0CAE` · sig `e>n` · params 1, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8FBD0`
 
-- nativedb form: `void RESET_WANTED_LEVEL_DIFFICULTY(Player player)`
-- C: `void G6_PLAYER_RESET_WANTED_LEVEL_DIFFICULTY(const g6_host_api* api, int32_t player, uint64_t a1)`
-- Python: `N.PLAYER.RESET_WANTED_LEVEL_DIFFICULTY(player: int, a1: int = 0) -> None`
-- Luau: `N.PLAYER.RESET_WANTED_LEVEL_DIFFICULTY(player: number, a1: number?): ()`
+- nativedb form: `void RESET_WANTED_LEVEL_DIFFICULTY(Ped ped)`
+- C: `void G6_PLAYER_RESET_WANTED_LEVEL_DIFFICULTY(const g6_host_api* api, g6_entity ped)`
+- Python: `N.PLAYER.RESET_WANTED_LEVEL_DIFFICULTY(ped: int) -> None`
+- Luau: `N.PLAYER.RESET_WANTED_LEVEL_DIFFICULTY(ped: buffer | number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e8fbed, 0x143e8fbf0) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e8fc08); script-vm.param_types.json (G-094)
 
 ### SET_AIR_DRAG_MULTIPLIER_FOR_PLAYERS_VEHICLE
 
@@ -1932,30 +1939,33 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### SET_ALL_NEUTRAL_RANDOM_PEDS_FLEE_THIS_FRAME
 
-`0x16752DAA7E6D3F72` · sig `iq>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8FE80`
+`0x16752DAA7E6D3F72` · sig `e>n` · params 1, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E8FE80`
 
-- nativedb form: `void SET_ALL_NEUTRAL_RANDOM_PEDS_FLEE_THIS_FRAME(Player player)`
-- C: `void G6_PLAYER_SET_ALL_NEUTRAL_RANDOM_PEDS_FLEE_THIS_FRAME(const g6_host_api* api, int32_t player, uint64_t a1)`
-- Python: `N.PLAYER.SET_ALL_NEUTRAL_RANDOM_PEDS_FLEE_THIS_FRAME(player: int, a1: int = 0) -> None`
-- Luau: `N.PLAYER.SET_ALL_NEUTRAL_RANDOM_PEDS_FLEE_THIS_FRAME(player: number, a1: number?): ()`
+- nativedb form: `void SET_ALL_NEUTRAL_RANDOM_PEDS_FLEE_THIS_FRAME(Ped ped)`
+- C: `void G6_PLAYER_SET_ALL_NEUTRAL_RANDOM_PEDS_FLEE_THIS_FRAME(const g6_host_api* api, g6_entity ped)`
+- Python: `N.PLAYER.SET_ALL_NEUTRAL_RANDOM_PEDS_FLEE_THIS_FRAME(ped: int) -> None`
+- Luau: `N.PLAYER.SET_ALL_NEUTRAL_RANDOM_PEDS_FLEE_THIS_FRAME(ped: buffer | number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e8fe9d, 0x143e8fea0) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e8feb8); script-vm.param_types.json (G-094)
 
 ### SET_ALL_RANDOM_PEDS_FLEE_THIS_FRAME
 
-`0xD5C198A62F1DEB0A` · sig `iq>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E90040`
+`0xD5C198A62F1DEB0A` · sig `e>n` · params 1, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E90040`
 
-- nativedb form: `void SET_ALL_RANDOM_PEDS_FLEE_THIS_FRAME(Player player)`
-- C: `void G6_PLAYER_SET_ALL_RANDOM_PEDS_FLEE_THIS_FRAME(const g6_host_api* api, int32_t player, uint64_t a1)`
-- Python: `N.PLAYER.SET_ALL_RANDOM_PEDS_FLEE_THIS_FRAME(player: int, a1: int = 0) -> None`
-- Luau: `N.PLAYER.SET_ALL_RANDOM_PEDS_FLEE_THIS_FRAME(player: number, a1: number?): ()`
+- nativedb form: `void SET_ALL_RANDOM_PEDS_FLEE_THIS_FRAME(Ped ped)`
+- C: `void G6_PLAYER_SET_ALL_RANDOM_PEDS_FLEE_THIS_FRAME(const g6_host_api* api, g6_entity ped)`
+- Python: `N.PLAYER.SET_ALL_RANDOM_PEDS_FLEE_THIS_FRAME(ped: int) -> None`
+- Luau: `N.PLAYER.SET_ALL_RANDOM_PEDS_FLEE_THIS_FRAME(ped: buffer | number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e9005d, 0x143e90060) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e90078); script-vm.param_types.json (G-094)
 
 ### SET_EVERYONE_IGNORE_PLAYER
 
-`0x34630A768925B852` · sig `ibq>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E90490`
+`0x34630A768925B852` · sig `eb>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E90490`
 
-- nativedb form: `void SET_EVERYONE_IGNORE_PLAYER(Player player, BOOL toggle)`
-- C: `void G6_PLAYER_SET_EVERYONE_IGNORE_PLAYER(const g6_host_api* api, int32_t player, int toggle, uint64_t a2)`
-- Python: `N.PLAYER.SET_EVERYONE_IGNORE_PLAYER(player: int, toggle: bool, a2: int = 0) -> None`
-- Luau: `N.PLAYER.SET_EVERYONE_IGNORE_PLAYER(player: number, toggle: boolean, a2: number?): ()`
+- nativedb form: `void SET_EVERYONE_IGNORE_PLAYER(Ped ped, BOOL toggle)`
+- C: `void G6_PLAYER_SET_EVERYONE_IGNORE_PLAYER(const g6_host_api* api, g6_entity ped, int toggle)`
+- Python: `N.PLAYER.SET_EVERYONE_IGNORE_PLAYER(ped: int, toggle: bool) -> None`
+- Luau: `N.PLAYER.SET_EVERYONE_IGNORE_PLAYER(ped: buffer | number, toggle: boolean): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e904b0, 0x143e904b3) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e904cb); script-vm.param_types.json (G-094)
 
 ### SET_MAX_WANTED_LEVEL
 
@@ -2010,6 +2020,16 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `void G6_PLAYER_SET_PLAYER_TARGETING_MODE(const g6_host_api* api, int32_t targetMode, uint64_t a1)`
 - Python: `N.PLAYER.SET_PLAYER_TARGETING_MODE(targetMode: int, a1: int = 0) -> None`
 - Luau: `N.PLAYER.SET_PLAYER_TARGETING_MODE(targetMode: number, a1: number?): ()`
+
+### SET_PLAYER_WANTED_LEVEL
+
+`0xC827D3A0773681A1` · sig `ei>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: method=observed-behaviour · confidence **medium** · status observed · handler RVA `0x3E91DB0`
+
+- nativedb form: `void SET_PLAYER_WANTED_LEVEL(Ped ped, int wantedLevel)`
+- C: `void G6_PLAYER_SET_PLAYER_WANTED_LEVEL(const g6_host_api* api, g6_entity ped, int32_t wantedLevel)`
+- Python: `N.PLAYER.SET_PLAYER_WANTED_LEVEL(ped: int, wantedLevel: int) -> None`
+- Luau: `N.PLAYER.SET_PLAYER_WANTED_LEVEL(ped: buffer | number, wantedLevel: number): ()`
+- provenance: method=observed-behaviour; ped (slots 0-1, ped resolver 0x14526e340, class joaat('cped')) and level (slot 2) -> anchor player.wanted.request_level 0x142367480(ped, level, 1, 1, 1); level 0 takes the clear path 0x142367780; chain 0x143e91db0 -> 0x143e952c0 -> 0x142367480; call sites: 15 in 8 programs; findings/phase5/32_native_naming.md
 
 ### SIMULATE_PLAYER_INPUT_GAIT
 
@@ -2132,12 +2152,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _DISABLE_PLAYER_INTERACTIVE_FOCUS_PRESET
 
-`0xC67A4910425F11F1` · sig `is>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44FE410`
+`0xC67A4910425F11F1` · sig `iu>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x44FE410`
 
-- nativedb form: `void _DISABLE_PLAYER_INTERACTIVE_FOCUS_PRESET(Player player, const char* name)`
-- C: `void G6_PLAYER__DISABLE_PLAYER_INTERACTIVE_FOCUS_PRESET(const g6_host_api* api, int32_t player, const char* name)`
-- Python: `N.PLAYER._DISABLE_PLAYER_INTERACTIVE_FOCUS_PRESET(player: int, name: str | None) -> None`
-- Luau: `N.PLAYER._DISABLE_PLAYER_INTERACTIVE_FOCUS_PRESET(player: number, name: string?): ()`
+- nativedb form: `void _DISABLE_PLAYER_INTERACTIVE_FOCUS_PRESET(Player player, Hash name)`
+- C: `void G6_PLAYER__DISABLE_PLAYER_INTERACTIVE_FOCUS_PRESET(const g6_host_api* api, int32_t player, uint32_t name)`
+- Python: `N.PLAYER._DISABLE_PLAYER_INTERACTIVE_FOCUS_PRESET(player: int, name: int | str) -> None`
+- Luau: `N.PLAYER._DISABLE_PLAYER_INTERACTIVE_FOCUS_PRESET(player: number, name: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 1 read as 32 bits (0x1444fe431), compared as a 32-bit key (0x14361eb1d); script-vm.param_types.observed.json (G-114)
 
 ### _GET_CONSTRUCTED_DISCOVERED_CHARACTER_NAME
 
@@ -2186,21 +2207,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _IS_SPECIAL_ABILITY_ENABLED
 
-`0xDE6C85975F9D4894` · sig `iqq>b` · params 3, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4503960`
+`0xDE6C85975F9D4894` · sig `eq>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4503960`
 
-- nativedb form: `BOOL _IS_SPECIAL_ABILITY_ENABLED(Player player)`
-- C: `int G6_PLAYER__IS_SPECIAL_ABILITY_ENABLED(const g6_host_api* api, int32_t player, uint64_t a1, uint64_t a2)`
-- Python: `N.PLAYER._IS_SPECIAL_ABILITY_ENABLED(player: int, a1: int = 0, a2: int = 0) -> bool`
-- Luau: `N.PLAYER._IS_SPECIAL_ABILITY_ENABLED(player: number, a1: number?, a2: number?): boolean`
+- nativedb form: `BOOL _IS_SPECIAL_ABILITY_ENABLED(Ped ped)`
+- C: `int G6_PLAYER__IS_SPECIAL_ABILITY_ENABLED(const g6_host_api* api, g6_entity ped, uint64_t a2)`
+- Python: `N.PLAYER._IS_SPECIAL_ABILITY_ENABLED(ped: int, a2: int = 0) -> bool`
+- Luau: `N.PLAYER._IS_SPECIAL_ABILITY_ENABLED(ped: buffer | number, a2: number?): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x144503981, 0x144503984) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x14450399c); script-vm.param_types.json (G-094)
 
 ### _MODIFY_INFINITE_TRAIL_VISION
 
-`0x28A13BF6B05C3D83` · sig `ibqq>n` · params 4, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4503F40`
+`0x28A13BF6B05C3D83` · sig `ebq>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4503F40`
 
-- nativedb form: `void _MODIFY_INFINITE_TRAIL_VISION(Player player, BOOL toggle)`
-- C: `void G6_PLAYER__MODIFY_INFINITE_TRAIL_VISION(const g6_host_api* api, int32_t player, int toggle, uint64_t a2, uint64_t a3)`
-- Python: `N.PLAYER._MODIFY_INFINITE_TRAIL_VISION(player: int, toggle: bool, a2: int = 0, a3: int = 0) -> None`
-- Luau: `N.PLAYER._MODIFY_INFINITE_TRAIL_VISION(player: number, toggle: boolean, a2: number?, a3: number?): ()`
+- nativedb form: `void _MODIFY_INFINITE_TRAIL_VISION(Ped ped, BOOL toggle)`
+- C: `void G6_PLAYER__MODIFY_INFINITE_TRAIL_VISION(const g6_host_api* api, g6_entity ped, int toggle, uint64_t a3)`
+- Python: `N.PLAYER._MODIFY_INFINITE_TRAIL_VISION(ped: int, toggle: bool, a3: int = 0) -> None`
+- Luau: `N.PLAYER._MODIFY_INFINITE_TRAIL_VISION(ped: buffer | number, toggle: boolean, a3: number?): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x144503f64, 0x144503f67) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x144503f7f); script-vm.param_types.json (G-094)
 
 ### _MODIFY_PLAYER_UI_PROMPT
 
@@ -2231,12 +2254,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _SET_DISABLE_PLAYER_WANTED_LEVEL
 
-`0x8674D138391FFB1B` · sig `ibq>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E91860`
+`0x8674D138391FFB1B` · sig `eb>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E91860`
 
-- nativedb form: `void _SET_DISABLE_PLAYER_WANTED_LEVEL(Player player, BOOL disable)`
-- C: `void G6_PLAYER__SET_DISABLE_PLAYER_WANTED_LEVEL(const g6_host_api* api, int32_t player, int disable, uint64_t a2)`
-- Python: `N.PLAYER._SET_DISABLE_PLAYER_WANTED_LEVEL(player: int, disable: bool, a2: int = 0) -> None`
-- Luau: `N.PLAYER._SET_DISABLE_PLAYER_WANTED_LEVEL(player: number, disable: boolean, a2: number?): ()`
+- nativedb form: `void _SET_DISABLE_PLAYER_WANTED_LEVEL(Ped ped, BOOL disable)`
+- C: `void G6_PLAYER__SET_DISABLE_PLAYER_WANTED_LEVEL(const g6_host_api* api, g6_entity ped, int disable)`
+- Python: `N.PLAYER._SET_DISABLE_PLAYER_WANTED_LEVEL(ped: int, disable: bool) -> None`
+- Luau: `N.PLAYER._SET_DISABLE_PLAYER_WANTED_LEVEL(ped: buffer | number, disable: boolean): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x143e91880, 0x143e91883) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x143e9189b); script-vm.param_types.json (G-094)
 
 ### _SET_MAX_WANTED_LEVEL_2
 
@@ -2258,12 +2282,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _SET_PLAYER_DEAD_EYE_AURA_BY_HASH
 
-`0x768E81AE285A4B67` · sig `iuqq>n` · params 4, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4504290`
+`0x768E81AE285A4B67` · sig `euq>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4504290`
 
-- nativedb form: `void _SET_PLAYER_DEAD_EYE_AURA_BY_HASH(Player player, Hash auraHash)`
-- C: `void G6_PLAYER__SET_PLAYER_DEAD_EYE_AURA_BY_HASH(const g6_host_api* api, int32_t player, uint32_t auraHash, uint64_t a2, uint64_t a3)`
-- Python: `N.PLAYER._SET_PLAYER_DEAD_EYE_AURA_BY_HASH(player: int, auraHash: int | str, a2: int = 0, a3: int = 0) -> None`
-- Luau: `N.PLAYER._SET_PLAYER_DEAD_EYE_AURA_BY_HASH(player: number, auraHash: number | string, a2: number?, a3: number?): ()`
+- nativedb form: `void _SET_PLAYER_DEAD_EYE_AURA_BY_HASH(Ped ped, Hash auraHash)`
+- C: `void G6_PLAYER__SET_PLAYER_DEAD_EYE_AURA_BY_HASH(const g6_host_api* api, g6_entity ped, uint32_t auraHash, uint64_t a3)`
+- Python: `N.PLAYER._SET_PLAYER_DEAD_EYE_AURA_BY_HASH(ped: int, auraHash: int | str, a3: int = 0) -> None`
+- Luau: `N.PLAYER._SET_PLAYER_DEAD_EYE_AURA_BY_HASH(ped: buffer | number, auraHash: number | string, a3: number?): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x1445042b4, 0x1445042b7) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x1445042cf); script-vm.param_types.json (G-094)
 
 ### _SET_PLAYER_DEFENSE_TYPE_MODIFIER
 
@@ -2303,27 +2328,30 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _SET_SPECIAL_ABILITY_TYPE
 
-`0x00BA333DA05ADC23` · sig `iiqq>n` · params 4, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4508B40`
+`0x00BA333DA05ADC23` · sig `eiq>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4508B40`
 
-- nativedb form: `void _SET_SPECIAL_ABILITY_TYPE(Player player, int type)`
-- C: `void G6_PLAYER__SET_SPECIAL_ABILITY_TYPE(const g6_host_api* api, int32_t player, int32_t type, uint64_t a2, uint64_t a3)`
-- Python: `N.PLAYER._SET_SPECIAL_ABILITY_TYPE(player: int, type: int, a2: int = 0, a3: int = 0) -> None`
-- Luau: `N.PLAYER._SET_SPECIAL_ABILITY_TYPE(player: number, type: number, a2: number?, a3: number?): ()`
+- nativedb form: `void _SET_SPECIAL_ABILITY_TYPE(Ped ped, int type)`
+- C: `void G6_PLAYER__SET_SPECIAL_ABILITY_TYPE(const g6_host_api* api, g6_entity ped, int32_t type, uint64_t a3)`
+- Python: `N.PLAYER._SET_SPECIAL_ABILITY_TYPE(ped: int, type: int, a3: int = 0) -> None`
+- Luau: `N.PLAYER._SET_SPECIAL_ABILITY_TYPE(ped: buffer | number, type: number, a3: number?): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x144508b64, 0x144508b67) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x144508b7f); script-vm.param_types.json (G-094)
 
 ### _SPECIAL_ABILITY_SET_ACTIVATE
 
-`0xBBA140062B15A8AC` · sig `iqq>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x45091D0`
+`0xBBA140062B15A8AC` · sig `eq>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x45091D0`
 
-- nativedb form: `void _SPECIAL_ABILITY_SET_ACTIVATE(Player player)`
-- C: `void G6_PLAYER__SPECIAL_ABILITY_SET_ACTIVATE(const g6_host_api* api, int32_t player, uint64_t a1, uint64_t a2)`
-- Python: `N.PLAYER._SPECIAL_ABILITY_SET_ACTIVATE(player: int, a1: int = 0, a2: int = 0) -> None`
-- Luau: `N.PLAYER._SPECIAL_ABILITY_SET_ACTIVATE(player: number, a1: number?, a2: number?): ()`
+- nativedb form: `void _SPECIAL_ABILITY_SET_ACTIVATE(Ped ped)`
+- C: `void G6_PLAYER__SPECIAL_ABILITY_SET_ACTIVATE(const g6_host_api* api, g6_entity ped, uint64_t a2)`
+- Python: `N.PLAYER._SPECIAL_ABILITY_SET_ACTIVATE(ped: int, a2: int = 0) -> None`
+- Luau: `N.PLAYER._SPECIAL_ABILITY_SET_ACTIVATE(ped: buffer | number, a2: number?): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x1445091f0, 0x1445091f3) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x14450920b); script-vm.param_types.json (G-094)
 
 ### _SPECIAL_ABILITY_SET_DISABLED
 
-`0xAE637BB8EF017875` · sig `ibqq>n` · params 4, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4509250`
+`0xAE637BB8EF017875` · sig `ebq>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4509250`
 
-- nativedb form: `void _SPECIAL_ABILITY_SET_DISABLED(Player player, BOOL disabled)`
-- C: `void G6_PLAYER__SPECIAL_ABILITY_SET_DISABLED(const g6_host_api* api, int32_t player, int disabled, uint64_t a2, uint64_t a3)`
-- Python: `N.PLAYER._SPECIAL_ABILITY_SET_DISABLED(player: int, disabled: bool, a2: int = 0, a3: int = 0) -> None`
-- Luau: `N.PLAYER._SPECIAL_ABILITY_SET_DISABLED(player: number, disabled: boolean, a2: number?, a3: number?): ()`
+- nativedb form: `void _SPECIAL_ABILITY_SET_DISABLED(Ped ped, BOOL disabled)`
+- C: `void G6_PLAYER__SPECIAL_ABILITY_SET_DISABLED(const g6_host_api* api, g6_entity ped, int disabled, uint64_t a3)`
+- Python: `N.PLAYER._SPECIAL_ABILITY_SET_DISABLED(ped: int, disabled: bool, a3: int = 0) -> None`
+- Luau: `N.PLAYER._SPECIAL_ABILITY_SET_DISABLED(ped: buffer | number, disabled: boolean, a3: number?): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Ped (nativedb Player) from handler evidence: slots 0-1 loaded (0x144509274, 0x144509277) into a 16-byte handle passed to the ped resolver 0x14526e340 (call 0x14450928f); script-vm.param_types.json (G-094)

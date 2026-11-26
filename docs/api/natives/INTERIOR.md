@@ -12,12 +12,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### ACTIVATE_INTERIOR_ENTITY_SET
 
-`0x174D0AAB11CED739` · sig `isiq>n` · params 4, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E82440`
+`0x174D0AAB11CED739` · sig `iuiq>n` · params 4, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E82440`
 
-- nativedb form: `void ACTIVATE_INTERIOR_ENTITY_SET(Interior interior, const char* entitySetName, int p2)`
-- C: `void G6_INTERIOR_ACTIVATE_INTERIOR_ENTITY_SET(const g6_host_api* api, int32_t interior, const char* entitySetName, int32_t p2, uint64_t a3)`
-- Python: `N.INTERIOR.ACTIVATE_INTERIOR_ENTITY_SET(interior: int, entitySetName: str | None, p2: int, a3: int = 0) -> None`
-- Luau: `N.INTERIOR.ACTIVATE_INTERIOR_ENTITY_SET(interior: number, entitySetName: string?, p2: number, a3: number?): ()`
+- nativedb form: `void ACTIVATE_INTERIOR_ENTITY_SET(Interior interior, Hash entitySetName, int p2)`
+- C: `void G6_INTERIOR_ACTIVATE_INTERIOR_ENTITY_SET(const g6_host_api* api, int32_t interior, uint32_t entitySetName, int32_t p2, uint64_t a3)`
+- Python: `N.INTERIOR.ACTIVATE_INTERIOR_ENTITY_SET(interior: int, entitySetName: int | str, p2: int, a3: int = 0) -> None`
+- Luau: `N.INTERIOR.ACTIVATE_INTERIOR_ENTITY_SET(interior: number, entitySetName: number | string, p2: number, a3: number?): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 1 read as 32 bits (0x143e8246b), compared as a 32-bit key (0x1416705fb); script-vm.param_types.observed.json (G-114)
 
 ### CLEAR_ROOM_FOR_ENTITY
 
@@ -30,12 +31,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### DEACTIVATE_INTERIOR_ENTITY_SET
 
-`0x33B81A2C07A51FFF` · sig `isb>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E93140`
+`0x33B81A2C07A51FFF` · sig `iub>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E93140`
 
-- nativedb form: `void DEACTIVATE_INTERIOR_ENTITY_SET(Interior interior, const char* entitySetName, BOOL p2)`
-- C: `void G6_INTERIOR_DEACTIVATE_INTERIOR_ENTITY_SET(const g6_host_api* api, int32_t interior, const char* entitySetName, int p2)`
-- Python: `N.INTERIOR.DEACTIVATE_INTERIOR_ENTITY_SET(interior: int, entitySetName: str | None, p2: bool) -> None`
-- Luau: `N.INTERIOR.DEACTIVATE_INTERIOR_ENTITY_SET(interior: number, entitySetName: string?, p2: boolean): ()`
+- nativedb form: `void DEACTIVATE_INTERIOR_ENTITY_SET(Interior interior, Hash entitySetName, BOOL p2)`
+- C: `void G6_INTERIOR_DEACTIVATE_INTERIOR_ENTITY_SET(const g6_host_api* api, int32_t interior, uint32_t entitySetName, int p2)`
+- Python: `N.INTERIOR.DEACTIVATE_INTERIOR_ENTITY_SET(interior: int, entitySetName: int | str, p2: bool) -> None`
+- Luau: `N.INTERIOR.DEACTIVATE_INTERIOR_ENTITY_SET(interior: number, entitySetName: number | string, p2: boolean): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 1 read as 32 bits (0x143e93167), compared as a 32-bit key (0x14265e986); script-vm.param_types.observed.json (G-114)
 
 ### FORCE_ROOM_FOR_ENTITY
 
@@ -137,12 +139,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### IS_INTERIOR_ENTITY_SET_ACTIVE
 
-`0x32810CA2125F5842` · sig `is>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E93510`
+`0x32810CA2125F5842` · sig `iu>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E93510`
 
-- nativedb form: `BOOL IS_INTERIOR_ENTITY_SET_ACTIVE(Interior interior, const char* entitySetName)`
-- C: `int G6_INTERIOR_IS_INTERIOR_ENTITY_SET_ACTIVE(const g6_host_api* api, int32_t interior, const char* entitySetName)`
-- Python: `N.INTERIOR.IS_INTERIOR_ENTITY_SET_ACTIVE(interior: int, entitySetName: str | None) -> bool`
-- Luau: `N.INTERIOR.IS_INTERIOR_ENTITY_SET_ACTIVE(interior: number, entitySetName: string?): boolean`
+- nativedb form: `BOOL IS_INTERIOR_ENTITY_SET_ACTIVE(Interior interior, Hash entitySetName)`
+- C: `int G6_INTERIOR_IS_INTERIOR_ENTITY_SET_ACTIVE(const g6_host_api* api, int32_t interior, uint32_t entitySetName)`
+- Python: `N.INTERIOR.IS_INTERIOR_ENTITY_SET_ACTIVE(interior: int, entitySetName: int | str) -> bool`
+- Luau: `N.INTERIOR.IS_INTERIOR_ENTITY_SET_ACTIVE(interior: number, entitySetName: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 1 read as 32 bits (0x143e93533), compared as a 32-bit key (0x14142553e); script-vm.param_types.observed.json (G-114)
 
 ### IS_INTERIOR_READY
 
@@ -227,9 +230,10 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _IS_INTERIOR_ENTITY_SET_VALID
 
-`0xD56FF170710FC826` · sig `is>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E935D0`
+`0xD56FF170710FC826` · sig `iu>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3E935D0`
 
-- nativedb form: `BOOL _IS_INTERIOR_ENTITY_SET_VALID(Interior interior, const char* entitySetName)`
-- C: `int G6_INTERIOR__IS_INTERIOR_ENTITY_SET_VALID(const g6_host_api* api, int32_t interior, const char* entitySetName)`
-- Python: `N.INTERIOR._IS_INTERIOR_ENTITY_SET_VALID(interior: int, entitySetName: str | None) -> bool`
-- Luau: `N.INTERIOR._IS_INTERIOR_ENTITY_SET_VALID(interior: number, entitySetName: string?): boolean`
+- nativedb form: `BOOL _IS_INTERIOR_ENTITY_SET_VALID(Interior interior, Hash entitySetName)`
+- C: `int G6_INTERIOR__IS_INTERIOR_ENTITY_SET_VALID(const g6_host_api* api, int32_t interior, uint32_t entitySetName)`
+- Python: `N.INTERIOR._IS_INTERIOR_ENTITY_SET_VALID(interior: int, entitySetName: int | str) -> bool`
+- Luau: `N.INTERIOR._IS_INTERIOR_ENTITY_SET_VALID(interior: number, entitySetName: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 1 read as 32 bits (0x143e935f3), compared as a 32-bit key (0x14376cd42); script-vm.param_types.observed.json (G-114)

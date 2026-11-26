@@ -3,13 +3,14 @@
     from gta6mod import runtime
     rt = runtime.use_mock()            # offline
     # rt = runtime.use_cabi("gta6mod_mock.dll")   # C ABI runtime
+    # rt = runtime.use_embedded()      # inside g6_python.dll (the in-game host does this)
 """
 from __future__ import annotations
 
 from .backend import Backend, BuildInfo, NativeError, G6_E_UNVERIFIED_NATIVE
 from .marshal import pack, unpack
 
-__all__ = ["Runtime", "current", "use", "use_mock", "use_cabi", "NativeError", "BuildInfo"]
+__all__ = ["Runtime", "current", "use", "use_mock", "use_cabi", "use_embedded", "NativeError", "BuildInfo"]
 
 
 class Runtime:
@@ -24,7 +25,10 @@ class Runtime:
                               "native hash not verified for this game build; "
                               "start the runtime with allow_unverified=True to try anyway")
         packed = pack(sig, args)
-        ret = self.backend.invoke(native_hash, packed.slots)
+        if packed.string_slots or packed.text_slots:  # script objects (G-120): only backends of API 0.4 take them
+            ret = self.backend.invoke(native_hash, packed.slots, packed.string_slots, packed.text_slots)
+        else:
+            ret = self.backend.invoke(native_hash, packed.slots)
         self.call_count += 1
         return unpack(sig, ret, packed)
 
@@ -68,6 +72,12 @@ def use_mock(**kw) -> Runtime:
 def use_cabi(dll_path: str, allow_unverified: bool = False) -> Runtime:
     from .cabi import CAbiBackend
     return use(CAbiBackend(dll_path), allow_unverified)
+
+
+def use_embedded(allow_unverified: bool = False, g6=None) -> Runtime:
+    """Backend over the ``_g6`` module of the in-game Python host (g6_python.dll)."""
+    from .embedded import EmbeddedBackend
+    return use(EmbeddedBackend(g6), allow_unverified)
 
 
 def current() -> Runtime:

@@ -17,7 +17,7 @@
 
 namespace g6probe {
 
-inline constexpr const char* kVersion = "0.1.0";
+inline constexpr const char* kVersion = "0.2.0";   // 0.2.0: sample records carry "near" (G-003)
 
 // ------------------------------------------------------------------ small helpers
 inline std::string_view trim(std::string_view s) noexcept {
@@ -99,6 +99,11 @@ inline bool parse_up_axis(std::string_view s, UpAxis& out) noexcept {
 
 inline double component(const Vec3& v, Axis a) noexcept {
     return a == Axis::x ? v.x : a == Axis::y ? v.y : a == Axis::z ? v.z : 0.0;
+}
+
+inline double distance(const Vec3& a, const Vec3& b) noexcept {
+    const double dx = a.x - b.x, dy = a.y - b.y, dz = a.z - b.z;
+    return std::sqrt(dx * dx + dy * dy + dz * dz);
 }
 
 inline Vec3 apply_up(Vec3 v, UpAxis up, double delta) noexcept {
@@ -262,6 +267,7 @@ struct Config {
     std::uint64_t max_bytes = 256ull << 20;
     double max_abs_coord = 100000.0;
     bool anchor_rva_check = true;
+    double near_radius_m = 50.0;           // GET_CLOSEST_PED / GET_CLOSEST_VEHICLE search radius (probe choice)
     std::vector<WriteProbe> allow;
     std::uint32_t hotkey_vk = 0x79;        // F10; 0 = no hotkey
     std::string trigger_file = "g6probe.fire";
@@ -311,6 +317,8 @@ inline ConfigResult parse_config(const IniSource& ini, Config& c) {
     else c.max_abs_coord = dv;
     if (!parse_i64(ini.get("probe", "anchor_rva_check", "1"), iv) || (iv != 0 && iv != 1)) err("[probe] anchor_rva_check must be 0 or 1");
     else c.anchor_rva_check = iv == 1;
+    if (!parse_f64(ini.get("probe", "near_radius_m", "50"), dv) || dv < 1.0 || dv > 1000.0) err("[probe] near_radius_m must be 1..1000");
+    else c.near_radius_m = dv;
     if (!parse_i64(ini.get("wait", "probe_ms", "0"), iv) || iv < 0 || iv > 60000) err("[wait] probe_ms must be 0..60000");
     else c.wait_probe_ms = static_cast<std::uint32_t>(iv);
     if (!parse_i64(ini.get("wait", "count", "20"), iv) || iv < 1 || iv > 1000) err("[wait] count must be 1..1000");
@@ -376,7 +384,11 @@ inline Refusal gate(const NativeSpec& s, BindState bound, int stage, WriteProbe 
 }
 
 // ------------------------------------------------------------------ slots
-inline std::size_t slot_width(char code) noexcept { return code == 'e' || code == 'w' ? 2 : code == 'v' ? 3 : 1; }
+// 'e' entity, 'h' 16-byte non-entity handle (ScenarioPoint), 'w' packed vector: 2 slots; 'v' legacy vector: 3.
+inline std::size_t slot_width(char code) noexcept {
+    return code == 'e' || code == 'h' || code == 'w' ? 2 : code == 'v' ? 3 : 1;
+}
+inline std::size_t ret_slots(char code) noexcept { return code == 'n' ? 0 : code == 'e' || code == 'h' || code == 'w' ? 2 : 1; }
 
 // Number of argument slots a signature fills ("ewbbbbf>n" -> 9).
 inline std::size_t arg_slots(const char* sig) noexcept {
@@ -483,7 +495,7 @@ private:
 // The decoded return of a native, by its signature's return code.
 inline void json_ret(Json& j, char code, const std::uint64_t* ret) {
     switch (code) {
-    case 'e': j.obj().key("lo").hex(ret[0]).key("hi").hex(ret[1]).end_obj(); break;
+    case 'e': case 'h': j.obj().key("lo").hex(ret[0]).key("hi").hex(ret[1]).end_obj(); break;
     case 'w': { const Vec3 v = slots_vec3(ret); j.arr().f64(v.x).f64(v.y).f64(v.z).end_arr(); break; }
     case 'f': j.f64(slot_float(ret[0])); break;
     case 'b': j.boolean((ret[0] & 0xFF) != 0); break;
@@ -504,7 +516,7 @@ inline void json_call(Json& j, const NativeSpec& s, const char* status, const st
     for (std::size_t i = 0; i < argc; ++i) j.hex(args[i]);
     j.end_arr().key("rc").i64(rc);
     const char rc_code = ret_code(s.sig);
-    const std::size_t nret = rc_code == 'e' || rc_code == 'w' ? 2 : rc_code == 'n' ? 0 : 1;
+    const std::size_t nret = ret_slots(rc_code);
     j.key("r").arr();
     for (std::size_t i = 0; i < nret; ++i) j.hex(ret[i]);
     j.end_arr().key("rv");
@@ -526,6 +538,19 @@ inline bool row_first_index(std::uint32_t row, std::uint32_t n, std::uint64_t& f
     if (n == 0 || n > layout::ecs::kMaxSlotsPerRow || row > layout::ecs::kRowMask) return false;
     first = static_cast<std::uint64_t>(row) * n;
     return true;
+}
+
+// Which last-vehicle pointer GET_PLAYERS_LAST_VEHICLE's core 0x1420f4b40 uses (probe_layout.hpp ecs::kPedCol47).
+struct LastVehiclePick {
+    std::uintptr_t ptr = 0;
+    std::uint32_t field = 0;   // 0x898, 0x8a8, or 0 = no vehicle
+};
+
+inline LastVehiclePick pick_last_vehicle(std::uint8_t flags, std::uintptr_t at_a, std::uintptr_t at_b) noexcept {
+    namespace e = layout::ecs;
+    if (((flags >> e::kCol47FlagsBit) & 1u) && at_a) return { at_a, e::kCol47VehicleA };
+    if (at_b) return { at_b, e::kCol47VehicleB };
+    return {};
 }
 
 // u16 row as 4 hex digits per slot, no separators ("ffff0002...").

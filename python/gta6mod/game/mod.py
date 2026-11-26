@@ -163,9 +163,12 @@ class Mod:
         return deco
 
     def toggle(self, key, label: str | None = None, pad: int = 0, mods=None) -> Toggle:
+        """An on/off switch flipped by ``key``; ``key=None``: no key, only ``set``/``flip`` (e.g. from a
+        ``gta6mod.ui`` menu through ``ui.defer``)."""
         t = Toggle(self, key, label)
         self._toggles.append(t)
-        self._bind(PRESS, key, pad, mods, t.flip)
+        if key is not None:
+            self._bind(PRESS, key, pad, mods, t.flip)
         return t
 
     def block(self, *actions, pad: int = 0, when=None) -> Block:

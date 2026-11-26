@@ -48,10 +48,14 @@ constexpr std::uint64_t H_SET_ENTITY_COORDS = 0x06843DA7060A026Bull;
 constexpr std::uint64_t H_SET_ENTITY_HEALTH = 0xAC2767ED8BDFAB15ull;
 constexpr std::uint64_t H_CLEAR_PLAYER_WANTED_LEVEL = 0x4E4B996C928C7AA6ull;
 constexpr std::uint64_t H_ADD_TO_CLOCK_TIME = 0xAB7C251C7701D336ull;
+constexpr std::uint64_t H_GET_PLAYERS_LAST_VEHICLE = 0x2F96E7720B0B19EAull;
+constexpr std::uint64_t H_GET_CLOSEST_VEHICLE = 0x52F45D033645181Bull;
+constexpr std::uint64_t H_GET_CLOSEST_PED = 0xC33AB876A77F8164ull;
 
 // ------------------------------------------------------------------ the world
 constexpr std::uint64_t kPedLo = 0x00000001000000A5ull, kPedHi = 0x7F3C00000000BEEFull;
 constexpr std::uint64_t kVehLo = 0x0000000200000077ull, kVehHi = 0x7F3C00000000CAFEull;
+constexpr std::uint64_t kOtherLo = 0x00000003000000B1ull, kOtherHi = 0x7F3C00000000D00Dull;   // a second ped
 constexpr std::uint32_t kRow = 5, kStaticN = 0x4d, kGenericN = 0x3d;
 
 struct World {
@@ -59,6 +63,8 @@ struct World {
     float heading = 90.0f;
     int health = 180, max_health = 200;
     bool in_vehicle = false;
+    bool had_vehicle = false;   // GET_PLAYERS_LAST_VEHICLE answers once the player sat in the vehicle
+    double other_x = 103.0, veh_x = 105.0;   // the second ped and the parked vehicle, both at y 200, z 30
     int wanted = 2;
     int hours = 12, minutes = 0;
     std::uint32_t frames = 0;
@@ -70,15 +76,53 @@ World g_w;
 const g6_host_api* g_mock = nullptr;
 
 bool is_ped(const g6_native_call* c) { return c->argc >= 2 && c->args[0] == kPedLo && c->args[1] == kPedHi; }
+bool is_handle(const g6_native_call* c, std::uint64_t lo, std::uint64_t hi) { return c->argc >= 2 && c->args[0] == lo && c->args[1] == hi; }
+g6_vec3 veh_pos() {
+    return g_w.in_vehicle ? g6_vec3{ static_cast<float>(g_w.x), static_cast<float>(g_w.y), static_cast<float>(g_w.z) }
+                          : g6_vec3{ static_cast<float>(g_w.veh_x), 200.0f, 30.0f };
+}
+g6_vec3 other_pos() { return g6_vec3{ static_cast<float>(g_w.other_x), 200.0f, 30.0f }; }
+float dist3(g6_vec3 a, g6_vec3 b) { return std::sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z)); }
 void need(const g6_native_call* c, std::uint32_t argc) { if (c->argc != argc) ++g_w.bad_args; }
 
 void G6_CALL n_ped(g6_native_call* c, void*) { need(c, 0); c->ret[0] = kPedLo; c->ret[1] = kPedHi; }
 void G6_CALL n_player(g6_native_call* c, void*) { need(c, 0); c->ret[0] = 0; }
 void G6_CALL n_coords(g6_native_call* c, void*) {
     need(c, 4);
-    if (!is_ped(c)) return;
-    g6_vec3 v{ static_cast<float>(g_w.x), static_cast<float>(g_w.y), static_cast<float>(g_w.z) };
-    g6_set_vec3_packed(c->ret, v);
+    if (is_ped(c)) {
+        g6_vec3 v{ static_cast<float>(g_w.x), static_cast<float>(g_w.y), static_cast<float>(g_w.z) };
+        g6_set_vec3_packed(c->ret, v);
+    } else if (is_handle(c, kVehLo, kVehHi)) {
+        g6_set_vec3_packed(c->ret, veh_pos());
+    } else if (is_handle(c, kOtherLo, kOtherHi)) {
+        g6_set_vec3_packed(c->ret, other_pos());
+    }
+}
+// GET_PLAYERS_LAST_VEHICLE ">e": no argument, the vehicle once the player has sat in it.
+void G6_CALL n_last_vehicle(g6_native_call* c, void*) {
+    need(c, 0);
+    if (g_w.had_vehicle) { c->ret[0] = kVehLo; c->ret[1] = kVehHi; }
+}
+// GET_CLOSEST_VEHICLE "wfui>e": packed position in slots 0-1, radius slot 2, model 3 (0 = any), flags 4.
+void G6_CALL n_closest_vehicle(g6_native_call* c, void*) {
+    need(c, 5);
+    if (c->argc != 5 || c->args[3] != 0) return;
+    const g6_vec3 p = g6_slots_vec3_packed(&c->args[0]);
+    float r = 0;
+    std::memcpy(&r, &c->args[2], 4);
+    if (dist3(p, veh_pos()) <= r) { c->ret[0] = kVehLo; c->ret[1] = kVehHi; }
+}
+// GET_CLOSEST_PED "wfbbEbbbi>b": slot 5 points at 16 bytes the handler fills (the handle, or zeros); returns found.
+void G6_CALL n_closest_ped(g6_native_call* c, void*) {
+    need(c, 10);
+    if (c->argc != 10 || !c->args[5]) { ++g_w.bad_args; return; }
+    const g6_vec3 p = g6_slots_vec3_packed(&c->args[0]);
+    float r = 0;
+    std::memcpy(&r, &c->args[2], 4);
+    const bool found = dist3(p, other_pos()) <= r;
+    const std::uint64_t h[2] = { found ? kOtherLo : 0, found ? kOtherHi : 0 };
+    std::memcpy(reinterpret_cast<void*>(static_cast<std::uintptr_t>(c->args[5])), h, 16);
+    c->ret[0] = found ? 1 : 0;
 }
 void G6_CALL n_heading(g6_native_call* c, void*) { need(c, 2); if (is_ped(c)) c->ret[0] = g6_arg_float(g_w.heading); }
 void G6_CALL n_health(g6_native_call* c, void*) { need(c, 2); if (is_ped(c)) c->ret[0] = static_cast<std::uint64_t>(g_w.health); }
@@ -88,7 +132,8 @@ void G6_CALL n_vehicle(g6_native_call* c, void*) {
     need(c, 3);
     if (is_ped(c) && g_w.in_vehicle) { c->ret[0] = kVehLo; c->ret[1] = kVehHi; }
 }
-void G6_CALL n_wanted(g6_native_call* c, void*) { need(c, 2); c->ret[0] = static_cast<std::uint64_t>(g_w.wanted); }
+// GET/CLEAR_PLAYER_WANTED_LEVEL take the player ped (2 slots, G-090): any other argument reads 0 / clears nothing.
+void G6_CALL n_wanted(g6_native_call* c, void*) { need(c, 2); c->ret[0] = is_ped(c) ? static_cast<std::uint64_t>(g_w.wanted) : 0; }
 void G6_CALL n_timer(g6_native_call* c, void*) { need(c, 0); c->ret[0] = static_cast<std::uint32_t>(g_mock->game_time_ms()); }
 void G6_CALL n_frames(g6_native_call* c, void*) { need(c, 0); c->ret[0] = g_w.frames; }
 void G6_CALL n_hours(g6_native_call* c, void*) { need(c, 0); c->ret[0] = static_cast<std::uint64_t>(g_w.hours); }
@@ -109,7 +154,7 @@ void G6_CALL n_set_health(g6_native_call* c, void*) {
     g_w.last_health_arg = static_cast<int>(static_cast<std::int32_t>(c->args[2]));
     g_w.health = g_w.last_health_arg;
 }
-void G6_CALL n_clear_wanted(g6_native_call* c, void*) { need(c, 2); ++g_w.clear_wanted; g_w.wanted = 0; }
+void G6_CALL n_clear_wanted(g6_native_call* c, void*) { need(c, 2); ++g_w.clear_wanted; if (is_ped(c)) g_w.wanted = 0; }
 void G6_CALL n_add_clock(g6_native_call* c, void*) {
     need(c, 3);
     ++g_w.add_clock;
@@ -124,6 +169,8 @@ std::uint16_t* g_static_index = nullptr;
 std::uint8_t* g_static_columns = nullptr;
 std::uint8_t* g_law = nullptr;
 std::uint32_t* g_timer_block = nullptr;   // fake_title's world.game_timer: +0 time ms, +4 frame count
+std::uint8_t* g_col47 = nullptr;          // the player's static column 0x47 component (last-vehicle pointers)
+std::uint8_t* g_vehicle_obj = nullptr;    // the vehicle entity those pointers name
 
 std::uint8_t* alloc(std::size_t n) {
     return static_cast<std::uint8_t*>(VirtualAlloc(nullptr, n, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
@@ -154,6 +201,7 @@ void build_memory(HMODULE fake) {
     r[0x4a] = 2;
     r[0x32] = 1;
     r[0x0f] = 0;
+    r[0x47] = 0;
     g_static_columns = alloc(kStaticN * 16);
     g_law = alloc(3 * 0xcce0);
     std::uint8_t* c32 = alloc(2 * 0xb80);
@@ -161,6 +209,11 @@ void build_memory(HMODULE fake) {
     set_column(g_static_columns, 0x4a, g_law, 0xcce0);
     set_column(g_static_columns, 0x32, c32, 0xb80);
     set_column(g_static_columns, 0x0f, c0f, 0x1d30);
+    g_col47 = alloc(0xb30);
+    set_column(g_static_columns, 0x47, g_col47, 0xb30);
+    g_vehicle_obj = alloc(0x100);
+    put<std::uint8_t>(g_vehicle_obj, 0x30, 2);
+    put<std::uint32_t>(g_vehicle_obj, 0x9c, (2u << 17) | 9u);
     put<std::int32_t>(g_law, 2 * 0xcce0 + 0x5f2c, 2);
     put<std::int32_t>(g_law, 2 * 0xcce0 + 0x5f28, 150);
     put<std::uint32_t>(c32, 1 * 0xb80 + 0x234, 1u << 28);
@@ -198,6 +251,11 @@ void build_memory(HMODULE fake) {
 void enter_vehicle(bool in) {
     g_w.in_vehicle = in;
     g_static_index[kRow * kStaticN + 0x20] = in ? 7 : 0xffff;   // a component row appears while seated
+    if (in) g_w.had_vehicle = true;
+    // bit 5 of +0x10 clear, so GET_PLAYERS_LAST_VEHICLE's core takes +0x8a8 (probe_layout.hpp ecs::kPedCol47)
+    put<std::uint8_t>(g_col47, 0x10, 0);
+    put<void*>(g_col47, 0x898, nullptr);
+    put<void*>(g_col47, 0x8a8, g_w.had_vehicle ? g_vehicle_obj : nullptr);
 }
 
 // ------------------------------------------------------------------ host table with fake anchors and a log capture
@@ -350,6 +408,7 @@ void scenario_stage3() {
     CHECK(s && s->find("\"gravity\":{\"ok\":true") != std::string::npos && s->find("\"v\":[0,-9.80000019,0,0]") != std::string::npos, "gravity read");
     CHECK(s && s->find("\"arch\":3,\"row\":5") != std::string::npos && s->find("\"ecs_id\":\"0x00060005\"") != std::string::npos, "ped ECS id");
     CHECK(s && s->find("\"wanted_level\":2,\"wanted_score\":150") != std::string::npos, "wanted level from the law component");
+    CHECK(s && s->find("\"wanted\":2") != std::string::npos, "GET_PLAYER_WANTED_LEVEL gets the player ped (G-090)");
     CHECK(s && s->find("\"ped_gravity_disabled\":true") != std::string::npos && s->find("\"invincible\":true") != std::string::npos,
           "col32 and proof bits");
     CHECK(s && s->find("\"health_f\":180,\"max_health_f\":200") != std::string::npos, "health through sel4d -> host -> data");
@@ -365,7 +424,27 @@ void scenario_stage3() {
                            "GET_ENTITY_MAX_HEALTH", "IS_PED_IN_ANY_VEHICLE", "GET_PLAYER_WANTED_LEVEL", "GET_GAME_TIMER_F667", "GET_FRAME_COUNT",
                            "GET_CLOCK_HOURS", "GET_CLOCK_MINUTES" })
         CHECK(s && s->find(std::string("\"n\":\"") + n + "\"") != std::string::npos, "sample logs the call to %s", n);
+    // second entities (G-003): on foot, before the vehicle was ever entered
+    CHECK(s && s->find("\"last_vehicle\":{\"rc\":0,\"lo\":\"0x0000000000000000\",\"hi\":\"0x0000000000000000\",\"valid\":false}") != std::string::npos,
+          "no last vehicle yet");
+    CHECK(s && s->find("\"last_vehicle_mem\":{\"ok\":true,") != std::string::npos && s->find("\"field\":null,\"ptr\":\"0x0000000000000000\"") != std::string::npos,
+          "column 0x47 read: no last-vehicle pointer yet");
+    CHECK(s && s->find("\"closest_ped\":{\"rc\":0,\"found\":true,\"out_written\":true,\"out_tail_intact\":true,\"lo\":\"0x00000003000000b1\","
+                       "\"hi\":\"0x7f3c00000000d00d\",\"valid\":true,\"same_as_player\":false,\"coords\":{\"ok\":true,\"v\":[103,200,30]},\"dist_m\":3,") != std::string::npos,
+          "closest ped: the second ped's handle, 3 m away, the 16 bytes after the handle untouched");
+    CHECK(s && s->find("\"closest_vehicle\":{\"rc\":0,\"lo\":\"0x0000000200000077\",\"hi\":\"0x7f3c00000000cafe\",\"valid\":true,"
+                       "\"same_as_player\":false,\"coords\":{\"ok\":true,\"v\":[105,200,30]},\"dist_m\":5,\"ptr_why\":\"gated: no anchor") != std::string::npos,
+          "closest vehicle: handle, 5 m away, object pointer gated");
+    CHECK(s && s->find("\"radius_m\":50") != std::string::npos, "search radius logged");
+    for (const char* n : { "GET_PLAYERS_LAST_VEHICLE", "GET_CLOSEST_VEHICLE", "GET_CLOSEST_PED" })
+        CHECK(s && s->find(std::string("\"n\":\"") + n + "\"") != std::string::npos, "sample logs the call to %s", n);
     const std::string* sv = find_line(lines, "\"in_vehicle\":true");
+    CHECK(sv && sv->find("\"last_vehicle\":{\"rc\":0,\"lo\":\"0x0000000200000077\",\"hi\":\"0x7f3c00000000cafe\",\"valid\":true,"
+                         "\"same_as_player\":false,\"same_as_vehicle_using\":true,") != std::string::npos,
+          "seated: the last vehicle is the vehicle in use");
+    CHECK(sv && sv->find("\"field\":\"0x000008a8\",\"ptr\":") != std::string::npos &&
+              sv->find("\"type\":2,\"ecs_id\":\"0x00040009\",\"arch\":2,\"row\":9}") != std::string::npos,
+          "seated: column 0x47 +0x8a8 names the vehicle entity: kind 2, ECS id arch 2 row 9");
     CHECK(sv && sv->find("\"vehicle\":{\"lo\":\"0x0000000200000077\"") != std::string::npos && sv->find("GET_VEHICLE_PED_IS_USING") != std::string::npos,
           "vehicle handle once seated");
     CHECK(sv && static_slot(*sv, 0x20) == "0007", "static ECS row slot 0x20 is 0007 once seated (%s)", sv ? static_slot(*sv, 0x20).c_str() : "-");
@@ -453,6 +532,7 @@ void scenario_writes() {
     CHECK(g_w.set_coords == 1 && g_w.set_health == 1 && g_w.clear_wanted == 1 && g_w.add_clock == 1, "each setter exactly once (%d %d %d %d)",
           g_w.set_coords, g_w.set_health, g_w.clear_wanted, g_w.add_clock);
     CHECK(g_w.bad_args == 0, "slot counts (%d bad)", g_w.bad_args);
+    CHECK(g_w.wanted == 0, "wanted_clear passed the player ped, so the level was cleared (G-090)");
     const auto lines = read_lines(p.dir + L"\\g6probe.jsonl");
     const std::string* c = find_line(lines, "\"probe\":\"coords_up\",\"phase\":\"immediate\"");
     CHECK(c && c->find("\"verdict\":{\"ok\":true,\"along_up\":1,\"off_axis\":0") != std::string::npos && c->find("\"up_axis\":\"+z\"") != std::string::npos,
@@ -525,6 +605,7 @@ int main(int argc, char** argv) {
         { H_GET_GAME_TIMER, n_timer }, { H_GET_FRAME_COUNT, n_frames }, { H_GET_CLOCK_HOURS, n_hours }, { H_GET_CLOCK_MINUTES, n_minutes },
         { H_SET_ENTITY_COORDS, n_set_coords }, { H_SET_ENTITY_HEALTH, n_set_health }, { H_CLEAR_PLAYER_WANTED_LEVEL, n_clear_wanted },
         { H_ADD_TO_CLOCK_TIME, n_add_clock },
+        { H_GET_PLAYERS_LAST_VEHICLE, n_last_vehicle }, { H_GET_CLOSEST_VEHICLE, n_closest_vehicle }, { H_GET_CLOSEST_PED, n_closest_ped },
     };
     for (const auto& n : natives) if (reg(n.h, n.fn, nullptr) != G6_OK) { std::printf("register failed\n"); return 2; }
     build_memory(fake);

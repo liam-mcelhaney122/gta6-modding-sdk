@@ -12,84 +12,93 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### DECOR_EXIST_ON
 
-`0xD9D1CDBF3464DCDF` · sig `es>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA370`
+`0xD9D1CDBF3464DCDF` · sig `eu>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA370`
 
-- nativedb form: `BOOL DECOR_EXIST_ON(Entity entity, const char* propertyName)`
-- C: `int G6_DECORATOR_DECOR_EXIST_ON(const g6_host_api* api, g6_entity entity, const char* propertyName)`
-- Python: `N.DECORATOR.DECOR_EXIST_ON(entity: int, propertyName: str | None) -> bool`
-- Luau: `N.DECORATOR.DECOR_EXIST_ON(entity: buffer | number, propertyName: string?): boolean`
+- nativedb form: `BOOL DECOR_EXIST_ON(Entity entity, Hash propertyName)`
+- C: `int G6_DECORATOR_DECOR_EXIST_ON(const g6_host_api* api, g6_entity entity, uint32_t propertyName)`
+- Python: `N.DECORATOR.DECOR_EXIST_ON(entity: int, propertyName: int | str) -> bool`
+- Luau: `N.DECORATOR.DECOR_EXIST_ON(entity: buffer | number, propertyName: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143cda39a), compared as a 32-bit key (0x14198c9ec); script-vm.param_types.observed.json (G-114)
 
 ### DECOR_GET_BOOL
 
-`0xDEF3F1B071ABB197` · sig `es>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA3D0`
+`0xDEF3F1B071ABB197` · sig `eu>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA3D0`
 
-- nativedb form: `BOOL DECOR_GET_BOOL(Entity entity, const char* propertyName)`
-- C: `int G6_DECORATOR_DECOR_GET_BOOL(const g6_host_api* api, g6_entity entity, const char* propertyName)`
-- Python: `N.DECORATOR.DECOR_GET_BOOL(entity: int, propertyName: str | None) -> bool`
-- Luau: `N.DECORATOR.DECOR_GET_BOOL(entity: buffer | number, propertyName: string?): boolean`
+- nativedb form: `BOOL DECOR_GET_BOOL(Entity entity, Hash propertyName)`
+- C: `int G6_DECORATOR_DECOR_GET_BOOL(const g6_host_api* api, g6_entity entity, uint32_t propertyName)`
+- Python: `N.DECORATOR.DECOR_GET_BOOL(entity: int, propertyName: int | str) -> bool`
+- Luau: `N.DECORATOR.DECOR_GET_BOOL(entity: buffer | number, propertyName: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143cda3fa), compared as a 32-bit key (0x14198c9ec); script-vm.param_types.observed.json (G-114)
 
 ### DECOR_GET_INT
 
-`0x44DB62727762FD9B` · sig `es>i` · params 2, argc_inferred 3, arg slots 3 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA430`
+`0x44DB62727762FD9B` · sig `eu>i` · params 2, argc_inferred 3, arg slots 3 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA430`
 
-- nativedb form: `int DECOR_GET_INT(Entity entity, const char* propertyName)`
-- C: `int32_t G6_DECORATOR_DECOR_GET_INT(const g6_host_api* api, g6_entity entity, const char* propertyName)`
-- Python: `N.DECORATOR.DECOR_GET_INT(entity: int, propertyName: str | None) -> int`
-- Luau: `N.DECORATOR.DECOR_GET_INT(entity: buffer | number, propertyName: string?): number`
+- nativedb form: `int DECOR_GET_INT(Entity entity, Hash propertyName)`
+- C: `int32_t G6_DECORATOR_DECOR_GET_INT(const g6_host_api* api, g6_entity entity, uint32_t propertyName)`
+- Python: `N.DECORATOR.DECOR_GET_INT(entity: int, propertyName: int | str) -> int`
+- Luau: `N.DECORATOR.DECOR_GET_INT(entity: buffer | number, propertyName: number | string): number`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143cda45a), compared as a 32-bit key (0x14198c9ec); script-vm.param_types.observed.json (G-114)
 
 ### DECOR_IS_REGISTERED_AS_TYPE
 
-`0x72355278C069F272` · sig `si>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA590`
+`0x72355278C069F272` · sig `ui>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA590`
 
-- nativedb form: `BOOL DECOR_IS_REGISTERED_AS_TYPE(const char* propertyName, int type)`
-- C: `int G6_DECORATOR_DECOR_IS_REGISTERED_AS_TYPE(const g6_host_api* api, const char* propertyName, int32_t type)`
-- Python: `N.DECORATOR.DECOR_IS_REGISTERED_AS_TYPE(propertyName: str | None, type: int) -> bool`
-- Luau: `N.DECORATOR.DECOR_IS_REGISTERED_AS_TYPE(propertyName: string?, type: number): boolean`
+- nativedb form: `BOOL DECOR_IS_REGISTERED_AS_TYPE(Hash propertyName, int type)`
+- C: `int G6_DECORATOR_DECOR_IS_REGISTERED_AS_TYPE(const g6_host_api* api, uint32_t propertyName, int32_t type)`
+- Python: `N.DECORATOR.DECOR_IS_REGISTERED_AS_TYPE(propertyName: int | str, type: int) -> bool`
+- Luau: `N.DECORATOR.DECOR_IS_REGISTERED_AS_TYPE(propertyName: number | string, type: number): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143cda5b1), compared as a 32-bit key (0x14267f0b8); script-vm.param_types.observed.json (G-114)
 
 ### DECOR_REGISTER
 
-`0x0B253D644E3C36B3` · sig `si>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA690`
+`0x0B253D644E3C36B3` · sig `ui>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA690`
 
-- nativedb form: `void DECOR_REGISTER(const char* propertyName, int type)`
-- C: `void G6_DECORATOR_DECOR_REGISTER(const g6_host_api* api, const char* propertyName, int32_t type)`
-- Python: `N.DECORATOR.DECOR_REGISTER(propertyName: str | None, type: int) -> None`
-- Luau: `N.DECORATOR.DECOR_REGISTER(propertyName: string?, type: number): ()`
+- nativedb form: `void DECOR_REGISTER(Hash propertyName, int type)`
+- C: `void G6_DECORATOR_DECOR_REGISTER(const g6_host_api* api, uint32_t propertyName, int32_t type)`
+- Python: `N.DECORATOR.DECOR_REGISTER(propertyName: int | str, type: int) -> None`
+- Luau: `N.DECORATOR.DECOR_REGISTER(propertyName: number | string, type: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143cda6b1), compared as a 32-bit key (0x14267f000); script-vm.param_types.observed.json (G-114)
 
 ### DECOR_REMOVE
 
-`0x2BA7F5877A088A1D` · sig `es>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA720`
+`0x2BA7F5877A088A1D` · sig `eu>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA720`
 
-- nativedb form: `BOOL DECOR_REMOVE(Entity entity, const char* propertyName)`
-- C: `int G6_DECORATOR_DECOR_REMOVE(const g6_host_api* api, g6_entity entity, const char* propertyName)`
-- Python: `N.DECORATOR.DECOR_REMOVE(entity: int, propertyName: str | None) -> bool`
-- Luau: `N.DECORATOR.DECOR_REMOVE(entity: buffer | number, propertyName: string?): boolean`
+- nativedb form: `BOOL DECOR_REMOVE(Entity entity, Hash propertyName)`
+- C: `int G6_DECORATOR_DECOR_REMOVE(const g6_host_api* api, g6_entity entity, uint32_t propertyName)`
+- Python: `N.DECORATOR.DECOR_REMOVE(entity: int, propertyName: int | str) -> bool`
+- Luau: `N.DECORATOR.DECOR_REMOVE(entity: buffer | number, propertyName: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143cda74a), compared as a 32-bit key (0x14267eb61); script-vm.param_types.observed.json (G-114)
 
 ### DECOR_SET_BOOL
 
-`0xFE26E4609B1C3772` · sig `esb>b` · params 3, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA1B0`
+`0xFE26E4609B1C3772` · sig `eub>b` · params 3, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA1B0`
 
-- nativedb form: `BOOL DECOR_SET_BOOL(Entity entity, const char* propertyName, BOOL value)`
-- C: `int G6_DECORATOR_DECOR_SET_BOOL(const g6_host_api* api, g6_entity entity, const char* propertyName, int value)`
-- Python: `N.DECORATOR.DECOR_SET_BOOL(entity: int, propertyName: str | None, value: bool) -> bool`
-- Luau: `N.DECORATOR.DECOR_SET_BOOL(entity: buffer | number, propertyName: string?, value: boolean): boolean`
+- nativedb form: `BOOL DECOR_SET_BOOL(Entity entity, Hash propertyName, BOOL value)`
+- C: `int G6_DECORATOR_DECOR_SET_BOOL(const g6_host_api* api, g6_entity entity, uint32_t propertyName, int value)`
+- Python: `N.DECORATOR.DECOR_SET_BOOL(entity: int, propertyName: int | str, value: bool) -> bool`
+- Luau: `N.DECORATOR.DECOR_SET_BOOL(entity: buffer | number, propertyName: number | string, value: boolean): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143cda1de), compared as a 32-bit key (0x14198c9ec); script-vm.param_types.observed.json (G-114)
 
 ### DECOR_SET_INT
 
-`0xE88F4D7F52A6090F` · sig `esi>b` · params 3, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA220`
+`0xE88F4D7F52A6090F` · sig `eui>b` · params 3, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA220`
 
-- nativedb form: `BOOL DECOR_SET_INT(Entity entity, const char* propertyName, int value)`
-- C: `int G6_DECORATOR_DECOR_SET_INT(const g6_host_api* api, g6_entity entity, const char* propertyName, int32_t value)`
-- Python: `N.DECORATOR.DECOR_SET_INT(entity: int, propertyName: str | None, value: int) -> bool`
-- Luau: `N.DECORATOR.DECOR_SET_INT(entity: buffer | number, propertyName: string?, value: number): boolean`
+- nativedb form: `BOOL DECOR_SET_INT(Entity entity, Hash propertyName, int value)`
+- C: `int G6_DECORATOR_DECOR_SET_INT(const g6_host_api* api, g6_entity entity, uint32_t propertyName, int32_t value)`
+- Python: `N.DECORATOR.DECOR_SET_INT(entity: int, propertyName: int | str, value: int) -> bool`
+- Luau: `N.DECORATOR.DECOR_SET_INT(entity: buffer | number, propertyName: number | string, value: number): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143cda24e), compared as a 32-bit key (0x14198c9ec); script-vm.param_types.observed.json (G-114)
 
 ### DECOR_SET_STRING
 
-`0x0671C1A3FF7AFDFC` · sig `ess>b` · params 3, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA300`
+`0x0671C1A3FF7AFDFC` · sig `eus>b` · params 3, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA300`
 
-- nativedb form: `BOOL DECOR_SET_STRING(Entity entity, const char* propertyName, const char* value)`
-- C: `int G6_DECORATOR_DECOR_SET_STRING(const g6_host_api* api, g6_entity entity, const char* propertyName, const char* value)`
-- Python: `N.DECORATOR.DECOR_SET_STRING(entity: int, propertyName: str | None, value: str | None) -> bool`
-- Luau: `N.DECORATOR.DECOR_SET_STRING(entity: buffer | number, propertyName: string?, value: string?): boolean`
+- nativedb form: `BOOL DECOR_SET_STRING(Entity entity, Hash propertyName, const char* value)`
+- C: `int G6_DECORATOR_DECOR_SET_STRING(const g6_host_api* api, g6_entity entity, uint32_t propertyName, const char* value)`
+- Python: `N.DECORATOR.DECOR_SET_STRING(entity: int, propertyName: int | str, value: str | None) -> bool`
+- Luau: `N.DECORATOR.DECOR_SET_STRING(entity: buffer | number, propertyName: number | string, value: string?): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x143cda32e), compared as a 32-bit key (0x14198c9ec); script-vm.param_types.observed.json (G-114)
 
 ### N_037CB6694927D148
 
@@ -165,9 +174,10 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _DECOR_REGISTER_NETWORKED
 
-`0x4587374F88B7F6C2` · sig `sib>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA630`
+`0x4587374F88B7F6C2` · sig `uib>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x3CDA630`
 
-- nativedb form: `void _DECOR_REGISTER_NETWORKED(const char* propertyName, int type, BOOL isNetworked)`
-- C: `void G6_DECORATOR__DECOR_REGISTER_NETWORKED(const g6_host_api* api, const char* propertyName, int32_t type, int isNetworked)`
-- Python: `N.DECORATOR._DECOR_REGISTER_NETWORKED(propertyName: str | None, type: int, isNetworked: bool) -> None`
-- Luau: `N.DECORATOR._DECOR_REGISTER_NETWORKED(propertyName: string?, type: number, isNetworked: boolean): ()`
+- nativedb form: `void _DECOR_REGISTER_NETWORKED(Hash propertyName, int type, BOOL isNetworked)`
+- C: `void G6_DECORATOR__DECOR_REGISTER_NETWORKED(const g6_host_api* api, uint32_t propertyName, int32_t type, int isNetworked)`
+- Python: `N.DECORATOR._DECOR_REGISTER_NETWORKED(propertyName: int | str, type: int, isNetworked: bool) -> None`
+- Luau: `N.DECORATOR._DECOR_REGISTER_NETWORKED(propertyName: number | string, type: number, isNetworked: boolean): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x143cda655), compared as a 32-bit key (0x14267f000); script-vm.param_types.observed.json (G-114)

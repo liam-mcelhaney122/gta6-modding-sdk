@@ -57,25 +57,25 @@
 <rect x="40" y="430" width="4" height="40" rx="2" fill="#3987e5"/>
 <text x="58" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#f0efec" text-anchor="start">6,829</text>
 <text x="58" y="494" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#f0efec" text-anchor="start">native handlers</text>
-<text x="58" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#c3c2b7" text-anchor="start">1,886 named so far</text>
+<text x="58" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#c3c2b7" text-anchor="start">1,903 named so far</text>
 <rect x="229" y="412" width="175" height="132" rx="10" fill="#232322" stroke="#3d3c39" stroke-width="1.5"/>
 <rect x="229" y="430" width="4" height="40" rx="2" fill="#3987e5"/>
-<text x="247" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#f0efec" text-anchor="start">400</text>
+<text x="247" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#f0efec" text-anchor="start">412</text>
 <text x="247" y="494" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#f0efec" text-anchor="start">engine anchors</text>
-<text x="247" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#c3c2b7" text-anchor="start">384 signed, 16 xref chains</text>
+<text x="247" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#c3c2b7" text-anchor="start">394 signed, 18 xref chains</text>
 <rect x="418" y="412" width="175" height="132" rx="10" fill="#232322" stroke="#3d3c39" stroke-width="1.5"/>
 <rect x="418" y="430" width="4" height="40" rx="2" fill="#3987e5"/>
-<text x="436" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#f0efec" text-anchor="start">867</text>
+<text x="436" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#f0efec" text-anchor="start">896</text>
 <text x="436" y="494" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#f0efec" text-anchor="start">struct fields</text>
-<text x="436" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#c3c2b7" text-anchor="start">across 85 engine types</text>
+<text x="436" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#c3c2b7" text-anchor="start">across 89 engine types</text>
 <rect x="607" y="412" width="175" height="132" rx="10" fill="#232322" stroke="#3d3c39" stroke-width="1.5"/>
 <rect x="607" y="430" width="4" height="40" rx="2" fill="#3987e5"/>
-<text x="625" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#f0efec" text-anchor="start">19,178</text>
+<text x="625" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#f0efec" text-anchor="start">19,662</text>
 <text x="625" y="494" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#f0efec" text-anchor="start">PSO structures</text>
-<text x="625" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#c3c2b7" text-anchor="start">2,572 enums, JSON Schema</text>
+<text x="625" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#c3c2b7" text-anchor="start">2,679 enums, JSON Schema</text>
 <rect x="796" y="412" width="175" height="132" rx="10" fill="#232322" stroke="#3d3c39" stroke-width="1.5"/>
 <rect x="796" y="430" width="4" height="40" rx="2" fill="#3987e5"/>
-<text x="814" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#f0efec" text-anchor="start">366/366</text>
+<text x="814" y="462" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#f0efec" text-anchor="start">414/414</text>
 <text x="814" y="494" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#f0efec" text-anchor="start">runtime self-tests</text>
 <text x="814" y="516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#c3c2b7" text-anchor="start">passed offline, against the exe</text>
 <rect x="985" y="412" width="175" height="132" rx="10" fill="#232322" stroke="#3d3c39" stroke-width="1.5"/>

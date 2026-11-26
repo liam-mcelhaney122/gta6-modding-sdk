@@ -20,7 +20,10 @@ assert(controls.actionIndex(controls.ACTION_HASHES[1]) == 0, "index 0 is the fir
 assert(controls.actionIndex("INPUT_SPECIAL_ABILITY_SECONDARY") == nil, "a GTA V-only name is not an action")
 assert(controls.actionIndex(51) == nil, "a GTA V control index is not an action key")
 assert(controls.GTA5_INDEX_TO_CONTROL[51] == controls.Control.CONTEXT, "GTA V index 51 maps to INPUT_CONTEXT")
-assert(controls.Control.COUNT == nil, "INPUT_COUNT is the enum sentinel, not a Control member")
+-- Control's type has no COUNT member, which is what this checks at run time: look the key up through an
+-- untyped view (a typed `Control.COUNT` is rejected by the analyzer, correctly).
+local untypedControl: any = controls.Control
+assert(untypedControl.COUNT == nil, "INPUT_COUNT is the enum sentinel, not a Control member")
 
 script.register("controls_test.check", function()
 	local seen = 0

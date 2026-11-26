@@ -5,9 +5,9 @@
 Generated from re-db: names, hashes, offsets, types, confidence and provenance only. Nothing here is game content. Regenerate with `python -I sdk/generators/gen_docs.py`.
 
 - [Native ABI and marshalling](abi.md)
-- [Types](types.md): 85 types, 867 fields
-- [Anchors](anchors.md): 400 anchors (384 signature, 16 chain, 0 unsigned)
-- [PSO / parser structures](pso.md): 19178 structures, 2572 enums
+- [Types](types.md): 89 types, 896 fields
+- [Anchors](anchors.md): 412 anchors (394 signature, 18 chain, 0 unsigned)
+- [PSO / parser structures](pso.md): 19662 structures, 2679 enums
 
 ## Natives (6842)
 
@@ -23,7 +23,7 @@ Generated from re-db: names, hashes, offsets, types, confidence and provenance o
 | [CLOCK](natives/CLOCK.md) | 16 | 16 | 0 | 0 | 16 / 0 / 0 / 0 |
 | [COLLECTABLE](natives/COLLECTABLE.md) | 40 | 9 | 31 | 0 | 9 / 0 / 31 / 0 |
 | [CRASHLOG](natives/CRASHLOG.md) | 11 | 10 | 1 | 0 | 10 / 0 / 1 / 0 |
-| [DATABINDING](natives/DATABINDING.md) | 48 | 10 | 38 | 0 | 10 / 0 / 38 / 0 |
+| [DATABINDING](natives/DATABINDING.md) | 47 | 12 | 35 | 0 | 10 / 2 / 35 / 0 |
 | [DATAFILE](natives/DATAFILE.md) | 11 | 5 | 6 | 0 | 5 / 0 / 6 / 0 |
 | [DECORATOR](natives/DECORATOR.md) | 18 | 10 | 8 | 0 | 10 / 0 / 8 / 0 |
 | [DLC](natives/DLC.md) | 1 | 1 | 0 | 0 | 1 / 0 / 0 / 0 |
@@ -31,7 +31,7 @@ Generated from re-db: names, hashes, offsets, types, confidence and provenance o
 | [EVENT](natives/EVENT.md) | 31 | 28 | 3 | 0 | 28 / 0 / 3 / 0 |
 | [FIRE](natives/FIRE.md) | 20 | 17 | 3 | 0 | 17 / 0 / 3 / 0 |
 | [FLOCK](natives/FLOCK.md) | 7 | 7 | 0 | 0 | 7 / 0 / 0 / 0 |
-| [GRAPHICS](natives/GRAPHICS.md) | 142 | 79 | 63 | 0 | 77 / 2 / 63 / 0 |
+| [GRAPHICS](natives/GRAPHICS.md) | 142 | 80 | 62 | 0 | 77 / 3 / 62 / 0 |
 | [HUD](natives/HUD.md) | 55 | 42 | 13 | 0 | 42 / 0 / 13 / 0 |
 | [IK](natives/IK.md) | 4 | 4 | 0 | 0 | 4 / 0 / 0 / 0 |
 | [INTERIOR](natives/INTERIOR.md) | 24 | 20 | 4 | 0 | 20 / 0 / 4 / 0 |
@@ -46,10 +46,10 @@ Generated from re-db: names, hashes, offsets, types, confidence and provenance o
 | [OBJECT](natives/OBJECT.md) | 92 | 50 | 42 | 0 | 46 / 1 / 45 / 0 |
 | [PAD](natives/PAD.md) | 18 | 16 | 2 | 0 | 16 / 0 / 2 / 0 |
 | [PATH](natives/PATH.md) | 60 | 43 | 17 | 0 | 43 / 0 / 17 / 0 |
-| [PED](natives/PED.md) | 658 | 401 | 257 | 0 | 398 / 3 / 257 / 0 |
+| [PED](natives/PED.md) | 659 | 402 | 257 | 0 | 398 / 4 / 257 / 0 |
 | [PERSCHAR](natives/PERSCHAR.md) | 50 | 37 | 13 | 0 | 37 / 0 / 13 / 0 |
 | [PHYSICS](natives/PHYSICS.md) | 5 | 5 | 0 | 0 | 5 / 0 / 0 / 0 |
-| [PLAYER](natives/PLAYER.md) | 257 | 73 | 184 | 2 | 71 / 0 / 184 / 2 |
+| [PLAYER](natives/PLAYER.md) | 258 | 74 | 184 | 2 | 71 / 1 / 184 / 2 |
 | [POPULATION](natives/POPULATION.md) | 9 | 9 | 0 | 0 | 9 / 0 / 0 / 0 |
 | [PROPSET](natives/PROPSET.md) | 6 | 6 | 0 | 0 | 6 / 0 / 0 / 0 |
 | [SCRIPT](natives/SCRIPT.md) | 44 | 25 | 19 | 0 | 25 / 0 / 19 / 0 |
@@ -61,8 +61,8 @@ Generated from re-db: names, hashes, offsets, types, confidence and provenance o
 | [TXD](natives/TXD.md) | 4 | 4 | 0 | 0 | 4 / 0 / 0 / 0 |
 | [UIAPPS](natives/UIAPPS.md) | 1 | 1 | 0 | 0 | 1 / 0 / 0 / 0 |
 | [UIEVENTS](natives/UIEVENTS.md) | 8 | 3 | 5 | 0 | 3 / 0 / 5 / 0 |
-| [UILOG](natives/UILOG.md) | 2 | 2 | 0 | 0 | 2 / 0 / 0 / 0 |
-| [UNKNOWN](natives/UNKNOWN.md) | 2996 | 31 | 2965 | 0 | 0 / 4 / 27 / 2965 |
+| [UILOG](natives/UILOG.md) | 3 | 3 | 0 | 0 | 2 / 1 / 0 / 0 |
+| [UNKNOWN](natives/UNKNOWN.md) | 2994 | 42 | 2952 | 0 | 10 / 5 / 27 / 2952 |
 | [UNLOCK](natives/UNLOCK.md) | 5 | 4 | 1 | 0 | 4 / 0 / 1 / 0 |
 | [VEHICLE](natives/VEHICLE.md) | 389 | 149 | 240 | 1 | 148 / 0 / 240 / 1 |
 | [VOICE](natives/VOICE.md) | 1 | 1 | 0 | 0 | 1 / 0 / 0 / 0 |
@@ -76,15 +76,15 @@ Generated from re-db: names, hashes, offsets, types, confidence and provenance o
 |---|---|
 | `sdk/data/seed/natives.seed.json` | `9f688b925bd6` |
 | `re-db/builds/1.0.2.1/natives/script-vm.handlers.tsv` | `e394be2b36b1` |
-| `re-db/builds/1.0.2.1/natives.json` | `c44e62b3f7d8` |
-| `re-db/builds/1.0.2.1/natives/script-vm.vector_params.json` | `f10c427b9310` |
+| `re-db/builds/1.0.2.1/natives.json` | `395a8b2315cc` |
+| `re-db/builds/1.0.2.1/natives/script-vm.vector_params.json` | `e140a1a7fb7a` |
 | `re-db/builds/1.0.2.1/natives/script-vm.inout_params.json` | `3a0907390bae` |
 | `re-db/builds/1.0.2.1/types/parts/entity-types.json` | `1fc0447e3860` |
 | `re-db/builds/1.0.2.1/types/parts/fs.json` | `387af21d58cb` |
-| `re-db/builds/1.0.2.1/types/parts/gameplay-fields.json` | `1db926e02e2d` |
+| `re-db/builds/1.0.2.1/types/parts/gameplay-fields.json` | `92bac52bea12` |
 | `re-db/builds/1.0.2.1/types/parts/mem-tls.json` | `bed4e5315cf7` |
 | `re-db/builds/1.0.2.1/types/parts/resource-parser.json` | `fd445d7d7191` |
 | `re-db/builds/1.0.2.1/types/parts/script-vm.json` | `d8512cf3a695` |
 | `re-db/builds/1.0.2.1/types/parts/streaming-pools.json` | `65b87d530758` |
-| `re-db/builds/1.0.2.1/anchors.json` | `2fb5339e4006` |
-| `re-db/builds/1.0.2.1/psoschema.json` | `91355e7d8c08` |
+| `re-db/builds/1.0.2.1/anchors.json` | `4a5b1dc8719d` |
+| `re-db/builds/1.0.2.1/psoschema.json` | `97cc7299fced` |

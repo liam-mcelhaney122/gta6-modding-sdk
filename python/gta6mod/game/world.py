@@ -36,11 +36,14 @@ class _Player:
         if heading is not None:
             target.heading = heading
 
+    # GET/CLEAR_PLAYER_WANTED_LEVEL take the player *ped*, not the player index: the handlers pass both argument
+    # slots as one 16-byte handle to the ped resolver 0x14526e340, and a non-ped argument resolves to null, so the
+    # level reads 0 and nothing is cleared (re-db script-vm.param_types.json, G-090).
     def wanted_level(self) -> int:
-        return n.player.get_wanted_level(self.id(), 0)
+        return n.player.get_wanted_level(self.ped().handle)
 
     def clear_wanted(self) -> None:
-        n.player.clear_wanted_level(self.id(), 0)
+        n.player.clear_wanted_level(self.ped().handle)
 
     def max_wanted(self) -> int:
         return n.player.get_max_wanted_level()

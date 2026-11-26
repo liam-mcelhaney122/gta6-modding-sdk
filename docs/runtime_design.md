@@ -131,8 +131,10 @@ What `Run` does: saves `tls+0x1478`, installs its own context (`ctx+8` = thread)
 interpreter, restores the slot. A detour therefore inherits a correct TLS context for free.
 
 **Model** **[design]**:
-- On entry, if `[thread+0x2b8]` (script name hash) matches the registered script's hash and state
-  `[thread+0x344] == 1`, run one tick of every plugin script bound to it.
+- After `Run` returns on the bound script thread (one at a time, chosen by the binder in
+  `sdk/runtime/loader/src/binder.hpp`, optionally restricted to the name hash at `[thread+0x2b8]`), and
+  only while the state byte `[thread+0x344]` (u8, G-093) is 2 or 3 (the game is updating the thread;
+  1 = initialisers not finished, 4..7 = finishing), run one tick of every plugin script (G-095).
 - Call the original `Run` first for game scripts, or last for ours; either is fine as long as one
   `Run` call wraps our work so the TLS slot is valid for natives.
 - Fibers: one fiber per plugin script, resumed inside the hook, yielding on `script_wait`. Use

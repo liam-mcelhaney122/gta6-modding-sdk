@@ -22,6 +22,10 @@ def _u2f(u: int) -> float:
 
 MASK64 = 0xFFFFFFFFFFFFFFFF
 OUT_CODES = "IFBVE"
+# Script objects (G-120, include/gta6mod/script_objects.h): S = script String, T = script text object. The caller
+# passes a str; the slot carries a pointer to its UTF-8 bytes and the slot's bit in string_slots / text_slots tells
+# the backend to hand the native a script object built from them (None: a null object).
+OBJECT_CODES = "ST"
 # In/out: the caller passes a value, the native gets a pointer to scratch holding it, and the value read back
 # after the call is returned like an out-param. X = 16-byte entity handle (docs/native-signatures.md).
 INOUT_CODES = "X"
@@ -35,6 +39,15 @@ def entity_slots(handle: int) -> list[int]:
 
 def slots_entity(lo: int, hi: int) -> int:
     return (lo & MASK64) | ((hi & MASK64) << 64)
+
+
+def handle16_slots(handle: int) -> list[int]:
+    """A 16-byte non-entity handle ('h', ScenarioPoint): Python int -> [lo, hi] slots, as for entities. Only
+    values a native returned are meaningful; the int must fit in 128 bits."""
+    handle = int(handle)
+    if handle < 0 or handle >> 128:
+        raise ValueError(f"16-byte handle out of range: {handle:#x}")
+    return [handle & MASK64, (handle >> 64) & MASK64]
 
 
 def vec3_packed_slots(v) -> list[int]:
@@ -78,6 +91,8 @@ class PackedCall:
     slots: list[int]
     out_params: list[tuple[str, object]] = field(default_factory=list)  # (code, ctypes buffer)
     keepalive: list[object] = field(default_factory=list)
+    string_slots: int = 0  # bit i: slots[i] -> script String (g6_native_call.string_slots)
+    text_slots: int = 0    # bit i: slots[i] -> script text object (g6_native_call.text_slots)
 
 
 def parse_signature(sig: str) -> tuple[str, str]:
@@ -105,6 +120,8 @@ def pack(sig: str, values) -> PackedCall:
             call.slots.append(int(next(it)) & 0xFFFFFFFFFFFFFFFF)
         elif code == "e":
             call.slots += entity_slots(next(it))
+        elif code == "h":
+            call.slots += handle16_slots(next(it))
         elif code == "E":
             buf = EntitySlot()
             call.out_params.append((code, buf))
@@ -124,6 +141,22 @@ def pack(sig: str, values) -> PackedCall:
                 call.slots.append(0)
             else:
                 buf = ctypes.create_string_buffer(str(v).encode("utf-8"))
+                call.keepalive.append(buf)
+                call.slots.append(ctypes.addressof(buf))
+        elif code in OBJECT_CODES:
+            v = next(it)
+            bit = 1 << len(call.slots)
+            if code == "S":
+                call.string_slots |= bit
+            else:
+                call.text_slots |= bit
+            if v is None:
+                call.slots.append(0)
+            else:
+                if not isinstance(v, str):
+                    raise TypeError(f"script {'String' if code == 'S' else 'text'} argument must be str or None, "
+                                    f"got {type(v).__name__}")
+                buf = ctypes.create_string_buffer(v.encode("utf-8"))
                 call.keepalive.append(buf)
                 call.slots.append(ctypes.addressof(buf))
         elif code == "w":
@@ -169,7 +202,7 @@ def unpack(sig: str, ret_slots: list[int], packed: PackedCall):
         result = Vector3(_u2f(ret_slots[0]), _u2f(ret_slots[1]), _u2f(ret_slots[2]))
     elif ret_code == "w":
         result = slots_vec3_packed(ret_slots[0], ret_slots[1])
-    elif ret_code == "e":
+    elif ret_code in ("e", "h"):
         result = slots_entity(ret_slots[0], ret_slots[1])
     else:
         raise ValueError(f"unknown return code {ret_code!r}")
@@ -206,6 +239,11 @@ def slots_vec3(slots: list[int], i: int) -> Vector3:
     return slots_vec3_packed(slots[i], slots[i + 1])
 
 
+def slots_handle16(slots: list[int], i: int) -> int:
+    """A 16-byte non-entity handle argument ('h') occupying slots[i] and slots[i + 1] (mock handlers)."""
+    return slots_entity(slots[i], slots[i + 1])
+
+
 def read_entity_ptr(address: int) -> int:
     """The 16-byte handle an Entity* ('E'/'X') argument points at (mock handlers)."""
     e = EntitySlot.from_address(address)
@@ -219,6 +257,93 @@ def write_entity_ptr(address: int, handle: int) -> None:
 
 def slot_str(s: int) -> str | None:
     return ctypes.string_at(s).decode("utf-8", "replace") if s else None
+
+
+# script objects (G-120): the layouts of include/gta6mod/script_objects.h -----------------------------------
+SSTR_LENGTH, SSTR_CAPACITY, SSTR_STRIDE, SSTR_FLAGS = 0x08, 0x0C, 0x10, 0x14
+SSTR_Q18, SSTR_ELEM, SSTR_TEXT = 0x18, 0x20, 0x28
+SSTR_OUT_OF_LINE = 0x04
+SSTR_LITERAL_Q18 = 9
+STEXT_NATIVE, STEXT_SIZE = 0x18, 0x20
+TEXT_GET_FN = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.c_void_p, ctypes.c_ubyte)  # virtual +0x18: (this, true)
+
+
+def read_script_string(addr: int) -> str | None:
+    """The text of a script String at ``addr`` the way the game's readers take it (+0x14 bit 2: out of line);
+    None for a null object (mock handlers)."""
+    if not addr:
+        return None
+    flags = ctypes.c_uint8.from_address(addr + SSTR_FLAGS).value
+    text = ctypes.c_void_p.from_address(addr + SSTR_TEXT).value if flags & SSTR_OUT_OF_LINE else addr + SSTR_TEXT
+    n = ctypes.c_int32.from_address(addr + SSTR_LENGTH).value
+    return ctypes.string_at(text, n).decode("utf-8", "replace") if text else None
+
+
+def read_script_text(addr: int) -> str | None:
+    """The text of a script text object the way 0x142055010 reads it: null object -> "", otherwise the native
+    object at +0x18 and its virtual +0x18 called with (this, true) (mock handlers)."""
+    if not addr:
+        return ""
+    native = ctypes.c_void_p.from_address(addr + STEXT_NATIVE).value
+    if not native:
+        return None
+    vtable = ctypes.c_void_p.from_address(native).value
+    fn = TEXT_GET_FN(ctypes.c_void_p.from_address(vtable + 0x18).value)
+    p = fn(native, 1)
+    return ctypes.string_at(p).decode("utf-8", "replace") if p else None
+
+
+def _text_get(native, _flag):
+    return ctypes.c_void_p.from_address(native + 8).value
+
+
+class ScriptObjects:
+    """Builds the objects a backend passes for string_slots / text_slots, in ctypes memory with the C layouts
+    (the pure-Python mock; the C runtimes build their own). Keep the instance alive for the call."""
+
+    _get = TEXT_GET_FN(_text_get)
+    _vtable = (ctypes.c_void_p * 4)(0, 0, 0, ctypes.cast(_get, ctypes.c_void_p).value)
+
+    def __init__(self, type_record: int, elem_record: int):
+        self.type_record, self.elem_record = type_record, elem_record
+        self.keep: list[object] = []
+
+    def string(self, text: bytes) -> int:
+        n = len(text)
+        buf = ctypes.create_string_buffer(SSTR_TEXT + n + 8)
+        a = ctypes.addressof(buf)
+        ctypes.c_void_p.from_address(a).value = self.type_record
+        ctypes.c_int32.from_address(a + SSTR_LENGTH).value = n
+        ctypes.c_uint32.from_address(a + SSTR_CAPACITY).value = n + 1
+        ctypes.c_uint32.from_address(a + SSTR_STRIDE).value = 1
+        ctypes.c_uint64.from_address(a + SSTR_Q18).value = SSTR_LITERAL_Q18
+        ctypes.c_void_p.from_address(a + SSTR_ELEM).value = self.elem_record
+        ctypes.memmove(a + SSTR_TEXT, text, n)
+        self.keep.append(buf)
+        return a
+
+    def text(self, text: bytes) -> int:
+        buf = ctypes.create_string_buffer(STEXT_SIZE + 16 + len(text) + 8)
+        a = ctypes.addressof(buf)
+        native = a + STEXT_SIZE
+        ctypes.c_void_p.from_address(a + STEXT_NATIVE).value = native
+        ctypes.c_void_p.from_address(native).value = ctypes.addressof(self._vtable)
+        ctypes.c_void_p.from_address(native + 8).value = native + 16
+        ctypes.memmove(native + 16, text, len(text))
+        self.keep.append(buf)
+        return a
+
+    def convert(self, slots: list[int], string_slots: int, text_slots: int) -> list[int]:
+        """slots with every masked non-null pointer replaced by an object (the pointers are NUL-terminated
+        UTF-8, as marshal.pack makes them)."""
+        if string_slots & text_slots or (string_slots | text_slots) >> len(slots):
+            raise ValueError("bad script object masks")
+        out = list(slots)
+        for i, v in enumerate(slots):
+            if v and (string_slots | text_slots) >> i & 1:
+                raw = ctypes.string_at(v)
+                out[i] = self.string(raw) if string_slots >> i & 1 else self.text(raw)
+        return out
 
 
 def float_slot(f: float) -> int:

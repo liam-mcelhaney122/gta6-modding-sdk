@@ -4,7 +4,7 @@
 
 [API index](../index.md) · [ABI and marshalling](../abi.md)
 
-2 natives in re-db namespace `UILOG`: 2 named, 0 unnamed. Confidence: high 2.
+3 natives in re-db namespace `UILOG`: 3 named, 0 unnamed. Confidence: high 2, medium 1.
 
 Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/natives")`. C: `#include "gta6mod/natives.h"`; `api` is the table passed to `g6_plugin_load`.
 
@@ -25,3 +25,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 - C: `void G6_UILOG__UILOG_PRINT_CACHED_OBJECTIVE(const g6_host_api* api, uint64_t a0)`
 - Python: `N.UILOG._UILOG_PRINT_CACHED_OBJECTIVE(a0: int = 0) -> None`
 - Luau: `N.UILOG._UILOG_PRINT_CACHED_OBJECTIVE(a0: number?): ()`
+
+### _UILOG_SET_CACHED_OBJECTIVE
+
+`0x0CB5D1E14473D8A5` · sig `T>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: behaviour-descriptive (not a nativedb name) · confidence **medium** · status observed · handler RVA `0x44CD4F0`
+
+- nativedb form: `void _UILOG_SET_CACHED_OBJECTIVE(ScriptText text)`
+- C: `void G6_UILOG__UILOG_SET_CACHED_OBJECTIVE(const g6_host_api* api, const char* text)`
+- Python: `N.UILOG._UILOG_SET_CACHED_OBJECTIVE(text: str | None) -> None`
+- Luau: `N.UILOG._UILOG_SET_CACHED_OBJECTIVE(text: string?): ()`
+- provenance: method=observed-behaviour; slot 0 (a script text object) -> its text (0x142055010) -> objective manager (0x145809fc0): copies at most 0x200 bytes to the cached objective buffer +0x130 that _UILOG_PRINT_CACHED_OBJECTIVE shows (0x141503450) and _UILOG_CLEAR_CACHED_OBJECTIVE clears; 20 cited instructions re-read by tools/phase5/ui_evidence.py (re-db/builds/1.0.2.1/ui/ui_natives.json); call sites: 800 in 133 programs; findings/phase5/35_ui_system.md; param 0 typed ScriptText (was Any): slot 0 read as a script text object (0x1444cf505, slot load 0x1444cd511, depth 1); script-vm.string_params.json (G-120)

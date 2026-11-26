@@ -1,0 +1,81 @@
+# Mock UI transcript of sdk/luau/examples/trainer_menu, run-length encoded by mock time (g6mock::UiLog).
+# Written by: g6_luau_runner sdk\luau\lib sdk\luau\examples\trainer_menu\init.luau 3000 --damage 30@240 --ui-click "God mode@496" --damage 50@1008 --ui-click "Never wanted@1504" --wanted 3@2000 --ui-click Heal@2496 --ui-log <this file>
+# Must equal: the Luau run (--expect-ui-log), sdk/examples/python/trainer_menu.py on the Python mock and in
+# g6_python.dll (g6_python_test ui_trainer, test_embedded_ui.py).
+@ 0-320 ms
+frame trainer_menu
+  next_window_pos 40 120 (first use)
+  begin Trainer
+    checkbox God mode = 0
+    checkbox Never wanted = 0
+    button Heal
+    separator
+    text Player: -1000.0 -2000.0 15.0
+    text Health: 200   Wanted level: 0
+  end
+@ 336-480 ms
+frame trainer_menu
+  next_window_pos 40 120 (first use)
+  begin Trainer
+    checkbox God mode = 0
+    checkbox Never wanted = 0
+    button Heal
+    separator
+    text Player: -1000.0 -2000.0 15.0
+    text Health: 170   Wanted level: 0
+  end
+@ 496-544 ms
+frame trainer_menu
+  next_window_pos 40 120 (first use)
+  begin Trainer
+    checkbox God mode = 1
+    checkbox Never wanted = 0
+    button Heal
+    separator
+    text Player: -1000.0 -2000.0 15.0
+    text Health: 170   Wanted level: 0
+  end
+@ 560-1488 ms
+frame trainer_menu
+  next_window_pos 40 120 (first use)
+  begin Trainer
+    checkbox God mode = 1
+    checkbox Never wanted = 0
+    button Heal
+    separator
+    text Player: -1000.0 -2000.0 15.0
+    text Health: 200   Wanted level: 0
+  end
+@ 1504-2480 ms
+frame trainer_menu
+  next_window_pos 40 120 (first use)
+  begin Trainer
+    checkbox God mode = 1
+    checkbox Never wanted = 1
+    button Heal
+    separator
+    text Player: -1000.0 -2000.0 15.0
+    text Health: 200   Wanted level: 0
+  end
+@ 2496 ms
+frame trainer_menu
+  next_window_pos 40 120 (first use)
+  begin Trainer
+    checkbox God mode = 1
+    checkbox Never wanted = 1
+    button Heal (clicked)
+    separator
+    text Player: -1000.0 -2000.0 15.0
+    text Health: 200   Wanted level: 0
+  end
+@ 2512-2992 ms
+frame trainer_menu
+  next_window_pos 40 120 (first use)
+  begin Trainer
+    checkbox God mode = 1
+    checkbox Never wanted = 1
+    button Heal
+    separator
+    text Player: -1000.0 -2000.0 15.0
+    text Health: 200   Wanted level: 0
+  end

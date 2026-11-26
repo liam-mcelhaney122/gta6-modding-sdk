@@ -12,30 +12,33 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### ACTIVATE_AUDIO_SLOWMO_MODE
 
-`0xD01005D2BA2EB778` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF0730`
+`0xD01005D2BA2EB778` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF0730`
 
-- nativedb form: `void ACTIVATE_AUDIO_SLOWMO_MODE(const char* mode)`
-- C: `void G6_AUDIO_ACTIVATE_AUDIO_SLOWMO_MODE(const g6_host_api* api, const char* mode)`
-- Python: `N.AUDIO.ACTIVATE_AUDIO_SLOWMO_MODE(mode: str | None) -> None`
-- Luau: `N.AUDIO.ACTIVATE_AUDIO_SLOWMO_MODE(mode: string?): ()`
+- nativedb form: `void ACTIVATE_AUDIO_SLOWMO_MODE(Hash mode)`
+- C: `void G6_AUDIO_ACTIVATE_AUDIO_SLOWMO_MODE(const g6_host_api* api, uint32_t mode)`
+- Python: `N.AUDIO.ACTIVATE_AUDIO_SLOWMO_MODE(mode: int | str) -> None`
+- Luau: `N.AUDIO.ACTIVATE_AUDIO_SLOWMO_MODE(mode: number | string): ()`
+- provenance: nativedb hash match (gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf0751), compared as a 32-bit key (0x1448652fc); script-vm.param_types.observed.json (G-114)
 
 ### ADD_ENTITY_TO_AUDIO_MIX_GROUP
 
-`0x153973AB99FE8980` · sig `esf>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF0A10`
+`0x153973AB99FE8980` · sig `euf>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF0A10`
 
-- nativedb form: `void ADD_ENTITY_TO_AUDIO_MIX_GROUP(Entity entity, const char* groupName, float p2)`
-- C: `void G6_AUDIO_ADD_ENTITY_TO_AUDIO_MIX_GROUP(const g6_host_api* api, g6_entity entity, const char* groupName, float p2)`
-- Python: `N.AUDIO.ADD_ENTITY_TO_AUDIO_MIX_GROUP(entity: int, groupName: str | None, p2: float) -> None`
-- Luau: `N.AUDIO.ADD_ENTITY_TO_AUDIO_MIX_GROUP(entity: buffer | number, groupName: string?, p2: number): ()`
+- nativedb form: `void ADD_ENTITY_TO_AUDIO_MIX_GROUP(Entity entity, Hash groupName, float p2)`
+- C: `void G6_AUDIO_ADD_ENTITY_TO_AUDIO_MIX_GROUP(const g6_host_api* api, g6_entity entity, uint32_t groupName, float p2)`
+- Python: `N.AUDIO.ADD_ENTITY_TO_AUDIO_MIX_GROUP(entity: int, groupName: int | str, p2: float) -> None`
+- Luau: `N.AUDIO.ADD_ENTITY_TO_AUDIO_MIX_GROUP(entity: buffer | number, groupName: number | string, p2: number): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bf0a3f), compared as a 32-bit key (0x144e7e522); script-vm.param_types.observed.json (G-114)
 
 ### ADD_PED_TO_CONVERSATION
 
-`0x95D9F4BC443956E7` · sig `ses>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF0B50`
+`0x95D9F4BC443956E7` · sig `ueu>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF0B50`
 
-- nativedb form: `void ADD_PED_TO_CONVERSATION(const char* convoRoot, Ped ped, const char* characterName)`
-- C: `void G6_AUDIO_ADD_PED_TO_CONVERSATION(const g6_host_api* api, const char* convoRoot, g6_entity ped, const char* characterName)`
-- Python: `N.AUDIO.ADD_PED_TO_CONVERSATION(convoRoot: str | None, ped: int, characterName: str | None) -> None`
-- Luau: `N.AUDIO.ADD_PED_TO_CONVERSATION(convoRoot: string?, ped: buffer | number, characterName: string?): ()`
+- nativedb form: `void ADD_PED_TO_CONVERSATION(Hash convoRoot, Ped ped, Hash characterName)`
+- C: `void G6_AUDIO_ADD_PED_TO_CONVERSATION(const g6_host_api* api, uint32_t convoRoot, g6_entity ped, uint32_t characterName)`
+- Python: `N.AUDIO.ADD_PED_TO_CONVERSATION(convoRoot: int | str, ped: int, characterName: int | str) -> None`
+- Luau: `N.AUDIO.ADD_PED_TO_CONVERSATION(convoRoot: number | string, ped: buffer | number, characterName: number | string): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf0b7f), compared as a 32-bit key (0x142aa6c34); param 2 typed Hash (nativedb const char*) from handler evidence: slot 3 read as 32 bits (0x144bf0b7b), compared as a 32-bit key (0x141b118db); script-vm.param_types.observed.json (G-114)
 
 ### AUDIO_IS_MUSIC_PLAYING
 
@@ -66,21 +69,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### CREATE_NEW_SCRIPTED_CONVERSATION
 
-`0xD2C91A0B572AAE56` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF3360`
+`0xD2C91A0B572AAE56` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF3360`
 
-- nativedb form: `BOOL CREATE_NEW_SCRIPTED_CONVERSATION(const char* convoRoot)`
-- C: `int G6_AUDIO_CREATE_NEW_SCRIPTED_CONVERSATION(const g6_host_api* api, const char* convoRoot)`
-- Python: `N.AUDIO.CREATE_NEW_SCRIPTED_CONVERSATION(convoRoot: str | None) -> bool`
-- Luau: `N.AUDIO.CREATE_NEW_SCRIPTED_CONVERSATION(convoRoot: string?): boolean`
+- nativedb form: `BOOL CREATE_NEW_SCRIPTED_CONVERSATION(Hash convoRoot)`
+- C: `int G6_AUDIO_CREATE_NEW_SCRIPTED_CONVERSATION(const g6_host_api* api, uint32_t convoRoot)`
+- Python: `N.AUDIO.CREATE_NEW_SCRIPTED_CONVERSATION(convoRoot: int | str) -> bool`
+- Luau: `N.AUDIO.CREATE_NEW_SCRIPTED_CONVERSATION(convoRoot: number | string): boolean`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf3381), compared as a 32-bit key (0x142aa5c34); script-vm.param_types.observed.json (G-114)
 
 ### DEACTIVATE_AUDIO_SLOWMO_MODE
 
-`0xDDC635D5B3262C56` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF3490`
+`0xDDC635D5B3262C56` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF3490`
 
-- nativedb form: `void DEACTIVATE_AUDIO_SLOWMO_MODE(const char* mode)`
-- C: `void G6_AUDIO_DEACTIVATE_AUDIO_SLOWMO_MODE(const g6_host_api* api, const char* mode)`
-- Python: `N.AUDIO.DEACTIVATE_AUDIO_SLOWMO_MODE(mode: str | None) -> None`
-- Luau: `N.AUDIO.DEACTIVATE_AUDIO_SLOWMO_MODE(mode: string?): ()`
+- nativedb form: `void DEACTIVATE_AUDIO_SLOWMO_MODE(Hash mode)`
+- C: `void G6_AUDIO_DEACTIVATE_AUDIO_SLOWMO_MODE(const g6_host_api* api, uint32_t mode)`
+- Python: `N.AUDIO.DEACTIVATE_AUDIO_SLOWMO_MODE(mode: int | str) -> None`
+- Luau: `N.AUDIO.DEACTIVATE_AUDIO_SLOWMO_MODE(mode: number | string): ()`
+- provenance: nativedb hash match (gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf34b1), compared as a 32-bit key (0x144865359); script-vm.param_types.observed.json (G-114)
 
 ### DISABLE_PED_PAIN_AUDIO
 
@@ -111,12 +116,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### GET_CURRENT_SCRIPTED_CONVERSATION_LINE
 
-`0x480357EE890C295A` · sig `s>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF4AB0`
+`0x480357EE890C295A` · sig `u>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF4AB0`
 
-- nativedb form: `int GET_CURRENT_SCRIPTED_CONVERSATION_LINE(const char* p0)`
-- C: `int32_t G6_AUDIO_GET_CURRENT_SCRIPTED_CONVERSATION_LINE(const g6_host_api* api, const char* p0)`
-- Python: `N.AUDIO.GET_CURRENT_SCRIPTED_CONVERSATION_LINE(p0: str | None) -> int`
-- Luau: `N.AUDIO.GET_CURRENT_SCRIPTED_CONVERSATION_LINE(p0: string?): number`
+- nativedb form: `int GET_CURRENT_SCRIPTED_CONVERSATION_LINE(Hash p0)`
+- C: `int32_t G6_AUDIO_GET_CURRENT_SCRIPTED_CONVERSATION_LINE(const g6_host_api* api, uint32_t p0)`
+- Python: `N.AUDIO.GET_CURRENT_SCRIPTED_CONVERSATION_LINE(p0: int | str) -> int`
+- Luau: `N.AUDIO.GET_CURRENT_SCRIPTED_CONVERSATION_LINE(p0: number | string): number`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf4ad1), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### GET_MUSIC_PLAYTIME
 
@@ -201,12 +207,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### IS_PED_IN_CURRENT_CONVERSATION
 
-`0x049E937F18F4020C` · sig `sei>b` · params 3, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF5F10`
+`0x049E937F18F4020C` · sig `uei>b` · params 3, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF5F10`
 
-- nativedb form: `BOOL IS_PED_IN_CURRENT_CONVERSATION(const char* p0, Ped ped, Any p2)`
-- C: `int G6_AUDIO_IS_PED_IN_CURRENT_CONVERSATION(const g6_host_api* api, const char* p0, g6_entity ped, int32_t p2)`
-- Python: `N.AUDIO.IS_PED_IN_CURRENT_CONVERSATION(p0: str | None, ped: int, p2: int) -> bool`
-- Luau: `N.AUDIO.IS_PED_IN_CURRENT_CONVERSATION(p0: string?, ped: buffer | number, p2: number): boolean`
+- nativedb form: `BOOL IS_PED_IN_CURRENT_CONVERSATION(Hash p0, Ped ped, Any p2)`
+- C: `int G6_AUDIO_IS_PED_IN_CURRENT_CONVERSATION(const g6_host_api* api, uint32_t p0, g6_entity ped, int32_t p2)`
+- Python: `N.AUDIO.IS_PED_IN_CURRENT_CONVERSATION(p0: int | str, ped: int, p2: int) -> bool`
+- Luau: `N.AUDIO.IS_PED_IN_CURRENT_CONVERSATION(p0: number | string, ped: buffer | number, p2: number): boolean`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf5f5c), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### IS_RADIO_RETUNING
 
@@ -219,21 +226,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### IS_SCRIPTED_CONVERSATION_LOADED
 
-`0xDF0D54BE7A776737` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF6910`
+`0xDF0D54BE7A776737` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF6910`
 
-- nativedb form: `BOOL IS_SCRIPTED_CONVERSATION_LOADED(const char* convoRoot)`
-- C: `int G6_AUDIO_IS_SCRIPTED_CONVERSATION_LOADED(const g6_host_api* api, const char* convoRoot)`
-- Python: `N.AUDIO.IS_SCRIPTED_CONVERSATION_LOADED(convoRoot: str | None) -> bool`
-- Luau: `N.AUDIO.IS_SCRIPTED_CONVERSATION_LOADED(convoRoot: string?): boolean`
+- nativedb form: `BOOL IS_SCRIPTED_CONVERSATION_LOADED(Hash convoRoot)`
+- C: `int G6_AUDIO_IS_SCRIPTED_CONVERSATION_LOADED(const g6_host_api* api, uint32_t convoRoot)`
+- Python: `N.AUDIO.IS_SCRIPTED_CONVERSATION_LOADED(convoRoot: int | str) -> bool`
+- Luau: `N.AUDIO.IS_SCRIPTED_CONVERSATION_LOADED(convoRoot: number | string): boolean`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf6931), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### IS_SCRIPTED_CONVERSATION_PLAYING
 
-`0x1ECC76792F661CF5` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF69D0`
+`0x1ECC76792F661CF5` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF69D0`
 
-- nativedb form: `BOOL IS_SCRIPTED_CONVERSATION_PLAYING(const char* p0)`
-- C: `int G6_AUDIO_IS_SCRIPTED_CONVERSATION_PLAYING(const g6_host_api* api, const char* p0)`
-- Python: `N.AUDIO.IS_SCRIPTED_CONVERSATION_PLAYING(p0: str | None) -> bool`
-- Luau: `N.AUDIO.IS_SCRIPTED_CONVERSATION_PLAYING(p0: string?): boolean`
+- nativedb form: `BOOL IS_SCRIPTED_CONVERSATION_PLAYING(Hash p0)`
+- C: `int G6_AUDIO_IS_SCRIPTED_CONVERSATION_PLAYING(const g6_host_api* api, uint32_t p0)`
+- Python: `N.AUDIO.IS_SCRIPTED_CONVERSATION_PLAYING(p0: int | str) -> bool`
+- Luau: `N.AUDIO.IS_SCRIPTED_CONVERSATION_PLAYING(p0: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf69f1), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### IS_SCRIPTED_SPEECH_PLAYING
 
@@ -921,12 +930,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### PAUSE_SCRIPTED_CONVERSATION
 
-`0x8530AD776CD72B12` · sig `sbbbb>n` · params 5, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF70D0`
+`0x8530AD776CD72B12` · sig `ubbbb>n` · params 5, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF70D0`
 
-- nativedb form: `void PAUSE_SCRIPTED_CONVERSATION(const char* p0, BOOL p1, BOOL p2, BOOL p3, BOOL p4)`
-- C: `void G6_AUDIO_PAUSE_SCRIPTED_CONVERSATION(const g6_host_api* api, const char* p0, int p1, int p2, int p3, int p4)`
-- Python: `N.AUDIO.PAUSE_SCRIPTED_CONVERSATION(p0: str | None, p1: bool, p2: bool, p3: bool, p4: bool) -> None`
-- Luau: `N.AUDIO.PAUSE_SCRIPTED_CONVERSATION(p0: string?, p1: boolean, p2: boolean, p3: boolean, p4: boolean): ()`
+- nativedb form: `void PAUSE_SCRIPTED_CONVERSATION(Hash p0, BOOL p1, BOOL p2, BOOL p3, BOOL p4)`
+- C: `void G6_AUDIO_PAUSE_SCRIPTED_CONVERSATION(const g6_host_api* api, uint32_t p0, int p1, int p2, int p3, int p4)`
+- Python: `N.AUDIO.PAUSE_SCRIPTED_CONVERSATION(p0: int | str, p1: bool, p2: bool, p3: bool, p4: bool) -> None`
+- Luau: `N.AUDIO.PAUSE_SCRIPTED_CONVERSATION(p0: number | string, p1: boolean, p2: boolean, p3: boolean, p4: boolean): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf70f5), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### PLAY_AMBIENT_SPEECH_FROM_POSITION_NATIVE
 
@@ -968,21 +978,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### RESTART_SCRIPTED_CONVERSATION
 
-`0x9AEB285D1818C9AC` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BFA870`
+`0x9AEB285D1818C9AC` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BFA870`
 
-- nativedb form: `void RESTART_SCRIPTED_CONVERSATION(const char* p0)`
-- C: `void G6_AUDIO_RESTART_SCRIPTED_CONVERSATION(const g6_host_api* api, const char* p0)`
-- Python: `N.AUDIO.RESTART_SCRIPTED_CONVERSATION(p0: str | None) -> None`
-- Luau: `N.AUDIO.RESTART_SCRIPTED_CONVERSATION(p0: string?): ()`
+- nativedb form: `void RESTART_SCRIPTED_CONVERSATION(Hash p0)`
+- C: `void G6_AUDIO_RESTART_SCRIPTED_CONVERSATION(const g6_host_api* api, uint32_t p0)`
+- Python: `N.AUDIO.RESTART_SCRIPTED_CONVERSATION(p0: int | str) -> None`
+- Luau: `N.AUDIO.RESTART_SCRIPTED_CONVERSATION(p0: number | string): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bfa891), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### SET_AMBIENT_ZONE_STATE
 
-`0xBDA07E5950085E46` · sig `sbb>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF83D0`
+`0xBDA07E5950085E46` · sig `ubb>n` · params 3, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF83D0`
 
-- nativedb form: `void SET_AMBIENT_ZONE_STATE(const char* zoneName, BOOL isEnabled, BOOL p2)`
-- C: `void G6_AUDIO_SET_AMBIENT_ZONE_STATE(const g6_host_api* api, const char* zoneName, int isEnabled, int p2)`
-- Python: `N.AUDIO.SET_AMBIENT_ZONE_STATE(zoneName: str | None, isEnabled: bool, p2: bool) -> None`
-- Luau: `N.AUDIO.SET_AMBIENT_ZONE_STATE(zoneName: string?, isEnabled: boolean, p2: boolean): ()`
+- nativedb form: `void SET_AMBIENT_ZONE_STATE(Hash zoneName, BOOL isEnabled, BOOL p2)`
+- C: `void G6_AUDIO_SET_AMBIENT_ZONE_STATE(const g6_host_api* api, uint32_t zoneName, int isEnabled, int p2)`
+- Python: `N.AUDIO.SET_AMBIENT_ZONE_STATE(zoneName: int | str, isEnabled: bool, p2: bool) -> None`
+- Luau: `N.AUDIO.SET_AMBIENT_ZONE_STATE(zoneName: number | string, isEnabled: boolean, p2: boolean): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf83f5), compared as a 32-bit key (0x144861e9b); script-vm.param_types.observed.json (G-114)
 
 ### SET_ENTITY_FOR_NULL_CONV_PED
 
@@ -1051,12 +1063,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE
 
-`0x9663FE6B7A61EB00` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF98B0`
+`0x9663FE6B7A61EB00` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF98B0`
 
-- nativedb form: `void SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE(const char* p0)`
-- C: `void G6_AUDIO_SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE(const g6_host_api* api, const char* p0)`
-- Python: `N.AUDIO.SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE(p0: str | None) -> None`
-- Luau: `N.AUDIO.SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE(p0: string?): ()`
+- nativedb form: `void SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE(Hash p0)`
+- C: `void G6_AUDIO_SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE(const g6_host_api* api, uint32_t p0)`
+- Python: `N.AUDIO.SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE(p0: int | str) -> None`
+- Luau: `N.AUDIO.SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE(p0: number | string): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf98d1), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### STOP_CURRENT_PLAYING_AMBIENT_SPEECH
 
@@ -1087,12 +1100,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### STOP_SCRIPTED_CONVERSATION
 
-`0xD79DEEFB53455EBA` · sig `sbb>i` · params 3, argc_inferred 3, arg slots 3 · returns `int` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF06D0`
+`0xD79DEEFB53455EBA` · sig `ubb>i` · params 3, argc_inferred 3, arg slots 3 · returns `int` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BF06D0`
 
-- nativedb form: `int STOP_SCRIPTED_CONVERSATION(const char* p0, BOOL p1, BOOL p2)`
-- C: `int32_t G6_AUDIO_STOP_SCRIPTED_CONVERSATION(const g6_host_api* api, const char* p0, int p1, int p2)`
-- Python: `N.AUDIO.STOP_SCRIPTED_CONVERSATION(p0: str | None, p1: bool, p2: bool) -> int`
-- Luau: `N.AUDIO.STOP_SCRIPTED_CONVERSATION(p0: string?, p1: boolean, p2: boolean): number`
+- nativedb form: `int STOP_SCRIPTED_CONVERSATION(Hash p0, BOOL p1, BOOL p2)`
+- C: `int32_t G6_AUDIO_STOP_SCRIPTED_CONVERSATION(const g6_host_api* api, uint32_t p0, int p1, int p2)`
+- Python: `N.AUDIO.STOP_SCRIPTED_CONVERSATION(p0: int | str, p1: bool, p2: bool) -> int`
+- Luau: `N.AUDIO.STOP_SCRIPTED_CONVERSATION(p0: number | string, p1: boolean, p2: boolean): number`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf06f5), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### UNLOCK_MISSION_NEWS_STORY
 
@@ -1105,12 +1119,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x0CB3D1919E8D7CBA
 
-`0x0CB3D1919E8D7CBA` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF4C90`
+`0x0CB3D1919E8D7CBA` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF4C90`
 
-- nativedb form: `BOOL _0x0CB3D1919E8D7CBA(const char* convoRoot)`
-- C: `int G6_AUDIO__0x0CB3D1919E8D7CBA(const g6_host_api* api, const char* convoRoot)`
-- Python: `N.AUDIO._0x0CB3D1919E8D7CBA(convoRoot: str | None) -> bool`
-- Luau: `N.AUDIO._0x0CB3D1919E8D7CBA(convoRoot: string?): boolean`
+- nativedb form: `BOOL _0x0CB3D1919E8D7CBA(Hash convoRoot)`
+- C: `int G6_AUDIO__0x0CB3D1919E8D7CBA(const g6_host_api* api, uint32_t convoRoot)`
+- Python: `N.AUDIO._0x0CB3D1919E8D7CBA(convoRoot: int | str) -> bool`
+- Luau: `N.AUDIO._0x0CB3D1919E8D7CBA(convoRoot: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf4cb1), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### _0x0D7FD6A55FD63AEF
 
@@ -1123,30 +1138,33 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x152ED1B56E8F1F50
 
-`0x152ED1B56E8F1F50` · sig `si>e` · params 2, argc_inferred 2, arg slots 2 · returns `Ped` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF4520`
+`0x152ED1B56E8F1F50` · sig `ui>e` · params 2, argc_inferred 2, arg slots 2 · returns `Ped` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF4520`
 
-- nativedb form: `Ped _0x152ED1B56E8F1F50(const char* p0, int currentScriptedConvoLine)`
-- C: `g6_entity G6_AUDIO__0x152ED1B56E8F1F50(const g6_host_api* api, const char* p0, int32_t currentScriptedConvoLine)`
-- Python: `N.AUDIO._0x152ED1B56E8F1F50(p0: str | None, currentScriptedConvoLine: int) -> int`
-- Luau: `N.AUDIO._0x152ED1B56E8F1F50(p0: string?, currentScriptedConvoLine: number): buffer`
+- nativedb form: `Ped _0x152ED1B56E8F1F50(Hash p0, int currentScriptedConvoLine)`
+- C: `g6_entity G6_AUDIO__0x152ED1B56E8F1F50(const g6_host_api* api, uint32_t p0, int32_t currentScriptedConvoLine)`
+- Python: `N.AUDIO._0x152ED1B56E8F1F50(p0: int | str, currentScriptedConvoLine: int) -> int`
+- Luau: `N.AUDIO._0x152ED1B56E8F1F50(p0: number | string, currentScriptedConvoLine: number): buffer`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf454a), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### _0x254B0241E964B450
 
-`0x254B0241E964B450` · sig `si>e` · params 2, argc_inferred 2, arg slots 2 · returns `Ped` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF4D70`
+`0x254B0241E964B450` · sig `ui>e` · params 2, argc_inferred 2, arg slots 2 · returns `Ped` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF4D70`
 
-- nativedb form: `Ped _0x254B0241E964B450(const char* p0, int currentScriptedConvoLine)`
-- C: `g6_entity G6_AUDIO__0x254B0241E964B450(const g6_host_api* api, const char* p0, int32_t currentScriptedConvoLine)`
-- Python: `N.AUDIO._0x254B0241E964B450(p0: str | None, currentScriptedConvoLine: int) -> int`
-- Luau: `N.AUDIO._0x254B0241E964B450(p0: string?, currentScriptedConvoLine: number): buffer`
+- nativedb form: `Ped _0x254B0241E964B450(Hash p0, int currentScriptedConvoLine)`
+- C: `g6_entity G6_AUDIO__0x254B0241E964B450(const g6_host_api* api, uint32_t p0, int32_t currentScriptedConvoLine)`
+- Python: `N.AUDIO._0x254B0241E964B450(p0: int | str, currentScriptedConvoLine: int) -> int`
+- Luau: `N.AUDIO._0x254B0241E964B450(p0: number | string, currentScriptedConvoLine: number): buffer`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf4d9a), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### _0x295859EB18F48D82
 
-`0x295859EB18F48D82` · sig `s>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF2CC0`
+`0x295859EB18F48D82` · sig `u>i` · params 1, argc_inferred 1, arg slots 1 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF2CC0`
 
-- nativedb form: `int _0x295859EB18F48D82(const char* p0)`
-- C: `int32_t G6_AUDIO__0x295859EB18F48D82(const g6_host_api* api, const char* p0)`
-- Python: `N.AUDIO._0x295859EB18F48D82(p0: str | None) -> int`
-- Luau: `N.AUDIO._0x295859EB18F48D82(p0: string?): number`
+- nativedb form: `int _0x295859EB18F48D82(Hash p0)`
+- C: `int32_t G6_AUDIO__0x295859EB18F48D82(const g6_host_api* api, uint32_t p0)`
+- Python: `N.AUDIO._0x295859EB18F48D82(p0: int | str) -> int`
+- Luau: `N.AUDIO._0x295859EB18F48D82(p0: number | string): number`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf2ce1), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### _0x2B101AD9F651243A
 
@@ -1168,21 +1186,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x3E93DDDCBB6111E4
 
-`0x3E93DDDCBB6111E4` · sig `sf>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF94E0`
+`0x3E93DDDCBB6111E4` · sig `uf>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF94E0`
 
-- nativedb form: `void _0x3E93DDDCBB6111E4(const char* p0, float p1)`
-- C: `void G6_AUDIO__0x3E93DDDCBB6111E4(const g6_host_api* api, const char* p0, float p1)`
-- Python: `N.AUDIO._0x3E93DDDCBB6111E4(p0: str | None, p1: float) -> None`
-- Luau: `N.AUDIO._0x3E93DDDCBB6111E4(p0: string?, p1: number): ()`
+- nativedb form: `void _0x3E93DDDCBB6111E4(Hash p0, float p1)`
+- C: `void G6_AUDIO__0x3E93DDDCBB6111E4(const g6_host_api* api, uint32_t p0, float p1)`
+- Python: `N.AUDIO._0x3E93DDDCBB6111E4(p0: int | str, p1: float) -> None`
+- Luau: `N.AUDIO._0x3E93DDDCBB6111E4(p0: number | string, p1: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf9506), compared as a 32-bit key (0x144f22db6); script-vm.param_types.observed.json (G-114)
 
 ### _0x40CA665AB9D8D505
 
-`0x40CA665AB9D8D505` · sig `si>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF8830`
+`0x40CA665AB9D8D505` · sig `ui>n` · params 2, argc_inferred 2, arg slots 2 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF8830`
 
-- nativedb form: `void _0x40CA665AB9D8D505(const char* convoRoot, int singleLineIndex)`
-- C: `void G6_AUDIO__0x40CA665AB9D8D505(const g6_host_api* api, const char* convoRoot, int32_t singleLineIndex)`
-- Python: `N.AUDIO._0x40CA665AB9D8D505(convoRoot: str | None, singleLineIndex: int) -> None`
-- Luau: `N.AUDIO._0x40CA665AB9D8D505(convoRoot: string?, singleLineIndex: number): ()`
+- nativedb form: `void _0x40CA665AB9D8D505(Hash convoRoot, int singleLineIndex)`
+- C: `void G6_AUDIO__0x40CA665AB9D8D505(const g6_host_api* api, uint32_t convoRoot, int32_t singleLineIndex)`
+- Python: `N.AUDIO._0x40CA665AB9D8D505(convoRoot: int | str, singleLineIndex: int) -> None`
+- Luau: `N.AUDIO._0x40CA665AB9D8D505(convoRoot: number | string, singleLineIndex: number): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf8851), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### _0x4A98E228A936DBCC
 
@@ -1222,21 +1242,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _0x935DBD96D4A3DA1F
 
-`0x935DBD96D4A3DA1F` · sig `si>i` · params 2, argc_inferred 2, arg slots 2 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF2D20`
+`0x935DBD96D4A3DA1F` · sig `ui>i` · params 2, argc_inferred 2, arg slots 2 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF2D20`
 
-- nativedb form: `int _0x935DBD96D4A3DA1F(const char* p0, int currentScriptedConvoLine)`
-- C: `int32_t G6_AUDIO__0x935DBD96D4A3DA1F(const g6_host_api* api, const char* p0, int32_t currentScriptedConvoLine)`
-- Python: `N.AUDIO._0x935DBD96D4A3DA1F(p0: str | None, currentScriptedConvoLine: int) -> int`
-- Luau: `N.AUDIO._0x935DBD96D4A3DA1F(p0: string?, currentScriptedConvoLine: number): number`
+- nativedb form: `int _0x935DBD96D4A3DA1F(Hash p0, int currentScriptedConvoLine)`
+- C: `int32_t G6_AUDIO__0x935DBD96D4A3DA1F(const g6_host_api* api, uint32_t p0, int32_t currentScriptedConvoLine)`
+- Python: `N.AUDIO._0x935DBD96D4A3DA1F(p0: int | str, currentScriptedConvoLine: int) -> int`
+- Luau: `N.AUDIO._0x935DBD96D4A3DA1F(p0: number | string, currentScriptedConvoLine: number): number`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf2d41), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### _0xD0730C1FA40348D9
 
-`0xD0730C1FA40348D9` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF68B0`
+`0xD0730C1FA40348D9` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF68B0`
 
-- nativedb form: `BOOL _0xD0730C1FA40348D9(const char* convoRoot)`
-- C: `int G6_AUDIO__0xD0730C1FA40348D9(const g6_host_api* api, const char* convoRoot)`
-- Python: `N.AUDIO._0xD0730C1FA40348D9(convoRoot: str | None) -> bool`
-- Luau: `N.AUDIO._0xD0730C1FA40348D9(convoRoot: string?): boolean`
+- nativedb form: `BOOL _0xD0730C1FA40348D9(Hash convoRoot)`
+- C: `int G6_AUDIO__0xD0730C1FA40348D9(const g6_host_api* api, uint32_t convoRoot)`
+- Python: `N.AUDIO._0xD0730C1FA40348D9(convoRoot: int | str) -> bool`
+- Luau: `N.AUDIO._0xD0730C1FA40348D9(convoRoot: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf68d1), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### _0xD47D47EFBF103FB8
 
@@ -1285,12 +1307,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _CLEAR_CONVERSATION_HISTORY_FOR_SCRIPTED_CONVERSATION
 
-`0xEF51242E35242B47` · sig `s>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF2940`
+`0xEF51242E35242B47` · sig `u>n` · params 1, argc_inferred 1, arg slots 1 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF2940`
 
-- nativedb form: `void _CLEAR_CONVERSATION_HISTORY_FOR_SCRIPTED_CONVERSATION(const char* convoRoot)`
-- C: `void G6_AUDIO__CLEAR_CONVERSATION_HISTORY_FOR_SCRIPTED_CONVERSATION(const g6_host_api* api, const char* convoRoot)`
-- Python: `N.AUDIO._CLEAR_CONVERSATION_HISTORY_FOR_SCRIPTED_CONVERSATION(convoRoot: str | None) -> None`
-- Luau: `N.AUDIO._CLEAR_CONVERSATION_HISTORY_FOR_SCRIPTED_CONVERSATION(convoRoot: string?): ()`
+- nativedb form: `void _CLEAR_CONVERSATION_HISTORY_FOR_SCRIPTED_CONVERSATION(Hash convoRoot)`
+- C: `void G6_AUDIO__CLEAR_CONVERSATION_HISTORY_FOR_SCRIPTED_CONVERSATION(const g6_host_api* api, uint32_t convoRoot)`
+- Python: `N.AUDIO._CLEAR_CONVERSATION_HISTORY_FOR_SCRIPTED_CONVERSATION(convoRoot: int | str) -> None`
+- Luau: `N.AUDIO._CLEAR_CONVERSATION_HISTORY_FOR_SCRIPTED_CONVERSATION(convoRoot: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf2961), compared as a 32-bit key (0x142aa7154); script-vm.param_types.observed.json (G-114)
 
 ### _CREATE_NEW_SCRIPTED_PED_AMBIENT_SPEECH
 
@@ -1330,21 +1353,23 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _IS_SCRIPTED_CONVERSATION_CREATED
 
-`0xD89504D9D7D5057D` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF6850`
+`0xD89504D9D7D5057D` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF6850`
 
-- nativedb form: `BOOL _IS_SCRIPTED_CONVERSATION_CREATED(const char* convoRoot)`
-- C: `int G6_AUDIO__IS_SCRIPTED_CONVERSATION_CREATED(const g6_host_api* api, const char* convoRoot)`
-- Python: `N.AUDIO._IS_SCRIPTED_CONVERSATION_CREATED(convoRoot: str | None) -> bool`
-- Luau: `N.AUDIO._IS_SCRIPTED_CONVERSATION_CREATED(convoRoot: string?): boolean`
+- nativedb form: `BOOL _IS_SCRIPTED_CONVERSATION_CREATED(Hash convoRoot)`
+- C: `int G6_AUDIO__IS_SCRIPTED_CONVERSATION_CREATED(const g6_host_api* api, uint32_t convoRoot)`
+- Python: `N.AUDIO._IS_SCRIPTED_CONVERSATION_CREATED(convoRoot: int | str) -> bool`
+- Luau: `N.AUDIO._IS_SCRIPTED_CONVERSATION_CREATED(convoRoot: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf6871), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### _IS_SCRIPTED_CONVERSION_ONGOING
 
-`0xF01C570E0A0A1E67` · sig `s>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF6970`
+`0xF01C570E0A0A1E67` · sig `u>b` · params 1, argc_inferred 1, arg slots 1 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF6970`
 
-- nativedb form: `BOOL _IS_SCRIPTED_CONVERSION_ONGOING(const char* p0)`
-- C: `int G6_AUDIO__IS_SCRIPTED_CONVERSION_ONGOING(const g6_host_api* api, const char* p0)`
-- Python: `N.AUDIO._IS_SCRIPTED_CONVERSION_ONGOING(p0: str | None) -> bool`
-- Luau: `N.AUDIO._IS_SCRIPTED_CONVERSION_ONGOING(p0: string?): boolean`
+- nativedb form: `BOOL _IS_SCRIPTED_CONVERSION_ONGOING(Hash p0)`
+- C: `int G6_AUDIO__IS_SCRIPTED_CONVERSION_ONGOING(const g6_host_api* api, uint32_t p0)`
+- Python: `N.AUDIO._IS_SCRIPTED_CONVERSION_ONGOING(p0: int | str) -> bool`
+- Luau: `N.AUDIO._IS_SCRIPTED_CONVERSION_ONGOING(p0: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 0 typed Hash (nativedb const char*) from handler evidence: slot 0 read as 32 bits (0x144bf6991), compared as a 32-bit key (0x142aa6c34); script-vm.param_types.observed.json (G-114)
 
 ### _PLAY_SOUND_FROM_SCRIPTED_PED_AMBIENT_SPEECH
 
@@ -1357,12 +1382,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _SET_WHISTLE_CONFIG_FOR_PED
 
-`0x9963681A8BC69BF3` · sig `esf>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF86D0`
+`0x9963681A8BC69BF3` · sig `euf>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BF86D0`
 
-- nativedb form: `void _SET_WHISTLE_CONFIG_FOR_PED(Ped ped, const char* whistleConfig, float value)`
-- C: `void G6_AUDIO__SET_WHISTLE_CONFIG_FOR_PED(const g6_host_api* api, g6_entity ped, const char* whistleConfig, float value)`
-- Python: `N.AUDIO._SET_WHISTLE_CONFIG_FOR_PED(ped: int, whistleConfig: str | None, value: float) -> None`
-- Luau: `N.AUDIO._SET_WHISTLE_CONFIG_FOR_PED(ped: buffer | number, whistleConfig: string?, value: number): ()`
+- nativedb form: `void _SET_WHISTLE_CONFIG_FOR_PED(Ped ped, Hash whistleConfig, float value)`
+- C: `void G6_AUDIO__SET_WHISTLE_CONFIG_FOR_PED(const g6_host_api* api, g6_entity ped, uint32_t whistleConfig, float value)`
+- Python: `N.AUDIO._SET_WHISTLE_CONFIG_FOR_PED(ped: int, whistleConfig: int | str, value: float) -> None`
+- Luau: `N.AUDIO._SET_WHISTLE_CONFIG_FOR_PED(ped: buffer | number, whistleConfig: number | string, value: number): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bf86ff), compared as a 32-bit key (0x144ebef7d); script-vm.param_types.observed.json (G-114)
 
 ### _STOP_ALL_SCRIPTED_CONVERSIONS
 

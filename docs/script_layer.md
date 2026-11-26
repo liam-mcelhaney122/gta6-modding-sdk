@@ -132,7 +132,7 @@ The mods run offline in both mocks, which implement the same fake semantics:
 - peds in vehicles (seat ignored), vehicle repair, vehicle health 1000;
 - a game clock starting at 12:00:00, `ADD_TO_CLOCK_TIME`, `PAUSE_CLOCK`, and the time scale.
 
-Mock semantics, identical in `runtime/mock.py` and `luau/host/g6_luau_runner.cpp`:
+Mock semantics, identical in `runtime/mock.py` and `runtime/src/mock_world.cpp` (used by `g6_luau_runner` and the Python host test `g6_python_test`):
 
 - Player ped handle `0x100` (hi = 0) at (-1000, -2000, 15), heading 0, health 200, max 200. New
   vehicles get the next handle, health 1000, max 1000. Every entity starts visible, not invincible,
@@ -156,7 +156,12 @@ Mock semantics, identical in `runtime/mock.py` and `luau/host/g6_luau_runner.cpp
   request. `GET_GROUND_Z_AND_NORMAL_FOR_3D_COORD((x, y, z))` returns true, ground 12.0 and normal (0, 0, 1)
   only when that cell is loaded and `z > 12`; otherwise false, 0 and (0, 0, 0).
 - Wanted level starts 0, max 5. `SET_MAX_WANTED_LEVEL(n)` stores `n` and lowers the current level to at
-  most `n`. `CLEAR_PLAYER_WANTED_LEVEL` sets 0. `PLAYER_ID` and `GET_PLAYER_INDEX` return 0.
+  most `n`. `GET_PLAYER_WANTED_LEVEL` and `CLEAR_PLAYER_WANTED_LEVEL` take the player ped (2 slots): for any
+  other handle they read 0 and clear nothing, as the game's null ped does. `PLAYER_ID` and `GET_PLAYER_INDEX`
+  return 0.
+- Scenario points (`h`, 16-byte non-entity handles): `_GET_REGISTERED_SCENARIO_POINT(id)` returns
+  lo = `0x5C00000000000000 | id`, hi = `0x5C5C` for a non-zero id and 16 zero bytes for 0.
+  `DOES_SCENARIO_POINT_EXIST(point)` is true only for such a handle with both halves intact.
 - Clock starts 12:00:00 and does not advance by itself. `ADD_TO_CLOCK_TIME` normalises and wraps at 24 h.
   `PAUSE_CLOCK` and `SET_TIME_SCALE` only store their value.
 - Controls on group 0 only. A press is just pressed on its tick and held until its release time
@@ -169,6 +174,54 @@ event fires on the tick whose time equals `MS`, so use multiples of 16):
 `--press CTL@MS[+HOLD]` (CTL is an `INPUT_*` name, hashed like `GET_HASH_KEY`, or a number: decimal or `0x` hex; HOLD is how long it stays held, in ms); `--damage N@MS` (0 ≤ N ≤ 2147483647, as for `--wanted`) lowers the player ped's health by N (not below 0) unless it is
 invincible, and the same for the vehicle the ped is in; `--wanted N@MS` sets the wanted level to N (a crime:
 the mock does not apply the max here); `--waypoint X,Y,Z@MS` sets the waypoint.
+
+### Mock UI (offline menus)
+
+The in-game menu layer (`gta6mod.h` "UI layer", `g6_ui_api`; Luau `@gta6/ui`, Python `gta6mod.ui`, C++
+`gta6mod/ui.hpp`) has one offline recorder with the same rules and transcript in C (`runtime/src/mock_backend.c`,
+used by `g6_luau_runner`, `plugin_check` and `trainer_mock_test`) and Python (`runtime/mock_ui.py`, the
+`MockBackend`'s `ui`; `CAbiUi` drives the C one). `sdk/tests/python/test_ui.py` checks that both produce the same
+transcript for the same frame function.
+
+- One UI frame is drawn after every tick (`g6_luau_runner`, `scenario.drive`). It runs every registered frame
+  function once; while the menu is hidden only the ones registered as *always* run. The frame is 1920x1080,
+  `dt` 1/60 s.
+- Each call is one transcript line, indented two spaces per open scope: `frame <name>`, `begin <title>`, `end`,
+  `next_window_pos <x> <y>[ (first use)]`, `text <text>`, `button <label>[ (clicked)]`,
+  `checkbox <label> = 0|1`, `slider_int <label> = <n>`, `slider_float <label> = <%.3f>`,
+  `input_text <label> = <text>`, `combo <label> = <index> (<item>)`, `separator`, `same_line`,
+  `tree_node <label>[ (open)]`, `tree_pop`, `tab_bar <id>`, `tab_item <label>[ (selected)]`, `end_tab_item`,
+  `end_tab_bar`, `color_edit <label> = <r> <g> <b> <a>` (`%.3f`), `plot_lines <label> (<n> values[, <overlay>])`.
+  Indices are 0-based in the transcript (Luau's `ui.combo` is 1-based).
+- `--ui-click LABEL@MS` / `ui_click`: the next widget with exactly that label clicks (a button returns true once,
+  a checkbox flips, a tree node opens or closes, a tab is selected, a closable window's close button).
+  `--ui-set LABEL=VALUE@MS` / `ui_set`: checkbox `1`/`0`, slider number (clamped), input text, combo index or item
+  text, color `r,g,b,a`. `--ui-menu 0|1@MS` / `ui_menu`: hide or show the menu. The interaction waits in a queue
+  until such a widget is drawn; `--expect-clean` fails on interactions left in the queue.
+- Tree nodes start closed; the first tab of a tab bar is selected; windows are always open.
+- A frame function that leaves a window, tree node, tab bar or tab item open is an error (logged at ERROR, counted;
+  `--expect-clean` fails). In-game the overlay repairs it with ImGui's error recovery and logs it.
+- While a frame runs, natives are refused (`G6_E_NOT_ON_SCRIPT_THREAD`), as on the in-game render thread. Work that
+  needs natives goes through `ui.defer(fn)`, which runs `fn` on the next tick.
+- `--expect-ui TEXT` (runner) passes when some frame's transcript contains TEXT; `--print-ui` (runner and
+  `python -m gta6mod run`) prints the last frame's transcript.
+- The driver (event parsing, one frame per tick, the `--expect-clean` checks) is `runtime/src/mock_world.cpp`,
+  shared by `g6_luau_runner` and `g6_python_test`. `--ui-log FILE` writes every frame's transcript run-length
+  encoded by mock time (`@ 0-480 ms` then the transcript those consecutive frames share; a tick without a frame
+  ends a run); `--expect-ui-log FILE` compares. `sdk/tests/ui/trainer_menu.ui.txt` and `ui_widgets.ui.txt` are the
+  Luau runs of `trainer_menu` and `tests/scenarios/ui_widgets.luau`; the Python mock (`test_embedded_ui.py`) and
+  the in-game Python host (`g6_python_test`) must reproduce them.
+- In game, Python frame functions are recorded on the script thread once per tick and replayed by the runtime
+  (docs/python_host.md, "Python UI"): an interaction reaches them on the next tick, and a tree node or tab that
+  opens shows its contents one frame later. The rules above hold unchanged.
+
+**trainer_menu** (Luau `examples/trainer_menu`, Python `examples/python/trainer_menu.py`, C++ plugin
+`runtime/loader/plugins/g6trainer`): toggles without a key (`m.toggle(nil/None, ...)`), flipped from the menu
+through `ui.defer`. God mode and Never wanted behave and log as `god_mode` and `never_wanted` below; `Heal` logs
+`healed`. A script refreshes the shown position, health and wanted level every 100 ms (and clears a wanted level
+while Never wanted is on, logging `cleared wanted level <n>`). Window `Trainer` (C++: `gta6mod trainer`) at
+(40, 120) on first use: `checkbox God mode`, `checkbox Never wanted`, `button Heal`, `separator`,
+`text Player: <x> <y> <z>` (`%.1f`), then health and wanted level.
 
 ### Behaviour and log lines
 
@@ -220,7 +273,7 @@ with the same behaviour and the same log lines.
 | Model names. `adder` is a GTA V name, kept as a placeholder. No story-script model native (`REQUEST_MODEL`, `HAS_MODEL_LOADED`, `IS_MODEL_*`, the vehicle-model natives) takes a constant model hash: 0 constants at their 290 call sites in the block-local scan, and report 29's data-flow walk found none of 113 model arguments constant (`findings/phase5/30_script_layer_evidence.md`). | `vehicle_spawner` | A live trace of the model argument (`REQUEST_MODEL` / `IS_MODEL_IN_CDIMAGE`) while the game spawns a vehicle, or the data files the scripts load models from; then `IS_MODEL_IN_CDIMAGE` live. |
 | `CREATE_VEHICLE` exists only as a GTA V seed hash (`unverified`). No handler of the 6,829 has its GTA VI shape (model, packed position, heading float, 16-byte handle return), and no call site passes it a constant model (`findings/phase5/30_script_layer_evidence.md`). | `Vehicle.spawn` | Trace the script runtime's spawn path (class methods, report 26) or a live call; until then `Vehicle.spawn` keeps the seed native, which real backends refuse. |
 | Driver seat `-1` (`SEAT_DRIVER`) is statically confirmed: the `SET_PED_INTO_VEHICLE` handler maps seat `s >= -1` to internal seat `s + 1` (`-2` = any free seat), and scripts pass `-1` at 197 of the 203 sites that seat the player ped (`findings/phase5/30_script_layer_evidence.md`). | `Ped.put_into` | One logged seating in game. |
-| Player id: resolved statically. `player.id()` calls `GET_PLAYER_INDEX` (`0x144501320`), which returns 0 and feeds 3,113 direct 1-slot player arguments (`findings/phase5/30_script_layer_evidence.md`). The wanted-level natives take the player **ped** (every resolved site passes both slots of one 16-byte native result, mostly `PLAYER_PED_ID`), so `player.wanted_level()` / `clear_wanted()`, which pass `id()`, are wrong in game until those natives are typed as taking a `Ped`. | `player.wanted_level`, `player.clear_wanted` | Type `GET/CLEAR_PLAYER_WANTED_LEVEL` as `Ped` in re-db (outside this layer), then pass `player.ped()`. |
+| Player id and the wanted-level argument: resolved statically. `player.id()` calls `GET_PLAYER_INDEX` (`0x144501320`), which returns 0 and feeds 3,113 direct 1-slot player arguments (`findings/phase5/30_script_layer_evidence.md`). `GET/CLEAR_PLAYER_WANTED_LEVEL` take the player **ped**: their handlers load both slots into one 16-byte handle for the ped resolver `0x14526e340`, and every resolved call site passes both slots of one 16-byte native result (G-090). re-db types them `Ped` (`script-vm.param_types.json`), and `player.wanted_level()` / `clear_wanted()` pass `player.ped()`. The same evidence retypes 29 more nativedb `Player` parameters as `Ped` (G-094; for example GET_WANTED_SCORE, IS_PLAYER_BEING_ARRESTED, SET_EVERYONE_IGNORE_PLAYER); `_0x522F74636DF10201` stays `Player` (no resolved call site). | `player.wanted_level`, `player.clear_wanted` | One logged wanted-level read and clear in game (stage-4 `wanted_clear`). |
 | Health scale (`200` ped, `1000` vehicle in the mock). | mocks only | The helpers use `max_health`, not constants. |
 
 ## Gaps the layer does not paper over

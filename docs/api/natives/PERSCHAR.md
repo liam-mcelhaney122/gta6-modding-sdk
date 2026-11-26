@@ -354,12 +354,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _FORCE_SPAWN_PERSCHAR
 
-`0x0CADC3A977997472` · sig `eb>e` · params 2, argc_inferred 2, arg slots 3 · returns `Entity` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCA310`
+`0x0CADC3A977997472` · sig `e>e` · params 1, argc_inferred 2, arg slots 2 · returns `Entity` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCA310`
 
-- nativedb form: `Entity _FORCE_SPAWN_PERSCHAR(PersChar persChar, BOOL p1)`
-- C: `g6_entity G6_PERSCHAR__FORCE_SPAWN_PERSCHAR(const g6_host_api* api, g6_entity persChar, int p1)`
-- Python: `N.PERSCHAR._FORCE_SPAWN_PERSCHAR(persChar: int, p1: bool) -> int`
-- Luau: `N.PERSCHAR._FORCE_SPAWN_PERSCHAR(persChar: buffer | number, p1: boolean): buffer`
+- nativedb form: `Entity _FORCE_SPAWN_PERSCHAR(PersChar persChar)`
+- C: `g6_entity G6_PERSCHAR__FORCE_SPAWN_PERSCHAR(const g6_host_api* api, g6_entity persChar)`
+- Python: `N.PERSCHAR._FORCE_SPAWN_PERSCHAR(persChar: int) -> int`
+- Luau: `N.PERSCHAR._FORCE_SPAWN_PERSCHAR(persChar: buffer | number): buffer`
+- provenance: nativedb hash match (rdr3); GTA VI prototype from handler and call-site evidence: all 66 call sites (23 programs) pass 2 slots and the handler reads 2; nativedb params not taken: p1; script-vm.prototypes.observed.json (G-118)
 
 ### _GET_PERSCHAR_INDEX_FROM_PED_INDEX
 

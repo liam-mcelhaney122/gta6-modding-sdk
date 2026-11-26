@@ -116,9 +116,10 @@ do
 	local m = hotkeys.modifierKeys({ "INPUT_SPRINT", game.Control.SPRINT })
 	assert(#m == 1 and m[1] == native.joaat("INPUT_SPRINT"), "modifiers are distinct keys")
 	local hv = hotkeys.new()
-	assert(not pcall(hv.add, "hold", K, "x"), "hold needs ms")
-	assert(not pcall(hv.add, "press", K, "x", nil, K), "own modifier")
-	assert(not pcall(hv.add, "hold", K, "x", nil, nil, 10, 0), "repeatMs > 0")
+	-- Called inside closures: pcall(hv.add, "hold", ...) would type the literal as string, not as hotkeys.Kind.
+	assert(not pcall(function() hv.add("hold", K, "x") end), "hold needs ms")
+	assert(not pcall(function() hv.add("press", K, "x", nil, K) end), "own modifier")
+	assert(not pcall(function() hv.add("hold", K, "x", nil, nil, 10, 0) end), "repeatMs > 0")
 	assert(not pcall(hv.add, "tap" :: any, K, "x"), "unknown kind")
 	assert(#hv.bindings == 0, "rejected bindings are not added")
 	assert(not pcall(hotkeys.block, {}), "empty block")

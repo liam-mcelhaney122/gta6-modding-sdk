@@ -29,7 +29,9 @@ from gta6mod.types import Vector3  # noqa: E402
 from gta6mod import natives as N  # noqa: E402
 
 DUMP = os.environ.get("G6_DUMP")
-MOCK_DLL = os.path.join(SDK, "build", "gta6mod_mock.dll")
+MOCK_DLLS = [os.path.join(SDK, "build", "gta6mod_mock.dll"), os.path.join(SDK, "build", "luau", "gta6mod_mock.dll")]
+# Newest build wins (sdk/luau/build.cmd writes sdk/build/luau/; CMake writes sdk/build/).
+MOCK_DLL = max((p for p in MOCK_DLLS if os.path.exists(p)), key=os.path.getmtime, default=None) or MOCK_DLLS[0]
 HAVE_GEN = os.path.isfile(os.path.join(SDK, "generators", "gen_bindings.py"))
 VECTOR_EVIDENCE = os.path.join(SDK, "..", "re-db", "builds", "1.0.2.1", "natives", "script-vm.vector_params.json")
 NATIVES_ARITY = os.path.join(SDK, "..", "tools", "phase5", "natives_arity.py")  # private research tooling
@@ -84,6 +86,17 @@ class TestMarshal(unittest.TestCase):
         p = marshal.pack("eb>e", [h, True])
         self.assertEqual(p.slots, [0x1122334455667788, 0xDEADBEEF, 1])
         self.assertEqual(marshal.unpack("eb>e", [p.slots[0], p.slots[1], 0, 0], p), h)
+
+    def test_handle16_is_two_slots(self):
+        """'h' (16-byte non-entity handle, ScenarioPoint, G-099): lo/hi slots like an entity, returned as an int."""
+        h = (0x5C5C << 64) | 0x5C00000000000007
+        p = marshal.pack("hib>n", [h, 3, True])
+        self.assertEqual(p.slots, [0x5C00000000000007, 0x5C5C, 3, 1])
+        self.assertEqual(marshal.slots_handle16(p.slots, 0), h)
+        self.assertEqual(marshal.unpack("u>h", [0x5C00000000000007, 0x5C5C, 0, 0], marshal.pack("u>h", [7])), h)
+        for bad in (-1, 1 << 128):
+            with self.assertRaises(ValueError):
+                marshal.pack("h>b", [bad])
 
     def test_packed_vector_return(self):
         r = marshal.vec3_packed_slots(Vector3(1.5, -2.0, 30.25))
@@ -166,6 +179,16 @@ class TestMockWorld(unittest.TestCase):
         self.assertEqual(marshal.slot_float(slots[8]), 2.5)
         self.assertEqual(N.ENTITY.GET_ENTITY_COORDS(ped, True), target)
         self.assertEqual(N.ENTITY.GET_ENTITY_COORDS_F44D(ped, True, False), target)  # observed GTA VI hash
+
+    def test_scenario_point_on_mock(self):
+        """_GET_REGISTERED_SCENARIO_POINT 'u>h' -> DOES_SCENARIO_POINT_EXIST 'h>b': both halves reach the handler."""
+        sp = N.UNKNOWN._GET_REGISTERED_SCENARIO_POINT(7)
+        self.assertEqual(sp, (0x5C5C << 64) | 0x5C00000000000007)
+        self.assertTrue(N.TASK.DOES_SCENARIO_POINT_EXIST(sp))
+        h, slots = self.rt.backend.calls[-1]
+        self.assertEqual((h, slots), (0x841475AC96E794D1, [0x5C00000000000007, 0x5C5C]))
+        self.assertFalse(N.TASK.DOES_SCENARIO_POINT_EXIST(sp & ((1 << 64) - 1)))  # high half lost
+        self.assertEqual(N.UNKNOWN._GET_REGISTERED_SCENARIO_POINT(0), 0)
 
     def test_vec3_outparam_on_mock(self):
         N.STREAMING.REQUEST_COLLISION_AT_COORD(Vector3(3.0, 4.0, 0.0))
@@ -338,7 +361,7 @@ class TestGenerator(unittest.TestCase):
             self.assertIn(f'0x{h:016X}ull, "{_ns}", "{name}", "{sig}"', c_hdr)
 
 
-CHAIN_ANCHORS = ["camera.final.get_front", "camera.gameplay.director", "camera.gameplay.get_director", "camera.world_to_screen", "streaming.model.request", "ecs.comp.seats_sel77", "ecs.ped.comp_12", "ecs.ped.comp_30", "ecs.ped.comp_weapon_26", "ecs.vehicle.comp_01", "fs.packfile.cell_file_type", "pool.buildings",
+CHAIN_ANCHORS = ["camera.final.get_front", "camera.gameplay.director", "camera.gameplay.get_director", "camera.world_to_screen", "streaming.model.request", "ecs.comp.base_sel40", "ecs.comp.seats_sel77", "ecs.comp.tagset_sel5e", "ecs.ped.comp_12", "ecs.ped.comp_30", "ecs.ped.comp_weapon_26", "ecs.vehicle.comp_01", "fs.packfile.cell_file_type", "pool.buildings",
                  "script.thread.current_id", "tls.alloc_current.read", "tls.thread_id_cached", "world.game_timer"]
 # world.game_timer: read by the g6probe plugin through anchor_address (G-016).
 RUNTIME_CHAIN_ANCHORS = ["pool.buildings", "script.thread.current_id", "tls.alloc_current.read",
@@ -545,17 +568,28 @@ class TestAgainstDump(unittest.TestCase):
 
         hle = copy.copy(img)
         buf = bytearray(img.data)
+        # DexNom/VIctory crates/victory-loader/src/tls.rs patch(): `call thunks + reg * 32` then `0F 1F 40 00`,
+        # every load except reg 4 (rsp). Thunk block at image base - 0x10000, as observed live
+        # (findings/live/30_live_menu.md: the rcx load calls 0x13fff0020, the rdx load 0x13fff0040).
         tls = re.compile(rb"\x65[\x48\x4C]\x8B[\x04\x0C\x14\x1C\x24\x2C\x34\x3C]\x25\x58\x00\x00\x00")
-        thunk = -0x10000 + 0x20  # 0x13fff0020 relative to the image base, as observed live
-        rewritten = 0
+        block = -0x10000
+        rewritten = skipped_rsp = 0
         for lo, hi in img.code_ranges():
             for m in tls.finditer(img.data, lo, hi):
+                load = m.group(0)
+                reg = ((load[3] >> 3) & 7) | (8 if load[1] & 4 else 0)
+                if reg == 4:
+                    skipped_rsp += 1
+                    continue
                 site = img.off_to_rva(m.start())
-                buf[m.start():m.start() + 9] = b"\xE8" + struct.pack("<i", thunk - (site + 5)) + b"\x90" * 4
+                buf[m.start():m.start() + 9] = (b"\xE8" + struct.pack("<i", block + reg * 32 - (site + 5))
+                                                + b"\x0F\x1F\x40\x00")
                 rewritten += 1
         hle.data = bytes(buf)
         hle._sha256 = None
         self.assertGreater(rewritten, 1000)
+        # tls.rs reports 53,246 patched loads in this title (findings/live/2026-11-25_g093_g095.md).
+        self.assertEqual(rewritten, 53246, f"{skipped_rsp} rsp-form load(s) left alone")
         for name in CHAIN_ANCHORS:
             self.assertEqual(A.resolve(hle, by[name], by), (by[name].rva, "ok"), f"{name} under HLE")
         # The TLS-pinned signatures these chains replace match only console-faithful images.

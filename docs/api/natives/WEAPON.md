@@ -968,12 +968,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _GET_WEAPON_OBJECT_FROM_PED
 
-`0xC6A6789BB405D11C` · sig `eb>e` · params 2, argc_inferred 2, arg slots 3 · returns `Object` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4A87B70`
+`0xC6A6789BB405D11C` · sig `e>e` · params 1, argc_inferred 2, arg slots 2 · returns `Object` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4A87B70`
 
-- nativedb form: `Object _GET_WEAPON_OBJECT_FROM_PED(Ped ped, BOOL p1)`
-- C: `g6_entity G6_WEAPON__GET_WEAPON_OBJECT_FROM_PED(const g6_host_api* api, g6_entity ped, int p1)`
-- Python: `N.WEAPON._GET_WEAPON_OBJECT_FROM_PED(ped: int, p1: bool) -> int`
-- Luau: `N.WEAPON._GET_WEAPON_OBJECT_FROM_PED(ped: buffer | number, p1: boolean): buffer`
+- nativedb form: `Object _GET_WEAPON_OBJECT_FROM_PED(Ped ped)`
+- C: `g6_entity G6_WEAPON__GET_WEAPON_OBJECT_FROM_PED(const g6_host_api* api, g6_entity ped)`
+- Python: `N.WEAPON._GET_WEAPON_OBJECT_FROM_PED(ped: int) -> int`
+- Luau: `N.WEAPON._GET_WEAPON_OBJECT_FROM_PED(ped: buffer | number): buffer`
+- provenance: nativedb hash match (rdr3); GTA VI prototype from handler and call-site evidence: all 5 call sites (2 programs) pass 2 slots and the handler reads 2; nativedb params not taken: p1; script-vm.prototypes.observed.json (G-118)
 
 ### _GIVE_WEAPON_COLLECTION_TO_PED
 

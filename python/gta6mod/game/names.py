@@ -208,11 +208,13 @@ class collectable:
     increment_num_found = staticmethod(_N.COLLECTABLE._COLLECTABLE_INCREMENT_NUM_FOUND)
 
 class databinding:
-    """DATABINDING (10 names)."""
+    """DATABINDING (12 names)."""
 
     add_data_bool_by_hash = staticmethod(_N.DATABINDING._DATABINDING_ADD_DATA_BOOL_BY_HASH)
+    add_data_bool_from_path = staticmethod(_N.DATABINDING._DATABINDING_ADD_DATA_BOOL_FROM_PATH)
     add_data_container_by_hash = staticmethod(_N.DATABINDING._DATABINDING_ADD_DATA_CONTAINER_BY_HASH)
     add_data_container_from_path_by_hash = staticmethod(_N.DATABINDING._DATABINDING_ADD_DATA_CONTAINER_FROM_PATH_BY_HASH)
+    add_data_float_by_hash = staticmethod(_N.DATABINDING._DATABINDING_ADD_DATA_FLOAT_BY_HASH)
     add_data_int_by_hash = staticmethod(_N.DATABINDING._DATABINDING_ADD_DATA_INT_BY_HASH)
     read_data_bool = staticmethod(_N.DATABINDING._DATABINDING_READ_DATA_BOOL)
     read_int = staticmethod(_N.DATABINDING.DATABINDING_READ_INT)
@@ -465,7 +467,7 @@ class flock:
     set_animal_tuning_float_param = staticmethod(_N.FLOCK.SET_ANIMAL_TUNING_FLOAT_PARAM)
 
 class graphics:
-    """GRAPHICS (73 names)."""
+    """GRAPHICS (74 names)."""
 
     add_blood_pool = staticmethod(_N.GRAPHICS._ADD_BLOOD_POOL)
     add_blood_pools_for_ped = staticmethod(_N.GRAPHICS._ADD_BLOOD_POOLS_FOR_PED)
@@ -496,6 +498,7 @@ class graphics:
     disable_far_artificial_lights = staticmethod(_N.GRAPHICS._DISABLE_FAR_ARTIFICIAL_LIGHTS)
     does_particle_fx_looped_exist = staticmethod(_N.GRAPHICS.DOES_PARTICLE_FX_LOOPED_EXIST)
     draw_light_with_range = staticmethod(_N.GRAPHICS.DRAW_LIGHT_WITH_RANGE)
+    draw_sprite_with_uv = staticmethod(_N.GRAPHICS._DRAW_SPRITE_WITH_UV)
     enable_entitymask = staticmethod(_N.GRAPHICS.ENABLE_ENTITYMASK)
     end_petrol_trail_decals = staticmethod(_N.GRAPHICS.END_PETROL_TRAIL_DECALS)
     end_petrol_trail_decals_713f = staticmethod(_N.GRAPHICS.END_PETROL_TRAIL_DECALS_713F)
@@ -993,8 +996,9 @@ class path:
     update_navmesh_blocking_object = staticmethod(_N.PATH.UPDATE_NAVMESH_BLOCKING_OBJECT)
 
 class ped:
-    """PED (353 names)."""
+    """PED (354 names)."""
 
+    add_relationship_group = staticmethod(_N.PED.ADD_RELATIONSHIP_GROUP)
     add_scenario_blocking_volume = staticmethod(_N.PED._ADD_SCENARIO_BLOCKING_VOLUME)
     add_stay_out_volume = staticmethod(_N.PED._ADD_PED_STAY_OUT_VOLUME)
     apply_damage_pack = staticmethod(_N.PED.APPLY_PED_DAMAGE_PACK)
@@ -1378,7 +1382,7 @@ class physics:
     set_disable_frag_damage = staticmethod(_N.PHYSICS.SET_DISABLE_FRAG_DAMAGE)
 
 class player:
-    """PLAYER (64 names)."""
+    """PLAYER (65 names)."""
 
     clear_wanted_level = staticmethod(_N.PLAYER.CLEAR_PLAYER_WANTED_LEVEL)
     disable_firing = staticmethod(_N.PLAYER.DISABLE_PLAYER_FIRING)
@@ -1438,6 +1442,7 @@ class player:
     set_simulate_aiming = staticmethod(_N.PLAYER.SET_PLAYER_SIMULATE_AIMING)
     set_special_ability_type = staticmethod(_N.PLAYER._SET_SPECIAL_ABILITY_TYPE)
     set_targeting_mode = staticmethod(_N.PLAYER.SET_PLAYER_TARGETING_MODE)
+    set_wanted_level = staticmethod(_N.PLAYER.SET_PLAYER_WANTED_LEVEL)
     simulate_input_gait = staticmethod(_N.PLAYER.SIMULATE_PLAYER_INPUT_GAIT)
     special_ability_set_activate = staticmethod(_N.PLAYER._SPECIAL_ABILITY_SET_ACTIVATE)
     special_ability_set_disabled = staticmethod(_N.PLAYER._SPECIAL_ABILITY_SET_DISABLED)
@@ -1841,15 +1846,27 @@ class uievents:
     events_ui_pop_message = staticmethod(_N.UIEVENTS.EVENTS_UI_POP_MESSAGE)
 
 class uilog:
-    """UILOG (2 names)."""
+    """UILOG (3 names)."""
 
     clear_cached_objective = staticmethod(_N.UILOG._UILOG_CLEAR_CACHED_OBJECTIVE)
     print_cached_objective = staticmethod(_N.UILOG._UILOG_PRINT_CACHED_OBJECTIVE)
+    set_cached_objective = staticmethod(_N.UILOG._UILOG_SET_CACHED_OBJECTIVE)
 
 class unknown:
-    """UNKNOWN (31 names)."""
+    """UNKNOWN (42 names)."""
 
     add_petrol_trail_decal_info = staticmethod(_N.UNKNOWN.ADD_PETROL_TRAIL_DECAL_INFO)
+    draw_rect = staticmethod(_N.UNKNOWN._DRAW_RECT)
+    get_registered_ped = staticmethod(_N.UNKNOWN._GET_REGISTERED_PED)
+    get_registered_perschar = staticmethod(_N.UNKNOWN._GET_REGISTERED_PERSCHAR)
+    get_registered_perschar_ped = staticmethod(_N.UNKNOWN._GET_REGISTERED_PERSCHAR_PED)
+    get_registered_pickup = staticmethod(_N.UNKNOWN._GET_REGISTERED_PICKUP)
+    get_registered_prop = staticmethod(_N.UNKNOWN._GET_REGISTERED_PROP)
+    get_registered_scenario_point = staticmethod(_N.UNKNOWN._GET_REGISTERED_SCENARIO_POINT)
+    get_registered_train = staticmethod(_N.UNKNOWN._GET_REGISTERED_TRAIN)
+    get_registered_vehicle = staticmethod(_N.UNKNOWN._GET_REGISTERED_VEHICLE)
+    get_registered_volume = staticmethod(_N.UNKNOWN._GET_REGISTERED_VOLUME)
+    get_registered_weapon_pickup = staticmethod(_N.UNKNOWN._GET_REGISTERED_WEAPON_PICKUP)
     get_vehicle_node_is_switched_off = staticmethod(_N.UNKNOWN.GET_VEHICLE_NODE_IS_SWITCHED_OFF)
     get_vehicle_node_is_switched_off_2d10 = staticmethod(_N.UNKNOWN.GET_VEHICLE_NODE_IS_SWITCHED_OFF_2D10)
     get_vehicle_node_is_switched_off_48ae = staticmethod(_N.UNKNOWN.GET_VEHICLE_NODE_IS_SWITCHED_OFF_48AE)
@@ -2291,8 +2308,10 @@ RAW_TO_CLEAN = {
     'COLLECTABLE._COLLECTABLE_INCREMENT_NUM_FOUND': 'collectable.increment_num_found',
     'DATABINDING.DATABINDING_READ_INT': 'databinding.read_int',
     'DATABINDING._DATABINDING_ADD_DATA_BOOL_BY_HASH': 'databinding.add_data_bool_by_hash',
+    'DATABINDING._DATABINDING_ADD_DATA_BOOL_FROM_PATH': 'databinding.add_data_bool_from_path',
     'DATABINDING._DATABINDING_ADD_DATA_CONTAINER_BY_HASH': 'databinding.add_data_container_by_hash',
     'DATABINDING._DATABINDING_ADD_DATA_CONTAINER_FROM_PATH_BY_HASH': 'databinding.add_data_container_from_path_by_hash',
+    'DATABINDING._DATABINDING_ADD_DATA_FLOAT_BY_HASH': 'databinding.add_data_float_by_hash',
     'DATABINDING._DATABINDING_ADD_DATA_INT_BY_HASH': 'databinding.add_data_int_by_hash',
     'DATABINDING._DATABINDING_READ_DATA_BOOL': 'databinding.read_data_bool',
     'DATABINDING._DATABINDING_REMOVE_DATA_ENTRY': 'databinding.remove_data_entry',
@@ -2581,6 +2600,7 @@ RAW_TO_CLEAN = {
     'GRAPHICS._ANIMPOSTFX_STOP_TAG': 'graphics.animpostfx_stop_tag',
     'GRAPHICS._BLOCK_PICKUP_OBJECT_LIGHT': 'graphics.block_pickup_object_light',
     'GRAPHICS._DISABLE_FAR_ARTIFICIAL_LIGHTS': 'graphics.disable_far_artificial_lights',
+    'GRAPHICS._DRAW_SPRITE_WITH_UV': 'graphics.draw_sprite_with_uv',
     'GRAPHICS._GET_CURRENT_NUMBER_OF_LOCAL_PHOTOS': 'graphics.get_current_number_of_local_photos',
     'GRAPHICS._IS_TEXTURE_IN_DICT': 'graphics.is_texture_in_dict',
     'GRAPHICS._NUM_PIXELS_VISIBLE_AT_TRACKED_POINT': 'graphics.num_pixels_visible_at_tracked_point',
@@ -2982,6 +3002,7 @@ RAW_TO_CLEAN = {
     'PATH._SIMULATED_ROUTE_CREATE': 'path.simulated_route_create',
     'PATH._SIMULATED_ROUTE_DELETE': 'path.simulated_route_delete',
     'PATH._SIMULATED_ROUTE_EXISTS': 'path.simulated_route_exists',
+    'PED.ADD_RELATIONSHIP_GROUP': 'ped.add_relationship_group',
     'PED.APPLY_DAMAGE_TO_PED': 'ped.apply_damage_to_ped',
     'PED.APPLY_PED_DAMAGE_PACK': 'ped.apply_damage_pack',
     'PED.CAN_PED_IN_COMBAT_SEE_TARGET': 'ped.can_in_combat_see_target',
@@ -3393,6 +3414,7 @@ RAW_TO_CLEAN = {
     'PLAYER.SET_PLAYER_MODEL': 'player.set_model',
     'PLAYER.SET_PLAYER_SIMULATE_AIMING': 'player.set_simulate_aiming',
     'PLAYER.SET_PLAYER_TARGETING_MODE': 'player.set_targeting_mode',
+    'PLAYER.SET_PLAYER_WANTED_LEVEL': 'player.set_wanted_level',
     'PLAYER.SIMULATE_PLAYER_INPUT_GAIT': 'player.simulate_input_gait',
     'PLAYER.START_PLAYER_TELEPORT': 'player.start_teleport',
     'PLAYER.STOP_PLAYER_TELEPORT': 'player.stop_teleport',
@@ -3772,6 +3794,7 @@ RAW_TO_CLEAN = {
     'UIEVENTS.EVENTS_UI_POP_MESSAGE': 'uievents.events_ui_pop_message',
     'UILOG._UILOG_CLEAR_CACHED_OBJECTIVE': 'uilog.clear_cached_objective',
     'UILOG._UILOG_PRINT_CACHED_OBJECTIVE': 'uilog.print_cached_objective',
+    'UILOG._UILOG_SET_CACHED_OBJECTIVE': 'uilog.set_cached_objective',
     'UNKNOWN.ADD_PETROL_TRAIL_DECAL_INFO': 'unknown.add_petrol_trail_decal_info',
     'UNKNOWN.GET_VEHICLE_NODE_IS_SWITCHED_OFF': 'unknown.get_vehicle_node_is_switched_off',
     'UNKNOWN.GET_VEHICLE_NODE_IS_SWITCHED_OFF_2D10': 'unknown.get_vehicle_node_is_switched_off_2d10',
@@ -3803,6 +3826,17 @@ RAW_TO_CLEAN = {
     'UNKNOWN.SET_DISABLE_RANDOM_TRAINS_THIS_FRAME_FEC1': 'unknown.set_disable_random_trains_this_frame_fec1',
     'UNKNOWN.SET_DRIVE_TASK_MAX_CRUISE_SPEED': 'unknown.set_drive_task_max_cruise_speed',
     'UNKNOWN.SET_VEHICLE_FIXED': 'unknown.set_vehicle_fixed',
+    'UNKNOWN._DRAW_RECT': 'unknown.draw_rect',
+    'UNKNOWN._GET_REGISTERED_PED': 'unknown.get_registered_ped',
+    'UNKNOWN._GET_REGISTERED_PERSCHAR': 'unknown.get_registered_perschar',
+    'UNKNOWN._GET_REGISTERED_PERSCHAR_PED': 'unknown.get_registered_perschar_ped',
+    'UNKNOWN._GET_REGISTERED_PICKUP': 'unknown.get_registered_pickup',
+    'UNKNOWN._GET_REGISTERED_PROP': 'unknown.get_registered_prop',
+    'UNKNOWN._GET_REGISTERED_SCENARIO_POINT': 'unknown.get_registered_scenario_point',
+    'UNKNOWN._GET_REGISTERED_TRAIN': 'unknown.get_registered_train',
+    'UNKNOWN._GET_REGISTERED_VEHICLE': 'unknown.get_registered_vehicle',
+    'UNKNOWN._GET_REGISTERED_VOLUME': 'unknown.get_registered_volume',
+    'UNKNOWN._GET_REGISTERED_WEAPON_PICKUP': 'unknown.get_registered_weapon_pickup',
     'UNLOCK.UNLOCK_IS_UNLOCKED': 'unlock.is_unlocked',
     'UNLOCK.UNLOCK_IS_VISIBLE': 'unlock.is_visible',
     'UNLOCK._UNLOCK_IS_LOOTABLE': 'unlock.is_lootable',

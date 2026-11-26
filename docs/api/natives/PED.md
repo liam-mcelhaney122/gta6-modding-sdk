@@ -4,11 +4,21 @@
 
 [API index](../index.md) · [ABI and marshalling](../abi.md)
 
-658 natives in re-db namespace `PED`: 401 named, 257 unnamed. Confidence: high 398, low 257, medium 3.
+659 natives in re-db namespace `PED`: 402 named, 257 unnamed. Confidence: high 398, low 257, medium 4.
 
 Unnamed natives have no cross-title name. The bindings expose them as `N.RAW.N_<hash>` (C `G6_N_<hash>`), and the namespace shown here is the re-db namespace, inferred from handler clustering where the provenance says `cluster:`. Their parameters are synthesised from the observed slot reads (`Any` = an untyped 8-byte slot, `float` where a 32-bit float load was seen).
 
 Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/natives")`. C: `#include "gta6mod/natives.h"`; `api` is the table passed to `g6_plugin_load`.
+
+### ADD_RELATIONSHIP_GROUP
+
+`0x387E306529592436` · sig `uI>b` · params 2, argc_inferred 2, arg slots 2 · returns `BOOL` · name: method=observed-behaviour · confidence **medium** · status observed · handler RVA `0x4BC66A0`
+
+- nativedb form: `BOOL ADD_RELATIONSHIP_GROUP(Hash name, Hash* groupHash)`
+- C: `int G6_PED_ADD_RELATIONSHIP_GROUP(const g6_host_api* api, uint32_t name, int64_t* groupHash)`
+- Python: `N.PED.ADD_RELATIONSHIP_GROUP(name: int | str) -> tuple[bool, int]`
+- Luau: `N.PED.ADD_RELATIONSHIP_GROUP(name: number | string): (boolean, number)`
+- provenance: method=observed-behaviour; name hash (slot 0) -> relationship group created in the group table if missing and registered with the script as resource type 0x17 (the type REMOVE_RELATIONSHIP_GROUP releases); writes the group hash to *slot 1 and returns whether one was made; chain 0x144bc66a0 -> 0x144bef710 -> 0x1429ea5c0 -> 0x140d3b910; call sites: 128 in 60 programs; findings/phase5/32_native_naming.md
 
 ### APPLY_DAMAGE_TO_PED
 
@@ -21,12 +31,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### APPLY_PED_DAMAGE_PACK
 
-`0x46DF918788CB093F` · sig `esff>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BC69E0`
+`0x46DF918788CB093F` · sig `euff>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BC69E0`
 
-- nativedb form: `void APPLY_PED_DAMAGE_PACK(Ped ped, const char* damagePack, float damage, float mult)`
-- C: `void G6_PED_APPLY_PED_DAMAGE_PACK(const g6_host_api* api, g6_entity ped, const char* damagePack, float damage, float mult)`
-- Python: `N.PED.APPLY_PED_DAMAGE_PACK(ped: int, damagePack: str | None, damage: float, mult: float) -> None`
-- Luau: `N.PED.APPLY_PED_DAMAGE_PACK(ped: buffer | number, damagePack: string?, damage: number, mult: number): ()`
+- nativedb form: `void APPLY_PED_DAMAGE_PACK(Ped ped, Hash damagePack, float damage, float mult)`
+- C: `void G6_PED_APPLY_PED_DAMAGE_PACK(const g6_host_api* api, g6_entity ped, uint32_t damagePack, float damage, float mult)`
+- Python: `N.PED.APPLY_PED_DAMAGE_PACK(ped: int, damagePack: int | str, damage: float, mult: float) -> None`
+- Luau: `N.PED.APPLY_PED_DAMAGE_PACK(ped: buffer | number, damagePack: number | string, damage: number, mult: number): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bc6a13), compared as a 32-bit key (0x144ef6ec7); script-vm.param_types.observed.json (G-114)
 
 ### CAN_PED_IN_COMBAT_SEE_TARGET
 
@@ -39,12 +50,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### CAN_PED_SEE_PED_CACHED
 
-`0x9D9473CB82D83A30` · sig `eeb>i` · params 3, argc_inferred 4, arg slots 5 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BC73B0`
+`0x9D9473CB82D83A30` · sig `ee>i` · params 2, argc_inferred 4, arg slots 4 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BC73B0`
 
-- nativedb form: `int CAN_PED_SEE_PED_CACHED(Ped ped, Ped targetPed, BOOL p2)`
-- C: `int32_t G6_PED_CAN_PED_SEE_PED_CACHED(const g6_host_api* api, g6_entity ped, g6_entity targetPed, int p2)`
-- Python: `N.PED.CAN_PED_SEE_PED_CACHED(ped: int, targetPed: int, p2: bool) -> int`
-- Luau: `N.PED.CAN_PED_SEE_PED_CACHED(ped: buffer | number, targetPed: buffer | number, p2: boolean): number`
+- nativedb form: `int CAN_PED_SEE_PED_CACHED(Ped ped, Ped targetPed)`
+- C: `int32_t G6_PED_CAN_PED_SEE_PED_CACHED(const g6_host_api* api, g6_entity ped, g6_entity targetPed)`
+- Python: `N.PED.CAN_PED_SEE_PED_CACHED(ped: int, targetPed: int) -> int`
+- Luau: `N.PED.CAN_PED_SEE_PED_CACHED(ped: buffer | number, targetPed: buffer | number): number`
+- provenance: nativedb hash match (rdr3); GTA VI prototype from handler and call-site evidence: all 1064 call sites (225 programs) pass 4 slots and the handler reads 4; nativedb params not taken: p2; script-vm.prototypes.observed.json (G-118)
 
 ### CLEAR_FACIAL_IDLE_ANIM_OVERRIDE
 
@@ -75,12 +87,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### CLEAR_PED_DAMAGE_DECAL_BY_ZONE
 
-`0x523C79AEEFCC4A2A` · sig `eis>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BC7D10`
+`0x523C79AEEFCC4A2A` · sig `eiu>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BC7D10`
 
-- nativedb form: `void CLEAR_PED_DAMAGE_DECAL_BY_ZONE(Ped ped, int p1, const char* p2)`
-- C: `void G6_PED_CLEAR_PED_DAMAGE_DECAL_BY_ZONE(const g6_host_api* api, g6_entity ped, int32_t p1, const char* p2)`
-- Python: `N.PED.CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped: int, p1: int, p2: str | None) -> None`
-- Luau: `N.PED.CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped: buffer | number, p1: number, p2: string?): ()`
+- nativedb form: `void CLEAR_PED_DAMAGE_DECAL_BY_ZONE(Ped ped, int p1, Hash p2)`
+- C: `void G6_PED_CLEAR_PED_DAMAGE_DECAL_BY_ZONE(const g6_host_api* api, g6_entity ped, int32_t p1, uint32_t p2)`
+- Python: `N.PED.CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped: int, p1: int, p2: int | str) -> None`
+- Luau: `N.PED.CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped: buffer | number, p1: number, p2: number | string): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); param 2 typed Hash (nativedb const char*) from handler evidence: slot 3 read as 32 bits (0x144bc7d2e), compared as a 32-bit key (0x1439e186a); script-vm.param_types.observed.json (G-114)
 
 ### CLEAR_PED_ENV_DIRT
 
@@ -322,30 +335,33 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### GET_PED_BLACKBOARD_SCRIPT_BOOL
 
-`0x4912DFE492DB98CD` · sig `es>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBD60`
+`0x4912DFE492DB98CD` · sig `eu>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBD60`
 
-- nativedb form: `BOOL GET_PED_BLACKBOARD_SCRIPT_BOOL(Ped ped, const char* variableName)`
-- C: `int G6_PED_GET_PED_BLACKBOARD_SCRIPT_BOOL(const g6_host_api* api, g6_entity ped, const char* variableName)`
-- Python: `N.PED.GET_PED_BLACKBOARD_SCRIPT_BOOL(ped: int, variableName: str | None) -> bool`
-- Luau: `N.PED.GET_PED_BLACKBOARD_SCRIPT_BOOL(ped: buffer | number, variableName: string?): boolean`
+- nativedb form: `BOOL GET_PED_BLACKBOARD_SCRIPT_BOOL(Ped ped, Hash variableName)`
+- C: `int G6_PED_GET_PED_BLACKBOARD_SCRIPT_BOOL(const g6_host_api* api, g6_entity ped, uint32_t variableName)`
+- Python: `N.PED.GET_PED_BLACKBOARD_SCRIPT_BOOL(ped: int, variableName: int | str) -> bool`
+- Luau: `N.PED.GET_PED_BLACKBOARD_SCRIPT_BOOL(ped: buffer | number, variableName: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bcbd8a), compared as a 32-bit key (0x140066cf4); script-vm.param_types.observed.json (G-114)
 
 ### GET_PED_BLACKBOARD_SCRIPT_FLOAT
 
-`0xA29FD00D45311EB7` · sig `es>f` · params 2, argc_inferred 3, arg slots 3 · returns `float` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBDC0`
+`0xA29FD00D45311EB7` · sig `eu>f` · params 2, argc_inferred 3, arg slots 3 · returns `float` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBDC0`
 
-- nativedb form: `float GET_PED_BLACKBOARD_SCRIPT_FLOAT(Ped ped, const char* variableName)`
-- C: `float G6_PED_GET_PED_BLACKBOARD_SCRIPT_FLOAT(const g6_host_api* api, g6_entity ped, const char* variableName)`
-- Python: `N.PED.GET_PED_BLACKBOARD_SCRIPT_FLOAT(ped: int, variableName: str | None) -> float`
-- Luau: `N.PED.GET_PED_BLACKBOARD_SCRIPT_FLOAT(ped: buffer | number, variableName: string?): number`
+- nativedb form: `float GET_PED_BLACKBOARD_SCRIPT_FLOAT(Ped ped, Hash variableName)`
+- C: `float G6_PED_GET_PED_BLACKBOARD_SCRIPT_FLOAT(const g6_host_api* api, g6_entity ped, uint32_t variableName)`
+- Python: `N.PED.GET_PED_BLACKBOARD_SCRIPT_FLOAT(ped: int, variableName: int | str) -> float`
+- Luau: `N.PED.GET_PED_BLACKBOARD_SCRIPT_FLOAT(ped: buffer | number, variableName: number | string): number`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bcbdea), compared as a 32-bit key (0x1401ff6b1); script-vm.param_types.observed.json (G-114)
 
 ### GET_PED_BLACKBOARD_SCRIPT_INT
 
-`0xB71B91B398F8F067` · sig `es>i` · params 2, argc_inferred 3, arg slots 3 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBEB0`
+`0xB71B91B398F8F067` · sig `eu>i` · params 2, argc_inferred 3, arg slots 3 · returns `int` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBEB0`
 
-- nativedb form: `int GET_PED_BLACKBOARD_SCRIPT_INT(Ped ped, const char* variableName)`
-- C: `int32_t G6_PED_GET_PED_BLACKBOARD_SCRIPT_INT(const g6_host_api* api, g6_entity ped, const char* variableName)`
-- Python: `N.PED.GET_PED_BLACKBOARD_SCRIPT_INT(ped: int, variableName: str | None) -> int`
-- Luau: `N.PED.GET_PED_BLACKBOARD_SCRIPT_INT(ped: buffer | number, variableName: string?): number`
+- nativedb form: `int GET_PED_BLACKBOARD_SCRIPT_INT(Ped ped, Hash variableName)`
+- C: `int32_t G6_PED_GET_PED_BLACKBOARD_SCRIPT_INT(const g6_host_api* api, g6_entity ped, uint32_t variableName)`
+- Python: `N.PED.GET_PED_BLACKBOARD_SCRIPT_INT(ped: int, variableName: int | str) -> int`
+- Luau: `N.PED.GET_PED_BLACKBOARD_SCRIPT_INT(ped: buffer | number, variableName: number | string): number`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bcbeda), compared as a 32-bit key (0x140264a49); script-vm.param_types.observed.json (G-114)
 
 ### GET_PED_BONE_COORDS
 
@@ -1130,12 +1146,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### IS_PED_USING_THIS_SCENARIO
 
-`0x9C54041BB66BCF9E` · sig `ei>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445FD30`
+`0x9C54041BB66BCF9E` · sig `eh>b` · params 2, argc_inferred 3, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445FD30`
 
-- nativedb form: `BOOL IS_PED_USING_THIS_SCENARIO(Ped ped, int scenario)`
-- C: `int G6_PED_IS_PED_USING_THIS_SCENARIO(const g6_host_api* api, g6_entity ped, int32_t scenario)`
+- nativedb form: `BOOL IS_PED_USING_THIS_SCENARIO(Ped ped, ScenarioPoint scenario)`
+- C: `int G6_PED_IS_PED_USING_THIS_SCENARIO(const g6_host_api* api, g6_entity ped, g6_handle16 scenario)`
 - Python: `N.PED.IS_PED_USING_THIS_SCENARIO(ped: int, scenario: int) -> bool`
-- Luau: `N.PED.IS_PED_USING_THIS_SCENARIO(ped: buffer | number, scenario: number): boolean`
+- Luau: `N.PED.IS_PED_USING_THIS_SCENARIO(ped: buffer | number, scenario: buffer): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed ScenarioPoint (nativedb int) from handler evidence: slot 2 qword (0x14445fd4e) is the key of the scenario-point map lookup 0x14074a300 (call 0x144482c4e); scripts pass slots 2-3 (both slots of one 16-byte native result); script-vm.param_types.observed.json (G-099)
 
 ### IS_PED_VAULTING
 
@@ -3479,12 +3496,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### PLAY_FACIAL_ANIM
 
-`0xE1E65CA8AC9C00ED` · sig `ess>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BD34E0`
+`0xE1E65CA8AC9C00ED` · sig `euu>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BD34E0`
 
-- nativedb form: `void PLAY_FACIAL_ANIM(Ped ped, const char* animName, const char* animDict)`
-- C: `void G6_PED_PLAY_FACIAL_ANIM(const g6_host_api* api, g6_entity ped, const char* animName, const char* animDict)`
-- Python: `N.PED.PLAY_FACIAL_ANIM(ped: int, animName: str | None, animDict: str | None) -> None`
-- Luau: `N.PED.PLAY_FACIAL_ANIM(ped: buffer | number, animName: string?, animDict: string?): ()`
+- nativedb form: `void PLAY_FACIAL_ANIM(Ped ped, Hash animName, Hash animDict)`
+- C: `void G6_PED_PLAY_FACIAL_ANIM(const g6_host_api* api, g6_entity ped, uint32_t animName, uint32_t animDict)`
+- Python: `N.PED.PLAY_FACIAL_ANIM(ped: int, animName: int | str, animDict: int | str) -> None`
+- Luau: `N.PED.PLAY_FACIAL_ANIM(ped: buffer | number, animName: number | string, animDict: number | string): ()`
+- provenance: nativedb hash match (gta5_gen9+gta5); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd3501), compared as a 32-bit key (0x140385539); param 2 typed Hash (nativedb const char*) from handler evidence: slot 3 read as 32 bits (0x144bd34fe), compared as a 32-bit key (0x1402e3f6d); script-vm.param_types.observed.json (G-114)
 
 ### REGISTER_HATED_TARGETS_AROUND_PED
 
@@ -4247,12 +4265,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### SET_PED_USING_ACTION_MODE
 
-`0xD75ACCF5E0FB5367` · sig `ebis>n` · params 4, argc_inferred 4, arg slots 5 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BDA960`
+`0xD75ACCF5E0FB5367` · sig `ebi>n` · params 3, argc_inferred 4, arg slots 4 · returns `void` · name: nativedb hash match (rdr3+gta5_gen9+gta5) · confidence **high** · status observed · handler RVA `0x4BDA960`
 
-- nativedb form: `void SET_PED_USING_ACTION_MODE(Ped ped, BOOL bActionModeEnabled, int p2, const char* action)`
-- C: `void G6_PED_SET_PED_USING_ACTION_MODE(const g6_host_api* api, g6_entity ped, int bActionModeEnabled, int32_t p2, const char* action)`
-- Python: `N.PED.SET_PED_USING_ACTION_MODE(ped: int, bActionModeEnabled: bool, p2: int, action: str | None) -> None`
-- Luau: `N.PED.SET_PED_USING_ACTION_MODE(ped: buffer | number, bActionModeEnabled: boolean, p2: number, action: string?): ()`
+- nativedb form: `void SET_PED_USING_ACTION_MODE(Ped ped, BOOL bActionModeEnabled, int p2)`
+- C: `void G6_PED_SET_PED_USING_ACTION_MODE(const g6_host_api* api, g6_entity ped, int bActionModeEnabled, int32_t p2)`
+- Python: `N.PED.SET_PED_USING_ACTION_MODE(ped: int, bActionModeEnabled: bool, p2: int) -> None`
+- Luau: `N.PED.SET_PED_USING_ACTION_MODE(ped: buffer | number, bActionModeEnabled: boolean, p2: number): ()`
+- provenance: nativedb hash match (rdr3+gta5_gen9+gta5); GTA VI prototype from handler and call-site evidence: all 341 call sites (67 programs) pass 4 slots and the handler reads 4; nativedb params not taken: action; script-vm.prototypes.observed.json (G-118)
 
 ### SET_PED_WETNESS_ENABLED_THIS_FRAME
 
@@ -4883,12 +4902,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _CAN_PED_HEAR_TARGET_PED
 
-`0x0EA9EACBA3B01601` · sig `eeb>b` · params 3, argc_inferred 4, arg slots 5 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BC7150`
+`0x0EA9EACBA3B01601` · sig `ee>b` · params 2, argc_inferred 4, arg slots 4 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BC7150`
 
-- nativedb form: `BOOL _CAN_PED_HEAR_TARGET_PED(Ped source, Ped listener, BOOL includeNoiseBoost)`
-- C: `int G6_PED__CAN_PED_HEAR_TARGET_PED(const g6_host_api* api, g6_entity source, g6_entity listener, int includeNoiseBoost)`
-- Python: `N.PED._CAN_PED_HEAR_TARGET_PED(source: int, listener: int, includeNoiseBoost: bool) -> bool`
-- Luau: `N.PED._CAN_PED_HEAR_TARGET_PED(source: buffer | number, listener: buffer | number, includeNoiseBoost: boolean): boolean`
+- nativedb form: `BOOL _CAN_PED_HEAR_TARGET_PED(Ped source, Ped listener)`
+- C: `int G6_PED__CAN_PED_HEAR_TARGET_PED(const g6_host_api* api, g6_entity source, g6_entity listener)`
+- Python: `N.PED._CAN_PED_HEAR_TARGET_PED(source: int, listener: int) -> bool`
+- Luau: `N.PED._CAN_PED_HEAR_TARGET_PED(source: buffer | number, listener: buffer | number): boolean`
+- provenance: nativedb hash match (rdr3); GTA VI prototype from handler and call-site evidence: all 145 call sites (42 programs) pass 4 slots and the handler reads 4; nativedb params not taken: includeNoiseBoost; script-vm.prototypes.observed.json (G-118)
 
 ### _CHANGE_PED_STAMINA
 
@@ -5054,30 +5074,33 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _GET_PED_BLACKBOARD_BOOL
 
-`0x498F2E77982D6945` · sig `es>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBBB0`
+`0x498F2E77982D6945` · sig `eu>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBBB0`
 
-- nativedb form: `BOOL _GET_PED_BLACKBOARD_BOOL(Ped ped, const char* variableName)`
-- C: `int G6_PED__GET_PED_BLACKBOARD_BOOL(const g6_host_api* api, g6_entity ped, const char* variableName)`
-- Python: `N.PED._GET_PED_BLACKBOARD_BOOL(ped: int, variableName: str | None) -> bool`
-- Luau: `N.PED._GET_PED_BLACKBOARD_BOOL(ped: buffer | number, variableName: string?): boolean`
+- nativedb form: `BOOL _GET_PED_BLACKBOARD_BOOL(Ped ped, Hash variableName)`
+- C: `int G6_PED__GET_PED_BLACKBOARD_BOOL(const g6_host_api* api, g6_entity ped, uint32_t variableName)`
+- Python: `N.PED._GET_PED_BLACKBOARD_BOOL(ped: int, variableName: int | str) -> bool`
+- Luau: `N.PED._GET_PED_BLACKBOARD_BOOL(ped: buffer | number, variableName: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bcbbda), compared as a 32-bit key (0x140066cf4); script-vm.param_types.observed.json (G-114)
 
 ### _GET_PED_BLACKBOARD_FLOAT
 
-`0x56E58D4D118FB45E` · sig `es>f` · params 2, argc_inferred 3, arg slots 3 · returns `float` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBC10`
+`0x56E58D4D118FB45E` · sig `eu>f` · params 2, argc_inferred 3, arg slots 3 · returns `float` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBC10`
 
-- nativedb form: `float _GET_PED_BLACKBOARD_FLOAT(Ped ped, const char* variableName)`
-- C: `float G6_PED__GET_PED_BLACKBOARD_FLOAT(const g6_host_api* api, g6_entity ped, const char* variableName)`
-- Python: `N.PED._GET_PED_BLACKBOARD_FLOAT(ped: int, variableName: str | None) -> float`
-- Luau: `N.PED._GET_PED_BLACKBOARD_FLOAT(ped: buffer | number, variableName: string?): number`
+- nativedb form: `float _GET_PED_BLACKBOARD_FLOAT(Ped ped, Hash variableName)`
+- C: `float G6_PED__GET_PED_BLACKBOARD_FLOAT(const g6_host_api* api, g6_entity ped, uint32_t variableName)`
+- Python: `N.PED._GET_PED_BLACKBOARD_FLOAT(ped: int, variableName: int | str) -> float`
+- Luau: `N.PED._GET_PED_BLACKBOARD_FLOAT(ped: buffer | number, variableName: number | string): number`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bcbc3a), compared as a 32-bit key (0x1401ff6b1); script-vm.param_types.observed.json (G-114)
 
 ### _GET_PED_BLACKBOARD_HASH
 
-`0xBF5E791BBBF90A3C` · sig `es>u` · params 2, argc_inferred 3, arg slots 3 · returns `Hash` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBC80`
+`0xBF5E791BBBF90A3C` · sig `eu>u` · params 2, argc_inferred 3, arg slots 3 · returns `Hash` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCBC80`
 
-- nativedb form: `Hash _GET_PED_BLACKBOARD_HASH(Ped ped, const char* variableName)`
-- C: `uint32_t G6_PED__GET_PED_BLACKBOARD_HASH(const g6_host_api* api, g6_entity ped, const char* variableName)`
-- Python: `N.PED._GET_PED_BLACKBOARD_HASH(ped: int, variableName: str | None) -> int`
-- Luau: `N.PED._GET_PED_BLACKBOARD_HASH(ped: buffer | number, variableName: string?): number`
+- nativedb form: `Hash _GET_PED_BLACKBOARD_HASH(Ped ped, Hash variableName)`
+- C: `uint32_t G6_PED__GET_PED_BLACKBOARD_HASH(const g6_host_api* api, g6_entity ped, uint32_t variableName)`
+- Python: `N.PED._GET_PED_BLACKBOARD_HASH(ped: int, variableName: int | str) -> int`
+- Luau: `N.PED._GET_PED_BLACKBOARD_HASH(ped: buffer | number, variableName: number | string): number`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bcbcb3), compared as a 32-bit key (0x14013fccf); script-vm.param_types.observed.json (G-114)
 
 ### _GET_PED_BRAWLING_STYLE
 
@@ -5198,12 +5221,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _GET_PED_REGISTER_PROP
 
-`0x4D0D2E3D8BC000EB` · sig `esb>e` · params 3, argc_inferred 4, arg slots 4 · returns `Entity` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445E630`
+`0x4D0D2E3D8BC000EB` · sig `eub>e` · params 3, argc_inferred 4, arg slots 4 · returns `Entity` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x445E630`
 
-- nativedb form: `Entity _GET_PED_REGISTER_PROP(Ped ped, const char* propName, BOOL detachProp)`
-- C: `g6_entity G6_PED__GET_PED_REGISTER_PROP(const g6_host_api* api, g6_entity ped, const char* propName, int detachProp)`
-- Python: `N.PED._GET_PED_REGISTER_PROP(ped: int, propName: str | None, detachProp: bool) -> int`
-- Luau: `N.PED._GET_PED_REGISTER_PROP(ped: buffer | number, propName: string?, detachProp: boolean): buffer`
+- nativedb form: `Entity _GET_PED_REGISTER_PROP(Ped ped, Hash propName, BOOL detachProp)`
+- C: `g6_entity G6_PED__GET_PED_REGISTER_PROP(const g6_host_api* api, g6_entity ped, uint32_t propName, int detachProp)`
+- Python: `N.PED._GET_PED_REGISTER_PROP(ped: int, propName: int | str, detachProp: bool) -> int`
+- Luau: `N.PED._GET_PED_REGISTER_PROP(ped: buffer | number, propName: number | string, detachProp: boolean): buffer`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x14445e652), compared as a 32-bit key (0x141583ea5); script-vm.param_types.observed.json (G-114)
 
 ### _GET_PED_SEEING_RANGE
 
@@ -5261,12 +5285,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _HAS_PED_EMOTIONAL_PRESET_LOADED
 
-`0xDE3904B22695D9F9` · sig `es>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCEDA0`
+`0xDE3904B22695D9F9` · sig `eu>b` · params 2, argc_inferred 3, arg slots 3 · returns `BOOL` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BCEDA0`
 
-- nativedb form: `BOOL _HAS_PED_EMOTIONAL_PRESET_LOADED(Ped ped, const char* name)`
-- C: `int G6_PED__HAS_PED_EMOTIONAL_PRESET_LOADED(const g6_host_api* api, g6_entity ped, const char* name)`
-- Python: `N.PED._HAS_PED_EMOTIONAL_PRESET_LOADED(ped: int, name: str | None) -> bool`
-- Luau: `N.PED._HAS_PED_EMOTIONAL_PRESET_LOADED(ped: buffer | number, name: string?): boolean`
+- nativedb form: `BOOL _HAS_PED_EMOTIONAL_PRESET_LOADED(Ped ped, Hash name)`
+- C: `int G6_PED__HAS_PED_EMOTIONAL_PRESET_LOADED(const g6_host_api* api, g6_entity ped, uint32_t name)`
+- Python: `N.PED._HAS_PED_EMOTIONAL_PRESET_LOADED(ped: int, name: int | str) -> bool`
+- Luau: `N.PED._HAS_PED_EMOTIONAL_PRESET_LOADED(ped: buffer | number, name: number | string): boolean`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bcedca), compared as a 32-bit key (0x1419e6284); script-vm.param_types.observed.json (G-114)
 
 ### _HAS_PED_SHOT_RECENTLY
 
@@ -5416,12 +5441,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _PED_EMOTIONAL_PRESET_LOCO_MOTION
 
-`0xAAB050DA48B57978` · sig `eseii>n` · params 5, argc_inferred 7, arg slots 7 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD2F40`
+`0xAAB050DA48B57978` · sig `eueii>n` · params 5, argc_inferred 7, arg slots 7 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD2F40`
 
-- nativedb form: `void _PED_EMOTIONAL_PRESET_LOCO_MOTION(Ped ped, const char* presetName, Ped targetPed, int duration, int flag)`
-- C: `void G6_PED__PED_EMOTIONAL_PRESET_LOCO_MOTION(const g6_host_api* api, g6_entity ped, const char* presetName, g6_entity targetPed, int32_t duration, int32_t flag)`
-- Python: `N.PED._PED_EMOTIONAL_PRESET_LOCO_MOTION(ped: int, presetName: str | None, targetPed: int, duration: int, flag: int) -> None`
-- Luau: `N.PED._PED_EMOTIONAL_PRESET_LOCO_MOTION(ped: buffer | number, presetName: string?, targetPed: buffer | number, duration: number, flag: number): ()`
+- nativedb form: `void _PED_EMOTIONAL_PRESET_LOCO_MOTION(Ped ped, Hash presetName, Ped targetPed, int duration, int flag)`
+- C: `void G6_PED__PED_EMOTIONAL_PRESET_LOCO_MOTION(const g6_host_api* api, g6_entity ped, uint32_t presetName, g6_entity targetPed, int32_t duration, int32_t flag)`
+- Python: `N.PED._PED_EMOTIONAL_PRESET_LOCO_MOTION(ped: int, presetName: int | str, targetPed: int, duration: int, flag: int) -> None`
+- Luau: `N.PED._PED_EMOTIONAL_PRESET_LOCO_MOTION(ped: buffer | number, presetName: number | string, targetPed: buffer | number, duration: number, flag: number): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd2f70), compared as a 32-bit key (0x1419e6284); script-vm.param_types.observed.json (G-114)
 
 ### _PED_REMOVE_SPEECH_RELATIONSHIP
 
@@ -5472,48 +5498,53 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _REMOVE_PED_BLACKBOARD_BOOL
 
-`0xA6F67BEC53379A32` · sig `es>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD4210`
+`0xA6F67BEC53379A32` · sig `eu>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD4210`
 
-- nativedb form: `void _REMOVE_PED_BLACKBOARD_BOOL(Ped ped, const char* variableName)`
-- C: `void G6_PED__REMOVE_PED_BLACKBOARD_BOOL(const g6_host_api* api, g6_entity ped, const char* variableName)`
-- Python: `N.PED._REMOVE_PED_BLACKBOARD_BOOL(ped: int, variableName: str | None) -> None`
-- Luau: `N.PED._REMOVE_PED_BLACKBOARD_BOOL(ped: buffer | number, variableName: string?): ()`
+- nativedb form: `void _REMOVE_PED_BLACKBOARD_BOOL(Ped ped, Hash variableName)`
+- C: `void G6_PED__REMOVE_PED_BLACKBOARD_BOOL(const g6_host_api* api, g6_entity ped, uint32_t variableName)`
+- Python: `N.PED._REMOVE_PED_BLACKBOARD_BOOL(ped: int, variableName: int | str) -> None`
+- Luau: `N.PED._REMOVE_PED_BLACKBOARD_BOOL(ped: buffer | number, variableName: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd423a), compared as a 32-bit key (0x1402194a8); script-vm.param_types.observed.json (G-114)
 
 ### _REMOVE_PED_BLACKBOARD_FLOAT
 
-`0x411189E51B8020BA` · sig `es>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD4270`
+`0x411189E51B8020BA` · sig `eu>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD4270`
 
-- nativedb form: `void _REMOVE_PED_BLACKBOARD_FLOAT(Ped ped, const char* variableName)`
-- C: `void G6_PED__REMOVE_PED_BLACKBOARD_FLOAT(const g6_host_api* api, g6_entity ped, const char* variableName)`
-- Python: `N.PED._REMOVE_PED_BLACKBOARD_FLOAT(ped: int, variableName: str | None) -> None`
-- Luau: `N.PED._REMOVE_PED_BLACKBOARD_FLOAT(ped: buffer | number, variableName: string?): ()`
+- nativedb form: `void _REMOVE_PED_BLACKBOARD_FLOAT(Ped ped, Hash variableName)`
+- C: `void G6_PED__REMOVE_PED_BLACKBOARD_FLOAT(const g6_host_api* api, g6_entity ped, uint32_t variableName)`
+- Python: `N.PED._REMOVE_PED_BLACKBOARD_FLOAT(ped: int, variableName: int | str) -> None`
+- Luau: `N.PED._REMOVE_PED_BLACKBOARD_FLOAT(ped: buffer | number, variableName: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd429a), compared as a 32-bit key (0x1400b277b); script-vm.param_types.observed.json (G-114)
 
 ### _REMOVE_PED_BLACKBOARD_HASH
 
-`0x0E17378642156790` · sig `es>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD42D0`
+`0x0E17378642156790` · sig `eu>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD42D0`
 
-- nativedb form: `void _REMOVE_PED_BLACKBOARD_HASH(Ped ped, const char* variableName)`
-- C: `void G6_PED__REMOVE_PED_BLACKBOARD_HASH(const g6_host_api* api, g6_entity ped, const char* variableName)`
-- Python: `N.PED._REMOVE_PED_BLACKBOARD_HASH(ped: int, variableName: str | None) -> None`
-- Luau: `N.PED._REMOVE_PED_BLACKBOARD_HASH(ped: buffer | number, variableName: string?): ()`
+- nativedb form: `void _REMOVE_PED_BLACKBOARD_HASH(Ped ped, Hash variableName)`
+- C: `void G6_PED__REMOVE_PED_BLACKBOARD_HASH(const g6_host_api* api, g6_entity ped, uint32_t variableName)`
+- Python: `N.PED._REMOVE_PED_BLACKBOARD_HASH(ped: int, variableName: int | str) -> None`
+- Luau: `N.PED._REMOVE_PED_BLACKBOARD_HASH(ped: buffer | number, variableName: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd42fa), compared as a 32-bit key (0x1400b277b); script-vm.param_types.observed.json (G-114)
 
 ### _REMOVE_PED_BLACKBOARD_INT
 
-`0x81B75428A7813E67` · sig `es>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD4330`
+`0x81B75428A7813E67` · sig `eu>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD4330`
 
-- nativedb form: `void _REMOVE_PED_BLACKBOARD_INT(Ped ped, const char* variableName)`
-- C: `void G6_PED__REMOVE_PED_BLACKBOARD_INT(const g6_host_api* api, g6_entity ped, const char* variableName)`
-- Python: `N.PED._REMOVE_PED_BLACKBOARD_INT(ped: int, variableName: str | None) -> None`
-- Luau: `N.PED._REMOVE_PED_BLACKBOARD_INT(ped: buffer | number, variableName: string?): ()`
+- nativedb form: `void _REMOVE_PED_BLACKBOARD_INT(Ped ped, Hash variableName)`
+- C: `void G6_PED__REMOVE_PED_BLACKBOARD_INT(const g6_host_api* api, g6_entity ped, uint32_t variableName)`
+- Python: `N.PED._REMOVE_PED_BLACKBOARD_INT(ped: int, variableName: int | str) -> None`
+- Luau: `N.PED._REMOVE_PED_BLACKBOARD_INT(ped: buffer | number, variableName: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd435a), compared as a 32-bit key (0x1400b277b); script-vm.param_types.observed.json (G-114)
 
 ### _REMOVE_PED_EMOTIONAL_PRESET
 
-`0xFC3BAB1801A8255A` · sig `es>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD3D80`
+`0xFC3BAB1801A8255A` · sig `eu>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD3D80`
 
-- nativedb form: `void _REMOVE_PED_EMOTIONAL_PRESET(Ped ped, const char* name)`
-- C: `void G6_PED__REMOVE_PED_EMOTIONAL_PRESET(const g6_host_api* api, g6_entity ped, const char* name)`
-- Python: `N.PED._REMOVE_PED_EMOTIONAL_PRESET(ped: int, name: str | None) -> None`
-- Luau: `N.PED._REMOVE_PED_EMOTIONAL_PRESET(ped: buffer | number, name: string?): ()`
+- nativedb form: `void _REMOVE_PED_EMOTIONAL_PRESET(Ped ped, Hash name)`
+- C: `void G6_PED__REMOVE_PED_EMOTIONAL_PRESET(const g6_host_api* api, g6_entity ped, uint32_t name)`
+- Python: `N.PED._REMOVE_PED_EMOTIONAL_PRESET(ped: int, name: int | str) -> None`
+- Luau: `N.PED._REMOVE_PED_EMOTIONAL_PRESET(ped: buffer | number, name: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd3daa), compared as a 32-bit key (0x1419e6284); script-vm.param_types.observed.json (G-114)
 
 ### _REMOVE_PED_FROM_MOUNT
 
@@ -5553,12 +5584,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _REQUEST_PED_EMOTIONAL_PRESET
 
-`0x5C3C55EAAD19915F` · sig `es>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD47D0`
+`0x5C3C55EAAD19915F` · sig `eu>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD47D0`
 
-- nativedb form: `void _REQUEST_PED_EMOTIONAL_PRESET(Ped ped, const char* name)`
-- C: `void G6_PED__REQUEST_PED_EMOTIONAL_PRESET(const g6_host_api* api, g6_entity ped, const char* name)`
-- Python: `N.PED._REQUEST_PED_EMOTIONAL_PRESET(ped: int, name: str | None) -> None`
-- Luau: `N.PED._REQUEST_PED_EMOTIONAL_PRESET(ped: buffer | number, name: string?): ()`
+- nativedb form: `void _REQUEST_PED_EMOTIONAL_PRESET(Ped ped, Hash name)`
+- C: `void G6_PED__REQUEST_PED_EMOTIONAL_PRESET(const g6_host_api* api, g6_entity ped, uint32_t name)`
+- Python: `N.PED._REQUEST_PED_EMOTIONAL_PRESET(ped: int, name: int | str) -> None`
+- Luau: `N.PED._REQUEST_PED_EMOTIONAL_PRESET(ped: buffer | number, name: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd47fa), compared as a 32-bit key (0x1419e6284); script-vm.param_types.observed.json (G-114)
 
 ### _RESERVE_AMBIENT_PEDS
 
@@ -5663,39 +5695,43 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _SET_PED_BLACKBOARD_BOOL
 
-`0xCB9401F918CB0F75` · sig `esbi>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD7BF0`
+`0xCB9401F918CB0F75` · sig `eubi>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD7BF0`
 
-- nativedb form: `void _SET_PED_BLACKBOARD_BOOL(Ped ped, const char* variableName, BOOL value, int removeTimer)`
-- C: `void G6_PED__SET_PED_BLACKBOARD_BOOL(const g6_host_api* api, g6_entity ped, const char* variableName, int value, int32_t removeTimer)`
-- Python: `N.PED._SET_PED_BLACKBOARD_BOOL(ped: int, variableName: str | None, value: bool, removeTimer: int) -> None`
-- Luau: `N.PED._SET_PED_BLACKBOARD_BOOL(ped: buffer | number, variableName: string?, value: boolean, removeTimer: number): ()`
+- nativedb form: `void _SET_PED_BLACKBOARD_BOOL(Ped ped, Hash variableName, BOOL value, int removeTimer)`
+- C: `void G6_PED__SET_PED_BLACKBOARD_BOOL(const g6_host_api* api, g6_entity ped, uint32_t variableName, int value, int32_t removeTimer)`
+- Python: `N.PED._SET_PED_BLACKBOARD_BOOL(ped: int, variableName: int | str, value: bool, removeTimer: int) -> None`
+- Luau: `N.PED._SET_PED_BLACKBOARD_BOOL(ped: buffer | number, variableName: number | string, value: boolean, removeTimer: number): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd7c22), compared as a 32-bit key (0x140264f2f); script-vm.param_types.observed.json (G-114)
 
 ### _SET_PED_BLACKBOARD_FLOAT
 
-`0x437C08DB4FEBE2BD` · sig `esfi>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD7C60`
+`0x437C08DB4FEBE2BD` · sig `eufi>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD7C60`
 
-- nativedb form: `void _SET_PED_BLACKBOARD_FLOAT(Ped ped, const char* variableName, float value, int removeTimer)`
-- C: `void G6_PED__SET_PED_BLACKBOARD_FLOAT(const g6_host_api* api, g6_entity ped, const char* variableName, float value, int32_t removeTimer)`
-- Python: `N.PED._SET_PED_BLACKBOARD_FLOAT(ped: int, variableName: str | None, value: float, removeTimer: int) -> None`
-- Luau: `N.PED._SET_PED_BLACKBOARD_FLOAT(ped: buffer | number, variableName: string?, value: number, removeTimer: number): ()`
+- nativedb form: `void _SET_PED_BLACKBOARD_FLOAT(Ped ped, Hash variableName, float value, int removeTimer)`
+- C: `void G6_PED__SET_PED_BLACKBOARD_FLOAT(const g6_host_api* api, g6_entity ped, uint32_t variableName, float value, int32_t removeTimer)`
+- Python: `N.PED._SET_PED_BLACKBOARD_FLOAT(ped: int, variableName: int | str, value: float, removeTimer: int) -> None`
+- Luau: `N.PED._SET_PED_BLACKBOARD_FLOAT(ped: buffer | number, variableName: number | string, value: number, removeTimer: number): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd7c93), compared as a 32-bit key (0x14017c4b8); script-vm.param_types.observed.json (G-114)
 
 ### _SET_PED_BLACKBOARD_HASH
 
-`0xA762C9D6CF165E0D` · sig `essi>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD7CC0`
+`0xA762C9D6CF165E0D` · sig `eusi>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD7CC0`
 
-- nativedb form: `void _SET_PED_BLACKBOARD_HASH(Ped ped, const char* variableName, const char* value, int removeTimer)`
-- C: `void G6_PED__SET_PED_BLACKBOARD_HASH(const g6_host_api* api, g6_entity ped, const char* variableName, const char* value, int32_t removeTimer)`
-- Python: `N.PED._SET_PED_BLACKBOARD_HASH(ped: int, variableName: str | None, value: str | None, removeTimer: int) -> None`
-- Luau: `N.PED._SET_PED_BLACKBOARD_HASH(ped: buffer | number, variableName: string?, value: string?, removeTimer: number): ()`
+- nativedb form: `void _SET_PED_BLACKBOARD_HASH(Ped ped, Hash variableName, const char* value, int removeTimer)`
+- C: `void G6_PED__SET_PED_BLACKBOARD_HASH(const g6_host_api* api, g6_entity ped, uint32_t variableName, const char* value, int32_t removeTimer)`
+- Python: `N.PED._SET_PED_BLACKBOARD_HASH(ped: int, variableName: int | str, value: str | None, removeTimer: int) -> None`
+- Luau: `N.PED._SET_PED_BLACKBOARD_HASH(ped: buffer | number, variableName: number | string, value: string?, removeTimer: number): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd7cf2), compared as a 32-bit key (0x1404b8af8); script-vm.param_types.observed.json (G-114)
 
 ### _SET_PED_BLACKBOARD_INT
 
-`0x5F53010C4C3F6BAF` · sig `esii>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD7D20`
+`0x5F53010C4C3F6BAF` · sig `euii>n` · params 4, argc_inferred 5, arg slots 5 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD7D20`
 
-- nativedb form: `void _SET_PED_BLACKBOARD_INT(Ped ped, const char* variableName, int value, int removeTimer)`
-- C: `void G6_PED__SET_PED_BLACKBOARD_INT(const g6_host_api* api, g6_entity ped, const char* variableName, int32_t value, int32_t removeTimer)`
-- Python: `N.PED._SET_PED_BLACKBOARD_INT(ped: int, variableName: str | None, value: int, removeTimer: int) -> None`
-- Luau: `N.PED._SET_PED_BLACKBOARD_INT(ped: buffer | number, variableName: string?, value: number, removeTimer: number): ()`
+- nativedb form: `void _SET_PED_BLACKBOARD_INT(Ped ped, Hash variableName, int value, int removeTimer)`
+- C: `void G6_PED__SET_PED_BLACKBOARD_INT(const g6_host_api* api, g6_entity ped, uint32_t variableName, int32_t value, int32_t removeTimer)`
+- Python: `N.PED._SET_PED_BLACKBOARD_INT(ped: int, variableName: int | str, value: int, removeTimer: int) -> None`
+- Luau: `N.PED._SET_PED_BLACKBOARD_INT(ped: buffer | number, variableName: number | string, value: number, removeTimer: number): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd7d52), compared as a 32-bit key (0x1404b8af8); script-vm.param_types.observed.json (G-114)
 
 ### _SET_PED_BRAWLING_STYLE
 
@@ -5773,12 +5809,13 @@ Python: `from gta6mod import natives as N`. Luau: `local N = require("@gta6/nati
 
 ### _SET_PED_DESIRED_LOCO_MOTION_TYPE
 
-`0x89F5E7ADECCCB49C` · sig `es>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD8A40`
+`0x89F5E7ADECCCB49C` · sig `eu>n` · params 2, argc_inferred 3, arg slots 3 · returns `void` · name: nativedb hash match (rdr3) · confidence **high** · status observed · handler RVA `0x4BD8A40`
 
-- nativedb form: `void _SET_PED_DESIRED_LOCO_MOTION_TYPE(Ped ped, const char* locoMotionType)`
-- C: `void G6_PED__SET_PED_DESIRED_LOCO_MOTION_TYPE(const g6_host_api* api, g6_entity ped, const char* locoMotionType)`
-- Python: `N.PED._SET_PED_DESIRED_LOCO_MOTION_TYPE(ped: int, locoMotionType: str | None) -> None`
-- Luau: `N.PED._SET_PED_DESIRED_LOCO_MOTION_TYPE(ped: buffer | number, locoMotionType: string?): ()`
+- nativedb form: `void _SET_PED_DESIRED_LOCO_MOTION_TYPE(Ped ped, Hash locoMotionType)`
+- C: `void G6_PED__SET_PED_DESIRED_LOCO_MOTION_TYPE(const g6_host_api* api, g6_entity ped, uint32_t locoMotionType)`
+- Python: `N.PED._SET_PED_DESIRED_LOCO_MOTION_TYPE(ped: int, locoMotionType: int | str) -> None`
+- Luau: `N.PED._SET_PED_DESIRED_LOCO_MOTION_TYPE(ped: buffer | number, locoMotionType: number | string): ()`
+- provenance: nativedb hash match (rdr3); param 1 typed Hash (nativedb const char*) from handler evidence: slot 2 read as 32 bits (0x144bd8a5d), compared as a 32-bit key (0x144be1439); script-vm.param_types.observed.json (G-114)
 
 ### _SET_PED_DESIRES_GROUP
 
